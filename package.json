@@ -1,0 +1,37 @@
+{
+  "name": "@mojolicious/mojo",
+  "version": "0.0.1",
+  "description": "Real-time web framework",
+  "keywords": [
+    "web",
+    "framework"
+  ],
+  "author": "Sebastian Riedel <kraih@mojolicious.org>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mojolicious/mojojs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mojolicious/mojojs/issues"
+  },
+  "homepage": "https://mojojs.org",
+  "scripts": {
+    "lint": "eslint \"lib/**/*.js\" \"lib/*.js\" \"test/*.js\"",
+    "test": "tap --no-coverage test/*.js"
+  },
+  "main": "./lib/mojo.js",
+  "devDependencies": {
+    "diff": "^5.0.0",
+    "eslint": "^7.22.0",
+    "eslint-config-semistandard": "^15.0.1",
+    "tap": "^14.11.0"
+  },
+  "engines": {
+    "node": ">= 15"
+  },
+  "dependencies": {
+    "nopt": "^5.0.0",
+    "ws": "^7.4.5"
+  }
+}
