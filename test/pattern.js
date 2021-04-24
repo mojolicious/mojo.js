@@ -48,7 +48,7 @@ t.test('Optional placeholder in the middle', t => {
 t.test('Multiple optional placeholders in the middle', t => {
   const pattern = new Pattern('/test/:a/123/:b/456');
   pattern.defaults = {a: 'a', b: 'b'};
-  t.same(pattern.match('/test/123/456', {format: 1}), {a: 'a', b: 'b'}, 'right structure');
+  t.same(pattern.match('/test/123/456', {ext: 1}), {a: 'a', b: 'b'}, 'right structure');
   t.same(pattern.match('/test/c/123/456', 1), {a: 'c', b: 'b'}, 'right structure');
   t.same(pattern.match('/test/123/c/456', 1), {a: 'a', b: 'c'}, 'right structure');
   t.same(pattern.match('/test/c/123/d/456', 1), {a: 'c', b: 'd'}, 'right structure');
@@ -66,7 +66,7 @@ t.test('Root', t => {
   t.same(pattern.match('/test/foo/bar'), null, 'no result');
   t.same(pattern.match('/'), {action: 'index'}, 'right structure');
   t.equal(pattern.render(), '', 'right result');
-  t.equal(pattern.render({format: 'txt'}, {isEndpoint: true}), '.txt', 'right result');
+  t.equal(pattern.render({ext: 'txt'}, {isEndpoint: true}), '.txt', 'right result');
   t.done();
 });
 
@@ -94,7 +94,7 @@ t.test('Relaxed', t => {
   t.equal(pattern.render({controller: 'foo.bar', action: 'baz'}), '/test/foo.bar/baz', 'right result');
   const pattern2 = new Pattern('/test/<#groovy>');
   t.same(pattern2.match('/test/foo.bar'), {groovy: 'foo.bar'}, 'right structure');
-  t.same(pattern2.defaults.format, undefined, 'no value');
+  t.same(pattern2.defaults.ext, undefined, 'no value');
   t.equal(pattern2.render({groovy: 'foo.bar'}), '/test/foo.bar', 'right result');
   t.done();
 });
@@ -152,12 +152,12 @@ t.test('Unusual values', t => {
   t.done();
 });
 
-t.test('Format detection', t => {
+t.test('Extension detection', t => {
   const pattern = new Pattern('/test');
   pattern.defaults = {action: 'index'};
-  pattern.constraints = {format: ['xml', 'html']};
-  t.same(pattern.match('/test.xml', {isEndpoint: true}), {action: 'index', format: 'xml'}, 'right structure');
-  t.same(pattern.match('/test.html', {isEndpoint: true}), {action: 'index', format: 'html'}, 'right structure');
+  pattern.constraints = {ext: ['xml', 'html']};
+  t.same(pattern.match('/test.xml', {isEndpoint: true}), {action: 'index', ext: 'xml'}, 'right structure');
+  t.same(pattern.match('/test.html', {isEndpoint: true}), {action: 'index', ext: 'html'}, 'right structure');
   t.same(pattern.match('/test.json'), null, 'no result');
   const pattern2 = new Pattern('/test.json');
   pattern2.defaults = {action: 'index'};
@@ -169,28 +169,28 @@ t.test('Format detection', t => {
   pattern3.defaults = {action: 'index'};
   t.same(pattern3.match('/test.xml'), null, 'no result');
   t.same(pattern3.match('/test'), {action: 'index'}, 'right structure');
-  const pattern4 = new Pattern('/test', {constraints: {format: 'txt'}, defaults: {format: null}});
-  t.same(pattern4.match('/test.txt', {isEndpoint: true}), {format: 'txt'}, 'right structure');
-  t.same(pattern4.match('/test', {isEndpoint: true}), {format: null}, 'right structure');
+  const pattern4 = new Pattern('/test', {constraints: {ext: 'txt'}, defaults: {ext: null}});
+  t.same(pattern4.match('/test.txt', {isEndpoint: true}), {ext: 'txt'}, 'right structure');
+  t.same(pattern4.match('/test', {isEndpoint: true}), {ext: null}, 'right structure');
   t.same(pattern4.match('/test.xml'), null, 'no result');
   t.done();
 });
 
 t.test('Versioned pattern', t => {
-  const pattern = new Pattern('/:test/v1.0', {defaults: {action: 'index', format: 'html'}});
+  const pattern = new Pattern('/:test/v1.0', {defaults: {action: 'index', ext: 'html'}});
   const result = pattern.match('/foo/v1.0', {isEndpoint: true});
-  t.same(result, {test: 'foo', action: 'index', format: 'html'}, 'right structure');
+  t.same(result, {test: 'foo', action: 'index', ext: 'html'}, 'right structure');
   t.equal(pattern.render(result), '/foo/v1.0', 'right result');
   t.equal(pattern.render(result, {isEndpoint: true}), '/foo/v1.0.html', 'right result');
   t.equal(pattern.render(result, {isEndpoint: false}), '/foo/v1.0', 'right result');
-  t.equal(pattern.render({...result, format: undefined}, {isEndpoint: true}), '/foo/v1.0', 'right result');
+  t.equal(pattern.render({...result, ext: undefined}, {isEndpoint: true}), '/foo/v1.0', 'right result');
   t.done();
 });
 
-t.test('Versioned pattern with format', t => {
-  const pattern = new Pattern('/:test/v1.0', {defaults: {a: 'b', format: 'html'}, constraints: {format: ['gz']}});
+t.test('Versioned pattern with extension', t => {
+  const pattern = new Pattern('/:test/v1.0', {defaults: {a: 'b', ext: 'html'}, constraints: {ext: ['gz']}});
   const result = pattern.match('/foo/v1.0.gz', {isEndpoint: true});
-  t.same(result, {test: 'foo', a: 'b', format: 'gz'}, 'right structure');
+  t.same(result, {test: 'foo', a: 'b', ext: 'gz'}, 'right structure');
   t.equal(pattern.render(result), '/foo/v1.0', 'right result');
   t.equal(pattern.render(result, {isEndpoint: true}), '/foo/v1.0.gz', 'right result');
   t.same(pattern.match('/foo/v2.0', {isEndpoint: true}), null, 'no result');
@@ -249,10 +249,10 @@ t.test('Normalize slashes', t => {
   t.done();
 });
 
-t.test('Optional format with constraint', t => {
-  const pattern = new Pattern('/', {defaults: {format: 'txt'}, constraints: {format: ['txt']}});
-  t.same(pattern.match('/', {isEndpoint: true}), {format: 'txt'}, 'right structure');
-  t.same(pattern.match('/.txt', {isEndpoint: true}), {format: 'txt'}, 'right structure');
+t.test('Optional extension with constraint', t => {
+  const pattern = new Pattern('/', {defaults: {ext: 'txt'}, constraints: {ext: ['txt']}});
+  t.same(pattern.match('/', {isEndpoint: true}), {ext: 'txt'}, 'right structure');
+  t.same(pattern.match('/.txt', {isEndpoint: true}), {ext: 'txt'}, 'right structure');
   t.same(pattern.match('/.json', {isEndpoint: true}), null, 'no result');
   t.done();
 });
