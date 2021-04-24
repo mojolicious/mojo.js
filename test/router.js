@@ -64,6 +64,9 @@ test4.any('/bar').to({testcase: 'lalala'});
 //* /test2/baz
 test2.any('/baz').to('just#works');
 
+//* /websocket
+r.websocket('/websocket').to({testcase: 'ws'}).any('/').to({action: 'just'}).any().to({works: 1});
+
 t.test('No match', t => {
   t.same(r.plot({method: 'GET', path: '/does_not_exist'}), null, 'no result');
   t.done();
@@ -232,5 +235,14 @@ t.test('Chained routes', t => {
   t.same(plan3.stops, [true, true], 'right structure');
   t.equal(plan3.render().path, '/test2/baz', 'right path');
   t.same(r.plot({method: 'GET', path: '/test2baz'}), null, 'no result');
+  t.done();
+});
+
+t.test('WebSocket', t => {
+  t.same(r.plot({method: 'GET', path: '/websocket'}), null, 'no result');
+  const plan = r.plot({method: 'GET', path: '/websocket', websocket: true});
+  t.same(plan.steps, [{testcase: 'ws'}, {action: 'just'}, {works: 1}], 'right structure');
+  t.equal(plan.render().path, '/websocket', 'right path');
+  t.same(plan.stops, [false, false, true], 'right structure');
   t.done();
 });
