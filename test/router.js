@@ -64,6 +64,7 @@ t.test('Introspect', t => {
 t.test('Null route', t => {
   const plan = r.plot({method: 'GET', path: '/0'});
   t.same(plan.steps, [{null: 0}], 'right structure');
+  t.same(plan.stops, [true], 'right structure');
   t.equal(plan.render().path, '/0', 'right path');
   t.equal(plan.endpoint.defaultName, '0', 'right name');
   t.done();
@@ -103,6 +104,7 @@ t.test('Alternatives without default', t => {
   t.equal(plan.render().path, '/alternatives2/0', 'right path');
   const plan2 = r.plot({method: 'GET', path: '/alternatives2/test'});
   t.same(plan2.steps, [{foo: 'test'}], 'right structure');
+  t.same(plan2.stops, [true], 'right structure');
   t.equal(plan2.render().path, '/alternatives2/test', 'right path');
   const plan3 = r.plot({method: 'GET', path: '/alternatives2/23'});
   t.same(plan3.steps, [{foo: '23'}], 'right structure');
@@ -154,9 +156,11 @@ t.test('Optional placeholder', t => {
 t.test('Optional placeholders in nested routes', t => {
   const plan = r.plot({method: 'GET', path: '/optional2'});
   t.same(plan.steps, [{foo: 'one'}, {bar: 'two', format: null}], 'right structure');
+  t.same(plan.stops, [false, true], 'right structure');
   t.equal(plan.render().path, '/optional2', 'right path');
   const plan2 = r.plot({method: 'GET', path: '/optional2/three'});
   t.same(plan2.steps, [{foo: 'three'}, {bar: 'two', format: null}], 'right structure');
+  t.same(plan2.stops, [false, true], 'right structure');
   t.equal(plan2.render().path, '/optional2/three', 'right path');
   const plan3 = r.plot({method: 'GET', path: '/optional2/three/four'});
   t.same(plan3.steps, [{foo: 'three'}, {bar: 'four', format: null}], 'right structure');
