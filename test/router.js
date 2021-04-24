@@ -1,7 +1,7 @@
 'use strict';
 
 import t from 'tap';
-import {Router} from '../lib/index.js';
+import Router from '../lib/router.js';
 
 /*
  * /0

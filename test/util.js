@@ -1,7 +1,8 @@
 'use strict';
 
 import t from 'tap';
-import {util, File} from '../lib/index.js';
+import * as util from '../lib/util.js';
+import File from '../lib/file.js';
 
 t.test('escapeRegExp', t => {
   const escapeRegExp = util.escapeRegExp;

@@ -3,7 +3,8 @@
 import t from 'tap';
 import fs from 'fs/promises';
 import path from 'path';
-import {util, File} from '../lib/index.js';
+import * as util from '../lib/util.js';
+import File from '../lib/file.js';
 
 t.test('Constructor', t => {
   t.equal(new File().toString(), process.cwd(), 'same path');

@@ -1,7 +1,7 @@
 'use strict';
 
 import t from 'tap';
-import {Pattern} from '../lib/index.js';
+import Pattern from '../lib/router/pattern.js';
 
 t.test('Text pattern', t => {
   const pattern = new Pattern('/test/123');
