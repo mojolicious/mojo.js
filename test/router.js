@@ -3,53 +3,66 @@
 import t from 'tap';
 import Router from '../lib/router.js';
 
-/*
- * /0
- */
+//* /0
 const r = new Router();
 r.any('0').to({null: 0}).name('null');
 
-/*
- * /alternatives
- * /alternatives/0
- * /alternatives/test
- * /alternatives/23
- */
+//* /alternatives
+//* /alternatives/0
+//* /alternatives/test
+//* /alternatives/23
 r.any('/alternatives/:foo', {foo: ['0', 'test', '23']}).to({foo: 11});
 
-/*
- * /alternatives2/0
- * /alternatives2/test
- * /alternatives2/23
- */
+//* /alternatives2/0
+//* /alternatives2/test
+//* /alternatives2/23
 r.any('/alternatives2/:foo/', {foo: ['0', 'test', '23']});
 
-/*
- * /alternatives3/foo
- * /alternatives3/foobar
- */
+//* /alternatives3/foo
+//* /alternatives3/foobar
 r.any('/alternatives3/:foo', {foo: ['foo', 'foobar']});
 
-/*
- * /alternatives4/foo
- * /alternatives4/foo.bar
- */
+//* /alternatives4/foo
+//* /alternatives4/foo.bar
 r.any('/alternatives4/:foo', {foo: ['foo', 'foo.bar']});
 
-/*
- * /optional/*
- * /optional/**
- * /optional/**.txt
- */
+//* /optional/*
+//* /optional/*/*
+//* /optional/*/*.txt
 r.any('/optional/:foo/:bar', {ext: 'txt'}).to({bar: 'test', ext: null});
 
-/*
- * /optional2
- * /optional2/*
- * /optional2/**
- * /optional2/**.txt
- */
+//* /optional2
+//* /optional2/*
+//* /optional2/*/*
+//* /optional2/*/*.txt
 r.any('/optional2/:foo').to({foo: 'one'}).any('/:bar', {ext: 'txt'}).to({bar: 'two', ext: null});
+
+//* /*/test
+const test = r.any('/:testcase/test').to({action: 'test'});
+
+//* /*/test/edit
+test.any('/edit').to({action: 'edit'}).name('test_edit');
+
+//* /*/testedit
+r.any('/:testcase/testedit').to({action: 'testedit'});
+
+//* /*/test/delete/*
+test.any('/delete/<id>', {id: /\d+/}).to({action: 'delete', id: 23});
+
+//* /test2
+const test2 = r.under('/test2/').to({testcase: 'test2'});
+
+//* /test2 (inline)
+const test4 = test2.under('/').to({testcase: 'index'});
+
+//* /test2/foo
+test4.any('/foo').to({testcase: 'baz'});
+
+//* /test2/bar
+test4.any('/bar').to({testcase: 'lalala'});
+
+//* /test2/baz
+test2.any('/baz').to('just#works');
 
 t.test('No match', t => {
   t.same(r.plot({method: 'GET', path: '/does_not_exist'}), null, 'no result');
@@ -178,5 +191,46 @@ t.test('Optional placeholders in nested routes', t => {
   t.same(r.plot({method: 'GET', path: '/optional2/three.xml'}), null, 'no result');
   t.same(r.plot({method: 'GET', path: '/optional2/three/four.xml'}), null, 'no result');
   t.same(r.plot({method: 'GET', path: '/optional2/three/four/five'}), null, 'no result');
+  t.done();
+});
+
+t.test('Path and captures', t => {
+  const plan = r.plot({method: 'GET', path: '/foo/test/edit'});
+  t.same(plan.steps, [{testcase: 'foo', action: 'test'}, {action: 'edit'}], 'right structure');
+  t.equal(plan.render().path, '/foo/test/edit', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/foo/testedit'});
+  t.same(plan2.steps, [{testcase: 'foo', action: 'testedit'}], 'right structure');
+  t.equal(plan2.render().path, '/foo/testedit', 'right path');
+  t.done();
+});
+
+t.test('Optional captures in sub route with requirement', t => {
+  const plan = r.plot({method: 'GET', path: '/bar/test/delete/22'});
+  t.same(plan.steps, [{testcase: 'bar', action: 'test'}, {action: 'delete', id: 22}], 'right structure');
+  t.equal(plan.render().path, '/bar/test/delete/22', 'right path');
+  t.done();
+});
+
+t.test('Defaults in sub route', t => {
+  const plan = r.plot({method: 'GET', path: '/bar/test/delete'});
+  t.same(plan.steps, [{testcase: 'bar', action: 'test'}, {action: 'delete', id: 23}], 'right structure');
+  t.equal(plan.render().path, '/bar/test/delete', 'right path');
+  t.done();
+});
+
+t.test('Chained routes', t => {
+  const plan = r.plot({method: 'GET', path: '/test2/foo'});
+  t.same(plan.steps, [{testcase: 'test2'}, {testcase: 'index'}, {testcase: 'baz'}], 'right structure');
+  t.same(plan.stops, [true, true, true], 'right structure');
+  t.equal(plan.render().path, '/test2/foo', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/test2/bar'});
+  t.same(plan2.steps, [{testcase: 'test2'}, {testcase: 'index'}, {testcase: 'lalala'}], 'right structure');
+  t.same(plan2.stops, [true, true, true], 'right structure');
+  t.equal(plan2.render().path, '/test2/bar', 'right path');
+  const plan3 = r.plot({method: 'GET', path: '/test2/baz'});
+  t.same(plan3.steps, [{testcase: 'test2'}, {controller: 'just', action: 'works'}], 'right structure');
+  t.same(plan3.stops, [true, true], 'right structure');
+  t.equal(plan3.render().path, '/test2/baz', 'right path');
+  t.same(r.plot({method: 'GET', path: '/test2baz'}), null, 'no result');
   t.done();
 });
