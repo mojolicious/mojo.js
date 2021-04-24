@@ -1,6 +1,6 @@
 'use strict';
 
-const {Pattern} = require('..');
+import {Pattern} from '../lib/index.js';
 
 const pattern = new Pattern('/foo/:bar/baz');
 for (let i = 0; i < 10000000; i++) {

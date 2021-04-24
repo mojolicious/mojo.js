@@ -1,7 +1,7 @@
 'use strict';
 
-const t = require('tap');
-const {Router} = require('..');
+import t from 'tap';
+import {Router} from '../lib/index.js';
 
 /*
  * /0

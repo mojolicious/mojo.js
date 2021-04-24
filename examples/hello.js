@@ -1,5 +1,5 @@
-const app = require('..')();
+import {App} from '../lib/index.js';
 
-app.any('/', ctx => ctx.render({text: 'Bye Mojo!'}));
-
+const app = new App();
+app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 app.start();

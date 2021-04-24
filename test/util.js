@@ -1,24 +1,24 @@
 'use strict';
 
-const t = require('tap');
-const {mojo, File} = require('..');
+import t from 'tap';
+import {util, File} from '../lib/index.js';
 
 t.test('escapeRegExp', t => {
-  const escapeRegExp = mojo.util.escapeRegExp;
+  const escapeRegExp = util.escapeRegExp;
   t.equal(escapeRegExp('te*s?t'), 'te\\*s\\?t', 'escaped');
   t.equal(escapeRegExp('\\^$.*+?()[]{}|'), '\\\\\\^\\$\\.\\*\\+\\?\\(\\)\\[\\]\\{\\}\\|', 'escaped');
   t.done();
 });
 
 t.test('sleep', async t => {
-  const sleep = mojo.util.sleep(1);
+  const sleep = util.sleep(1);
   t.ok(sleep instanceof Promise, 'promise');
   t.same(await sleep, undefined, 'no result');
   t.done();
 });
 
 t.test('tablify', t => {
-  const tablify = mojo.util.tablify;
+  const tablify = util.tablify;
   t.equal(typeof tablify, 'function', 'is a function');
   t.equal(tablify([['foo']]), 'foo\n', 'right format');
   t.equal(tablify([['f\r\no o\r\n', 'bar']]), 'fo o  bar\n', 'right format');
@@ -35,7 +35,7 @@ t.test('tablify', t => {
 });
 
 t.test('tempdir', async t => {
-  const tempdir = await mojo.util.tempdir();
+  const tempdir = await util.tempdir();
   const dir = new File(tempdir.toString());
   t.same(await dir.exists(), true, 'directory exists');
   t.same(await tempdir.exists(), true, 'directory exists');

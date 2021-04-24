@@ -1,7 +1,7 @@
 'use strict';
 
-const t = require('tap');
-const {Pattern} = require('..');
+import t from 'tap';
+import {Pattern} from '../lib/index.js';
 
 t.test('Text pattern', t => {
   const pattern = new Pattern('/test/123');

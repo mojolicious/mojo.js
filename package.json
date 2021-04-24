@@ -18,9 +18,10 @@
   "homepage": "https://mojojs.org",
   "scripts": {
     "lint": "eslint \"lib/**/*.js\" \"lib/*.js\" \"test/*.js\"",
-    "test": "tap --no-coverage test/*.js"
+    "test": "tap --no-coverage --no-esm test/*.js"
   },
-  "main": "./lib/mojo.js",
+  "main": "./lib/index.js",
+  "type": "module",
   "devDependencies": {
     "diff": "^5.0.0",
     "eslint": "^7.22.0",

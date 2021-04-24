@@ -1,9 +1,9 @@
 'use strict';
 
-const t = require('tap');
-const {mojo, File} = require('..');
-const fs = require('fs/promises');
-const path = require('path');
+import t from 'tap';
+import fs from 'fs/promises';
+import path from 'path';
+import {util, File} from '../lib/index.js';
 
 t.test('Constructor', t => {
   t.equal(new File().toString(), process.cwd(), 'same path');
@@ -23,7 +23,7 @@ t.test('realpath', async t => {
 });
 
 t.test('I/O', async t => {
-  const dir = await mojo.util.tempdir();
+  const dir = await util.tempdir();
   t.ok(dir, 'temporary directory');
   t.ok(await dir.stat(), 'directory exists');
   t.same(await dir.child('test.txt').exists(), false, 'file does not exist');
@@ -39,7 +39,7 @@ t.test('I/O', async t => {
 });
 
 t.test('I/O streams', async t => {
-  const dir = await mojo.util.tempdir();
+  const dir = await util.tempdir();
   const write = dir.child('test.txt').createWriteStream({encoding: 'utf8'});
   await new Promise(resolve => write.write('Hello World!', resolve));
   const read = dir.child('test.txt').createReadStream({encoding: 'utf8'});
@@ -50,7 +50,7 @@ t.test('I/O streams', async t => {
 });
 
 t.test('list', async t => {
-  const dir = await mojo.util.tempdir();
+  const dir = await util.tempdir();
   const foo = dir.child('foo');
   const bar = foo.child('bar');
   await bar.mkdir({recursive: true});
