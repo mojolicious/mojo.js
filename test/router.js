@@ -3,108 +3,117 @@
 import t from 'tap';
 import Router from '../lib/router.js';
 
-//* /0
+// * /0
 const r = new Router();
 r.any('0').to({null: 0}).name('null');
 
-//* /alternatives
-//* /alternatives/0
-//* /alternatives/test
-//* /alternatives/23
+// * /alternatives
+// * /alternatives/0
+// * /alternatives/test
+// * /alternatives/23
 r.any('/alternatives/:foo', {foo: ['0', 'test', '23']}).to({foo: 11});
 
-//* /alternatives2/0
-//* /alternatives2/test
-//* /alternatives2/23
+// * /alternatives2/0
+// * /alternatives2/test
+// * /alternatives2/23
 r.any('/alternatives2/:foo/', {foo: ['0', 'test', '23']});
 
-//* /alternatives3/foo
-//* /alternatives3/foobar
+// * /alternatives3/foo
+// * /alternatives3/foobar
 r.any('/alternatives3/:foo', {foo: ['foo', 'foobar']});
 
-//* /alternatives4/foo
-//* /alternatives4/foo.bar
+// * /alternatives4/foo
+// * /alternatives4/foo.bar
 r.any('/alternatives4/:foo', {foo: ['foo', 'foo.bar']});
 
-//* /optional/*
-//* /optional/*/*
-//* /optional/*/*.txt
+// * /optional/*
+// * /optional/*/*
+// * /optional/*/*.txt
 r.any('/optional/:foo/:bar', {ext: 'txt'}).to({bar: 'test', ext: null});
 
-//* /optional2
-//* /optional2/*
-//* /optional2/*/*
-//* /optional2/*/*.txt
+// * /optional2
+// * /optional2/*
+// * /optional2/*/*
+// * /optional2/*/*.txt
 r.any('/optional2/:foo').to({foo: 'one'}).any('/:bar', {ext: 'txt'}).to({bar: 'two', ext: null});
 
-//* /*/test
+// * /*/test
 const test = r.any('/:testcase/test').to({action: 'test'});
 
-//* /*/test/edit
+// * /*/test/edit
 test.any('/edit').to({action: 'edit'}).name('test_edit');
 
-//* /*/testedit
+// * /*/testedit
 r.any('/:testcase/testedit').to({action: 'testedit'});
 
-//* /*/test/delete/*
+// * /*/test/delete/*
 test.any('/delete/<id>', {id: /\d+/}).to({action: 'delete', id: 23});
 
-//* /test2
+// * /test2
 const test2 = r.under('/test2/').to({testcase: 'test2'});
 
-//* /test2 (inline)
+// * /test2 (inline)
 const test4 = test2.under('/').to({testcase: 'index'});
 
-//* /test2/foo
+// * /test2/foo
 test4.any('/foo').to({testcase: 'baz'});
 
-//* /test2/bar
+// * /test2/bar
 test4.any('/bar').to({testcase: 'lalala'});
 
-//* /test2/baz
+// * /test2/baz
 test2.any('/baz').to('just#works');
 
-//* /
+// * /
 r.any('/').to({testcase: 'hello', action: 'world'});
 
-//* /websocket
+// * /websocket
 r.websocket('/websocket').to({testcase: 'ws'}).any('/').to({action: 'just'}).any().to({works: 1});
 
-//* /wildcards/1/*
+// * /wildcards/1/*
 r.any('/wildcards/1/<*wildcard>', {wildcard: /(?:.*)/}).to({testcase: 'wild', action: 'card'});
 
-//* /wildcards/2/*
+// * /wildcards/2/*
 r.any('/wildcards/2/*wildcard').to({testcase: 'card', action: 'wild'});
 
-//* /wildcards/3/*/foo
+// * /wildcards/3/*/foo
 r.any('/wildcards/3/<*wildcard>/foo').to({testcase: 'very', action: 'dangerous'});
 
-//* /wildcards/4/*/foo
+// * /wildcards/4/*/foo
 r.any('/wildcards/4/*wildcard/foo').to({testcase: 'somewhat', action: 'dangerous'});
 
-//* /ext
-//* /ext.*
+// * /ext
+// * /ext.*
 r.any('/ext', {ext: /.+/}).to({testcase: 'hello'}).to({action: 'you', ext: 'html'});
 
-//* /ext2.txt
+// * /ext2.txt
 r.any('/ext2', {ext: /txt/}).to({testcase: 'we', action: 'howdy'});
 
-//* /ext3.txt
-//* /ext3.text
+// * /ext3.txt
+// * /ext3.text
 r.any('/ext3', {ext: ['txt', 'text']}).to({testcase: 'we', action: 'cheers'});
 
-//* /ext4
-//* /ext4.html
+// * /ext4
+// * /ext4.html
 r.any('/ext4', {ext: 'html'}).to({testcase: 'us', action: 'yay', ext: 'html'});
 
-//* /type/23
-//* /type/24
+// * /type/23
+// * /type/24
 r.addType('my_num', ['23', '24']);
 r.any('/type/<id:my_num>').to('foo#bar');
 
-//* /type2/t*st
+// * /type/t*st
 r.addType('test', /t.st/);
 r.any('/type/<id:test>').to('baz#yada');
+
+// GET /method/get
+r.get('/method/get', {ext: 'html'}).to({testcase: 'method', action: 'get', ext: null});
+
+// POST /method/post
+r.post('/method/post').to({testcase: 'method', action: 'post'});
+
+// POST|GET /method/post_get
+r.any(['POST', 'GET'], '/method/post_get').to({testcase: 'method', action: 'post_get'});
 
 t.test('No match', t => {
   t.same(r.plot({method: 'GET', path: '/does_not_exist'}), null, 'no result');
@@ -373,5 +382,28 @@ t.test('Placeholder types', t => {
   t.same(plan4.steps, [{controller: 'baz', action: 'yada', id: 't3st'}], 'right structure');
   t.equal(plan4.render().path, '/type/t3st', 'right path');
   t.same(r.plot({method: 'GET', path: '/type/t3est'}), null, 'no result');
+  t.done();
+});
+
+t.test('Request methods', t => {
+  const plan = r.plot({method: 'GET', path: '/method/get'});
+  t.same(plan.steps, [{testcase: 'method', action: 'get', ext: null}], 'right structure');
+  t.equal(plan.render().path, '/method/get', 'right path');
+  t.same(r.plot({method: 'POST', path: '/method/get'}), null, 'no result');
+  const plan2 = r.plot({method: 'GET', path: '/method/get.html'});
+  t.same(plan2.steps, [{testcase: 'method', action: 'get', ext: 'html'}], 'right structure');
+  t.equal(plan2.render().path, '/method/get.html', 'right path');
+  const plan3 = r.plot({method: 'POST', path: '/method/post'});
+  t.same(plan3.steps, [{testcase: 'method', action: 'post'}], 'right structure');
+  t.equal(plan3.render().path, '/method/post', 'right path');
+  t.same(r.plot({method: 'POST', path: '/method/post.html'}), null, 'no result');
+  t.same(r.plot({method: 'GET', path: '/method/post'}), null, 'no result');
+  const plan4 = r.plot({method: 'POST', path: '/method/post_get'});
+  t.same(plan4.steps, [{testcase: 'method', action: 'post_get'}], 'right structure');
+  t.equal(plan4.render().path, '/method/post_get', 'right path');
+  const plan5 = r.plot({method: 'GET', path: '/method/post_get'});
+  t.same(plan5.steps, [{testcase: 'method', action: 'post_get'}], 'right structure');
+  t.equal(plan5.render().path, '/method/post_get', 'right path');
+  t.same(r.plot({method: 'PUT', path: '/method/get_post'}), null, 'no result');
   t.done();
 });
