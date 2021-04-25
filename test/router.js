@@ -115,6 +115,13 @@ r.post('/method/post').to({testcase: 'method', action: 'post'});
 // POST|GET /method/post_get
 r.any(['POST', 'GET'], '/method/post_get').to({testcase: 'method', action: 'post_get'});
 
+// GET /missing/*/name
+// GET /missing/too
+// GET /missing/too/test
+r.get('/missing/:/name').to('missing#placeholder');
+r.get('/missing/*/name').to('missing#wildcard');
+r.get('/missing/too/*', {'': ['test']}).to({controller: 'missing', action: 'too', '': 'missing'});
+
 t.test('No match', t => {
   t.same(r.plot({method: 'GET', path: '/does_not_exist'}), null, 'no result');
   t.done();
@@ -405,5 +412,23 @@ t.test('Request methods', t => {
   t.same(plan5.steps, [{testcase: 'method', action: 'post_get'}], 'right structure');
   t.equal(plan5.render().path, '/method/post_get', 'right path');
   t.same(r.plot({method: 'PUT', path: '/method/get_post'}), null, 'no result');
+  t.done();
+});
+
+t.test('Nameless placeholder', t => {
+  const plan = r.plot({method: 'GET', path: '/missing/foo/name'});
+  t.same(plan.steps, [{controller: 'missing', action: 'placeholder', '': 'foo'}], 'right structure');
+  t.equal(plan.render().path, '/missing/foo/name', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/missing/foo/bar/name'});
+  t.same(plan2.steps, [{controller: 'missing', action: 'wildcard', '': 'foo/bar'}], 'right structure');
+  t.equal(plan2.render().path, '/missing/foo/bar/name', 'right path');
+  t.equal(plan2.render({'': 'bar/baz'}).path, '/missing/bar/baz/name', 'right path');
+  const plan3 = r.plot({method: 'GET', path: '/missing/too/test'});
+  t.same(plan3.steps, [{controller: 'missing', action: 'too', '': 'test'}], 'right structure');
+  t.equal(plan3.render().path, '/missing/too/test', 'right path');
+  t.same(r.plot({method: 'GET', path: '/missing/too/tset'}), null, 'no result');
+  const plan4 = r.plot({method: 'GET', path: '/missing/too'});
+  t.same(plan4.steps, [{controller: 'missing', action: 'too', '': 'missing'}], 'right structure');
+  t.equal(plan4.render().path, '/missing/too', 'right path');
   t.done();
 });
