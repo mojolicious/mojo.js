@@ -64,8 +64,47 @@ test4.any('/bar').to({testcase: 'lalala'});
 //* /test2/baz
 test2.any('/baz').to('just#works');
 
+//* /
+r.any('/').to({testcase: 'hello', action: 'world'});
+
 //* /websocket
 r.websocket('/websocket').to({testcase: 'ws'}).any('/').to({action: 'just'}).any().to({works: 1});
+
+//* /wildcards/1/*
+r.any('/wildcards/1/<*wildcard>', {wildcard: /(?:.*)/}).to({testcase: 'wild', action: 'card'});
+
+//* /wildcards/2/*
+r.any('/wildcards/2/*wildcard').to({testcase: 'card', action: 'wild'});
+
+//* /wildcards/3/*/foo
+r.any('/wildcards/3/<*wildcard>/foo').to({testcase: 'very', action: 'dangerous'});
+
+//* /wildcards/4/*/foo
+r.any('/wildcards/4/*wildcard/foo').to({testcase: 'somewhat', action: 'dangerous'});
+
+//* /ext
+//* /ext.*
+r.any('/ext', {ext: /.+/}).to({testcase: 'hello'}).to({action: 'you', ext: 'html'});
+
+//* /ext2.txt
+r.any('/ext2', {ext: /txt/}).to({testcase: 'we', action: 'howdy'});
+
+//* /ext3.txt
+//* /ext3.text
+r.any('/ext3', {ext: ['txt', 'text']}).to({testcase: 'we', action: 'cheers'});
+
+//* /ext4
+//* /ext4.html
+r.any('/ext4', {ext: 'html'}).to({testcase: 'us', action: 'yay', ext: 'html'});
+
+//* /type/23
+//* /type/24
+r.addType('my_num', ['23', '24']);
+r.any('/type/<id:my_num>').to('foo#bar');
+
+//* /type2/t*st
+r.addType('test', /t.st/);
+r.any('/type/<id:test>').to('baz#yada');
 
 t.test('No match', t => {
   t.same(r.plot({method: 'GET', path: '/does_not_exist'}), null, 'no result');
@@ -197,6 +236,13 @@ t.test('Optional placeholders in nested routes', t => {
   t.done();
 });
 
+t.test('Root', t => {
+  const plan = r.plot({method: 'GET', path: '/'});
+  t.same(plan.steps, [{testcase: 'hello', action: 'world'}], 'right structure');
+  t.equal(plan.render().path, '', 'right path');
+  t.done();
+});
+
 t.test('Path and captures', t => {
   const plan = r.plot({method: 'GET', path: '/foo/test/edit'});
   t.same(plan.steps, [{testcase: 'foo', action: 'test'}, {action: 'edit'}], 'right structure');
@@ -244,5 +290,88 @@ t.test('WebSocket', t => {
   t.same(plan.steps, [{testcase: 'ws'}, {action: 'just'}, {works: 1}], 'right structure');
   t.equal(plan.render().path, '/websocket', 'right path');
   t.same(plan.stops, [false, false, true], 'right structure');
+  t.done();
+});
+
+t.test('Wildcards', t => {
+  const plan = r.plot({method: 'GET', path: '/wildcards/1/hello/there'});
+  t.same(plan.steps, [{testcase: 'wild', action: 'card', wildcard: 'hello/there'}], 'right structure');
+  t.equal(plan.render().path, '/wildcards/1/hello/there', 'right path');
+  t.equal(plan.render({wildcard: ''}).path, '/wildcards/1/', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/wildcards/2/hello/there'});
+  t.same(plan2.steps, [{testcase: 'card', action: 'wild', wildcard: 'hello/there'}], 'right structure');
+  t.equal(plan2.render().path, '/wildcards/2/hello/there', 'right path');
+  const plan3 = r.plot({method: 'GET', path: '/wildcards/3/hello/there/foo'});
+  t.same(plan3.steps, [{testcase: 'very', action: 'dangerous', wildcard: 'hello/there'}], 'right structure');
+  t.equal(plan3.render().path, '/wildcards/3/hello/there/foo', 'right path');
+  const plan4 = r.plot({method: 'GET', path: '/wildcards/4/hello/there/foo'});
+  t.same(plan4.steps, [{testcase: 'somewhat', action: 'dangerous', wildcard: 'hello/there'}], 'right structure');
+  t.equal(plan4.render().path, '/wildcards/4/hello/there/foo', 'right path');
+  t.done();
+});
+
+t.test('Extensions', t => {
+  const plan = r.plot({method: 'GET', path: '/ext'});
+  t.same(plan.steps, [{testcase: 'hello', action: 'you', ext: 'html'}], 'right structure');
+  t.equal(plan.render().path, '/ext.html', 'right path');
+  t.equal(plan.render({ext: null}).path, '/ext', 'right path');
+  t.equal(plan.render({ext: 'html'}).path, '/ext.html', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/ext.html'});
+  t.same(plan2.steps, [{testcase: 'hello', action: 'you', ext: 'html'}], 'right structure');
+  t.equal(plan2.render().path, '/ext.html', 'right path');
+  t.equal(plan2.render({ext: 'txt'}).path, '/ext.txt', 'right path');
+  t.done();
+});
+
+t.test('Extension with regex constraint', t => {
+  t.same(r.plot({method: 'GET', path: '/ext2'}), null, 'no result');
+  const plan = r.plot({method: 'GET', path: '/ext2.txt'});
+  t.same(plan.steps, [{testcase: 'we', action: 'howdy', ext: 'txt'}], 'right structure');
+  t.equal(plan.render().path, '/ext2.txt', 'right path');
+  t.same(r.plot({method: 'GET', path: '/ext2.html'}), null, 'no result');
+  t.same(r.plot({method: 'GET', path: '/ext2.txt.txt'}), null, 'no result');
+  t.done();
+});
+
+t.test('Extension with constraint alternatives', t => {
+  t.same(r.plot({method: 'GET', path: '/ext3'}), null, 'no result');
+  const plan = r.plot({method: 'GET', path: '/ext3.txt'});
+  t.same(plan.steps, [{testcase: 'we', action: 'cheers', ext: 'txt'}], 'right structure');
+  t.equal(plan.render().path, '/ext3.txt', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/ext3.text'});
+  t.same(plan2.steps, [{testcase: 'we', action: 'cheers', ext: 'text'}], 'right structure');
+  t.equal(plan2.render().path, '/ext3.text', 'right path');
+  t.same(r.plot({method: 'GET', path: '/ext3.html'}), null, 'no result');
+  t.same(r.plot({method: 'GET', path: '/ext3.txt.txt'}), null, 'no result');
+  t.done();
+});
+
+t.test('Extension with constraint and default', t => {
+  const plan = r.plot({method: 'GET', path: '/ext4'});
+  t.same(plan.steps, [{testcase: 'us', action: 'yay', ext: 'html'}], 'right structure');
+  t.equal(plan.render().path, '/ext4.html', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/ext4.html'});
+  t.same(plan2.steps, [{testcase: 'us', action: 'yay', ext: 'html'}], 'right structure');
+  t.equal(plan2.render().path, '/ext4.html', 'right path');
+  t.same(r.plot({method: 'GET', path: '/ext4.txt'}), null, 'no result');
+  t.same(r.plot({method: 'GET', path: '/ext4.txt.html'}), null, 'no result');
+  t.done();
+});
+
+t.test('Placeholder types', t => {
+  const plan = r.plot({method: 'GET', path: '/type/23'});
+  t.same(plan.steps, [{controller: 'foo', action: 'bar', id: 23}], 'right structure');
+  t.equal(plan.render().path, '/type/23', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/type/24'});
+  t.same(plan2.steps, [{controller: 'foo', action: 'bar', id: 24}], 'right structure');
+  t.equal(plan2.render().path, '/type/24', 'right path');
+  t.same(r.plot({method: 'GET', path: '/type/25'}), null, 'no result');
+  const plan3 = r.plot({method: 'GET', path: '/type/test'});
+  t.same(plan3.steps, [{controller: 'baz', action: 'yada', id: 'test'}], 'right structure');
+  t.equal(plan3.render().path, '/type/test', 'right path');
+  const plan4 = r.plot({method: 'GET', path: '/type/t3st'});
+  t.same(plan4.steps, [{controller: 'baz', action: 'yada', id: 't3st'}], 'right structure');
+  t.equal(plan4.render().path, '/type/t3st', 'right path');
+  t.same(r.plot({method: 'GET', path: '/type/t3est'}), null, 'no result');
   t.done();
 });
