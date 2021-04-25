@@ -115,6 +115,19 @@ r.post('/method/post').to({testcase: 'method', action: 'post'});
 // POST|GET /method/post_get
 r.any(['POST', 'GET'], '/method/post_get').to({testcase: 'method', action: 'post_get'});
 
+// * /versioned/1.0/test
+// * /versioned/1.0/test.xml
+// * /versioned/2.4/test
+// * /versioned/2.4/test.xml
+const versioned = r.any('/versioned');
+versioned.any('/1.0').to({testcase: 'bar'}).any('/test', {ext: ['xml']}).to({action: 'baz', ext: null});
+versioned.any('/2.4').to({testcase: 'foo'}).any('/test', {ext: ['xml']}).to({action: 'bar', ext: null});
+
+// * /versioned/too/1.0
+const too = r.any('/versioned/too').to('too#');
+too.any('/1.0').to('#foo');
+too.any('/2.0').to('#bar');
+
 // GET /missing/*/name
 // GET /missing/too
 // GET /missing/too/test
@@ -415,6 +428,35 @@ t.test('Request methods', t => {
   t.done();
 });
 
+t.test('Route with version', t => {
+  const plan = r.plot({method: 'GET', path: '/versioned/1.0/test'});
+  t.same(plan.steps, [{}, {testcase: 'bar'}, {action: 'baz', ext: null}], 'right structure');
+  t.equal(plan.render().path, '/versioned/1.0/test', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/versioned/1.0/test.xml'});
+  t.same(plan2.steps, [{}, {testcase: 'bar'}, {action: 'baz', ext: 'xml'}], 'right structure');
+  t.equal(plan2.render().path, '/versioned/1.0/test.xml', 'right path');
+  const plan3 = r.plot({method: 'GET', path: '/versioned/2.4/test'});
+  t.same(plan3.steps, [{}, {testcase: 'foo'}, {action: 'bar', ext: null}], 'right structure');
+  t.equal(plan3.render().path, '/versioned/2.4/test', 'right path');
+  const plan4 = r.plot({method: 'GET', path: '/versioned/2.4/test.xml'});
+  t.same(plan4.steps, [{}, {testcase: 'foo'}, {action: 'bar', ext: 'xml'}], 'right structure');
+  t.equal(plan4.render().path, '/versioned/2.4/test.xml', 'right path');
+  t.same(r.plot({method: 'GET', path: '/versioned/3.0/test'}), null, 'no result');
+  t.same(r.plot({method: 'GET', path: '/versioned/3.4/test'}), null, 'no result');
+  t.same(r.plot({method: 'GET', path: '/versioned/0.3/test'}), null, 'no result');
+  t.done();
+});
+
+t.test('Route with version at the end', t => {
+  const plan = r.plot({method: 'GET', path: '/versioned/too/1.0'});
+  t.same(plan.steps, [{controller: 'too'}, {action: 'foo'}], 'right structure');
+  t.equal(plan.render().path, '/versioned/too/1.0', 'right path');
+  const plan2 = r.plot({method: 'GET', path: '/versioned/too/2.0'});
+  t.same(plan2.steps, [{controller: 'too'}, {action: 'bar'}], 'right structure');
+  t.equal(plan2.render().path, '/versioned/too/2.0', 'right path');
+  t.done();
+});
+
 t.test('Nameless placeholder', t => {
   const plan = r.plot({method: 'GET', path: '/missing/foo/name'});
   t.same(plan.steps, [{controller: 'missing', action: 'placeholder', '': 'foo'}], 'right structure');
@@ -430,5 +472,14 @@ t.test('Nameless placeholder', t => {
   const plan4 = r.plot({method: 'GET', path: '/missing/too'});
   t.same(plan4.steps, [{controller: 'missing', action: 'too', '': 'missing'}], 'right structure');
   t.equal(plan4.render().path, '/missing/too', 'right path');
+  t.done();
+});
+
+t.test('Unknown type (matches nothing)', t => {
+  const r2 = new Router();
+  r2.any('/<foo:does_not_exist>').to({fail: true});
+  t.same(r2.plot({method: 'GET', path: '/'}), null, 'no result');
+  t.same(r2.plot({method: 'GET', path: '/test'}), null, 'no result');
+  t.same(r2.plot({method: 'GET', path: '/23'}), null, 'no result');
   t.done();
 });
