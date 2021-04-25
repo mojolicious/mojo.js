@@ -20,5 +20,8 @@
       "error",
       "never"
     ]
-  }
+  },
+  "ignorePatterns": [
+    "cli.js"
+  ]
 }
