@@ -1,5 +1,3 @@
-'use strict';
-
 import t from 'tap';
 import fs from 'fs/promises';
 import path from 'path';
@@ -16,6 +14,12 @@ t.test('Constructor', t => {
 t.test('basename', t => {
   t.equal(new File('foo', 'bar', 'file.t').basename(), 'file.t', 'right file');
   t.equal(new File('foo', 'bar', 'file.t').basename('.t'), 'file', 'right name');
+  t.done();
+});
+
+t.test('dirname', t => {
+  const dirname = path.dirname(path.join('foo', 'bar', 'file.t'));
+  t.equal(new File('foo', 'bar', 'file.t').dirname().toString(), dirname, 'right directory');
   t.done();
 });
 

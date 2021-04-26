@@ -1,5 +1,3 @@
-'use strict';
-
 import t from 'tap';
 import Pattern from '../lib/router/pattern.js';
 

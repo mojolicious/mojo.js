@@ -1,5 +1,3 @@
-'use strict';
-
 import t from 'tap';
 import * as util from '../lib/util.js';
 import File from '../lib/file.js';

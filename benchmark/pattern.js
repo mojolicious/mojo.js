@@ -1,6 +1,4 @@
-'use strict';
-
-import {Pattern} from '../lib/index.js';
+import Pattern from '../lib/router/pattern.js';
 
 const pattern = new Pattern('/foo/:bar/baz');
 for (let i = 0; i < 10000000; i++) {
