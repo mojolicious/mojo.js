@@ -7,7 +7,7 @@ import Server from '../lib/server.js';
 t.test('Client', async t => {
   const app = new App();
 
-  app.get('/hello', ctx => ctx.render({text: 'Hello Mojo!'}));
+  app.get('/hello', ctx => ctx.render({text: 'Hello World!'}));
 
   app.get('/headers', ctx => {
     const name = ctx.req.url.searchParams.get('header');
@@ -27,7 +27,7 @@ t.test('Client', async t => {
   await t.test('Hello World', async t => {
     const res = await client.get('/hello');
     t.equal(res.status, 200, 'right status');
-    t.equal(await res.text(), 'Hello Mojo!', 'right content');
+    t.equal(await res.text(), 'Hello World!', 'right content');
     t.done();
   });
 
@@ -35,6 +35,7 @@ t.test('Client', async t => {
     const res = await client.get('/headers?header=user-agent');
     t.equal(res.status, 200, 'right status');
     t.equal(await res.text(), 'mojo 1.0', 'right content');
+
     const res2 = await client.get('/headers?header=test', {headers: {test: 'works'}});
     t.equal(res2.status, 200, 'right status');
     t.equal(await res2.text(), 'works', 'right content');
@@ -48,13 +49,17 @@ t.test('Client', async t => {
     t.done();
   });
 
-  await t.test('Stream', async t => {
-    const res = await client.get('/hello');
+  await t.test('Streams', async t => {
+    const res = await client.put('/body', {body: 'Hello Mojo!'});
     t.equal(res.status, 200, 'right status');
     const dir = await tempdir();
     const file = dir.child('hello.txt');
     await res.pipe(file.createWriteStream());
     t.equal(await file.readFile('utf8'), 'Hello Mojo!', 'right content');
+
+    const res2 = await client.put('/body', {body: file.createReadStream()});
+    t.equal(res2.status, 200, 'right status');
+    t.equal(await res2.text(), 'Hello Mojo!', 'right content');
     t.done();
   });
 

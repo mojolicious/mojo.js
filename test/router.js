@@ -161,12 +161,15 @@ t.test('Alternatives with default', t => {
   t.equal(plan.render({foo: 12, ext: 'txt'}).path, '/alternatives/12.txt', 'right path');
   t.equal(plan.endpoint.defaultName, 'alternatives_foo', 'right name');
   t.ok(Object.is(plan.endpoint, r.lookup('alternatives_foo')), 'same object');
+
   const plan2 = r.plot({method: 'GET', path: '/alternatives/0'});
   t.same(plan2.steps, [{foo: 0}], 'right structure');
   t.equal(plan2.render().path, '/alternatives/0', 'right path');
+
   const plan3 = r.plot({method: 'GET', path: '/alternatives/test'});
   t.same(plan3.steps, [{foo: 'test'}], 'right structure');
   t.equal(plan3.render().path, '/alternatives/test', 'right path');
+
   const plan4 = r.plot({method: 'GET', path: '/alternatives/23'});
   t.same(plan4.steps, [{foo: 23}], 'right structure');
   t.equal(plan4.render().path, '/alternatives/23', 'right path');
@@ -184,10 +187,12 @@ t.test('Alternatives without default', t => {
   const plan = r.plot({method: 'GET', path: '/alternatives2/0'});
   t.same(plan.steps, [{foo: '0'}], 'right structure');
   t.equal(plan.render().path, '/alternatives2/0', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/alternatives2/test'});
   t.same(plan2.steps, [{foo: 'test'}], 'right structure');
   t.same(plan2.stops, [true], 'right structure');
   t.equal(plan2.render().path, '/alternatives2/test', 'right path');
+
   const plan3 = r.plot({method: 'GET', path: '/alternatives2/23'});
   t.same(plan3.steps, [{foo: '23'}], 'right structure');
   t.equal(plan3.render().path, '/alternatives2/23', 'right path');
@@ -203,6 +208,7 @@ t.test('Alternatives with similar start', t => {
   const plan = r.plot({method: 'GET', path: '/alternatives3/foo'});
   t.same(plan.steps, [{foo: 'foo'}], 'right structure');
   t.equal(plan.render().path, '/alternatives3/foo', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/alternatives3/foobar'});
   t.same(plan2.steps, [{foo: 'foobar'}], 'right structure');
   t.equal(plan2.render().path, '/alternatives3/foobar', 'right path');
@@ -213,6 +219,7 @@ t.test('Alternatives with special characters', t => {
   const plan = r.plot({method: 'GET', path: '/alternatives4/foo'});
   t.same(plan.steps, [{foo: 'foo'}], 'right structure');
   t.equal(plan.render().path, '/alternatives4/foo', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/alternatives4/foo.bar'});
   t.same(plan2.steps, [{foo: 'foo.bar'}], 'right structure');
   t.equal(plan2.render().path, '/alternatives4/foo.bar', 'right path');
@@ -228,6 +235,7 @@ t.test('Optional placeholder', t => {
   t.equal(plan.render().path, '/optional/23', 'right path');
   t.equal(plan.render({ext: 'txt'}).path, '/optional/23/test.txt', 'right path');
   t.equal(plan.render({foo: 12, ext: 'txt'}).path, '/optional/12/test.txt', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/optional/23/24'});
   t.same(plan2.steps, [{foo: 23, bar: '24', ext: null}], 'right structure');
   t.equal(plan2.render().path, '/optional/23/24', 'right path');
@@ -240,19 +248,24 @@ t.test('Optional placeholders in nested routes', t => {
   t.same(plan.steps, [{foo: 'one'}, {bar: 'two', ext: null}], 'right structure');
   t.same(plan.stops, [false, true], 'right structure');
   t.equal(plan.render().path, '/optional2', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/optional2/three'});
   t.same(plan2.steps, [{foo: 'three'}, {bar: 'two', ext: null}], 'right structure');
   t.same(plan2.stops, [false, true], 'right structure');
   t.equal(plan2.render().path, '/optional2/three', 'right path');
+
   const plan3 = r.plot({method: 'GET', path: '/optional2/three/four'});
   t.same(plan3.steps, [{foo: 'three'}, {bar: 'four', ext: null}], 'right structure');
   t.equal(plan3.render().path, '/optional2/three/four', 'right path');
+
   const plan4 = r.plot({method: 'GET', path: '/optional2/three/four.txt'});
   t.same(plan4.steps, [{foo: 'three'}, {bar: 'four', ext: 'txt'}], 'right structure');
   t.equal(plan4.render().path, '/optional2/three/four.txt', 'right path');
+
   const plan5 = r.plot({method: 'GET', path: '/optional2.txt'});
   t.same(plan5.steps, [{foo: 'one'}, {bar: 'two', ext: 'txt'}], 'right structure');
   t.equal(plan5.render().path, '/optional2/one/two.txt', 'right path');
+
   const plan6 = r.plot({method: 'GET', path: '/optional2/three.txt'});
   t.same(plan6.steps, [{foo: 'three'}, {bar: 'two', ext: 'txt'}], 'right structure');
   t.equal(plan6.render().path, '/optional2/three/two.txt', 'right path');
@@ -274,6 +287,7 @@ t.test('Path and captures', t => {
   const plan = r.plot({method: 'GET', path: '/foo/test/edit'});
   t.same(plan.steps, [{testcase: 'foo', action: 'test'}, {action: 'edit'}], 'right structure');
   t.equal(plan.render().path, '/foo/test/edit', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/foo/testedit'});
   t.same(plan2.steps, [{testcase: 'foo', action: 'testedit'}], 'right structure');
   t.equal(plan2.render().path, '/foo/testedit', 'right path');
@@ -299,10 +313,12 @@ t.test('Chained routes', t => {
   t.same(plan.steps, [{testcase: 'test2'}, {testcase: 'index'}, {testcase: 'baz'}], 'right structure');
   t.same(plan.stops, [true, true, true], 'right structure');
   t.equal(plan.render().path, '/test2/foo', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/test2/bar'});
   t.same(plan2.steps, [{testcase: 'test2'}, {testcase: 'index'}, {testcase: 'lalala'}], 'right structure');
   t.same(plan2.stops, [true, true, true], 'right structure');
   t.equal(plan2.render().path, '/test2/bar', 'right path');
+
   const plan3 = r.plot({method: 'GET', path: '/test2/baz'});
   t.same(plan3.steps, [{testcase: 'test2'}, {controller: 'just', action: 'works'}], 'right structure');
   t.same(plan3.stops, [true, true], 'right structure');
@@ -325,12 +341,15 @@ t.test('Wildcards', t => {
   t.same(plan.steps, [{testcase: 'wild', action: 'card', wildcard: 'hello/there'}], 'right structure');
   t.equal(plan.render().path, '/wildcards/1/hello/there', 'right path');
   t.equal(plan.render({wildcard: ''}).path, '/wildcards/1/', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/wildcards/2/hello/there'});
   t.same(plan2.steps, [{testcase: 'card', action: 'wild', wildcard: 'hello/there'}], 'right structure');
   t.equal(plan2.render().path, '/wildcards/2/hello/there', 'right path');
+
   const plan3 = r.plot({method: 'GET', path: '/wildcards/3/hello/there/foo'});
   t.same(plan3.steps, [{testcase: 'very', action: 'dangerous', wildcard: 'hello/there'}], 'right structure');
   t.equal(plan3.render().path, '/wildcards/3/hello/there/foo', 'right path');
+
   const plan4 = r.plot({method: 'GET', path: '/wildcards/4/hello/there/foo'});
   t.same(plan4.steps, [{testcase: 'somewhat', action: 'dangerous', wildcard: 'hello/there'}], 'right structure');
   t.equal(plan4.render().path, '/wildcards/4/hello/there/foo', 'right path');
@@ -343,6 +362,7 @@ t.test('Extensions', t => {
   t.equal(plan.render().path, '/ext.html', 'right path');
   t.equal(plan.render({ext: null}).path, '/ext', 'right path');
   t.equal(plan.render({ext: 'html'}).path, '/ext.html', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/ext.html'});
   t.same(plan2.steps, [{testcase: 'hello', action: 'you', ext: 'html'}], 'right structure');
   t.equal(plan2.render().path, '/ext.html', 'right path');
@@ -365,6 +385,7 @@ t.test('Extension with constraint alternatives', t => {
   const plan = r.plot({method: 'GET', path: '/ext3.txt'});
   t.same(plan.steps, [{testcase: 'we', action: 'cheers', ext: 'txt'}], 'right structure');
   t.equal(plan.render().path, '/ext3.txt', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/ext3.text'});
   t.same(plan2.steps, [{testcase: 'we', action: 'cheers', ext: 'text'}], 'right structure');
   t.equal(plan2.render().path, '/ext3.text', 'right path');
@@ -377,6 +398,7 @@ t.test('Extension with constraint and default', t => {
   const plan = r.plot({method: 'GET', path: '/ext4'});
   t.same(plan.steps, [{testcase: 'us', action: 'yay', ext: 'html'}], 'right structure');
   t.equal(plan.render().path, '/ext4.html', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/ext4.html'});
   t.same(plan2.steps, [{testcase: 'us', action: 'yay', ext: 'html'}], 'right structure');
   t.equal(plan2.render().path, '/ext4.html', 'right path');
@@ -389,13 +411,16 @@ t.test('Placeholder types', t => {
   const plan = r.plot({method: 'GET', path: '/type/23'});
   t.same(plan.steps, [{controller: 'foo', action: 'bar', id: 23}], 'right structure');
   t.equal(plan.render().path, '/type/23', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/type/24'});
   t.same(plan2.steps, [{controller: 'foo', action: 'bar', id: 24}], 'right structure');
   t.equal(plan2.render().path, '/type/24', 'right path');
   t.same(r.plot({method: 'GET', path: '/type/25'}), null, 'no result');
+
   const plan3 = r.plot({method: 'GET', path: '/type/test'});
   t.same(plan3.steps, [{controller: 'baz', action: 'yada', id: 'test'}], 'right structure');
   t.equal(plan3.render().path, '/type/test', 'right path');
+
   const plan4 = r.plot({method: 'GET', path: '/type/t3st'});
   t.same(plan4.steps, [{controller: 'baz', action: 'yada', id: 't3st'}], 'right structure');
   t.equal(plan4.render().path, '/type/t3st', 'right path');
@@ -408,17 +433,21 @@ t.test('Request methods', t => {
   t.same(plan.steps, [{testcase: 'method', action: 'get', ext: null}], 'right structure');
   t.equal(plan.render().path, '/method/get', 'right path');
   t.same(r.plot({method: 'POST', path: '/method/get'}), null, 'no result');
+
   const plan2 = r.plot({method: 'GET', path: '/method/get.html'});
   t.same(plan2.steps, [{testcase: 'method', action: 'get', ext: 'html'}], 'right structure');
   t.equal(plan2.render().path, '/method/get.html', 'right path');
+
   const plan3 = r.plot({method: 'POST', path: '/method/post'});
   t.same(plan3.steps, [{testcase: 'method', action: 'post'}], 'right structure');
   t.equal(plan3.render().path, '/method/post', 'right path');
   t.same(r.plot({method: 'POST', path: '/method/post.html'}), null, 'no result');
   t.same(r.plot({method: 'GET', path: '/method/post'}), null, 'no result');
+
   const plan4 = r.plot({method: 'POST', path: '/method/post_get'});
   t.same(plan4.steps, [{testcase: 'method', action: 'post_get'}], 'right structure');
   t.equal(plan4.render().path, '/method/post_get', 'right path');
+
   const plan5 = r.plot({method: 'GET', path: '/method/post_get'});
   t.same(plan5.steps, [{testcase: 'method', action: 'post_get'}], 'right structure');
   t.equal(plan5.render().path, '/method/post_get', 'right path');
@@ -430,12 +459,15 @@ t.test('Route with version', t => {
   const plan = r.plot({method: 'GET', path: '/versioned/1.0/test'});
   t.same(plan.steps, [{}, {testcase: 'bar'}, {action: 'baz', ext: null}], 'right structure');
   t.equal(plan.render().path, '/versioned/1.0/test', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/versioned/1.0/test.xml'});
   t.same(plan2.steps, [{}, {testcase: 'bar'}, {action: 'baz', ext: 'xml'}], 'right structure');
   t.equal(plan2.render().path, '/versioned/1.0/test.xml', 'right path');
+
   const plan3 = r.plot({method: 'GET', path: '/versioned/2.4/test'});
   t.same(plan3.steps, [{}, {testcase: 'foo'}, {action: 'bar', ext: null}], 'right structure');
   t.equal(plan3.render().path, '/versioned/2.4/test', 'right path');
+
   const plan4 = r.plot({method: 'GET', path: '/versioned/2.4/test.xml'});
   t.same(plan4.steps, [{}, {testcase: 'foo'}, {action: 'bar', ext: 'xml'}], 'right structure');
   t.equal(plan4.render().path, '/versioned/2.4/test.xml', 'right path');
@@ -449,6 +481,7 @@ t.test('Route with version at the end', t => {
   const plan = r.plot({method: 'GET', path: '/versioned/too/1.0'});
   t.same(plan.steps, [{controller: 'too'}, {action: 'foo'}], 'right structure');
   t.equal(plan.render().path, '/versioned/too/1.0', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/versioned/too/2.0'});
   t.same(plan2.steps, [{controller: 'too'}, {action: 'bar'}], 'right structure');
   t.equal(plan2.render().path, '/versioned/too/2.0', 'right path');
@@ -459,14 +492,17 @@ t.test('Nameless placeholder', t => {
   const plan = r.plot({method: 'GET', path: '/missing/foo/name'});
   t.same(plan.steps, [{controller: 'missing', action: 'placeholder', '': 'foo'}], 'right structure');
   t.equal(plan.render().path, '/missing/foo/name', 'right path');
+
   const plan2 = r.plot({method: 'GET', path: '/missing/foo/bar/name'});
   t.same(plan2.steps, [{controller: 'missing', action: 'wildcard', '': 'foo/bar'}], 'right structure');
   t.equal(plan2.render().path, '/missing/foo/bar/name', 'right path');
   t.equal(plan2.render({'': 'bar/baz'}).path, '/missing/bar/baz/name', 'right path');
+
   const plan3 = r.plot({method: 'GET', path: '/missing/too/test'});
   t.same(plan3.steps, [{controller: 'missing', action: 'too', '': 'test'}], 'right structure');
   t.equal(plan3.render().path, '/missing/too/test', 'right path');
   t.same(r.plot({method: 'GET', path: '/missing/too/tset'}), null, 'no result');
+
   const plan4 = r.plot({method: 'GET', path: '/missing/too'});
   t.same(plan4.steps, [{controller: 'missing', action: 'too', '': 'missing'}], 'right structure');
   t.equal(plan4.render().path, '/missing/too', 'right path');

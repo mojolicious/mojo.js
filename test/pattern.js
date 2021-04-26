@@ -15,6 +15,7 @@ t.test('Normal pattern with text, placeholders and a default value', t => {
   t.same(pattern.match('/test/foo/'), {controller: 'foo', action: 'index'}, 'right structure');
   t.same(pattern.match('/test/'), null, 'no result');
   t.equal(pattern.render({controller: 'foo'}), '/test/foo', 'right result');
+
   const pattern2 = new Pattern().parse('/foo/:bar');
   pattern2.defaults = {...pattern2.defaults, bar: 'baz'};
   t.same(pattern2.match('/foo/bar'), {bar: 'bar'}, 'right structure');
@@ -33,6 +34,7 @@ t.test('Optional placeholder in the middle', t => {
   pattern.defaults = {name: ''};
   t.same(pattern.match('/test123', {isEndpoint: true}), {name: ''}, 'right structure');
   t.equal(pattern.render(), '/test123', 'right result');
+
   const pattern2 = new Pattern('/test/:name/123');
   pattern2.defaults = {name: 'foo'};
   t.same(pattern2.match('/test/123', {isEndpoint: true}), {name: 'foo'}, 'right structure');
@@ -90,6 +92,7 @@ t.test('Relaxed', t => {
   const pattern = new Pattern('/test/#controller/:action');
   t.same(pattern.match('/test/foo.bar/baz'), {controller: 'foo.bar', action: 'baz'}, 'right structure');
   t.equal(pattern.render({controller: 'foo.bar', action: 'baz'}), '/test/foo.bar/baz', 'right result');
+
   const pattern2 = new Pattern('/test/<#groovy>');
   t.same(pattern2.match('/test/foo.bar'), {groovy: 'foo.bar'}, 'right structure');
   t.same(pattern2.defaults.ext, undefined, 'no value');
@@ -101,6 +104,7 @@ t.test('Wildcard', t => {
   const pattern = new Pattern('/test/<:controller>/<*action>');
   t.same(pattern.match('/test/foo/bar.baz/yada'), {controller: 'foo', action: 'bar.baz/yada'}, 'right structure');
   t.equal(pattern.render({controller: 'foo', action: 'bar.baz/yada'}), '/test/foo/bar.baz/yada', 'right result');
+
   const pattern2 = new Pattern('/tset/:controller/*action');
   t.same(pattern2.match('/tset/foo/bar.baz/yada'), {controller: 'foo', action: 'bar.baz/yada'}, 'right structure');
   t.equal(pattern2.render({controller: 'foo', action: 'bar.baz/yada'}), '/tset/foo/bar.baz/yada', 'right result');
@@ -157,16 +161,19 @@ t.test('Extension detection', t => {
   t.same(pattern.match('/test.xml', {isEndpoint: true}), {action: 'index', ext: 'xml'}, 'right structure');
   t.same(pattern.match('/test.html', {isEndpoint: true}), {action: 'index', ext: 'html'}, 'right structure');
   t.same(pattern.match('/test.json'), null, 'no result');
+
   const pattern2 = new Pattern('/test.json');
   pattern2.defaults = {action: 'index'};
   t.same(pattern2.match('/test.json'), {action: 'index'}, 'right structure');
   t.same(pattern2.match('/test.json', {isEndpoint: true}), {action: 'index'}, 'right structure');
   t.same(pattern2.match('/test.xml'), null, 'no result');
   t.same(pattern2.match('/test'), null, 'no result');
+
   const pattern3 = new Pattern('/test');
   pattern3.defaults = {action: 'index'};
   t.same(pattern3.match('/test.xml'), null, 'no result');
   t.same(pattern3.match('/test'), {action: 'index'}, 'right structure');
+
   const pattern4 = new Pattern('/test', {constraints: {ext: 'txt'}, defaults: {ext: null}});
   t.same(pattern4.match('/test.txt', {isEndpoint: true}), {ext: 'txt'}, 'right structure');
   t.same(pattern4.match('/test', {isEndpoint: true}), {ext: null}, 'right structure');
@@ -201,25 +208,30 @@ t.test('Special placeholder names', t => {
   t.same(result, {'': 'foo'}, 'right structure');
   t.equal(pattern.render(result, {isEndpoint: true}), '/foo', 'right result');
   t.equal(pattern.render({'': 'bar'}, {isEndpoint: true}), '/bar', 'right result');
+
   const pattern2 = new Pattern('/#');
   result = pattern2.match('/foo.bar', {isEndpoint: true});
   t.same(result, {'': 'foo.bar'}, 'right structure');
   t.equal(pattern2.render(result, {isEndpoint: true}), '/foo.bar', 'right result');
   t.equal(pattern2.render({'': 'bar.baz'}, {isEndpoint: true}), '/bar.baz', 'right result');
+
   const pattern3 = new Pattern('/*');
   result = pattern3.match('/foo/bar', {isEndpoint: true});
   t.same(result, {'': 'foo/bar'}, 'right structure');
   t.equal(pattern3.render(result, {isEndpoint: true}), '/foo/bar', 'right result');
   t.equal(pattern3.render({'': 'bar/baz'}, {isEndpoint: true}), '/bar/baz', 'right result');
+
   const pattern4 = new Pattern('/:/:0');
   result = pattern4.match('/foo/bar', {isEndpoint: true});
   t.same(result, {'': 'foo', 0: 'bar'}, 'right structure');
   t.equal(pattern4.render(result, {isEndpoint: true}), '/foo/bar', 'right result');
   t.equal(pattern4.render({'': 'bar', 0: 'baz'}, {isEndpoint: true}), '/bar/baz', 'right result');
+
   const pattern5 = new Pattern('/<:>test/<0>');
   result = pattern5.match('/footest/bar', {isEndpoint: true});
   t.same(result, {'': 'foo', 0: 'bar'}, 'right structure');
   t.equal(pattern5.render(result, {isEndpoint: true}), '/footest/bar', 'right result');
+
   const pattern6 = new Pattern('/<>test');
   result = pattern6.match('/footest', {isEndpoint: true});
   t.same(result, {'': 'foo'}, 'right structure');
@@ -232,14 +244,17 @@ t.test('Normalize slashes', t => {
   let result = pattern.match('/bar', {isEndpoint: true});
   t.same(result, {foo: 'bar'}, 'right structure');
   t.equal(pattern.render(result, {isEndpoint: true}), '/bar', 'right result');
+
   const pattern2 = new Pattern('//:foo//bar//');
   result = pattern2.match('/foo/bar', {isEndpoint: true});
   t.same(result, {foo: 'foo'}, 'right structure');
   t.equal(pattern2.render(result, {isEndpoint: true}), '/foo/bar', 'right result');
+
   const pattern3 = new Pattern('//');
   result = pattern3.match('/', {isEndpoint: true});
   t.same(result, {}, 'right structure');
   t.equal(pattern3.render(result, {isEndpoint: true}), '', 'right result');
+
   const pattern4 = new Pattern('0');
   result = pattern4.match('/0', {isEndpoint: true});
   t.same(result, {}, 'right structure');
@@ -269,6 +284,7 @@ t.test('Placeholder types', t => {
   t.same(result, {bar: 23}, 'right structure');
   t.equal(pattern.render(result, {isEndpoint: true}), '/foo/23/baz', 'right result');
   t.same(pattern.match('/foo/bar/baz', {isEndpoint: true}), null, 'no result');
+
   const pattern2 = new Pattern('/foo/<bar:color>/baz', {types: {color: ['blue', 'red']}});
   t.same(pattern2.match('/foo/blue/baz'), {bar: 'blue'}, 'right structure');
   t.same(pattern2.match('/foo/red/baz'), {bar: 'red'}, 'right structure');
