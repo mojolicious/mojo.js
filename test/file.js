@@ -23,6 +23,12 @@ t.test('dirname', t => {
   t.done();
 });
 
+t.test('extname', t => {
+  t.equal(new File('foo', 'bar', 'file.t').extname(), '.t', 'right file');
+  t.equal(new File('file.html.ejs').extname(), '.ejs', 'right file');
+  t.done();
+});
+
 t.test('realpath', async t => {
   t.equal((await new File('.').realpath()).toString(), await fs.realpath('.'), 'same path');
 });
