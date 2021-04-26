@@ -43,6 +43,7 @@ t.test('I/O', async t => {
   t.same(await dir.child('test.txt').isReadable(), true, 'file is readable');
   t.ok(await dir.child('test.txt').stat(), 'file exists');
   t.equal((await dir.child('test.txt').readFile()).toString('utf8'), 'Hello Mojo!', 'right content');
+  t.equal(dir.child('test.txt').readFileSync().toString('utf8'), 'Hello Mojo!', 'right content');
   t.equal((await dir.child('test.txt').readFile('utf8')), 'Hello Mojo!', 'same result');
   await dir.child('test.txt').rm();
   t.same(await dir.child('test.txt').exists(), false, 'file has been removed');
