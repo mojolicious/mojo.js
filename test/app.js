@@ -1,12 +1,12 @@
 import t from 'tap';
-import mock from '../lib/client/mock.js';
 import App from '../lib/app.js';
 
 t.test('App', async t => {
   const app = new App();
+
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
-  const client = await mock(app);
+  const client = await app.newMockClient();
 
   await t.test('Hello World', async t => {
     const res = await client.get('/');
