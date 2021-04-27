@@ -1,6 +1,5 @@
 import t from 'tap';
 import mojo from '../index.js';
-import test from '../lib/client/test.js';
 
 t.test('App', async t => {
   const app = mojo();
@@ -9,7 +8,7 @@ t.test('App', async t => {
 
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
-  const client = await test(app, {tap: t});
+  const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
