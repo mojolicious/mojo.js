@@ -55,7 +55,7 @@ t.test('Client', async t => {
     t.equal(res2.status, 200, 'right status');
     t.equal(await res2.text(), 'I ♥ Mojolicious!', 'right content');
 
-    const res3 = await client.put('/body', {body: Buffer.from('I ♥ Mojolicious!', 'utf8')});
+    const res3 = await client.put('/body', {body: Buffer.from('I ♥ Mojolicious!')});
     t.equal(res3.status, 200, 'right status');
     t.equal((await res3.buffer()).toString(), 'I ♥ Mojolicious!', 'right content');
     t.done();
