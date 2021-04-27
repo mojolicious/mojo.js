@@ -4,4 +4,14 @@
   </a>
 </p>
 
-Secret project, do not share!
+## Secret project, do not share!
+
+```js
+import mojo from '@mojojs/core';
+const app = mojo();
+
+app.get('/hello', ctx => ctx.render({text: 'Hello Mojo!'}));
+
+app.start();
+
+```
