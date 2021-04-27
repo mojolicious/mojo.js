@@ -13,6 +13,12 @@ const app = mojo();
 
 app.get('/hello', ctx => ctx.render({text: 'Hello Mojo!'}));
 
+app.put('/json', async ctx => {
+  const data = await ctx.req.json();
+  data.hello = 'Mojo!';
+  ctx.render({json: data});
+});
+
 app.start();
 
 ```
