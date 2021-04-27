@@ -8,6 +8,11 @@ t.test('App', async t => {
 
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
+  app.put('/json', async ctx => {
+    const data = await ctx.req.json();
+    ctx.render({json: data});
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -23,6 +28,11 @@ t.test('App', async t => {
     (await client.patchOk('/methods')).statusIs(200).bodyIs('PATCH');
     (await client.postOk('/methods')).statusIs(200).bodyIs('POST');
     (await client.putOk('/methods')).statusIs(200).bodyIs('PUT');
+    t.done();
+  });
+
+  await t.test('JSON', async t => {
+    (await client.putOk('/json', {json: {hello: 'world'}})).statusIs(200).jsonIs({hello: 'world'});
     t.done();
   });
 
