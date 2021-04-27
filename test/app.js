@@ -1,20 +1,22 @@
 import t from 'tap';
 import mojo from '../index.js';
+import test from '../lib/client/test.js';
 
 t.test('App', async t => {
   const app = mojo();
 
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
-  const client = await app.newMockClient();
+  app.post('/hello', ctx => ctx.render({text: 'Hello World!'}));
+
+  const client = await test(app, {tap: t});
 
   await t.test('Hello World', async t => {
-    const res = await client.get('/');
-    t.equal(res.status, 200, 'right status');
-    t.equal(await res.text(), 'Hello Mojo!', 'right content');
+    (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
+    (await client.postOk('/hello')).statusIs(200).headerIs('Content-Length', '12').bodyIs('Hello World!');
     t.done();
   });
 
-  await client.stop();
+  await client.done();
   t.done();
 });
