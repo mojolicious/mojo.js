@@ -1,8 +1,8 @@
 import t from 'tap';
-import App from '../lib/app.js';
+import mojo from '../index.js';
 
 t.test('App', async t => {
-  const app = new App();
+  const app = mojo();
 
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 

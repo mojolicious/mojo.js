@@ -1,8 +1,7 @@
 import t from 'tap';
 import fs from 'fs/promises';
 import path from 'path';
-import * as util from '../lib/util.js';
-import File from '../lib/file.js';
+import {tempdir, File} from '../lib/file.js';
 
 t.test('Constructor', t => {
   t.equal(new File().toString(), process.cwd(), 'same path');
@@ -34,7 +33,7 @@ t.test('realpath', async t => {
 });
 
 t.test('I/O', async t => {
-  const dir = await util.tempdir();
+  const dir = await tempdir();
   t.ok(dir, 'temporary directory');
   t.ok(await dir.stat(), 'directory exists');
   t.same(await dir.child('test.txt').exists(), false, 'file does not exist');
@@ -51,7 +50,7 @@ t.test('I/O', async t => {
 });
 
 t.test('I/O streams', async t => {
-  const dir = await util.tempdir();
+  const dir = await tempdir();
   const write = dir.child('test.txt').createWriteStream({encoding: 'utf8'});
   await new Promise(resolve => write.write('Hello World!', resolve));
   const read = dir.child('test.txt').createReadStream({encoding: 'utf8'});
@@ -62,7 +61,7 @@ t.test('I/O streams', async t => {
 });
 
 t.test('list', async t => {
-  const dir = await util.tempdir();
+  const dir = await tempdir();
   const foo = dir.child('foo');
   const bar = foo.child('bar');
   await bar.mkdir({recursive: true});
@@ -94,4 +93,17 @@ t.test('list', async t => {
 
   await bar.rm({recursive: true});
   t.same(await bar.exists(), false, 'directory has been removed');
+});
+
+t.test('tempdir', async t => {
+  const temp = await tempdir();
+  const dir = new File(temp.toString());
+  t.same(await dir.exists(), true, 'directory exists');
+  t.same(await temp.exists(), true, 'directory exists');
+  await dir.child('test.txt').writeFile('Hello Mojo!');
+  t.same(await dir.child('test.txt').exists(), true, 'file exists');
+  t.equal((await dir.child('test.txt').readFile()).toString('utf8'), 'Hello Mojo!', 'right content');
+  await temp.destroy();
+  t.same(await dir.exists(), false, 'directory has been removed');
+  t.same(await temp.exists(), false, 'directory has been removed');
 });

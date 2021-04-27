@@ -1,5 +1,5 @@
 import t from 'tap';
-import {tempdir} from '../lib/util.js';
+import {tempdir} from '../lib/file.js';
 import App from '../lib/app.js';
 import Client from '../lib/client.js';
 import Server from '../lib/server.js';
@@ -21,6 +21,8 @@ t.test('Client', async t => {
   });
 
   app.get('/hello', {ext: 'json'}, ctx => ctx.render({json: {hello: 'world'}}));
+
+  app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
@@ -55,6 +57,42 @@ t.test('Client', async t => {
     const res = await client.get('/hello.json');
     t.equal(res.status, 200, 'right status');
     t.same(await res.json(), {hello: 'world'}, 'right content');
+    t.done();
+  });
+
+  await t.test('Methods', async t => {
+    const res = await client.delete('/methods');
+    t.equal(res.status, 200, 'right status');
+    t.equal(await res.text(), 'DELETE', 'right content');
+
+    const res2 = await client.get('/methods');
+    t.equal(res2.status, 200, 'right status');
+    t.equal(await res2.text(), 'GET', 'right content');
+
+    const res3 = await client.options('/methods');
+    t.equal(res3.status, 200, 'right status');
+    t.equal(await res3.text(), 'OPTIONS', 'right content');
+
+    const res4 = await client.patch('/methods');
+    t.equal(res4.status, 200, 'right status');
+    t.equal(await res4.text(), 'PATCH', 'right content');
+
+    const res5 = await client.post('/methods');
+    t.equal(res5.status, 200, 'right status');
+    t.equal(await res5.text(), 'POST', 'right content');
+
+    const res6 = await client.put('/methods');
+    t.equal(res6.status, 200, 'right status');
+    t.equal(await res6.text(), 'PUT', 'right content');
+
+    const res7 = await client.head('/hello');
+    t.equal(res7.status, 200, 'right status');
+    t.equal(res7.headers['content-length'], '12', 'right Content-Length value');
+    t.equal(await res7.text(), '', 'right content');
+
+    const res8 = await client.request({method: 'PUT', url: '/methods'});
+    t.equal(res8.status, 200, 'right status');
+    t.equal(await res8.text(), 'PUT', 'right content');
     t.done();
   });
 

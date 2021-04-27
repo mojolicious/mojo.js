@@ -1,5 +1,5 @@
-import App from '../lib/index.js';
+import mojo from '../index.js';
 
-const app = new App();
+const app = mojo();
 app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 app.start();

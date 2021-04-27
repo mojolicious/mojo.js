@@ -1,6 +1,5 @@
 import t from 'tap';
 import * as util from '../lib/util.js';
-import File from '../lib/file.js';
 
 t.test('escapeRegExp', t => {
   const escapeRegExp = util.escapeRegExp;
@@ -31,17 +30,4 @@ t.test('tablify', t => {
   t.equal(tablify([[1], [2, 3]]), '1\n2  3\n', 'right format');
   t.equal(tablify([[1], [], [2, 3]]), '1\n\n2  3\n', 'missing values expanded');
   t.done();
-});
-
-t.test('tempdir', async t => {
-  const tempdir = await util.tempdir();
-  const dir = new File(tempdir.toString());
-  t.same(await dir.exists(), true, 'directory exists');
-  t.same(await tempdir.exists(), true, 'directory exists');
-  await dir.child('test.txt').writeFile('Hello Mojo!');
-  t.same(await dir.child('test.txt').exists(), true, 'file exists');
-  t.equal((await dir.child('test.txt').readFile()).toString('utf8'), 'Hello Mojo!', 'right content');
-  await tempdir.destroy();
-  t.same(await dir.exists(), false, 'directory has been removed');
-  t.same(await tempdir.exists(), false, 'directory has been removed');
 });
