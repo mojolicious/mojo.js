@@ -20,6 +20,8 @@ t.test('Client', async t => {
     ctx.render({text: body});
   });
 
+  app.get('/hello', {ext: 'json'}, ctx => ctx.render({json: {hello: 'world'}}));
+
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
   const client = new Client({baseURL: server.urls[0], name: 'mojo 1.0'});
@@ -46,6 +48,13 @@ t.test('Client', async t => {
     const res = await client.put('/body', {body: 'Body works!'});
     t.equal(res.status, 200, 'right status');
     t.equal(await res.text(), 'Body works!', 'right content');
+    t.done();
+  });
+
+  await t.test('JSON', async t => {
+    const res = await client.get('/hello.json');
+    t.equal(res.status, 200, 'right status');
+    t.same(await res.json(), {hello: 'world'}, 'right content');
     t.done();
   });
 
