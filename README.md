@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://mojojs.org">
-    <img src="https://raw.github.com/mojolicious/mojo.js/main/docs/logo.png?raw=true" style="margin: 0 auto;">
+    <img src="https://github.com/mojolicious/mojo.js/blob/main/docs/logo.png?raw=true" style="margin: 0 auto;">
   </a>
 </p>
 
@@ -8,6 +8,7 @@
 
 ```js
 import mojo from '@mojojs/core';
+
 const app = mojo();
 
 app.get('/hello', ctx => ctx.render({text: 'Hello Mojo!'}));
