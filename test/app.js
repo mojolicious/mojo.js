@@ -18,7 +18,6 @@ t.test('App', async t => {
   await t.test('Hello World', async t => {
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
     (await client.getOk('/')).statusIs(200).headerLike('Content-Length', /1/).bodyLike(/Mojo/);
-    t.done();
   });
 
   await t.test('Methods', async t => {
@@ -29,14 +28,11 @@ t.test('App', async t => {
     (await client.patchOk('/methods')).statusIs(200).bodyIs('PATCH');
     (await client.postOk('/methods')).statusIs(200).bodyIs('POST');
     (await client.putOk('/methods')).statusIs(200).bodyIs('PUT');
-    t.done();
   });
 
   await t.test('JSON', async t => {
     (await client.putOk('/json', {json: {hello: 'world'}})).statusIs(200).jsonIs({hello: 'world'});
-    t.done();
   });
 
   await client.done();
-  t.done();
 });

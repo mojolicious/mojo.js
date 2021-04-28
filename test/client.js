@@ -1,8 +1,8 @@
 import t from 'tap';
-import {tempdir} from '../lib/file.js';
 import App from '../lib/app.js';
 import Client from '../lib/client.js';
 import Server from '../lib/server.js';
+import {tempdir} from '../lib/file.js';
 
 t.test('Client', async t => {
   const app = new App();
