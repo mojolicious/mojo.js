@@ -1,13 +1,6 @@
 import t from 'tap';
 import * as util from '../lib/util.js';
 
-t.test('escapeRegExp', t => {
-  const escapeRegExp = util.escapeRegExp;
-  t.equal(escapeRegExp('te*s?t'), 'te\\*s\\?t', 'escaped');
-  t.equal(escapeRegExp('\\^$.*+?()[]{}|'), '\\\\\\^\\$\\.\\*\\+\\?\\(\\)\\[\\]\\{\\}\\|', 'escaped');
-  t.done();
-});
-
 t.test('sleep', async t => {
   const sleep = util.sleep(1);
   t.ok(sleep instanceof Promise, 'promise');

@@ -32,7 +32,9 @@
     "node": ">= 15"
   },
   "dependencies": {
+    "escape-string-regexp": "^2.0.0",
     "nopt": "^5.0.0",
+    "stack-utils": "^1.0.5",
     "ws": "^7.4.5"
   }
 }
