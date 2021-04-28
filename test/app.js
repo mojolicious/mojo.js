@@ -14,8 +14,7 @@ t.test('App', async t => {
   });
 
   const nested = app.under('/nested', ctx => {
-    const auth = ctx.req.url.searchParams.get('auth');
-    if (auth === '1') return true;
+    if (ctx.req.url.searchParams.get('auth') === '1') return;
     ctx.render({text: 'Permission denied'});
     return false;
   });
