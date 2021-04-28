@@ -4,23 +4,31 @@ import mojo from '../index.js';
 t.test('App', async t => {
   const app = mojo();
 
+  // GET /
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
+  // * /methods
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
-  app.put('/json', async ctx => {
-    const data = await ctx.req.json();
-    ctx.render({json: data});
-  });
+  // PUT /json
+  app.put('/json', async ctx => ctx.render({json: await ctx.req.json()}));
 
-  const nested = app.under('/nested', ctx => {
+  // GET /nested
+  // *   /nested/methods
+  const nested = app.under('/nested').to(ctx => {
     if (ctx.req.url.searchParams.get('auth') === '1') return;
     ctx.render({text: 'Permission denied'});
     return false;
   });
-  nested.get('/', ctx => ctx.render({text: 'Authenticated'}));
+  nested.get('/').to(ctx => ctx.render({text: 'Authenticated'}));
   const test = nested.any('/test').to({prefix: 'X:'});
-  test.any('/methods', ctx => ctx.render({text: ctx.stash.prefix + ctx.req.method}));
+  test.any('/methods').to(ctx => ctx.render({text: ctx.stash.prefix + ctx.req.method}));
+
+  // * /pass/nested2
+  const nested2 = app.under('/:auth').to(async ctx => {
+    return new Promise(resolve => resolve(ctx.stash.auth === 'pass'));
+  });
+  nested2.any('/nested2').to(ctx => ctx.render({text: `Nested: ${ctx.stash.auth}`}));
 
   const client = await app.newTestClient({tap: t});
 
@@ -54,8 +62,13 @@ t.test('App', async t => {
     (await client.putOk('/nested/test/methods?auth=1')).statusIs(200).bodyIs('X:PUT');
     (await client.postOk('/nested/test/methods?auth=1')).statusIs(200).bodyIs('X:POST');
     (await client.getOk('/nested/test/methods?auth=0')).statusIs(200).bodyIs('Permission denied');
-    (await client.getOk('/nested/test?auth=1')).statusIs(404).bodyIs('Not found');
-    (await client.getOk('/nested/test/foo?auth=1')).statusIs(404).bodyIs('Not found');
+    (await client.getOk('/nested/test?auth=1')).statusIs(404);
+    (await client.getOk('/nested/test/foo?auth=1')).statusIs(404);
+
+    (await client.getOk('/pass/nested2')).statusIs(200).bodyIs('Nested: pass');
+    (await client.patchOk('/pass/nested2')).statusIs(200).bodyIs('Nested: pass');
+    (await client.getOk('/fail/nested2')).statusIs(404);
+    (await client.getOk('/nested2')).statusIs(404);
   });
 
   await client.done();
