@@ -4,7 +4,10 @@
  * MIT Licensed
  */
 import App from './lib/app.js';
+import {callerFile} from './lib/file.js';
 
 export default function mojo (...args) {
-  return new App(...args);
+  const app = new App(...args);
+  app.home = callerFile().dirname();
+  return app;
 }

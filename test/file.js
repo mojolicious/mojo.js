@@ -1,7 +1,7 @@
 import t from 'tap';
 import fs from 'fs/promises';
 import path from 'path';
-import {tempdir, File} from '../lib/file.js';
+import {tempDir, File} from '../lib/file.js';
 
 t.test('Constructor', t => {
   t.equal(new File().toString(), process.cwd(), 'same path');
@@ -33,7 +33,7 @@ t.test('realpath', async t => {
 });
 
 t.test('I/O', async t => {
-  const dir = await tempdir();
+  const dir = await tempDir();
   t.ok(dir, 'temporary directory');
   t.ok(await dir.stat(), 'directory exists');
   t.same(await dir.child('test.txt').exists(), false, 'file does not exist');
@@ -50,7 +50,7 @@ t.test('I/O', async t => {
 });
 
 t.test('I/O streams', async t => {
-  const dir = await tempdir();
+  const dir = await tempDir();
   const write = dir.child('test.txt').createWriteStream({encoding: 'utf8'});
   await new Promise(resolve => write.write('Hello World!', resolve));
   const read = dir.child('test.txt').createReadStream({encoding: 'utf8'});
@@ -61,7 +61,7 @@ t.test('I/O streams', async t => {
 });
 
 t.test('list', async t => {
-  const dir = await tempdir();
+  const dir = await tempDir();
   const foo = dir.child('foo');
   const bar = foo.child('bar');
   await bar.mkdir({recursive: true});
@@ -95,8 +95,8 @@ t.test('list', async t => {
   t.same(await bar.exists(), false, 'directory has been removed');
 });
 
-t.test('tempdir', async t => {
-  const temp = await tempdir();
+t.test('tempDir', async t => {
+  const temp = await tempDir();
   const dir = new File(temp.toString());
   t.same(await dir.exists(), true, 'directory exists');
   t.same(await temp.exists(), true, 'directory exists');
