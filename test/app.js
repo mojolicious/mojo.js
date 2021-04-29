@@ -4,6 +4,9 @@ import mojo from '../index.js';
 t.test('App', async t => {
   const app = mojo();
 
+  app.config.appName = 'Test';
+  app.models.test = {it: 'works'};
+
   // GET /
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
@@ -34,6 +37,9 @@ t.test('App', async t => {
   app.any('/exception/:msg', ctx => {
     throw new Error(`Something went wrong: ${ctx.stash.msg}`);
   });
+
+  // * /config
+  app.any('/config').to(ctx => ctx.render({text: `${ctx.config.appName} ${ctx.models.test.it}`}));
 
   const client = await app.newTestClient({tap: t});
 
@@ -78,6 +84,10 @@ t.test('App', async t => {
     (await client.patchOk('/pass/nested2')).statusIs(200).bodyIs('Nested: pass');
     (await client.getOk('/fail/nested2')).statusIs(404);
     (await client.getOk('/nested2')).statusIs(404);
+  });
+
+  await t.test('Config and models', async t => {
+    (await client.getOk('/config')).statusIs(200).bodyIs('Test works');
   });
 
   await client.done();
