@@ -6,6 +6,8 @@ app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
 app.any('/foo').to('foo#works');
 
-app.put('/bar').to('bar#jsonReturn');
+const bar = app.any('/bar').to('bar#');
+bar.put('/').to('#jsonReturn');
+bar.get('/:msg').to('#hello');
 
 app.start();
