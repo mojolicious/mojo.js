@@ -123,13 +123,21 @@ t.test('Client', async t => {
     t.done();
   });
 
-  let skipDomTests = false;
-  try { await import('jsdom'); } catch { skipDomTests = true; }
+  await t.test('Optional dependencies', async t => {
+    let skipJSDOM = false;
+    try {
+      await import('jsdom');
+    } catch {
+      skipJSDOM = true;
+    }
 
-  await t.test('DOM', {skip: skipDomTests}, async t => {
-    const res = await client.get('/test.html');
-    const dom = await res.dom();
-    t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!', 'right content');
+    await t.test('JSDOM', {skip: skipJSDOM}, async t => {
+      const res = await client.get('/test.html');
+      const dom = await res.dom();
+      t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!', 'right content');
+      t.done();
+    });
+
     t.done();
   });
 
