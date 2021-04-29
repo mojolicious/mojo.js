@@ -41,6 +41,9 @@ t.test('App', async t => {
   // * /config
   app.any('/config').to(ctx => ctx.render({text: `${ctx.config.appName} ${ctx.models.test.it}`}));
 
+  // * /request_id
+  app.any('/request_id').to(ctx => ctx.render({text: ctx.req.requestId}));
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -88,6 +91,10 @@ t.test('App', async t => {
 
   await t.test('Config and models', async t => {
     (await client.getOk('/config')).statusIs(200).bodyIs('Test works');
+  });
+
+  await t.test('Request ID', async t => {
+    (await client.getOk('/request_id')).statusIs(200).bodyLike(/^[0-9a-f]{12}$/i);
   });
 
   await client.done();
