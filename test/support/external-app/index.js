@@ -10,4 +10,6 @@ const bar = app.any('/bar').to('bar#');
 bar.put('/').to('#jsonReturn');
 bar.get('/:msg').to('#hello');
 
+app.get('/foo/baz').to('foo/baz#test');
+
 app.start();

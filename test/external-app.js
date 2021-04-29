@@ -22,6 +22,8 @@ t.test('External app', async t => {
     (await client.getOk('/bar/world')).statusIs(200).bodyIs('world');
     (await client.getOk('/bar/mojo')).statusIs(200).bodyIs('mojo');
     (await client.putOk('/bar/world')).statusIs(404);
+    (await client.getOk('/foo/baz')).statusIs(200).bodyIs('Multiple levels');
+    (await client.postOk('/foo/baz')).statusIs(404);
   });
 
   await client.done();
