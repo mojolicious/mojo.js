@@ -7,6 +7,7 @@ t.test('Constructor', t => {
   t.equal(new File().toString(), process.cwd(), 'same path');
   t.equal(new File('foo', 'bar', 'baz').toString(), path.join('foo', 'bar', 'baz'), 'same path');
   t.equal('' + new File('foo', 'bar', 'baz'), path.join('foo', 'bar', 'baz'), 'same path');
+  t.same(new File('foo', 'bar', 'baz').toArray(), path.join('foo', 'bar', 'baz').split(path.sep), 'same structure');
   t.done();
 });
 
@@ -77,6 +78,7 @@ t.test('list', async t => {
     recursive.push(file.toString());
   }
   t.same(recursive.sort(), [bar.child('one.txt').toString(), foo.child('two.txt').toString()], 'right structure');
+  t.same(dir.relative(recursive.sort()[0]).toArray(), ['foo', 'bar', 'one.txt'], 'same structure');
 
   const nonRecursive = [];
   for await (const file of foo.list()) {
