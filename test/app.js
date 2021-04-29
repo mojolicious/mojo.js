@@ -30,6 +30,11 @@ t.test('App', async t => {
   });
   nested2.any('/nested2').to(ctx => ctx.render({text: `Nested: ${ctx.stash.auth}`}));
 
+  // * /exception/*
+  app.any('/exception/:msg', ctx => {
+    throw new Error(`Something went wrong: ${ctx.stash.msg}`);
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -53,6 +58,10 @@ t.test('App', async t => {
 
   await t.test('Not found', async t => {
     (await client.putOk('/does_not_exist')).statusIs(404);
+  });
+
+  await t.test('Exception', async t => {
+    (await client.getOk('/exception/works')).statusIs(500).bodyLike(/Exception: Error: Something went wrong: works/);
   });
 
   await t.test('Nested routes', async t => {
