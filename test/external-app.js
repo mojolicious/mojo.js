@@ -15,5 +15,9 @@ t.test('External app', async t => {
     t.ok(await app.home.child('..', 'external-app', 'index.js').exists(), 'correct parent directory');
   });
 
+  await t.test('Controller', async t => {
+    (await client.getOk('/foo')).statusIs(200).bodyIs('Action works!');
+  });
+
   await client.done();
 });
