@@ -25,7 +25,7 @@ t.test('Client', async t => {
 
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
-  app.any('/test.html', ctx => ctx.render({text: '<html><head><title>Test</title><head></html>'}));
+  app.any('/test.html', ctx => ctx.render({text: '<!DOCTYPE html><p>Hello JSDOM!</p>'}));
 
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
@@ -129,7 +129,7 @@ t.test('Client', async t => {
   await t.test('DOM', {skip: skipDomTests}, async t => {
     const res = await client.get('/test.html');
     const dom = await res.dom();
-    t.equal(dom.window.document.querySelector('title').textContent, 'Test', 'right content');
+    t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!', 'right content');
     t.done();
   });
 
