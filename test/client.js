@@ -25,6 +25,8 @@ t.test('Client', async t => {
 
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
+  app.any('/test.html', ctx => ctx.render({text: '<html><head><title>Test</title><head></html>'}));
+
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
   const client = new Client({baseURL: server.urls[0], name: 'mojo 1.0'});
@@ -118,6 +120,16 @@ t.test('Client', async t => {
     const res2 = await client.put('/body', {body: file.createReadStream()});
     t.equal(res2.status, 200, 'right status');
     t.equal(await res2.text(), 'Hello Mojo!', 'right content');
+    t.done();
+  });
+
+  let skipDomTests = false;
+  try { await import('jsdom'); } catch { skipDomTests = true; }
+
+  await t.test('DOM', {skip: skipDomTests}, async t => {
+    const res = await client.get('/test.html');
+    const dom = await res.dom();
+    t.equal(dom.window.document.querySelector('title').textContent, 'Test', 'right content');
     t.done();
   });
 

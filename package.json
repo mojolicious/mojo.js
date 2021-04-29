@@ -36,5 +36,8 @@
     "nopt": "^5.0.0",
     "stack-utils": "^1.0.5",
     "ws": "^7.4.5"
+  },
+  "optionalDependencies": {
+    "jsdom": "^16.5.3"
   }
 }
