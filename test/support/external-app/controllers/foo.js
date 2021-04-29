@@ -1,5 +1,5 @@
 class FooController {
-  bar (ctx) {
+  works (ctx) {
     ctx.render({text: 'Action works!'});
   }
 }

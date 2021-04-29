@@ -17,6 +17,8 @@ t.test('External app', async t => {
 
   await t.test('Controller', async t => {
     (await client.getOk('/foo')).statusIs(200).bodyIs('Action works!');
+    (await client.putOk('/bar', {json: {controller: 'works'}})).statusIs(200).jsonIs({controller: 'works'});
+    (await client.getOk('/bar')).statusIs(404);
   });
 
   await client.done();
