@@ -33,94 +33,88 @@ t.test('Client', async t => {
 
   await t.test('Hello World', async t => {
     const res = await client.get('/hello');
-    t.equal(res.status, 200, 'right status');
-    t.equal(await res.text(), 'Hello World!', 'right content');
-    t.done();
+    t.equal(res.status, 200);
+    t.equal(await res.text(), 'Hello World!');
   });
 
   await t.test('Headers', async t => {
     const res = await client.get('/headers?header=user-agent');
-    t.equal(res.status, 200, 'right status');
-    t.equal(res.headers['x-test'], 'works too', 'right X-Test value');
-    t.equal(await res.text(), 'mojo 1.0', 'right content');
+    t.equal(res.status, 200);
+    t.equal(res.headers['x-test'], 'works too');
+    t.equal(await res.text(), 'mojo 1.0');
 
     const res2 = await client.get('/headers?header=test', {headers: {test: 'works'}});
-    t.equal(res2.status, 200, 'right status');
-    t.equal(res2.headers['x-test'], 'works too', 'right X-Test value');
-    t.equal(await res2.text(), 'works', 'right content');
-    t.done();
+    t.equal(res2.status, 200);
+    t.equal(res2.headers['x-test'], 'works too');
+    t.equal(await res2.text(), 'works');
   });
 
   await t.test('Body', async t => {
     const res = await client.put('/body', {body: 'Body works!'});
-    t.equal(res.status, 200, 'right status');
-    t.equal(await res.text(), 'Body works!', 'right content');
+    t.equal(res.status, 200);
+    t.equal(await res.text(), 'Body works!');
 
     const res2 = await client.put('/body', {body: 'I ♥ Mojolicious!'});
-    t.equal(res2.status, 200, 'right status');
-    t.equal(await res2.text(), 'I ♥ Mojolicious!', 'right content');
+    t.equal(res2.status, 200);
+    t.equal(await res2.text(), 'I ♥ Mojolicious!');
 
     const res3 = await client.put('/body', {body: Buffer.from('I ♥ Mojolicious!')});
-    t.equal(res3.status, 200, 'right status');
-    t.equal((await res3.buffer()).toString(), 'I ♥ Mojolicious!', 'right content');
-    t.done();
+    t.equal(res3.status, 200);
+    t.equal((await res3.buffer()).toString(), 'I ♥ Mojolicious!');
   });
 
   await t.test('JSON', async t => {
     const res = await client.get('/hello.json');
-    t.equal(res.status, 200, 'right status');
-    t.same(await res.json(), {hello: 'world'}, 'right content');
-    t.done();
+    t.equal(res.status, 200);
+    t.same(await res.json(), {hello: 'world'});
   });
 
   await t.test('Methods', async t => {
     const res = await client.delete('/methods');
-    t.equal(res.status, 200, 'right status');
-    t.equal(await res.text(), 'DELETE', 'right content');
+    t.equal(res.status, 200);
+    t.equal(await res.text(), 'DELETE');
 
     const res2 = await client.get('/methods');
-    t.equal(res2.status, 200, 'right status');
-    t.equal(await res2.text(), 'GET', 'right content');
+    t.equal(res2.status, 200);
+    t.equal(await res2.text(), 'GET');
 
     const res3 = await client.options('/methods');
-    t.equal(res3.status, 200, 'right status');
-    t.equal(await res3.text(), 'OPTIONS', 'right content');
+    t.equal(res3.status, 200);
+    t.equal(await res3.text(), 'OPTIONS');
 
     const res4 = await client.patch('/methods');
-    t.equal(res4.status, 200, 'right status');
-    t.equal(await res4.text(), 'PATCH', 'right content');
+    t.equal(res4.status, 200);
+    t.equal(await res4.text(), 'PATCH');
 
     const res5 = await client.post('/methods');
-    t.equal(res5.status, 200, 'right status');
-    t.equal(await res5.text(), 'POST', 'right content');
+    t.equal(res5.status, 200);
+    t.equal(await res5.text(), 'POST');
 
     const res6 = await client.put('/methods');
-    t.equal(res6.status, 200, 'right status');
-    t.equal(await res6.text(), 'PUT', 'right content');
+    t.equal(res6.status, 200);
+    t.equal(await res6.text(), 'PUT');
 
     const res7 = await client.head('/hello');
-    t.equal(res7.status, 200, 'right status');
-    t.equal(res7.headers['content-length'], '12', 'right Content-Length value');
-    t.equal(await res7.text(), '', 'right content');
+    t.equal(res7.status, 200);
+    t.equal(res7.headers['content-length'], '12');
+    t.equal(await res7.text(), '');
 
     const res8 = await client.request({method: 'PUT', url: '/methods'});
-    t.equal(res8.status, 200, 'right status');
-    t.equal(await res8.text(), 'PUT', 'right content');
-    t.done();
+    t.equal(res8.status, 200);
+    t.equal(await res8.text(), 'PUT');
   });
 
   await t.test('Streams', async t => {
     const res = await client.put('/body', {body: 'Hello Mojo!'});
-    t.equal(res.status, 200, 'right status');
+    t.equal(res.status, 200);
     const dir = await tempDir();
     const file = dir.child('hello.txt');
     await res.pipe(file.createWriteStream());
-    t.equal(await file.readFile('utf8'), 'Hello Mojo!', 'right content');
+    t.equal(await file.readFile('utf8'), 'Hello Mojo!');
 
     const res2 = await client.put('/body', {body: file.createReadStream()});
-    t.equal(res2.status, 200, 'right status');
-    t.equal(await res2.text(), 'Hello Mojo!', 'right content');
-    t.done();
+    t.equal(res2.status, 200);
+    t.equal(await res2.text(), 'Hello Mojo!');
   });
 
   await t.test('Optional dependencies', async t => {
@@ -134,8 +128,7 @@ t.test('Client', async t => {
     await t.test('JSDOM', {skip: skipJSDOM}, async t => {
       const res = await client.get('/test.html');
       const dom = await res.dom();
-      t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!', 'right content');
-      t.done();
+      t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!');
     });
 
     t.done();

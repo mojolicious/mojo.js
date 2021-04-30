@@ -4,6 +4,8 @@ import mojo from '../index.js';
 t.test('App', async t => {
   const app = mojo();
 
+  app.log.level = 'fatal';
+
   app.config.appName = 'Test';
   app.models.test = {it: 'works'};
 
