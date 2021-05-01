@@ -1,6 +1,14 @@
 export default class FooController {
-  withTemplate (ctx) {
-    ctx.render({template: 'foo/hello'});
+  anotherView (ctx) {
+    ctx.render({view: 'foo'});
+  }
+
+  withInlineView (ctx) {
+    ctx.render({inline: 'Hello <%= name %>'});
+  }
+
+  withView (ctx) {
+    ctx.render({view: 'foo/hello'});
   }
 
   works (ctx) {

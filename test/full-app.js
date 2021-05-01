@@ -17,6 +17,9 @@ t.test('Full app', async t => {
 
   await t.test('Controller', async t => {
     (await client.getOk('/foo')).statusIs(200).bodyIs('Action works!');
+    (await client.getOk('/FOO')).statusIs(200).bodyIs('Action works!');
+    (await client.getOk('/Foo')).statusIs(404);
+    (await client.getOk('/fOO')).statusIs(404);
     (await client.putOk('/bar', {json: {controller: 'works'}})).statusIs(200).jsonIs({controller: 'works'});
     (await client.getOk('/bar')).statusIs(404);
     (await client.getOk('/bar/world')).statusIs(200).bodyIs('world');
@@ -26,14 +29,14 @@ t.test('Full app', async t => {
     (await client.postOk('/foo/baz')).statusIs(404);
   });
 
-  await t.test('Templates', async t => {
+  await t.test('View', async t => {
     (await client.getOk('/renderer/inline/foo')).statusIs(200).bodyIs('Hello foo');
     (await client.getOk('/renderer/inline/bar')).statusIs(200).bodyIs('Hello bar');
 
     (await client.getOk('/renderer/hello/foo')).statusIs(200).bodyIs('Hey foo\n');
     (await client.getOk('/renderer/hello/bar')).statusIs(200).bodyIs('Hey bar\n');
 
-    (await client.putOk('/renderer/another.template')).statusIs(200).bodyIs('Templates\nare working\n');
+    (await client.putOk('/renderer/another.view')).statusIs(200).bodyIs('User sri\nis an admin\n');
   });
 
   await client.done();

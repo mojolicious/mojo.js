@@ -1,12 +1,14 @@
 import mojo from '../../../index.js';
+import Users from './models/users.js';
 
 export const app = mojo();
 
-app.models.test = {result: 'working'};
+app.models.users = new Users();
 
 app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
 app.any('/foo').to('foo#works');
+app.any('/FOO').to('foo#works');
 
 const bar = app.any('/bar').to('bar#');
 bar.put('/').to('#jsonReturn');
@@ -15,8 +17,8 @@ bar.get('/:msg').to('#hello');
 app.get('/foo/baz').to('foo/baz#test');
 
 const renderer = app.any('/renderer');
-renderer.get('/hello/:name').to('foo#withTemplate');
-renderer.get('/inline/:name').to(ctx => ctx.render({inline: 'Hello <%= name %>'}));
-renderer.put('/another.template').to(ctx => ctx.render({template: 'foo'}));
+renderer.get('/hello/:name').to('foo#withView');
+renderer.get('/inline/:name').to('foo#withInlineView');
+renderer.put('/another.view').to('foo#anotherView');
 
 app.start();
