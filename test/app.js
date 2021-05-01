@@ -96,7 +96,7 @@ t.test('App', async t => {
   });
 
   await t.test('Request ID', async t => {
-    (await client.getOk('/request_id')).statusIs(200).bodyLike(/^[0-9]+-[0-9]+$/);
+    (await client.getOk('/request_id')).statusIs(200).bodyLike(/^[0-9]+-[0-9a-f]{8}$/i);
   });
 
   await client.done();
