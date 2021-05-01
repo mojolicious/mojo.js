@@ -29,12 +29,6 @@ t.test('App', async t => {
   const test = nested.any('/test').to({prefix: 'X:'});
   test.any('/methods').to(ctx => ctx.render({text: ctx.stash.prefix + ctx.req.method}));
 
-  // * /pass/nested2
-  const nested2 = app.under('/:auth').to(async ctx => {
-    return new Promise(resolve => resolve(ctx.stash.auth === 'pass'));
-  });
-  nested2.any('/nested2').to(ctx => ctx.render({text: `Nested: ${ctx.stash.auth}`}));
-
   // * /exception/*
   app.any('/exception/:msg', ctx => {
     throw new Error(`Something went wrong: ${ctx.stash.msg}`);
@@ -84,11 +78,6 @@ t.test('App', async t => {
     (await client.getOk('/nested/test/methods?auth=0')).statusIs(200).bodyIs('Permission denied');
     (await client.getOk('/nested/test?auth=1')).statusIs(404);
     (await client.getOk('/nested/test/foo?auth=1')).statusIs(404);
-
-    (await client.getOk('/pass/nested2')).statusIs(200).bodyIs('Nested: pass');
-    (await client.patchOk('/pass/nested2')).statusIs(200).bodyIs('Nested: pass');
-    (await client.getOk('/fail/nested2')).statusIs(404);
-    (await client.getOk('/nested2')).statusIs(404);
   });
 
   await t.test('Config and models', async t => {

@@ -1,7 +1,7 @@
 import t from 'tap';
-import {app} from './support/external-app/index.js';
+import {app} from './support/full-app/index.js';
 
-t.test('External app', async t => {
+t.test('Full app', async t => {
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -12,7 +12,7 @@ t.test('External app', async t => {
     t.ok(app.home, 'has home directory');
     t.ok(await app.home.exists(), 'home directory exists');
     t.ok(await app.home.child('index.js').exists(), 'home directory contains app');
-    t.ok(await app.home.child('..', 'external-app', 'index.js').exists(), 'correct parent directory');
+    t.ok(await app.home.child('..', 'full-app', 'index.js').exists(), 'correct parent directory');
   });
 
   await t.test('Controller', async t => {
@@ -24,6 +24,16 @@ t.test('External app', async t => {
     (await client.putOk('/bar/world')).statusIs(404);
     (await client.getOk('/foo/baz')).statusIs(200).bodyIs('Multiple levels');
     (await client.postOk('/foo/baz')).statusIs(404);
+  });
+
+  await t.test('Templates', async t => {
+    (await client.getOk('/renderer/inline/foo')).statusIs(200).bodyIs('Hello foo');
+    (await client.getOk('/renderer/inline/bar')).statusIs(200).bodyIs('Hello bar');
+
+    (await client.getOk('/renderer/hello/foo')).statusIs(200).bodyIs('Hey foo\n');
+    (await client.getOk('/renderer/hello/bar')).statusIs(200).bodyIs('Hey bar\n');
+
+    (await client.putOk('/renderer/another.template')).statusIs(200).bodyIs('Templates\nare working\n');
   });
 
   await client.done();
