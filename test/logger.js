@@ -12,6 +12,7 @@ t.test('Logger', async t => {
     const logger = new Logger({destination: stream, level: 'error'});
     t.same(logger.destination, stream);
     logger.error('Works');
+    logger.error('Works', 'too');
     logger.fatal('I ♥ Mojolicious');
     logger.error(() => 'This too');
     logger.trace('Not this');
@@ -21,6 +22,7 @@ t.test('Logger', async t => {
     }
     let content = await file.readFile('utf8');
     t.match(content, /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z\] \[error\] Works\n/);
+    t.match(content, /\[.+\] \[error\] Works too\n/);
     t.match(content, /\[.+\] \[fatal\] I ♥ Mojolicious\n/);
     t.match(content, /\[.+\] \[error\] This too\n/);
     t.notMatch(content, /\[.+\] \[trace\] Not this\n/);
@@ -172,5 +174,30 @@ t.test('Logger', async t => {
     t.notMatch(content, /\[.+\] \[warn\] Four\n/);
     t.notMatch(content, /\[.+\] \[error\] Five\n/);
     t.match(content, /\[.+\] \[fatal\] Six\n/);
+  });
+
+  t.test('Child logger', async t => {
+    const file = dir.child('child.log');
+    const stream = (await file.touch()).createWriteStream();
+    const logger = new Logger({destination: stream, level: 'trace'});
+    const child = logger.child('[123]');
+    child.trace('One');
+    child.debug('Two');
+    child.info('Three');
+    child.warn('Four');
+    child.error('Five');
+    logger.info('No prefix');
+    child.fatal('Six');
+    while (stream.writableLength) {
+      await sleep(10);
+    }
+    const content = await file.readFile('utf8');
+    t.match(content, /\[.+\] \[trace\] \[123\] One\n/);
+    t.match(content, /\[.+\] \[debug\] \[123\] Two\n/);
+    t.match(content, /\[.+\] \[info\] \[123\] Three\n/);
+    t.match(content, /\[.+\] \[warn\] \[123\] Four\n/);
+    t.match(content, /\[.+\] \[error\] \[123\] Five\n/);
+    t.match(content, /\[.+\] \[fatal\] \[123\] Six\n/);
+    t.match(content, /\[.+\] \[info\] No prefix\n/);
   });
 });
