@@ -11,5 +11,6 @@ export default function mojo (...args) {
   app.home = callerFile().dirname();
   app.renderer.viewPaths = [app.home.child('views').toString()];
   app.router.controllerPaths = [app.home.child('controllers').toString()];
+  app.static.publicPaths = [app.home.child('public').toString()];
   return app;
 }

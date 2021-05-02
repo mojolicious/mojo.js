@@ -1,6 +1,14 @@
 import t from 'tap';
 import * as util from '../lib/util.js';
 
+t.test('decodeURIComponentSafe', async t => {
+  const decode = util.decodeURIComponentSafe;
+  t.same(decode('%E0%A4%A'), null);
+  t.same(decode('te%2fst'), 'te/st');
+  t.same(decode('te%2Fst'), 'te/st');
+  t.done();
+});
+
 t.test('sleep', async t => {
   const sleep = util.sleep(1);
   t.ok(sleep instanceof Promise);

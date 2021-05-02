@@ -39,5 +39,11 @@ t.test('Full app', async t => {
     (await client.putOk('/renderer/another.view')).statusIs(200).bodyIs('User sri\nis an admin\n');
   });
 
+  await t.test('Static files', async t => {
+    (await client.getOk('/public/test.txt')).statusIs(200).headerIs('Content-Length', '12').bodyIs('Static file\n');
+    (await client.getOk('/public/does_not_exist.txt')).statusIs(404);
+    (await client.getOk('/test.txt')).statusIs(404);
+  });
+
   await client.done();
 });
