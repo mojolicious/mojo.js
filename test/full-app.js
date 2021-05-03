@@ -33,14 +33,14 @@ t.test('Full app', async t => {
     (await client.getOk('/renderer/inline/foo')).statusIs(200).bodyIs('Hello foo');
     (await client.getOk('/renderer/inline/bar')).statusIs(200).bodyIs('Hello bar');
 
-    (await client.getOk('/renderer/hello/foo')).statusIs(200).bodyIs('Hey foo\n');
-    (await client.getOk('/renderer/hello/bar')).statusIs(200).bodyIs('Hey bar\n');
+    (await client.getOk('/renderer/hello/foo')).statusIs(200).bodyLike(/Hey foo\r?\n/);
+    (await client.getOk('/renderer/hello/bar')).statusIs(200).bodyLike(/Hey bar\r?\n/);
 
-    (await client.putOk('/renderer/another.view')).statusIs(200).bodyIs('User sri\nis an admin\n');
+    (await client.putOk('/renderer/another.view')).statusIs(200).bodyLike(/User sri\r?\nis an admin\r?\n/);
   });
 
   await t.test('Static files', async t => {
-    (await client.getOk('/public/test.txt')).statusIs(200).headerIs('Content-Length', '12').bodyIs('Static file\n');
+    (await client.getOk('/public/test.txt')).statusIs(200).headerExists('Content-Length').bodyLike(/Static file\r?\n/);
     (await client.getOk('/public/does_not_exist.txt')).statusIs(404);
     (await client.getOk('/test.txt')).statusIs(404);
   });
