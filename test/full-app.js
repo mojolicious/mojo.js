@@ -45,5 +45,5 @@ t.test('Full app', async t => {
     (await client.getOk('/test.txt')).statusIs(404);
   });
 
-  await client.done();
+  await client.stop();
 });

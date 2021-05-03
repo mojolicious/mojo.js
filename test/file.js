@@ -6,6 +6,7 @@ import {tempDir, File} from '../lib/file.js';
 t.test('Constructor', t => {
   t.equal(new File().toString(), process.cwd());
   t.equal(new File('foo', 'bar', 'baz').toString(), path.join('foo', 'bar', 'baz'));
+  t.equal(new File('foo', 'bar').sibling('baz').toString(), path.join('foo', 'baz'));
   t.equal('' + new File('foo', 'bar', 'baz'), path.join('foo', 'bar', 'baz'));
   t.same(new File('foo', 'bar', 'baz').toArray(), path.join('foo', 'bar', 'baz').split(path.sep));
   t.end();

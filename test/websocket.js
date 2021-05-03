@@ -21,7 +21,7 @@ t.test('App', async t => {
   });
 
   await t.test('WebSocket roundtrip', async t => {
-    const ws = client.websocket('/ws');
+    const ws = await client.websocket('/ws');
     ws.on('open', () => {
       ws.send('Hello Mojo!');
     });
@@ -34,5 +34,5 @@ t.test('App', async t => {
     t.equal(message, 'Hello Mojo!');
   });
 
-  await client.done();
+  await client.stop();
 });
