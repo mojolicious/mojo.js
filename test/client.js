@@ -10,9 +10,9 @@ t.test('Client', async t => {
   app.get('/hello', ctx => ctx.render({text: 'Hello World!'}));
 
   app.get('/headers', ctx => {
-    const name = ctx.req.url.searchParams.get('header');
-    const value = ctx.req.headers[name] || 'fail';
-    ctx.res.headers['X-Test'] = 'works too';
+    const name = ctx.req.query.get('header');
+    const value = ctx.req.get(name) || 'fail';
+    ctx.res.set('X-Test', 'works too');
     ctx.render({text: value});
   });
 
@@ -40,12 +40,12 @@ t.test('Client', async t => {
   await t.test('Headers', async t => {
     const res = await client.get('/headers?header=user-agent');
     t.equal(res.status, 200);
-    t.equal(res.headers['x-test'], 'works too');
+    t.equal(res.get('X-Test'), 'works too');
     t.equal(await res.text(), 'mojo 1.0');
 
     const res2 = await client.get('/headers?header=test', {headers: {test: 'works'}});
     t.equal(res2.status, 200);
-    t.equal(res2.headers['x-test'], 'works too');
+    t.equal(res2.get('X-Test'), 'works too');
     t.equal(await res2.text(), 'works');
   });
 
@@ -96,7 +96,7 @@ t.test('Client', async t => {
 
     const res7 = await client.head('/hello');
     t.equal(res7.status, 200);
-    t.equal(res7.headers['content-length'], '12');
+    t.equal(res7.get('Content-Length'), '12');
     t.equal(await res7.text(), '');
 
     const res8 = await client.request({method: 'PUT', url: '/methods'});

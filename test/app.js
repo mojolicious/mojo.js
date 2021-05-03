@@ -21,7 +21,7 @@ t.test('App', async t => {
   // GET /nested
   // *   /nested/methods
   const nested = app.under('/nested').to(ctx => {
-    if (ctx.req.url.searchParams.get('auth') === '1') return;
+    if (ctx.req.query.get('auth') === '1') return;
     ctx.render({text: 'Permission denied'});
     return false;
   });
