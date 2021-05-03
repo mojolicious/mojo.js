@@ -41,7 +41,7 @@ t.test('Full app', async t => {
 
   await t.test('Static files', async t => {
     (await client.getOk('/public/test.txt')).statusIs(200).headerExists('Content-Length').bodyLike(/Static file\r?\n/);
-    (await client.getOk('/public/does_not_exist.txt')).statusIs(404);
+    (await client.getOk('/public/does_not_exist.txt')).headerExistsNot('Etag').statusIs(404);
     (await client.getOk('/test.txt')).statusIs(404);
   });
 
