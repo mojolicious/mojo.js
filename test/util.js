@@ -6,7 +6,7 @@ t.test('decodeURIComponentSafe', async t => {
   t.same(decode('%E0%A4%A'), null);
   t.same(decode('te%2fst'), 'te/st');
   t.same(decode('te%2Fst'), 'te/st');
-  t.done();
+  t.end();
 });
 
 t.test('sleep', async t => {
@@ -28,5 +28,5 @@ t.test('tablify', t => {
   t.equal(tablify([[1, 2], [3]]), '1  2\n3\n');
   t.equal(tablify([[1], [2, 3]]), '1\n2  3\n');
   t.equal(tablify([[1], [], [2, 3]]), '1\n\n2  3\n');
-  t.done();
+  t.end();
 });

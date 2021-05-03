@@ -5,7 +5,7 @@ t.test('Text pattern', t => {
   const pattern = new Pattern('/test/123');
   t.same(pattern.match('/test/123'), {});
   t.same(pattern.match('/test'), null);
-  t.done();
+  t.end();
 });
 
 t.test('Normal pattern with text, placeholders and a default value', t => {
@@ -20,7 +20,7 @@ t.test('Normal pattern with text, placeholders and a default value', t => {
   pattern2.defaults = {...pattern2.defaults, bar: 'baz'};
   t.same(pattern2.match('/foo/bar'), {bar: 'bar'});
   t.same(pattern2.match('/foo'), {bar: 'baz'});
-  t.done();
+  t.end();
 });
 
 t.test('Optional placeholder in the middle', t => {
@@ -42,7 +42,7 @@ t.test('Optional placeholder in the middle', t => {
   t.same(pattern2.match('/test'), null);
   t.equal(pattern2.render(), '/test/foo/123');
   t.equal(pattern2.render({name: 'bar'}), '/test/bar/123');
-  t.done();
+  t.end();
 });
 
 t.test('Multiple optional placeholders in the middle', t => {
@@ -56,7 +56,7 @@ t.test('Multiple optional placeholders in the middle', t => {
   t.equal(pattern.render({a: 'c'}), '/test/c/123/b/456');
   t.equal(pattern.render({b: 'c'}), '/test/a/123/c/456');
   t.equal(pattern.render({a: 'c', b: 'd'}), '/test/c/123/d/456');
-  t.done();
+  t.end();
 });
 
 t.test('Root', t => {
@@ -67,7 +67,7 @@ t.test('Root', t => {
   t.same(pattern.match('/'), {action: 'index'});
   t.equal(pattern.render(), '');
   t.equal(pattern.render({ext: 'txt'}, {isEndpoint: true}), '.txt');
-  t.done();
+  t.end();
 });
 
 t.test('Regex in pattern', t => {
@@ -77,7 +77,7 @@ t.test('Regex in pattern', t => {
   t.same(pattern.match('/test/foo/bar/baz'), null);
   t.equal(pattern.render({controller: 'zzz', action: 'index', id: 13}), '/test/zzz/index/13');
   t.equal(pattern.render({controller: 'zzz'}), '/test/zzz');
-  t.done();
+  t.end();
 });
 
 t.test('Quoted placeholders', t => {
@@ -85,7 +85,7 @@ t.test('Quoted placeholders', t => {
   t.same(pattern.match('/footest/bar'), {controller: 'foo', action: 'bar'});
   t.equal(pattern.render({controller: 'zzz', action: 'lala'}), '/zzztest/lala');
   t.same(pattern.match('/test/lala'), null);
-  t.done();
+  t.end();
 });
 
 t.test('Relaxed', t => {
@@ -97,7 +97,7 @@ t.test('Relaxed', t => {
   t.same(pattern2.match('/test/foo.bar'), {groovy: 'foo.bar'});
   t.same(pattern2.defaults.ext, undefined);
   t.equal(pattern2.render({groovy: 'foo.bar'}), '/test/foo.bar');
-  t.done();
+  t.end();
 });
 
 t.test('Wildcard', t => {
@@ -108,7 +108,7 @@ t.test('Wildcard', t => {
   const pattern2 = new Pattern('/tset/:controller/*action');
   t.same(pattern2.match('/tset/foo/bar.baz/yada'), {controller: 'foo', action: 'bar.baz/yada'});
   t.equal(pattern2.render({controller: 'foo', action: 'bar.baz/yada'}), '/tset/foo/bar.baz/yada');
-  t.done();
+  t.end();
 });
 
 t.test('False value', t => {
@@ -117,21 +117,21 @@ t.test('False value', t => {
   pattern.defaults = {id: 0};
   t.equal(pattern.render(), '0');
   t.same(pattern.match('/0'), {id: '0'});
-  t.done();
+  t.end();
 });
 
 t.test('Regex in path', t => {
   const pattern = new Pattern('/:test');
   t.same(pattern.match('/test(test)(\\Qtest\\E)('), {test: 'test(test)(\\Qtest\\E)('});
   t.equal(pattern.render({test: '23'}), '/23');
-  t.done();
+  t.end();
 });
 
 t.test('Regex in pattern', t => {
   const pattern = new Pattern('/.+<:test>');
   t.same(pattern.match('/.+test'), {test: 'test'});
   t.equal(pattern.render({test: '23'}), '/.+23');
-  t.done();
+  t.end();
 });
 
 t.test('Unusual values', t => {
@@ -151,7 +151,7 @@ t.test('Unusual values', t => {
   value = 'abc%20cba';
   t.same(pattern.match(`/${value}`), {test: value});
   t.equal(pattern.render({test: value}), `/${value}`);
-  t.done();
+  t.end();
 });
 
 t.test('Extension detection', t => {
@@ -178,7 +178,7 @@ t.test('Extension detection', t => {
   t.same(pattern4.match('/test.txt', {isEndpoint: true}), {ext: 'txt'});
   t.same(pattern4.match('/test', {isEndpoint: true}), {ext: null});
   t.same(pattern4.match('/test.xml'), null);
-  t.done();
+  t.end();
 });
 
 t.test('Versioned pattern', t => {
@@ -189,7 +189,7 @@ t.test('Versioned pattern', t => {
   t.equal(pattern.render(result, {isEndpoint: true}), '/foo/v1.0.html');
   t.equal(pattern.render(result, {isEndpoint: false}), '/foo/v1.0');
   t.equal(pattern.render({...result, ext: undefined}, {isEndpoint: true}), '/foo/v1.0');
-  t.done();
+  t.end();
 });
 
 t.test('Versioned pattern with extension', t => {
@@ -199,7 +199,7 @@ t.test('Versioned pattern with extension', t => {
   t.equal(pattern.render(result), '/foo/v1.0');
   t.equal(pattern.render(result, {isEndpoint: true}), '/foo/v1.0.gz');
   t.same(pattern.match('/foo/v2.0', {isEndpoint: true}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Special placeholder names', t => {
@@ -236,7 +236,7 @@ t.test('Special placeholder names', t => {
   result = pattern6.match('/footest', {isEndpoint: true});
   t.same(result, {'': 'foo'});
   t.equal(pattern6.render(result, {isEndpoint: true}), '/footest');
-  t.done();
+  t.end();
 });
 
 t.test('Normalize slashes', t => {
@@ -259,7 +259,7 @@ t.test('Normalize slashes', t => {
   result = pattern4.match('/0', {isEndpoint: true});
   t.same(result, {});
   t.equal(pattern4.render(result, {isEndpoint: true}), '/0');
-  t.done();
+  t.end();
 });
 
 t.test('Optional extension with constraint', t => {
@@ -267,7 +267,7 @@ t.test('Optional extension with constraint', t => {
   t.same(pattern.match('/', {isEndpoint: true}), {ext: 'txt'});
   t.same(pattern.match('/.txt', {isEndpoint: true}), {ext: 'txt'});
   t.same(pattern.match('/.json', {isEndpoint: true}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Unicode', t => {
@@ -275,7 +275,7 @@ t.test('Unicode', t => {
   const result = pattern.match('/i♥mojolicious');
   t.same(result, {one: 'i', two: 'mojolicious'});
   t.equal(pattern.render(result, {isEndpoint: true}), '/i♥mojolicious');
-  t.done();
+  t.end();
 });
 
 t.test('Placeholder types', t => {
@@ -289,7 +289,7 @@ t.test('Placeholder types', t => {
   t.same(pattern2.match('/foo/blue/baz'), {bar: 'blue'});
   t.same(pattern2.match('/foo/red/baz'), {bar: 'red'});
   t.same(pattern2.match('/foo/green/baz'), null);
-  t.done();
+  t.end();
 });
 
 t.test('Missing placeholder type (never matches)', t => {
@@ -298,5 +298,5 @@ t.test('Missing placeholder type (never matches)', t => {
   t.same(pattern.match('/foo/23', {isEndpoint: true}), null);
   t.same(pattern.match('/foo/bar', {isEndpoint: true}), null);
   t.same(pattern.match('/foo', {isEndpoint: true}), null);
-  t.done();
+  t.end();
 });

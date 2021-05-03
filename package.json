@@ -18,28 +18,27 @@
   "homepage": "https://mojojs.org",
   "scripts": {
     "lint": "eslint \"lib/**/*.js\" \"lib/*.js\" \"test/*.js\"",
-    "test": "tap --no-coverage --no-esm test/*.js"
+    "test": "tap --no-coverage test/*.js"
   },
   "main": "./index.js",
   "type": "module",
   "devDependencies": {
-    "diff": "^5.0.0",
-    "eslint": "^7.22.0",
-    "eslint-config-semistandard": "^15.0.1",
-    "tap": "^14.11.0"
+    "eslint": ">=7.22.0",
+    "eslint-config-semistandard": ">=15.0.1",
+    "tap": ">=15.0.6"
   },
   "engines": {
     "node": ">= 15"
   },
   "dependencies": {
-    "ejs": "^3.1.6",
-    "escape-string-regexp": "^2.0.0",
-    "lru-cache": "^6.0.0",
-    "nopt": "^5.0.0",
-    "stack-utils": "^1.0.5",
-    "ws": "^7.4.5"
+    "ejs": ">=3.1.6",
+    "escape-string-regexp": ">=2.0.0",
+    "lru-cache": ">=6.0.0",
+    "nopt": ">=5.0.0",
+    "stack-utils": ">=1.0.5",
+    "ws": ">=7.4.5"
   },
   "optionalDependencies": {
-    "jsdom": "^16.5.3"
+    "jsdom": ">=16.5.3"
   }
 }

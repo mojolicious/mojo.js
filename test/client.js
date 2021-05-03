@@ -130,10 +130,7 @@ t.test('Client', async t => {
       const dom = await res.dom();
       t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!');
     });
-
-    t.done();
   });
 
   await server.stop();
-  t.done();
 });

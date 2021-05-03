@@ -13,5 +13,5 @@ t.test('Types', t => {
   t.same(mime.extType('.unknown'), null);
   t.same(mime.extType('unknown'), null);
   t.equal(mime.extType('.html.ejs'), null);
-  t.done();
+  t.end();
 });

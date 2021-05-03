@@ -135,12 +135,12 @@ r.get('/missing/too/*', {'': ['test']}).to({controller: 'missing', action: 'too'
 
 t.test('No match', t => {
   t.same(r.plot({method: 'GET', path: '/does_not_exist'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Introspect', t => {
   t.equal(r.lookup('null').customName, 'null');
-  t.done();
+  t.end();
 });
 
 t.test('Null route', t => {
@@ -149,7 +149,7 @@ t.test('Null route', t => {
   t.same(plan.stops, [true]);
   t.equal(plan.render().path, '/0');
   t.equal(plan.endpoint.defaultName, '0');
-  t.done();
+  t.end();
 });
 
 t.test('Alternatives with default', t => {
@@ -179,7 +179,7 @@ t.test('Alternatives with default', t => {
   t.equal(r.lookup('alternatives_foo').render(), '/alternatives');
   t.equal(r.lookup('alternatives_foo').render({ext: 'txt'}), '/alternatives/11.txt');
   t.equal(r.lookup('alternatives_foo').render({foo: 12, ext: 'txt'}), '/alternatives/12.txt');
-  t.done();
+  t.end();
 });
 
 t.test('Alternatives without default', t => {
@@ -201,7 +201,7 @@ t.test('Alternatives without default', t => {
   t.same(r.plot({method: 'GET', path: '/alternatives2/00'}), null);
   t.equal(r.lookup('alternatives2_foo').render(), '/alternatives2/');
   t.equal(r.lookup('alternatives2_foo').render({foo: 0}), '/alternatives2/0');
-  t.done();
+  t.end();
 });
 
 t.test('Alternatives with similar start', t => {
@@ -212,7 +212,7 @@ t.test('Alternatives with similar start', t => {
   const plan2 = r.plot({method: 'GET', path: '/alternatives3/foobar'});
   t.same(plan2.steps, [{foo: 'foobar'}]);
   t.equal(plan2.render().path, '/alternatives3/foobar');
-  t.done();
+  t.end();
 });
 
 t.test('Alternatives with special characters', t => {
@@ -226,7 +226,7 @@ t.test('Alternatives with special characters', t => {
   t.same(r.plot({method: 'GET', path: '/alternatives4/foobar'}), null);
   t.same(r.plot({method: 'GET', path: '/alternatives4/bar'}), null);
   t.same(r.plot({method: 'GET', path: '/alternatives4/bar.foo'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Optional placeholder', t => {
@@ -240,7 +240,7 @@ t.test('Optional placeholder', t => {
   t.same(plan2.steps, [{foo: 23, bar: '24', ext: null}]);
   t.equal(plan2.render().path, '/optional/23/24');
   t.equal(plan2.render({ext: 'txt'}).path, '/optional/23/24.txt');
-  t.done();
+  t.end();
 });
 
 t.test('Optional placeholders in nested routes', t => {
@@ -273,14 +273,14 @@ t.test('Optional placeholders in nested routes', t => {
   t.same(r.plot({method: 'GET', path: '/optional2/three.xml'}), null);
   t.same(r.plot({method: 'GET', path: '/optional2/three/four.xml'}), null);
   t.same(r.plot({method: 'GET', path: '/optional2/three/four/five'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Root', t => {
   const plan = r.plot({method: 'GET', path: '/'});
   t.same(plan.steps, [{testcase: 'hello', action: 'world'}]);
   t.equal(plan.render().path, '');
-  t.done();
+  t.end();
 });
 
 t.test('Path and captures', t => {
@@ -291,21 +291,21 @@ t.test('Path and captures', t => {
   const plan2 = r.plot({method: 'GET', path: '/foo/testedit'});
   t.same(plan2.steps, [{testcase: 'foo', action: 'testedit'}]);
   t.equal(plan2.render().path, '/foo/testedit');
-  t.done();
+  t.end();
 });
 
 t.test('Optional captures in sub route with requirement', t => {
   const plan = r.plot({method: 'GET', path: '/bar/test/delete/22'});
   t.same(plan.steps, [{testcase: 'bar', action: 'test'}, {action: 'delete', id: 22}]);
   t.equal(plan.render().path, '/bar/test/delete/22');
-  t.done();
+  t.end();
 });
 
 t.test('Defaults in sub route', t => {
   const plan = r.plot({method: 'GET', path: '/bar/test/delete'});
   t.same(plan.steps, [{testcase: 'bar', action: 'test'}, {action: 'delete', id: 23}]);
   t.equal(plan.render().path, '/bar/test/delete');
-  t.done();
+  t.end();
 });
 
 t.test('Chained routes', t => {
@@ -324,7 +324,7 @@ t.test('Chained routes', t => {
   t.same(plan3.stops, [true, true]);
   t.equal(plan3.render().path, '/test2/baz');
   t.same(r.plot({method: 'GET', path: '/test2baz'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('WebSocket', t => {
@@ -333,7 +333,7 @@ t.test('WebSocket', t => {
   t.same(plan.steps, [{testcase: 'ws'}, {action: 'just'}, {works: 1}]);
   t.equal(plan.render().path, '/websocket');
   t.same(plan.stops, [false, false, true]);
-  t.done();
+  t.end();
 });
 
 t.test('Wildcards', t => {
@@ -353,7 +353,7 @@ t.test('Wildcards', t => {
   const plan4 = r.plot({method: 'GET', path: '/wildcards/4/hello/there/foo'});
   t.same(plan4.steps, [{testcase: 'somewhat', action: 'dangerous', wildcard: 'hello/there'}]);
   t.equal(plan4.render().path, '/wildcards/4/hello/there/foo');
-  t.done();
+  t.end();
 });
 
 t.test('Extensions', t => {
@@ -367,7 +367,7 @@ t.test('Extensions', t => {
   t.same(plan2.steps, [{testcase: 'hello', action: 'you', ext: 'html'}]);
   t.equal(plan2.render().path, '/ext.html');
   t.equal(plan2.render({ext: 'txt'}).path, '/ext.txt');
-  t.done();
+  t.end();
 });
 
 t.test('Extension with regex constraint', t => {
@@ -377,7 +377,7 @@ t.test('Extension with regex constraint', t => {
   t.equal(plan.render().path, '/ext2.txt');
   t.same(r.plot({method: 'GET', path: '/ext2.html'}), null);
   t.same(r.plot({method: 'GET', path: '/ext2.txt.txt'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Extension with constraint alternatives', t => {
@@ -391,7 +391,7 @@ t.test('Extension with constraint alternatives', t => {
   t.equal(plan2.render().path, '/ext3.text');
   t.same(r.plot({method: 'GET', path: '/ext3.html'}), null);
   t.same(r.plot({method: 'GET', path: '/ext3.txt.txt'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Extension with constraint and default', t => {
@@ -404,7 +404,7 @@ t.test('Extension with constraint and default', t => {
   t.equal(plan2.render().path, '/ext4.html');
   t.same(r.plot({method: 'GET', path: '/ext4.txt'}), null);
   t.same(r.plot({method: 'GET', path: '/ext4.txt.html'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Placeholder types', t => {
@@ -425,7 +425,7 @@ t.test('Placeholder types', t => {
   t.same(plan4.steps, [{controller: 'baz', action: 'yada', id: 't3st'}]);
   t.equal(plan4.render().path, '/type/t3st');
   t.same(r.plot({method: 'GET', path: '/type/t3est'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Request methods', t => {
@@ -452,7 +452,7 @@ t.test('Request methods', t => {
   t.same(plan5.steps, [{testcase: 'method', action: 'post_get'}]);
   t.equal(plan5.render().path, '/method/post_get');
   t.same(r.plot({method: 'PUT', path: '/method/get_post'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Route with version', t => {
@@ -474,7 +474,7 @@ t.test('Route with version', t => {
   t.same(r.plot({method: 'GET', path: '/versioned/3.0/test'}), null);
   t.same(r.plot({method: 'GET', path: '/versioned/3.4/test'}), null);
   t.same(r.plot({method: 'GET', path: '/versioned/0.3/test'}), null);
-  t.done();
+  t.end();
 });
 
 t.test('Route with version at the end', t => {
@@ -485,7 +485,7 @@ t.test('Route with version at the end', t => {
   const plan2 = r.plot({method: 'GET', path: '/versioned/too/2.0'});
   t.same(plan2.steps, [{controller: 'too'}, {action: 'bar'}]);
   t.equal(plan2.render().path, '/versioned/too/2.0');
-  t.done();
+  t.end();
 });
 
 t.test('Nameless placeholder', t => {
@@ -506,7 +506,7 @@ t.test('Nameless placeholder', t => {
   const plan4 = r.plot({method: 'GET', path: '/missing/too'});
   t.same(plan4.steps, [{controller: 'missing', action: 'too', '': 'missing'}]);
   t.equal(plan4.render().path, '/missing/too');
-  t.done();
+  t.end();
 });
 
 t.test('Unknown type (matches nothing)', t => {
@@ -515,5 +515,5 @@ t.test('Unknown type (matches nothing)', t => {
   t.same(r2.plot({method: 'GET', path: '/'}), null);
   t.same(r2.plot({method: 'GET', path: '/test'}), null);
   t.same(r2.plot({method: 'GET', path: '/23'}), null);
-  t.done();
+  t.end();
 });

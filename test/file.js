@@ -8,25 +8,25 @@ t.test('Constructor', t => {
   t.equal(new File('foo', 'bar', 'baz').toString(), path.join('foo', 'bar', 'baz'));
   t.equal('' + new File('foo', 'bar', 'baz'), path.join('foo', 'bar', 'baz'));
   t.same(new File('foo', 'bar', 'baz').toArray(), path.join('foo', 'bar', 'baz').split(path.sep));
-  t.done();
+  t.end();
 });
 
 t.test('basename', t => {
   t.equal(new File('foo', 'bar', 'file.t').basename(), 'file.t');
   t.equal(new File('foo', 'bar', 'file.t').basename('.t'), 'file');
-  t.done();
+  t.end();
 });
 
 t.test('dirname', t => {
   const dirname = path.dirname(path.join('foo', 'bar', 'file.t'));
   t.equal(new File('foo', 'bar', 'file.t').dirname().toString(), dirname);
-  t.done();
+  t.end();
 });
 
 t.test('extname', t => {
   t.equal(new File('foo', 'bar', 'file.t').extname(), '.t');
   t.equal(new File('file.html.ejs').extname(), '.ejs');
-  t.done();
+  t.end();
 });
 
 t.test('realpath', async t => {
