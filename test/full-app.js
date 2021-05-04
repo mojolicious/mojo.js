@@ -15,6 +15,12 @@ t.test('Full app', async t => {
     t.ok(await app.home.child('..', 'full-app', 'index.js').exists(), 'correct parent directory');
   });
 
+  await t.test('CLI', async t => {
+    t.equal(await app.cli.start('test'), 'Test works!');
+    t.equal(app.cli.commands.test.description, 'Test description');
+    t.equal(app.cli.commands.test.usage, 'Test usage');
+  });
+
   await t.test('Controller', async t => {
     (await client.getOk('/foo')).statusIs(200).bodyIs('Action works!');
     (await client.getOk('/FOO')).statusIs(200).bodyIs('Action works!');
