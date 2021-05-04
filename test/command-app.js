@@ -21,6 +21,13 @@ t.test('Command app', async t => {
     t.match(output2, /test error/);
   });
 
+  await t.test('get', async t => {
+    const output = await captureOutput(async () => {
+      await app.cli.start('get', '/');
+    });
+    t.match(output.toString('utf8'), /Hello Mojo!/);
+  });
+
   await t.test('version', async t => {
     const output = await captureOutput(async () => {
       await app.cli.start('version');
