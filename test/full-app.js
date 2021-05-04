@@ -16,7 +16,7 @@ t.test('Full app', async t => {
   });
 
   await t.test('CLI', async t => {
-    t.equal(await app.cli.start('test'), 'Test works!');
+    t.equal(await app.cli.start('test', 'works'), 'Test works!');
     t.equal(app.cli.commands.test.description, 'Test description');
     t.equal(app.cli.commands.test.usage, 'Test usage');
   });
