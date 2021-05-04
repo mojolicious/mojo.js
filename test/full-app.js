@@ -4,11 +4,6 @@ import {app} from './support/full-app/index.js';
 t.test('Full app', async t => {
   const client = await app.newTestClient({tap: t});
 
-  await t.test('Moniker', async t => {
-    t.equal(app.moniker, 'index');
-    t.end();
-  });
-
   await t.test('Hello World', async t => {
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
   });
