@@ -43,8 +43,8 @@ t.test('I/O', async t => {
   t.same(await dir.child('test.txt').exists(), true);
   t.same(await dir.child('test.txt').isReadable(), true);
   t.ok(await dir.child('test.txt').stat());
-  t.equal((await dir.child('test.txt').readFile()).toString('utf8'), 'Hello Mojo!');
-  t.equal(dir.child('test.txt').readFileSync().toString('utf8'), 'Hello Mojo!');
+  t.equal((await dir.child('test.txt').readFile()).toString(), 'Hello Mojo!');
+  t.equal(dir.child('test.txt').readFileSync().toString(), 'Hello Mojo!');
   t.equal((await dir.child('test.txt').readFile('utf8')), 'Hello Mojo!');
   await dir.child('test.txt').rm();
   t.same(await dir.child('test.txt').exists(), false);
@@ -116,7 +116,7 @@ t.test('tempDir', async t => {
   t.same(await temp.exists(), true);
   await dir.child('test.txt').writeFile('Hello Mojo!');
   t.same(await dir.child('test.txt').exists(), true);
-  t.equal((await dir.child('test.txt').readFile()).toString('utf8'), 'Hello Mojo!');
+  t.equal((await dir.child('test.txt').readFile()).toString(), 'Hello Mojo!');
   await temp.destroy();
   t.same(await dir.exists(), false);
   t.same(await temp.exists(), false);
