@@ -1,7 +1,7 @@
 export default class FooController {
   anotherView (ctx) {
     const role = ctx.models.users.getRole('sri');
-    ctx.render({view: 'foo', role: role});
+    ctx.render({view: 'foo'}, {role: role});
   }
 
   withInlineView (ctx) {
@@ -9,7 +9,7 @@ export default class FooController {
   }
 
   withView (ctx) {
-    ctx.render({view: 'foo/hello'});
+    ctx.render('foo/hello');
   }
 
   works (ctx) {

@@ -19,8 +19,8 @@
   "scripts": {
     "lint": "eslint \"lib/**/*.js\" \"lib/*.js\" \"test/*.js\"",
     "test": "tap --no-coverage test/*.js",
-    "test-coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
-    "test-coverage-html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js"
+    "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
+    "coverage-html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js"
   },
   "main": "./index.js",
   "type": "module",
