@@ -5,9 +5,9 @@ t.test('Minimal app', async t => {
   const client = await app.newTestClient({tap: t});
 
   await t.test('Home directory', async t => {
-    t.ok(app.home, 'has home directory');
-    t.ok(await app.home.exists(), 'home directory exists');
-    t.ok(await app.home.child('myapp.js').exists(), 'home directory contains app');
+    t.ok(app.home);
+    t.ok(await app.home.exists());
+    t.ok(await app.home.child('myapp.js').exists());
   });
 
   await t.test('Hello World', async t => {

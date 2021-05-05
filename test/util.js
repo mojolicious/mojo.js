@@ -9,8 +9,16 @@ t.test('captureOutput', async t => {
 
   const output2 = await util.captureOutput(async () => {
     process.stdout.write('works too');
+    process.stderr.write('fails');
   });
   t.match(output2, /works too/);
+  t.notMatch(output2, /fails/);
+
+  const output3 = await util.captureOutput(async () => {
+    process.stdout.write('works');
+    process.stderr.write('too');
+  }, {stderr: true});
+  t.match(output3, /workstoo/);
 });
 
 t.test('decodeURIComponentSafe', async t => {

@@ -3,6 +3,8 @@ import Users from './models/users.js';
 
 export const app = mojo();
 
+app.config.name = 'Full';
+
 app.models.users = new Users();
 
 app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));

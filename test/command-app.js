@@ -47,6 +47,11 @@ t.test('Command app', async t => {
     t.match(output.toString('utf8'), /Hello Mojo!/);
     t.match(app.cli.commands.get.description, /Perform HTTP request/);
     t.match(app.cli.commands.get.usage, /Usage: APPLICATION get/);
+
+    const output2 = await captureOutput(async () => {
+      await app.cli.start('get', '-v', '/');
+    }, {stderr: true});
+    t.match(output2.toString('utf8'), /Content-Length.*Hello Mojo!/s);
   });
 
   await t.test('server', async t => {

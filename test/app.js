@@ -40,6 +40,22 @@ t.test('App', async t => {
   // * /request_id
   app.any('/request_id').to(ctx => ctx.render({text: ctx.req.requestId}));
 
+  // DELETE /
+  app.delete('/', ctx => ctx.render({text: 'Delete'}));
+
+  // PATCH /
+  app.patch('/', ctx => ctx.render({text: 'Patch'}));
+
+  // OPTIONS /
+  app.options('/', ctx => ctx.render({text: 'Options'}));
+
+  // POST /
+  app.post('/', ctx => ctx.render({text: 'Post'}));
+
+  // GET /custom/request_id
+  const custom = app.under(ctx => (ctx.req.requestId = '123'));
+  custom.get('/custom/request_id').to(ctx => ctx.render({text: ctx.req.requestId}));
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -55,6 +71,11 @@ t.test('App', async t => {
     (await client.patchOk('/methods')).statusIs(200).bodyIs('PATCH');
     (await client.postOk('/methods')).statusIs(200).bodyIs('POST');
     (await client.putOk('/methods')).statusIs(200).bodyIs('PUT');
+
+    (await client.deleteOk('/')).statusIs(200).bodyIs('Delete');
+    (await client.patchOk('/')).statusIs(200).bodyIs('Patch');
+    (await client.optionsOk('/')).statusIs(200).bodyIs('Options');
+    (await client.postOk('/')).statusIs(200).bodyIs('Post');
   });
 
   await t.test('JSON', async t => {
@@ -86,6 +107,7 @@ t.test('App', async t => {
 
   await t.test('Request ID', async t => {
     (await client.getOk('/request_id')).statusIs(200).bodyLike(/^[0-9]+-[0-9a-z]{6}$/);
+    (await client.getOk('/custom/request_id')).statusIs(200).bodyIs('123');
   });
 
   await client.stop();

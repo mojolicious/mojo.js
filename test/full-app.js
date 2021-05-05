@@ -8,11 +8,16 @@ t.test('Full app', async t => {
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
   });
 
+  await t.test('Environment', async t => {
+    t.equal(app.config.name, 'Full');
+    t.equal(app.log.level, 'debug');
+  });
+
   await t.test('Home directory', async t => {
-    t.ok(app.home, 'has home directory');
-    t.ok(await app.home.exists(), 'home directory exists');
-    t.ok(await app.home.child('index.js').exists(), 'home directory contains app');
-    t.ok(await app.home.child('..', 'full-app', 'index.js').exists(), 'correct parent directory');
+    t.ok(app.home);
+    t.ok(await app.home.exists());
+    t.ok(await app.home.child('index.js').exists());
+    t.ok(await app.home.child('..', 'full-app', 'index.js').exists());
   });
 
   await t.test('Controller', async t => {

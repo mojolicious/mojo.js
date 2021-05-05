@@ -212,9 +212,6 @@ t.test('Logger', async t => {
       logger.warn('Four');
       logger.error('Five');
       logger.fatal('Six');
-      while (logger.destination.writableLength) {
-        await sleep(10);
-      }
     });
     t.match(output, /\[.+\] \[trace\] One\n/);
     t.match(output, /\[.+\] \[debug\] Two\n/);
