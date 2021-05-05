@@ -6,7 +6,7 @@
 
 [![](https://github.com/mojolicious/mojo.js/workflows/test/badge.svg)](https://github.com/mojolicious/mojo.js/actions)
 
-Mojolicious for JavaScript. **Secret project, do not share!**
+Mojolicious for JavaScript. **Experimental!**
 
 ```js
 import mojo from '@mojojs/core';
