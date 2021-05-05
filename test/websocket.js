@@ -1,7 +1,7 @@
 import t from 'tap';
 import mojo from '../index.js';
 
-t.test('App', async t => {
+t.test('WebSocket', async t => {
   const app = mojo();
 
   app.get('/').to(ctx => ctx.render({text: 'Hello Mojo!'}));

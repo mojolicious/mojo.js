@@ -18,11 +18,13 @@
   "homepage": "https://mojojs.org",
   "scripts": {
     "lint": "eslint \"lib/**/*.js\" \"lib/*.js\" \"test/*.js\"",
-    "test": "tap --no-coverage test/*.js"
+    "test": "tap --no-coverage test/*.js",
+    "test-coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js"
   },
   "main": "./index.js",
   "type": "module",
   "devDependencies": {
+    "@istanbuljs/esm-loader-hook": "^0.1.2",
     "eslint": ">=7.22.0",
     "eslint-config-semistandard": ">=15.0.1",
     "tap": ">=15.0.6"

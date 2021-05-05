@@ -1,6 +1,18 @@
 import t from 'tap';
 import * as util from '../lib/util.js';
 
+t.test('captureOutput', async t => {
+  const output = await util.captureOutput(async () => {
+    console.log('test works');
+  });
+  t.match(output, /test works/);
+
+  const output2 = await util.captureOutput(async () => {
+    process.stdout.write('works too');
+  });
+  t.match(output2, /works too/);
+});
+
 t.test('decodeURIComponentSafe', async t => {
   const decode = util.decodeURIComponentSafe;
   t.same(decode('%E0%A4%A'), null);
