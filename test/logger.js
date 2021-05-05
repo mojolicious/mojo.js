@@ -1,6 +1,7 @@
 import t from 'tap';
+import chalk from 'chalk';
 import Logger from '../lib/logger.js';
-import {sleep} from '../lib/util.js';
+import {captureOutput, sleep} from '../lib/util.js';
 import {tempDir} from '../lib/file.js';
 
 t.test('Logger', async t => {
@@ -9,7 +10,7 @@ t.test('Logger', async t => {
   t.test('Logging to file', async t => {
     const file = dir.child('file.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'error'});
+    const logger = new Logger({destination: stream, level: 'error', color: false});
     t.same(logger.destination, stream);
     logger.error('Works');
     logger.error('Works', 'too');
@@ -47,7 +48,7 @@ t.test('Logger', async t => {
   t.test('trace', async t => {
     const file = dir.child('trace.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'trace'});
+    const logger = new Logger({destination: stream, level: 'trace', color: false});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -69,7 +70,7 @@ t.test('Logger', async t => {
   t.test('debug', async t => {
     const file = dir.child('debug.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'debug'});
+    const logger = new Logger({destination: stream, level: 'debug', color: false});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -91,7 +92,7 @@ t.test('Logger', async t => {
   t.test('info', async t => {
     const file = dir.child('info.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'info'});
+    const logger = new Logger({destination: stream, level: 'info', color: false});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -113,7 +114,7 @@ t.test('Logger', async t => {
   t.test('warn', async t => {
     const file = dir.child('warn.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'warn'});
+    const logger = new Logger({destination: stream, level: 'warn', color: false});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -135,7 +136,7 @@ t.test('Logger', async t => {
   t.test('error', async t => {
     const file = dir.child('error.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'error'});
+    const logger = new Logger({destination: stream, level: 'error', color: false});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -157,7 +158,7 @@ t.test('Logger', async t => {
   t.test('fatal', async t => {
     const file = dir.child('fatal.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'fatal'});
+    const logger = new Logger({destination: stream, level: 'fatal', color: false});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -179,7 +180,7 @@ t.test('Logger', async t => {
   t.test('Child logger', async t => {
     const file = dir.child('child.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'trace'});
+    const logger = new Logger({destination: stream, level: 'trace', color: false});
     const child = logger.child('[123]');
     child.trace('One');
     child.debug('Two');
@@ -199,5 +200,27 @@ t.test('Logger', async t => {
     t.match(content, /\[.+\] \[error\] \[123\] Five\n/);
     t.match(content, /\[.+\] \[fatal\] \[123\] Six\n/);
     t.match(content, /\[.+\] \[info\] No prefix\n/);
+  });
+
+  t.test('Color', async t => {
+    chalk.level = 1;
+    const logger = new Logger({destination: process.stdout, level: 'trace'});
+    const output = await captureOutput(async () => {
+      logger.trace('One');
+      logger.debug('Two');
+      logger.info('Three');
+      logger.warn('Four');
+      logger.error('Five');
+      logger.fatal('Six');
+      while (logger.destination.writableLength) {
+        await sleep(10);
+      }
+    });
+    t.match(output, /\[.+\] \[trace\] One\n/);
+    t.match(output, /\[.+\] \[debug\] Two\n/);
+    t.match(output, /\[.+\] \[info\] Three\n/);
+    t.match(output, /\[33m\[.+\] \[warn\] Four.*\[39m/);
+    t.match(output, /\[31m\[.+\] \[error\] Five.*\[39m/);
+    t.match(output, /\[31m\[.+\] \[fatal\] Six.*\[39m/);
   });
 });
