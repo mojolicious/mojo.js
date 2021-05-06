@@ -35,11 +35,13 @@
   },
   "dependencies": {
     "chalk": ">=4.1.1",
+    "cookie": ">=0.4.1",
     "ejs": ">=3.1.6",
     "escape-string-regexp": ">=2.0.0",
     "lru-cache": ">=6.0.0",
     "nopt": ">=5.0.0",
     "stack-utils": ">=1.0.5",
+    "tough-cookie": ">=4.0.0",
     "ws": ">=7.4.5"
   },
   "optionalDependencies": {

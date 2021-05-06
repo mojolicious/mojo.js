@@ -56,6 +56,13 @@ t.test('App', async t => {
   const custom = app.under(ctx => (ctx.req.requestId = '123'));
   custom.get('/custom/request_id').to(ctx => ctx.render({text: ctx.req.requestId}));
 
+  // GET /cookie
+  app.get('/cookie', ctx => {
+    const foo = ctx.req.cookies.foo ?? 'not present';
+    if (foo === 'not present') ctx.res.setCookie('foo', 'present');
+    ctx.render({text: `Cookie: ${foo}`});
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -108,6 +115,12 @@ t.test('App', async t => {
   await t.test('Request ID', async t => {
     (await client.getOk('/request_id')).statusIs(200).bodyLike(/^[0-9]+-[0-9a-z]{6}$/);
     (await client.getOk('/custom/request_id')).statusIs(200).bodyIs('123');
+  });
+
+  await t.test('Cookie', async t => {
+    (await client.getOk('/cookie')).statusIs(200).bodyIs('Cookie: not present');
+    (await client.getOk('/cookie')).statusIs(200).bodyIs('Cookie: present');
+    (await client.getOk('/cookie')).statusIs(200).bodyIs('Cookie: present');
   });
 
   await client.stop();
