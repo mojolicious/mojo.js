@@ -1,6 +1,6 @@
-import t from 'tap';
 import {app} from './support/command-app/index.js';
 import {captureOutput} from '../lib/util.js';
+import t from 'tap';
 
 t.test('Command app', async t => {
   await t.test('Help', async t => {

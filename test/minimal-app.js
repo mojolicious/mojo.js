@@ -1,5 +1,5 @@
-import t from 'tap';
 import {app} from './support/minimal-app/myapp.js';
+import t from 'tap';
 
 t.test('Minimal app', async t => {
   const client = await app.newTestClient({tap: t});

@@ -1,7 +1,7 @@
-import t from 'tap';
-import mojo from '../index.js';
 import {currentFile} from '../lib/file.js';
+import mojo from '../index.js';
 import Server from '../lib/server.js';
+import t from 'tap';
 
 t.test('HTTPS app', async t => {
   const app = mojo();

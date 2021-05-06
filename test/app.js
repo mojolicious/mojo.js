@@ -1,5 +1,5 @@
-import t from 'tap';
 import mojo from '../index.js';
+import t from 'tap';
 
 t.test('App', async t => {
   const app = mojo();

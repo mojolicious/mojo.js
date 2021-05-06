@@ -1,5 +1,5 @@
-import t from 'tap';
 import Pattern from '../lib/router/pattern.js';
+import t from 'tap';
 
 t.test('Text pattern', t => {
   const pattern = new Pattern('/test/123');

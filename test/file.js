@@ -1,7 +1,7 @@
-import t from 'tap';
+import {File, tempDir} from '../lib/file.js';
 import fs from 'fs/promises';
 import path from 'path';
-import {tempDir, File} from '../lib/file.js';
+import t from 'tap';
 
 t.test('Constructor', t => {
   t.equal(new File().toString(), process.cwd());

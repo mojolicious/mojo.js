@@ -1,7 +1,7 @@
-import t from 'tap';
 import App from '../lib/app.js';
 import Client from '../lib/client.js';
 import Server from '../lib/server.js';
+import t from 'tap';
 import {tempDir} from '../lib/file.js';
 
 t.test('Client', async t => {
