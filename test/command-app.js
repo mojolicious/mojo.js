@@ -34,10 +34,16 @@ t.test('Command app', async t => {
     t.match(app.cli.commands.eval.description, /Run code against application/);
     t.match(app.cli.commands.eval.usage, /Usage: APPLICATION eval/);
 
-    const output2 = await captureOutput(async () => {
-      await app.cli.start('eval', 'throw new Error("test error")');
-    });
-    t.match(output2, /test error/);
+    let output2, error;
+    try {
+      output2 = await captureOutput(async () => {
+        await app.cli.start('eval', 'throw new Error("test error")');
+      });
+    } catch (err) {
+      error = err;
+    }
+    t.same(output2, undefined);
+    t.match(error, /test error/);
   });
 
   await t.test('get', async t => {

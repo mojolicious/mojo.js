@@ -9,7 +9,7 @@
 Mojolicious for JavaScript. **Experimental!**
 
 ```js
-import mojo from '@mojojs/core';
+import mojo from '@mojojs/mojo';
 
 const app = mojo();
 

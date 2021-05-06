@@ -7,11 +7,22 @@ t.test('captureOutput', async t => {
   });
   t.match(output, /test works/);
 
-  const output2 = await util.captureOutput(async () => {
+  let output2, error;
+  try {
+    output2 = await util.captureOutput(async () => {
+      throw new Error('Capture error');
+    });
+  } catch (err) {
+    error = err;
+  }
+  t.same(output2, undefined);
+  t.match(error, /Capture error/);
+
+  const output3 = await util.captureOutput(async () => {
     process.stdout.write('works');
     process.stderr.write('too');
   }, {stderr: true});
-  t.match(output2, /workstoo/);
+  t.match(output3, /workstoo/);
 });
 
 t.test('decodeURIComponentSafe', async t => {
