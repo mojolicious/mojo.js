@@ -2,6 +2,7 @@ import {File, tempDir} from '../lib/file.js';
 import fs from 'fs/promises';
 import path from 'path';
 import t from 'tap';
+import url from 'url';
 
 t.test('Constructor', t => {
   t.equal(new File().toString(), process.cwd());
@@ -9,6 +10,7 @@ t.test('Constructor', t => {
   t.equal(new File('foo', 'bar').sibling('baz').toString(), path.join('foo', 'baz'));
   t.equal('' + new File('foo', 'bar', 'baz'), path.join('foo', 'bar', 'baz'));
   t.same(new File('foo', 'bar', 'baz').toArray(), path.join('foo', 'bar', 'baz').split(path.sep));
+  t.same(new File('foo', 'bar.txt').toFileURL(), url.pathToFileURL(path.join('foo', 'bar', 'baz')));
   t.end();
 });
 

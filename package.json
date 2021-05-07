@@ -10,10 +10,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mojolicious/mojojs.git"
+    "url": "git+https://github.com/mojolicious/mojo.js.git"
   },
   "bugs": {
-    "url": "https://github.com/mojolicious/mojojs/issues"
+    "url": "https://github.com/mojolicious/mojo.js/issues"
   },
   "homepage": "https://mojojs.org",
   "scripts": {
