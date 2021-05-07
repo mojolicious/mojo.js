@@ -6,21 +6,56 @@
 
 [![](https://github.com/mojolicious/mojo.js/workflows/test/badge.svg)](https://github.com/mojolicious/mojo.js/actions)
 
-Mojolicious for JavaScript. **Experimental!**
+[Mojolicious](https://mojolicious.org) for JavaScript. **In Development!**
 
 ```js
 import mojo from '@mojojs/mojo';
 
 const app = mojo();
 
-app.get('/hello', ctx => ctx.render({text: 'Hello Mojo!'}));
+app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
-app.put('/json', async ctx => {
-  const data = await ctx.req.json();
-  data.hello = 'Mojo!';
-  ctx.render({json: data});
+app.get('/mojo', ctx => {
+  ctx.render({inline: inlineTemplate});
+});
+
+app.websocket('/title', ctx => {
+  ctx.on('connection', ws => {
+    ws.on('message', async url => {
+      const res = await ctx.app.client.get(url);
+      const title = (await res.dom()).window.document.querySelector('title').textContent;
+      ws.send(title);
+    });
+  });
 });
 
 app.start();
 
+const inlineTemplate = `
+<script>
+  const ws = new WebSocket('<%= ctx.urlFor('title') %>');
+  ws.onmessage = function (event) { document.body.innerHTML += event.data };
+  ws.onopen    = function (event) { ws.send('https://mojolicious.org') };
+</script>
+`;
 ```
+
+This is just an example for a self-contained single file app. We use those for prototyping and to shorten examples in
+documentation. Real applications use a proper MVC architecture and clean directory structure.
+
+```
+|-- controllers
+|   |-- bar.js
+|   `-- foo.js
+|-- models
+|   `-- users.js
+|-- public
+|   `-- test.txt
+|-- views
+|   |-- foo
+|   |   `-- bar.html.ejs
+|   `-- foo.html.ejs
+`-- index.js
+```
+
+Real documentation will follow very soon, as the project is moving closer to the 1.0 release.
