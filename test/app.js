@@ -156,6 +156,8 @@ t.test('App', async t => {
     (await client.postOk('/url_for', {form: {target: 'current'}})).statusIs(200).bodyIs(`${baseURL}url_for`);
     (await client.postOk('/url_for', {form: {target: 'current', msg: 'test'}})).statusIs(200)
       .bodyIs(`${baseURL}url_for/test`);
+    (await client.postOk('/url_for', {form: {target: 'https://mojolicious.org'}})).statusIs(200)
+      .bodyIs('https://mojolicious.org');
     (await client.postOk('/url_for', {form: {target: 'websocket_route'}})).statusIs(200)
       .bodyIs(`${baseURL}websocket/route/works`.replace(/^http/, 'ws'));
     (await client.postOk('/url_for', {form: {target: 'exception', msg: 'test'}})).statusIs(200)
