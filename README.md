@@ -15,7 +15,28 @@ const app = mojo();
 
 app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
-app.get('/mojo', ctx => {
+app.start();
+```
+
+Use the command system to start your web server.
+
+```js
+$ node index.js server --help
+...
+
+$ node index.js server
+[77264] Web application available at http://127.0.0.1:3000/
+```
+
+Batteries included. This real-time web framework will not only provide a very high level of performance, it will also
+include everything you need to build sophisticated web services.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+app.get('/', ctx => {
   ctx.render({inline: inlineTemplate});
 });
 
@@ -40,8 +61,8 @@ const inlineTemplate = `
 `;
 ```
 
-This is just an example for a self-contained single file app. We use those for prototyping and to shorten examples in
-documentation. Real applications use a proper MVC architecture and clean directory structure.
+But the examples above are just simplified single file apps. We use those for prototyping and to shorten examples in
+documentation. Real applications use a proper MVC architecture with a clean directory structure.
 
 ```
 |-- controllers
@@ -58,4 +79,5 @@ documentation. Real applications use a proper MVC architecture and clean directo
 `-- index.js
 ```
 
-Real documentation will follow very soon, as the project is moving closer to the 1.0 release.
+More documentation will follow very soon, as the project moves closer to the 1.0 release. We are aiming for same
+level of quality you would expect from [Mojolicious](https://mojolicious.org) itself.
