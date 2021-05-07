@@ -69,15 +69,21 @@ t.test('App', async t => {
     ctx.render({text: await res.text()});
   });
 
-  // GET /url_for
+  // * /url_for
   app.any('/url_for/:msg', async ctx => {
     const form = await ctx.req.form();
     const target = form.get('target');
-    let values;
-    if (form.has('msg')) values = {msg: form.get('msg')};
+    const values = form.has('msg') ? {msg: form.get('msg')} : undefined;
     ctx.render({text: ctx.urlFor(target, values)});
   }).to({msg: 'fail'});
   app.any('/websocket').websocket('/route').any('/works').name('websocket_route');
+
+  // * /redirect
+  app.any('/redirect', async ctx => {
+    const form = await ctx.req.form();
+    const options = form.has('status') ? {status: form.get('status')} : undefined;
+    ctx.redirectTo(form.get('target'), options);
+  });
 
   const client = await app.newTestClient({tap: t});
 
@@ -154,6 +160,18 @@ t.test('App', async t => {
       .bodyIs(`${baseURL}websocket/route/works`.replace(/^http/, 'ws'));
     (await client.postOk('/url_for', {form: {target: 'exception', msg: 'test'}})).statusIs(200)
       .bodyIs(`${baseURL}exception/test`);
+  });
+
+  await t.test('redirectTo', async t => {
+    const baseURL = client.server.urls[0];
+    (await client.postOk('/redirect', {form: {target: '/foo'}})).statusIs(302)
+      .headerIs('Location', `${baseURL}foo`).bodyIs('');
+    (await client.postOk('/redirect', {form: {target: '/foo', status: '301'}})).statusIs(301)
+      .headerIs('Location', `${baseURL}foo`).bodyIs('');
+    (await client.postOk('/redirect', {form: {target: 'websocket_route'}})).statusIs(302)
+      .headerIs('Location', `${baseURL}websocket/route/works`.replace(/^http/, 'ws')).bodyIs('');
+    (await client.postOk('/redirect', {form: {target: 'https://mojolicious.org'}})).statusIs(302)
+      .headerIs('Location', 'https://mojolicious.org').bodyIs('');
   });
 
   await client.stop();
