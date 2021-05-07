@@ -63,6 +63,12 @@ t.test('App', async t => {
     ctx.render({text: `Cookie: ${foo}`});
   });
 
+  // GET /client
+  app.get('/client', async ctx => {
+    const res = await ctx.client.get(client.server.urls[0] + 'config');
+    ctx.render({text: await res.text()});
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -121,6 +127,10 @@ t.test('App', async t => {
     (await client.getOk('/cookie')).statusIs(200).bodyIs('Cookie: not present');
     (await client.getOk('/cookie')).statusIs(200).bodyIs('Cookie: present');
     (await client.getOk('/cookie')).statusIs(200).bodyIs('Cookie: present');
+  });
+
+  await t.test('Client', async t => {
+    (await client.getOk('/client')).statusIs(200).bodyIs('Test works');
   });
 
   await client.stop();
