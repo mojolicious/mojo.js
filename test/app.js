@@ -32,7 +32,7 @@ t.test('App', async t => {
   // * /exception/*
   app.any('/exception/:msg', ctx => {
     throw new Error(`Something went wrong: ${ctx.stash.msg}`);
-  });
+  }).name('exception');
 
   // * /config
   app.any('/config').to(ctx => ctx.render({text: `${ctx.config.appName} ${ctx.models.test.it}`}));
@@ -68,6 +68,16 @@ t.test('App', async t => {
     const res = await ctx.client.get(client.server.urls[0] + 'config');
     ctx.render({text: await res.text()});
   });
+
+  // GET /url_for
+  app.any('/url_for/:msg', async ctx => {
+    const form = await ctx.req.form();
+    const target = form.get('target');
+    let values;
+    if (form.has('msg')) values = {msg: form.get('msg')};
+    ctx.render({text: ctx.urlFor(target, values)});
+  }).to({msg: 'fail'});
+  app.any('/websocket').websocket('/route').any('/works').name('websocket_route');
 
   const client = await app.newTestClient({tap: t});
 
@@ -131,6 +141,19 @@ t.test('App', async t => {
 
   await t.test('Client', async t => {
     (await client.getOk('/client')).statusIs(200).bodyIs('Test works');
+  });
+
+  await t.test('urlFor', async t => {
+    const baseURL = client.server.urls[0];
+    (await client.postOk('/url_for', {form: {target: '/foo'}})).statusIs(200).bodyIs(`${baseURL}foo`);
+    (await client.postOk('/url_for', {form: {target: '/foo/bar.txt'}})).statusIs(200).bodyIs(`${baseURL}foo/bar.txt`);
+    (await client.postOk('/url_for', {form: {target: 'current'}})).statusIs(200).bodyIs(`${baseURL}url_for`);
+    (await client.postOk('/url_for', {form: {target: 'current', msg: 'test'}})).statusIs(200)
+      .bodyIs(`${baseURL}url_for/test`);
+    (await client.postOk('/url_for', {form: {target: 'websocket_route'}})).statusIs(200)
+      .bodyIs(`${baseURL}websocket/route/works`.replace(/^http/, 'ws'));
+    (await client.postOk('/url_for', {form: {target: 'exception', msg: 'test'}})).statusIs(200)
+      .bodyIs(`${baseURL}exception/test`);
   });
 
   await client.stop();

@@ -133,6 +133,9 @@ r.get('/missing/:/name').to('missing#placeholder');
 r.get('/missing/*/name').to('missing#wildcard');
 r.get('/missing/too/*', {'': ['test']}).to({controller: 'missing', action: 'too', '': 'missing'});
 
+// WebSocket /websocket/route/works
+r.any('/websocket').websocket('/route').any('/works').name('websocket_route');
+
 t.test('No match', t => {
   t.same(r.plot({method: 'GET', path: '/does_not_exist'}), null);
   t.end();
@@ -333,6 +336,11 @@ t.test('WebSocket', t => {
   t.same(plan.steps, [{testcase: 'ws'}, {action: 'just'}, {works: 1}]);
   t.equal(plan.render().path, '/websocket');
   t.same(plan.stops, [false, false, true]);
+
+  const plan2 = r.plot({method: 'GET', path: '/websocket/route/works', websocket: true});
+  t.same(plan2.steps, [{}, {}, {}]);
+  t.equal(plan2.render().path, '/websocket/route/works');
+  t.equal(r.lookup('websocket_route').render(), '/websocket/route/works');
   t.end();
 });
 

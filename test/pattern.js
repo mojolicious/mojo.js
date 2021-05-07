@@ -113,9 +113,9 @@ t.test('Wildcard', t => {
 
 t.test('False value', t => {
   const pattern = new Pattern('/:id');
-  t.equal(pattern.render({id: 0}), '0');
+  t.equal(pattern.render({id: 0}), '/0');
   pattern.defaults = {id: 0};
-  t.equal(pattern.render(), '0');
+  t.equal(pattern.render(), '/0');
   t.same(pattern.match('/0'), {id: '0'});
   t.end();
 });
