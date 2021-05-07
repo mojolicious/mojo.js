@@ -58,7 +58,7 @@ t.test('App', async t => {
 
   // GET /cookie
   app.get('/cookie', ctx => {
-    const foo = ctx.req.cookies.foo ?? 'not present';
+    const foo = ctx.req.getCookie('foo') ?? 'not present';
     if (foo === 'not present') ctx.res.setCookie('foo', 'present');
     ctx.render({text: `Cookie: ${foo}`});
   });
