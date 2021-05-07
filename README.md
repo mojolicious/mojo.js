@@ -20,7 +20,7 @@ app.start();
 
 Use the command system to start your web server.
 
-```js
+```
 $ node index.js server --help
 ...
 
