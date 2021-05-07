@@ -55,8 +55,8 @@ app.start();
 const inlineTemplate = `
 <script>
   const ws = new WebSocket('<%= ctx.urlFor('title') %>');
-  ws.onmessage = function (event) { document.body.innerHTML += event.data };
-  ws.onopen    = function (event) { ws.send('https://mojolicious.org') };
+  ws.onmessage = event => { document.body.innerHTML += event.data };
+  ws.onopen    = event => { ws.send('https://mojolicious.org') };
 </script>
 `;
 ```
