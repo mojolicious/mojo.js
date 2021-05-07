@@ -6,7 +6,9 @@
 
 [![](https://github.com/mojolicious/mojo.js/workflows/test/badge.svg)](https://github.com/mojolicious/mojo.js/actions)
 
-[Mojolicious](https://mojolicious.org) for JavaScript. **In Development!**
+[Mojolicious](https://mojolicious.org) for JavaScript. This project is still **under heavy development** and not ready
+for production use yet. If you want to help out, you're welcome to join us on
+[IRC](https://webchat.freenode.net/#mojo.js) (`#mojo.js` on Freenode).
 
 ```js
 import mojo from '@mojojs/mojo';
@@ -79,5 +81,5 @@ documentation. Real applications use a proper MVC architecture with a clean dire
 `-- index.js
 ```
 
-More documentation will follow very soon, as the project moves closer to the 1.0 release. We are aiming for same
+More documentation will follow very soon, as the project moves closer to the 1.0 release. We are aiming for the same
 level of quality you would expect from [Mojolicious](https://mojolicious.org) itself.
