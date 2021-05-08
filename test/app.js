@@ -85,6 +85,12 @@ t.test('App', async t => {
     ctx.redirectTo(form.get('target'), options);
   });
 
+  // PUT /maybe
+  app.put('/maybe', async ctx => {
+    const options = await ctx.req.json();
+    if (await ctx.render({...options}) === false) ctx.render({text: 'Fallback'});
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -174,6 +180,14 @@ t.test('App', async t => {
       .headerIs('Location', `${baseURL}websocket/route/works`.replace(/^http/, 'ws')).bodyIs('');
     (await client.postOk('/redirect', {form: {target: 'https://mojolicious.org'}})).statusIs(302)
       .headerIs('Location', 'https://mojolicious.org').bodyIs('');
+  });
+
+  await t.test('Maybe render', async t => {
+    (await client.putOk('/maybe', {json: {text: 'Works', maybe: true}})).statusIs(200).bodyIs('Works');
+    (await client.putOk('/maybe', {json: {text: 'Works', maybe: false}})).statusIs(200).bodyIs('Works');
+    (await client.putOk('/maybe', {json: {template: 'missing', maybe: true}})).statusIs(200).bodyIs('Fallback');
+    (await client.putOk('/maybe', {json: {template: 'missing', maybe: false}})).statusIs(500);
+    (await client.putOk('/maybe', {json: {template: 'missing'}})).statusIs(500);
   });
 
   await client.stop();
