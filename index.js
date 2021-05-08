@@ -6,8 +6,8 @@
 import App from './lib/app.js';
 import {callerFile} from './lib/file.js';
 
-export default function mojo (...args) {
-  const app = new App(...args);
+export default function mojo (options) {
+  const app = new App(options);
   app.home = callerFile().dirname();
   app.cli.commandPaths.push(app.home.child('cli').toString());
   app.renderer.viewPaths.push(app.home.child('views').toString());

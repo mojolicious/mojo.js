@@ -122,7 +122,7 @@ t.test('App', async t => {
   });
 
   await t.test('Exception', async t => {
-    (await client.getOk('/exception/works')).statusIs(500).bodyLike(/Exception: Error: Something went wrong: works/);
+    (await client.getOk('/exception/works')).statusIs(500).bodyLike(/Error: Something went wrong: works/);
   });
 
   await t.test('Nested routes', async t => {

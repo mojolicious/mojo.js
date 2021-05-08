@@ -1,3 +1,6 @@
+/*
+ * Minimal "Hello World" application with template for profiling
+ */
 import mojo from '../index.js';
 
 const app = mojo();

@@ -40,6 +40,52 @@ t.test('Logger', async t => {
     t.match(content, /\[.+\] \[debug\] And this\n/);
   });
 
+  t.test('History', async t => {
+    const file = dir.child('file.log');
+    const stream = (await file.touch()).createWriteStream();
+    const logger = new Logger({destination: stream, level: 'info', historySize: 5, color: false});
+    t.same(logger.destination, stream);
+    t.equal(logger.historySize, 5);
+    logger.error('First');
+    logger.fatal('Second');
+    logger.debug('Third');
+    logger.info('Fourth');
+    while (stream.writableLength) {
+      await sleep(10);
+    }
+    const content = await file.readFile('utf8');
+    t.match(content, /\[.+\] \[error\] First\n/);
+    t.match(content, /\[.+\] \[fatal\] Second\n/);
+    t.match(content, /\[.+\] \[info\] Fourth\n/);
+    t.notMatch(content, /\[.+\] \[debug\] Third\n/);
+
+    t.equal(logger.history[0][1], 'error');
+    t.match(logger.history[0][2], /First/);
+    t.equal(logger.history[1][1], 'fatal');
+    t.match(logger.history[1][2], /Second/);
+    t.equal(logger.history[2][1], 'info');
+    t.match(logger.history[2][2], /Fourth/);
+    t.same(logger.history[3], undefined);
+
+    logger.error('Fifth');
+    logger.fatal('Sixth');
+    logger.fatal('Seventh');
+    while (stream.writableLength) {
+      await sleep(10);
+    }
+    t.equal(logger.history[0][1], 'fatal');
+    t.match(logger.history[0][2], /Second/);
+    t.equal(logger.history[1][1], 'info');
+    t.match(logger.history[1][2], /Fourth/);
+    t.equal(logger.history[2][1], 'error');
+    t.match(logger.history[2][2], /Fifth/);
+    t.equal(logger.history[3][1], 'fatal');
+    t.match(logger.history[3][2], /Sixth/);
+    t.equal(logger.history[4][1], 'fatal');
+    t.match(logger.history[4][2], /Seventh/);
+    t.same(logger.history[5], undefined);
+  });
+
   t.test('Logging to STDERR', async t => {
     const logger = new Logger();
     t.same(logger.destination, process.stderr);
