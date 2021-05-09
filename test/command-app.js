@@ -73,7 +73,7 @@ t.test('Command app', async t => {
     const output = await captureOutput(async () => {
       await app.cli.start('version');
     });
-    t.match(output, /mojo\.js\s+\(\d\.\d\.\d\)/);
+    t.match(output, /mojo\.js\s+\(\d\.\d\.\d(?:-(?:alpha|beta)\.\d+)?\)/);
     t.match(app.cli.commands.version.description, /Show version/);
     t.match(app.cli.commands.version.usage, /Usage: APPLICATION version/);
   });
