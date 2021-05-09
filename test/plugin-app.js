@@ -1,4 +1,3 @@
-import escapeStringRegexp from 'escape-string-regexp';
 import mojo from '../index.js';
 import t from 'tap';
 
