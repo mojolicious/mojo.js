@@ -23,4 +23,8 @@ app.get('/res4', ctx => {
   throw new Error('Hello World!');
 });
 
+app.get('/res5', ctx => {
+  ctx.render({inline: "<% throw new Error('Hello World!') %>"});
+});
+
 app.start();
