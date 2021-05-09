@@ -13,9 +13,3 @@ This distribution includes a few files with different licenses that have been bu
   Copyright 2011-2021 The Bootstrap Authors
 
   Licensed under the [MIT License](http://creativecommons.org/licenses/MIT).
-
-
-* Font Awesome
-
-  Licensed under the [CC-BY License, Version 4.0](https://creativecommons.org/licenses/by/4.0/) and
-  [SIL OFL, Version 1.1](https://opensource.org/licenses/OFL-1.1).

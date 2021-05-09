@@ -15,8 +15,6 @@ t.test('Static app', async t => {
       .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
     (await client.getOk('/public/mojo/bootstrap/bootstrap.min.css')).statusIs(200)
       .headerIs('Content-Type', 'text/css').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/fontawesome/all.min.css')).statusIs(200)
-      .headerIs('Content-Type', 'text/css').headerExists('Content-Length');
 
     (await client.getOk('/public/mojo/failraptor.png')).statusIs(200)
       .headerIs('Content-Type', 'image/png').headerExists('Content-Length');
@@ -36,41 +34,6 @@ t.test('Static app', async t => {
       .headerIs('Content-Type', 'image/png').headerExists('Content-Length');
     (await client.getOk('/public/mojo/pinstripe-light.png')).statusIs(200)
       .headerIs('Content-Type', 'image/png').headerExists('Content-Length');
-
-    (await client.getOk('/public/mojo/webfonts/fa-brands-400.eot')).statusIs(200)
-      .headerIs('Content-Type', 'application/octet-stream').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-regular-400.eot')).statusIs(200)
-      .headerIs('Content-Type', 'application/octet-stream').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-solid-900.eot')).statusIs(200)
-      .headerIs('Content-Type', 'application/octet-stream').headerExists('Content-Length');
-
-    (await client.getOk('/public/mojo/webfonts/fa-brands-400.svg')).statusIs(200)
-      .headerIs('Content-Type', 'image/svg+xml').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-regular-400.svg')).statusIs(200)
-      .headerIs('Content-Type', 'image/svg+xml').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-solid-900.svg')).statusIs(200)
-      .headerIs('Content-Type', 'image/svg+xml').headerExists('Content-Length');
-
-    (await client.getOk('/public/mojo/webfonts/fa-brands-400.ttf')).statusIs(200)
-      .headerIs('Content-Type', 'font/ttf').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-regular-400.ttf')).statusIs(200)
-      .headerIs('Content-Type', 'font/ttf').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-solid-900.ttf')).statusIs(200)
-      .headerIs('Content-Type', 'font/ttf').headerExists('Content-Length');
-
-    (await client.getOk('/public/mojo/webfonts/fa-brands-400.woff')).statusIs(200)
-      .headerIs('Content-Type', 'font/woff').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-regular-400.woff')).statusIs(200)
-      .headerIs('Content-Type', 'font/woff').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-solid-900.woff')).statusIs(200)
-      .headerIs('Content-Type', 'font/woff').headerExists('Content-Length');
-
-    (await client.getOk('/public/mojo/webfonts/fa-brands-400.woff2')).statusIs(200)
-      .headerIs('Content-Type', 'font/woff2').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-regular-400.woff2')).statusIs(200)
-      .headerIs('Content-Type', 'font/woff2').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/webfonts/fa-solid-900.woff2')).statusIs(200)
-      .headerIs('Content-Type', 'font/woff2').headerExists('Content-Length');
   });
 
   await client.stop();
