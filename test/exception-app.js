@@ -32,7 +32,7 @@ t.test('Exception app', async t => {
       app.log.destination = file.createWriteStream();
 
       (await client.getOk('/exception')).statusIs(500).bodyLike(/This application is in.*development.*mode/);
-      (await client.getOk('/exception')).statusIs(500).bodyUnlike(/failraptor\.png/);
+      (await client.getOk('/exception')).statusIs(500).bodyUnlike(/\/public\/mojo\/failraptor\.png/);
 
       t.equal(app.log.history[0][1], 'error');
       t.match(app.log.history[0][3], /Error: Test exception/);

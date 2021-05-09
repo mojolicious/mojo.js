@@ -17,7 +17,7 @@
         top: 60%;
       }
       #not-found {
-        background: url(<%= ctx.urlForStatic('/mojo/not-found.png') %>);
+        background: url(<%= ctx.urlForFile('/mojo/not-found.png') %>);
         height: 62px;
         left: 50%;
         margin-left: -153px;
@@ -30,7 +30,7 @@
   </head>
   <body>
     <a href="<%= ctx.req.baseURL %>">
-      <img src="<%= ctx.urlForStatic('/mojo/no-raptor.png') %>" alt="Bye!" id="no-raptor">
+      <img src="<%= ctx.urlForFile('/mojo/no-raptor.png') %>" alt="Bye!" id="no-raptor">
     </a>
     <div id="not-found"></div>
   </body>
