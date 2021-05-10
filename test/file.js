@@ -1,4 +1,4 @@
-import {File, tempDir} from '../lib/file.js';
+import File from '../lib/file.js';
 import fs from 'fs/promises';
 import path from 'path';
 import t from 'tap';
@@ -37,7 +37,7 @@ t.test('realpath', async t => {
 });
 
 t.test('I/O', async t => {
-  const dir = await tempDir();
+  const dir = await File.tempDir();
   t.ok(dir);
   t.ok(await dir.stat());
   t.same(await dir.child('test.txt').exists(), false);
@@ -54,7 +54,7 @@ t.test('I/O', async t => {
 });
 
 t.test('I/O streams', async t => {
-  const dir = await tempDir();
+  const dir = await File.tempDir();
   const write = dir.child('test.txt').createWriteStream({encoding: 'utf8'});
   await new Promise(resolve => write.write('Hello World!', resolve));
   const read = dir.child('test.txt').createReadStream({encoding: 'utf8'});
@@ -65,7 +65,7 @@ t.test('I/O streams', async t => {
 });
 
 t.test('touch', async t => {
-  const dir = await tempDir();
+  const dir = await File.tempDir();
   const file = dir.child('test.txt');
   t.notOk(await file.exists());
   t.ok(await (await file.touch()).exists());
@@ -76,7 +76,7 @@ t.test('touch', async t => {
 });
 
 t.test('list', async t => {
-  const dir = await tempDir();
+  const dir = await File.tempDir();
   const foo = dir.child('foo');
   const bar = foo.child('bar');
   await bar.mkdir({recursive: true});
@@ -112,7 +112,7 @@ t.test('list', async t => {
 });
 
 t.test('tempDir', async t => {
-  const temp = await tempDir();
+  const temp = await File.tempDir();
   const dir = new File(temp.toString());
   t.same(await dir.exists(), true);
   t.same(await temp.exists(), true);

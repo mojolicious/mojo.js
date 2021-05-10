@@ -1,8 +1,8 @@
 import App from '../lib/app.js';
 import Client from '../lib/client.js';
+import File from '../lib/file.js';
 import Server from '../lib/server.js';
 import t from 'tap';
-import {tempDir} from '../lib/file.js';
 
 t.test('Client', async t => {
   const app = new App();
@@ -202,7 +202,7 @@ t.test('Client', async t => {
   await t.test('Streams', async t => {
     const res = await client.put('/body', {body: 'Hello Mojo!'});
     t.equal(res.status, 200);
-    const dir = await tempDir();
+    const dir = await File.tempDir();
     const file = dir.child('hello.txt');
     await res.pipe(file.createWriteStream());
     t.equal(await file.readFile('utf8'), 'Hello Mojo!');

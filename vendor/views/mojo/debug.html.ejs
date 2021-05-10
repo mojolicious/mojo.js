@@ -153,8 +153,8 @@
           </div>
           <div class="row">
             <% if (ctx.app.log.history.length > 0) { %>
-              <% const formatter = ctx.app.log.formatters.defaultFormatter %>
-              <% const log = ctx.app.log.history.map(entry => formatter(...entry)).join('') %>
+              <% const formatter = ctx.app.mojo.Logger.stringFormatter %>
+              <% const log = ctx.app.log.history.map(formatter).join('') %>
               <pre class="mojo-terminal"><code class="nohighlight"><%= log %></code></pre>
             <% } else { %>
               <div class="alert alert-warning mojo-wide" role="alert">

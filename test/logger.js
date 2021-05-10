@@ -1,23 +1,23 @@
 import {captureOutput, sleep} from '../lib/util.js';
 import chalk from 'chalk';
+import File from '../lib/file.js';
 import Logger from '../lib/logger.js';
 import t from 'tap';
-import {tempDir} from '../lib/file.js';
 
 t.test('Logger', async t => {
-  const dir = await tempDir();
+  const dir = await File.tempDir();
 
   t.test('Logging to file', async t => {
     const file = dir.child('file.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'error', color: false});
+    const logger = new Logger({destination: stream, level: 'error', formatter: Logger.stringFormatter});
     t.same(logger.destination, stream);
     logger.error('Works');
-    logger.error('Works', 'too');
+    logger.error('Works too');
     logger.fatal('I ♥ Mojolicious');
-    logger.error(() => 'This too');
+    logger.error('This too');
     logger.trace('Not this');
-    logger.debug(() => 'This not');
+    logger.debug('This not');
     while (stream.writableLength) {
       await sleep(10);
     }
@@ -31,7 +31,7 @@ t.test('Logger', async t => {
 
     logger.level = 'trace';
     logger.trace('Now this');
-    logger.debug(() => 'And this');
+    logger.debug('And this');
     while (stream.writableLength) {
       await sleep(10);
     }
@@ -43,7 +43,7 @@ t.test('Logger', async t => {
   t.test('History', async t => {
     const file = dir.child('file.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'info', historySize: 5, color: false});
+    const logger = new Logger({destination: stream, level: 'info', historySize: 5, formatter: Logger.stringFormatter});
     t.same(logger.destination, stream);
     t.equal(logger.historySize, 5);
     logger.error('First');
@@ -59,12 +59,12 @@ t.test('Logger', async t => {
     t.match(content, /\[.+\] \[info\] Fourth\n/);
     t.notMatch(content, /\[.+\] \[debug\] Third\n/);
 
-    t.equal(logger.history[0][1], 'error');
-    t.match(logger.history[0][2], /First/);
-    t.equal(logger.history[1][1], 'fatal');
-    t.match(logger.history[1][2], /Second/);
-    t.equal(logger.history[2][1], 'info');
-    t.match(logger.history[2][2], /Fourth/);
+    t.equal(logger.history[0].level, 'error');
+    t.match(logger.history[0].msg, /First/);
+    t.equal(logger.history[1].level, 'fatal');
+    t.match(logger.history[1].msg, /Second/);
+    t.equal(logger.history[2].level, 'info');
+    t.match(logger.history[2].msg, /Fourth/);
     t.same(logger.history[3], undefined);
 
     logger.error('Fifth');
@@ -73,16 +73,16 @@ t.test('Logger', async t => {
     while (stream.writableLength) {
       await sleep(10);
     }
-    t.equal(logger.history[0][1], 'fatal');
-    t.match(logger.history[0][2], /Second/);
-    t.equal(logger.history[1][1], 'info');
-    t.match(logger.history[1][2], /Fourth/);
-    t.equal(logger.history[2][1], 'error');
-    t.match(logger.history[2][2], /Fifth/);
-    t.equal(logger.history[3][1], 'fatal');
-    t.match(logger.history[3][2], /Sixth/);
-    t.equal(logger.history[4][1], 'fatal');
-    t.match(logger.history[4][2], /Seventh/);
+    t.equal(logger.history[0].level, 'fatal');
+    t.match(logger.history[0].msg, /Second/);
+    t.equal(logger.history[1].level, 'info');
+    t.match(logger.history[1].msg, /Fourth/);
+    t.equal(logger.history[2].level, 'error');
+    t.match(logger.history[2].msg, /Fifth/);
+    t.equal(logger.history[3].level, 'fatal');
+    t.match(logger.history[3].msg, /Sixth/);
+    t.equal(logger.history[4].level, 'fatal');
+    t.match(logger.history[4].msg, /Seventh/);
     t.same(logger.history[5], undefined);
   });
 
@@ -94,7 +94,7 @@ t.test('Logger', async t => {
   t.test('trace', async t => {
     const file = dir.child('trace.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'trace', color: false});
+    const logger = new Logger({destination: stream, level: 'trace', formatter: Logger.stringFormatter});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -116,7 +116,7 @@ t.test('Logger', async t => {
   t.test('debug', async t => {
     const file = dir.child('debug.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'debug', color: false});
+    const logger = new Logger({destination: stream, level: 'debug', formatter: Logger.stringFormatter});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -138,7 +138,7 @@ t.test('Logger', async t => {
   t.test('info', async t => {
     const file = dir.child('info.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'info', color: false});
+    const logger = new Logger({destination: stream, level: 'info', formatter: Logger.stringFormatter});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -160,7 +160,7 @@ t.test('Logger', async t => {
   t.test('warn', async t => {
     const file = dir.child('warn.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'warn', color: false});
+    const logger = new Logger({destination: stream, level: 'warn', formatter: Logger.stringFormatter});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -182,7 +182,7 @@ t.test('Logger', async t => {
   t.test('error', async t => {
     const file = dir.child('error.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'error', color: false});
+    const logger = new Logger({destination: stream, level: 'error', formatter: Logger.stringFormatter});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -204,7 +204,7 @@ t.test('Logger', async t => {
   t.test('fatal', async t => {
     const file = dir.child('fatal.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'fatal', color: false});
+    const logger = new Logger({destination: stream, level: 'fatal', formatter: Logger.stringFormatter});
     logger.trace('One');
     logger.debug('Two');
     logger.info('Three');
@@ -226,8 +226,8 @@ t.test('Logger', async t => {
   t.test('Child logger', async t => {
     const file = dir.child('child.log');
     const stream = (await file.touch()).createWriteStream();
-    const logger = new Logger({destination: stream, level: 'trace', color: false});
-    const child = logger.child('[123]');
+    const logger = new Logger({destination: stream, level: 'trace', formatter: Logger.stringFormatter});
+    const child = logger.child({requestId: 123});
     child.trace('One');
     child.debug('Two');
     child.info('Three');
@@ -265,5 +265,55 @@ t.test('Logger', async t => {
     t.match(output, /\[33m\[.+\] \[warn\] Four.*\[39m/);
     t.match(output, /\[31m\[.+\] \[error\] Five.*\[39m/);
     t.match(output, /\[31m\[.+\] \[fatal\] Six.*\[39m/);
+  });
+
+  t.test('JSON', async t => {
+    chalk.level = 1;
+    const logger = new Logger({destination: process.stdout, level: 'trace', formatter: Logger.jsonFormatter});
+    const child = logger.child({requestId: 23, test: 'works'});
+    const output = await captureOutput(async () => {
+      child.trace('One');
+      child.debug('Two');
+      child.info('Three');
+      child.warn('Four');
+      child.error('Five');
+      child.fatal('Six');
+    });
+    t.match(output, /"msg":"One"/);
+    t.match(output, /"time":"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z"/);
+    t.match(output, /"level":"trace"/);
+    t.match(output, /"requestId":23/);
+    t.match(output, /"test":"works"/);
+    t.match(output, /"msg":"Two"/);
+    t.match(output, /"msg":"Three"/);
+    t.match(output, /"msg":"Four"/);
+    t.match(output, /"msg":"Five"/);
+    t.match(output, /"msg":"Six"/);
+  });
+
+  t.test('systemd', async t => {
+    const logger = new Logger({destination: process.stdout, level: 'trace', formatter: Logger.systemdFormatter});
+    const output = await captureOutput(async () => {
+      logger.trace('Seven');
+      logger.fatal('Eight');
+    });
+    t.match(output, /<7>\[t\] Seven\n/);
+    t.match(output, /<2>\[f\] Eight\n/);
+
+    const child = logger.child({requestId: 24, test: 'works'});
+    const output2 = await captureOutput(async () => {
+      child.trace('One');
+      child.debug('Two');
+      child.info('Three');
+      child.warn('Four');
+      child.error('Five');
+      child.fatal('Six');
+    });
+    t.match(output2, /<7>\[t\] \[24\] One\n/);
+    t.match(output2, /<6>\[d\] \[24\] Two\n/);
+    t.match(output2, /<5>\[i\] \[24\] Three\n/);
+    t.match(output2, /<4>\[w\] \[24\] Four\n/);
+    t.match(output2, /<3>\[e\] \[24\] Five\n/);
+    t.match(output2, /<2>\[f\] \[24\] Six\n/);
   });
 });

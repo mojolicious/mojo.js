@@ -1,6 +1,6 @@
+import File from '../lib/file.js';
 import mojo from '../index.js';
 import t from 'tap';
-import {tempDir} from '../lib/file.js';
 
 t.test('Exception app', async t => {
   t.test('Development', async t => {
@@ -27,17 +27,17 @@ t.test('Exception app', async t => {
     });
 
     await t.test('Exception', async t => {
-      const dir = await tempDir();
+      const dir = await File.tempDir();
       const file = dir.child('development.log');
       app.log.destination = file.createWriteStream();
 
       (await client.getOk('/exception')).statusIs(500).bodyLike(/This application is in.*development.*mode/);
       (await client.getOk('/exception')).statusIs(500).bodyUnlike(/\/public\/mojo\/failraptor\.png/);
 
-      t.equal(app.log.history[0][1], 'error');
-      t.match(app.log.history[0][3], /Error: Test exception/);
-      t.equal(app.log.history[1][1], 'error');
-      t.match(app.log.history[1][3], /Error: Test exception/);
+      t.equal(app.log.history[0].level, 'error');
+      t.match(app.log.history[0].msg, /Error: Test exception/);
+      t.equal(app.log.history[1].level, 'error');
+      t.match(app.log.history[1].msg, /Error: Test exception/);
       t.same(app.log.history[2], undefined);
       t.match(await file.readFile(), /Error: Test exception/);
     });
@@ -70,7 +70,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('Exception', async t => {
-      const dir = await tempDir();
+      const dir = await File.tempDir();
       const file = dir.child('production.log');
       app.log.destination = file.createWriteStream();
 

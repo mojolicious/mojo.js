@@ -1,4 +1,4 @@
-import {currentFile} from '../lib/file.js';
+import File from '../lib/file.js';
 import mojo from '../index.js';
 import Server from '../lib/server.js';
 import t from 'tap';
@@ -8,8 +8,8 @@ t.test('HTTPS app', async t => {
 
   app.get('/', ctx => ctx.render({text: `HTTPS: ${ctx.req.isSecure}`}));
 
-  const cert = currentFile().sibling('support', 'certs', 'server.crt').toString();
-  const key = currentFile().sibling('support', 'certs', 'server.key').toString();
+  const cert = File.currentFile().sibling('support', 'certs', 'server.crt').toString();
+  const key = File.currentFile().sibling('support', 'certs', 'server.key').toString();
   const server = new Server(app, {listen: [`https://127.0.0.1?cert=${cert}&key=${key}`], quiet: true});
   await server.start();
   const client = await app.newTestClient({tap: t});
