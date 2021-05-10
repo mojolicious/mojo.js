@@ -190,5 +190,24 @@ t.test('App', async t => {
     (await client.putOk('/maybe', {json: {template: 'missing'}})).statusIs(500);
   });
 
+  t.test('Forbidden helpers', t => {
+    let result;
+    try {
+      app.addHelper('render', function () {});
+    } catch (error) {
+      result = error;
+    }
+    t.match(result, /The name "render" is not permitted for helpers/);
+
+    try {
+      app.addHelper('isWebSocket', function () {});
+    } catch (error) {
+      result = error;
+    }
+    t.match(result, /The name "isWebSocket" is not permitted for helpers/);
+
+    t.end();
+  });
+
   await client.stop();
 });

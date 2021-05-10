@@ -3,11 +3,11 @@
 <html>
   <head>
     <title>Debug</title>
-    <%- $.mojoFaviconTag() %>
-    <%- $.scriptTag('/mojo/bootstrap/bootstrap.bundle.min.js') %>
-    <%- $.styleTag('/mojo/bootstrap/bootstrap.min.css') %>
-    <%- $.styleTag('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css') %>
-    <%- $.styleTag('/mojo/mojo.css') %>
+    <%- ctx.mojoFaviconTag() %>
+    <%- ctx.scriptTag('/mojo/bootstrap/bootstrap.bundle.min.js') %>
+    <%- ctx.styleTag('/mojo/bootstrap/bootstrap.min.css') %>
+    <%- ctx.styleTag('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css') %>
+    <%- ctx.styleTag('/mojo/mojo.css') %>
     <script>
       window.onload = function() {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

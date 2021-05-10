@@ -17,11 +17,11 @@ t.test('Plugin app', async t => {
 });
 
 const tagHelperPlugin = `
-Favicon: <%- $.mojoFaviconTag() %>
-Relative script: <%- $.scriptTag('/foo/bar.js') %>
-Relative style: <%- $.styleTag('/foo/bar.css') %>
-Absolute script: <%- $.scriptTag('https://mojojs.org/public/foo/bar.js') %>
-Absolute style: <%- $.styleTag('https://mojojs.org/public/foo/bar.css') %>
+Favicon: <%- ctx.mojoFaviconTag() %>
+Relative script: <%- ctx.scriptTag('/foo/bar.js') %>
+Relative style: <%- ctx.styleTag('/foo/bar.css') %>
+Absolute script: <%- ctx.scriptTag('https://mojojs.org/public/foo/bar.js') %>
+Absolute style: <%- ctx.styleTag('https://mojojs.org/public/foo/bar.css') %>
 `;
 
 function tagHelperPluginResult (baseURL) {
