@@ -267,6 +267,24 @@ t.test('Optional extension with constraint', t => {
   t.same(pattern.match('/', {isEndpoint: true}), {ext: 'txt'});
   t.same(pattern.match('/.txt', {isEndpoint: true}), {ext: 'txt'});
   t.same(pattern.match('/.json', {isEndpoint: true}), null);
+
+  const pattern2 = new Pattern('/', {constraints: {ext: ['txt']}});
+  t.same(pattern2.match('/.txt', {isEndpoint: true}), {ext: 'txt'});
+  t.same(pattern2.match('/.json', {isEndpoint: true}), null);
+  t.same(pattern2.match('/', {isEndpoint: true}), null);
+
+  const pattern3 = new Pattern('/test', {constraints: {ext: ['txt']}});
+  t.same(pattern3.match('/test.txt', {isEndpoint: true}), {ext: 'txt'});
+  t.same(pattern3.match('/test/.txt', {isEndpoint: true}), {ext: 'txt'});
+  t.same(pattern3.match('/test.json', {isEndpoint: true}), null);
+  t.same(pattern3.match('/test', {isEndpoint: true}), null);
+
+  const pattern4 = new Pattern('/test', {defaults: {ext: 'txt'}, constraints: {ext: ['txt']}});
+  t.same(pattern4.match('/test', {isEndpoint: true}), {ext: 'txt'});
+  t.same(pattern4.match('/test/', {isEndpoint: true}), {ext: 'txt'});
+  t.same(pattern4.match('/test.txt', {isEndpoint: true}), {ext: 'txt'});
+  t.same(pattern4.match('/test/.txt', {isEndpoint: true}), {ext: 'txt'});
+  t.same(pattern4.match('/test.json', {isEndpoint: true}), null);
   t.end();
 });
 
