@@ -1,5 +1,6 @@
 import Client from '../lib/client.js';
 import File from '../lib/file.js';
+import http from 'http';
 import mojo from '../index.js';
 import Server from '../lib/server.js';
 import t from 'tap';
@@ -230,6 +231,22 @@ t.test('Client', async t => {
     const res3 = await client.get('/auth/basic', {auth: 'foo:bar:baz', body: 'test'});
     t.equal(res3.status, 200);
     t.equal(await res3.text(), 'basic: foo:bar:baz, body: test');
+  });
+
+  await t.test('Custom agent', async t => {
+    const keepAlive = new http.Agent({keepAlive: true});
+    const noKeepAlive = new http.Agent({keepAlive: false});
+
+    const res = await client.get('/hello', {agent: noKeepAlive});
+    t.equal(res.status, 200);
+    t.equal(res.get('Connection'), 'close');
+    t.equal(await res.text(), 'Hello World!');
+
+    const res2 = await client.get('/hello', {agent: keepAlive});
+    t.equal(res2.status, 200);
+    t.equal(res2.get('Connection'), 'keep-alive');
+    t.equal(await res2.text(), 'Hello World!');
+    keepAlive.destroy();
   });
 
   await t.test('Optional dependencies', async t => {
