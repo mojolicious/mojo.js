@@ -197,14 +197,14 @@ t.test('App', async t => {
     } catch (error) {
       result = error;
     }
-    t.match(result, /The name "render" is not permitted for helpers/);
+    t.match(result, /The name "render" is already used in the prototype chain/);
 
     try {
       app.addHelper('isWebSocket', function () {});
     } catch (error) {
       result = error;
     }
-    t.match(result, /The name "isWebSocket" is not permitted for helpers/);
+    t.match(result, /The name "isWebSocket" is already used in the prototype chain/);
 
     t.end();
   });

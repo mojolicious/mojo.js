@@ -4,13 +4,38 @@ import t from 'tap';
 t.test('Plugin app', async t => {
   const app = mojo();
 
+  app.plugin(mixedPlugin);
+
   app.get('/tag_helpers', ctx => ctx.render({inline: tagHelperPlugin}));
+
+  app.get('/helper', ctx => ctx.render({text: ctx.testHelper('test')}));
+
+  app.get('/getter/setter', ctx => {
+    const before = ctx.testProp;
+    ctx.testProp = 'also works';
+    const after = ctx.testProp;
+    ctx.render({text: `before: ${before}, after: ${after}`});
+  });
+
+  app.get('/method', ctx => ctx.render({text: ctx.testMethod('test')}));
 
   const client = await app.newTestClient({tap: t});
 
   await t.test('Tag helpers', async t => {
     const baseURL = client.server.urls[0] + app.static.prefix.substring(1);
     (await client.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL));
+  });
+
+  await t.test('Helper', async t => {
+    (await client.getOk('/helper')).statusIs(200).bodyIs('works');
+  });
+
+  await t.test('Decorate with getter and setter', async t => {
+    (await client.getOk('/getter/setter')).statusIs(200).bodyIs('before: works, after: also works');
+  });
+
+  await t.test('Decorate with method', async t => {
+    (await client.getOk('/method')).statusIs(200).bodyIs('also works');
   });
 
   await client.stop();
@@ -32,4 +57,23 @@ Relative style: <link rel="stylesheet" href="${baseURL}foo/bar.css">
 Absolute script: <script src="https://mojojs.org/public/foo/bar.js"></script>
 Absolute style: <link rel="stylesheet" href="https://mojojs.org/public/foo/bar.css">
 `;
+}
+
+function mixedPlugin (app) {
+  app.config.test = 'works';
+
+  app.addHelper('testHelper', (ctx, name) => ctx.config[name]);
+
+  app.decorateContext('testMethod', function (name) {
+    return this.config[name];
+  });
+
+  app.decorateContext('testProp', {
+    get: function () {
+      return this.config.test;
+    },
+    set: function (value) {
+      this.config.test = value;
+    }
+  });
 }
