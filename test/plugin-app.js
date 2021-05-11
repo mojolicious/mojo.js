@@ -19,6 +19,16 @@ t.test('Plugin app', async t => {
 
   app.get('/method', ctx => ctx.render({text: ctx.testMethod('test')}));
 
+  app.websocket('/websocket/mixed').to(ctx => {
+    ctx.on('connection', ws => {
+      const before = ctx.testProp;
+      ctx.testProp = 'works too';
+      const after = ctx.testProp;
+      const also = ctx.testHelper('test');
+      ws.send(`before: ${before}, after: ${after}, also: ${also}`, () => ws.close());
+    });
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Tag helpers', async t => {
@@ -36,6 +46,12 @@ t.test('Plugin app', async t => {
 
   await t.test('Decorate with method', async t => {
     (await client.getOk('/method')).statusIs(200).bodyIs('also works');
+  });
+
+  await t.test('WebSocket', async t => {
+    await client.websocketOk('/websocket/mixed');
+    t.equal(await client.messageOk(), 'before: also works, after: works too, also: works too');
+    await client.finishedOk(1005);
   });
 
   await client.stop();
