@@ -1,11 +1,11 @@
-import App from '../lib/app.js';
 import Client from '../lib/client.js';
 import File from '../lib/file.js';
+import mojo from '../index.js';
 import Server from '../lib/server.js';
 import t from 'tap';
 
 t.test('Client', async t => {
-  const app = new App();
+  const app = mojo();
 
   app.get('/hello', ctx => ctx.render({text: 'Hello World!'}));
 
@@ -37,6 +37,12 @@ t.test('Client', async t => {
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
   app.any('/test.html', ctx => ctx.render({text: '<!DOCTYPE html><p>Hello JSDOM!</p>'}));
+
+  app.get('/auth/basic', async ctx => {
+    const auth = ctx.req.userinfo ?? 'nothing';
+    const body = (await ctx.req.text()) || 'nothing';
+    ctx.render({text: `basic: ${auth}, body: ${body}`});
+  });
 
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
@@ -210,6 +216,20 @@ t.test('Client', async t => {
     const res2 = await client.put('/body', {body: file.createReadStream()});
     t.equal(res2.status, 200);
     t.equal(await res2.text(), 'Hello Mojo!');
+  });
+
+  await t.test('Basic authentication', async t => {
+    const res = await client.get('/auth/basic', {auth: 'foo:bar'});
+    t.equal(res.status, 200);
+    t.equal(await res.text(), 'basic: foo:bar, body: nothing');
+
+    const res2 = await client.get('/auth/basic');
+    t.equal(res2.status, 200);
+    t.equal(await res2.text(), 'basic: nothing, body: nothing');
+
+    const res3 = await client.get('/auth/basic', {auth: 'foo:bar:baz', body: 'test'});
+    t.equal(res3.status, 200);
+    t.equal(await res3.text(), 'basic: foo:bar:baz, body: test');
   });
 
   await t.test('Optional dependencies', async t => {
