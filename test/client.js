@@ -210,7 +210,7 @@ t.test('Client', async t => {
     const res = await client.put('/body', {body: 'Hello Mojo!'});
     t.equal(res.status, 200);
     const dir = await File.tempDir();
-    const file = dir.child('hello.txt');
+    const file = await dir.child('hello.txt').touch();
     await res.pipe(file.createWriteStream());
     t.equal(await file.readFile('utf8'), 'Hello Mojo!');
 
