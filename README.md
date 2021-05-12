@@ -84,3 +84,7 @@ documentation. Real applications use a proper MVC architecture with a clean dire
 
 More documentation will follow very soon, as the project moves closer to the 1.0 release. We are aiming for the same
 level of quality you would expect from [Mojolicious](https://mojolicious.org) itself.
+
+## Install
+
+    $ npm install @mojojs/mojo
