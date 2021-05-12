@@ -12,33 +12,33 @@ t.test('Static app', async t => {
 
   await t.test('Range', async t => {
     (await client.getOk('/public/empty.txt')).statusIs(200).headerIs('Content-Type', 'text/plain;charset=UTF-8')
-      .headerIs('Content-Length', '0').bodyIs('');
+      .headerIs('Content-Length', '0').headerIs('Accept-Ranges', 'bytes').bodyIs('');
     (await client.getOk('/public/empty.txt', {headers: {Range: 'bytes=1-5'}})).statusIs(416).bodyIs('');
 
     (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
-      .bodyLike(/^Hello World!/);
+      .headerIs('Accept-Ranges', 'bytes').bodyLike(/^Hello World!/);
 
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=1-5'}})).statusIs(200)
-      .headerExists('Content-Type').headerExists('Content-Length').headerLike('Content-Range', /^bytes 1-5\/\d+/)
-      .bodyIs('ello ');
+      .headerExists('Content-Type').headerExists('Content-Length').headerIs('Accept-Ranges', 'bytes')
+      .headerLike('Content-Range', /^bytes 1-5\/\d+/).bodyIs('ello ');
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=-5'}})).statusIs(200)
-      .headerExists('Content-Type').headerExists('Content-Length').headerLike('Content-Range', /^bytes 0-5\/\d+/)
-      .bodyIs('Hello ');
+      .headerExists('Content-Type').headerExists('Content-Length').headerIs('Accept-Ranges', 'bytes')
+      .headerLike('Content-Range', /^bytes 0-5\/\d+/).bodyIs('Hello ');
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=1-'}})).statusIs(200)
-      .headerExists('Content-Type').headerExists('Content-Length').headerLike('Content-Range', /^bytes 1-\d+\/\d+/)
-      .bodyLike(/^ello World!/);
+      .headerExists('Content-Type').headerExists('Content-Length').headerIs('Accept-Ranges', 'bytes')
+      .headerLike('Content-Range', /^bytes 1-\d+\/\d+/).bodyLike(/^ello World!/);
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=4-'}})).statusIs(200)
-      .headerExists('Content-Type').headerExists('Content-Length').headerLike('Content-Range', /^bytes 4-\d+\/\d+/)
-      .bodyLike(/^o World!/);
+      .headerExists('Content-Type').headerExists('Content-Length').headerIs('Accept-Ranges', 'bytes')
+      .headerLike('Content-Range', /^bytes 4-\d+\/\d+/).bodyLike(/^o World!/);
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=4-4'}})).statusIs(200)
-      .headerExists('Content-Type').headerExists('Content-Length').headerLike('Content-Range', /^bytes 4-4\/\d+/)
-      .bodyIs('o');
+      .headerExists('Content-Type').headerExists('Content-Length').headerIs('Accept-Ranges', 'bytes')
+      .headerLike('Content-Range', /^bytes 4-4\/\d+/).bodyIs('o');
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=0-0'}})).statusIs(200)
-      .headerExists('Content-Type').headerExists('Content-Length').headerLike('Content-Range', /^bytes 0-\d+\/\d+/)
-      .bodyLike(/^Hello World!/);
+      .headerExists('Content-Type').headerExists('Content-Length').headerIs('Accept-Ranges', 'bytes')
+      .headerLike('Content-Range', /^bytes 0-\d+\/\d+/).bodyLike(/^Hello World!/);
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=-'}})).statusIs(200)
-      .headerExists('Content-Type').headerExists('Content-Length').headerLike('Content-Range', /^bytes 0-\d+\/\d+/)
-      .bodyLike(/^Hello World!/);
+      .headerExists('Content-Type').headerExists('Content-Length').headerIs('Accept-Ranges', 'bytes')
+      .headerLike('Content-Range', /^bytes 0-\d+\/\d+/).bodyLike(/^Hello World!/);
 
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes'}})).statusIs(416);
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=4-1'}})).statusIs(416);
