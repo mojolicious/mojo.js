@@ -91,6 +91,9 @@ t.test('App', async t => {
     if (await ctx.render({...options}) === false) ctx.render({text: 'Fallback'});
   });
 
+  // GET /res
+  app.get('/res', async ctx => ctx.res.status(200).send('Hello World!'));
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -188,6 +191,11 @@ t.test('App', async t => {
     (await client.putOk('/maybe', {json: {template: 'missing', maybe: true}})).statusIs(200).bodyIs('Fallback');
     (await client.putOk('/maybe', {json: {template: 'missing', maybe: false}})).statusIs(500);
     (await client.putOk('/maybe', {json: {template: 'missing'}})).statusIs(500);
+  });
+
+  await t.test('Response API', async t => {
+    (await client.getOk('/res')).statusIs(200).headerExists('Content-Length').headerExistsNot('Content-Type')
+      .bodyIs('Hello World!');
   });
 
   t.test('Forbidden helpers', t => {
