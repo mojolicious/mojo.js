@@ -60,6 +60,31 @@ t.test('Command app', async t => {
     t.match(output2.toString(), /Content-Length.*Hello Mojo!/s);
   });
 
+  await t.test('routes', async t => {
+    const output = await captureOutput(async () => {
+      await app.cli.start('routes', '-h');
+    });
+    t.match(output.toString(), /Usage: APPLICATION routes/, 'correct usage output');
+    t.match(app.cli.commands.routes.description, /Show available routes/, 'correct description');
+    t.match(app.cli.commands.routes.usage, /Usage: APPLICATION routes/, 'correct usage');
+
+    const output2 = await captureOutput(async () => {
+      await app.cli.start('routes');
+    });
+    t.match(output2.toString(), /^\/\s+\*/, '/ route correct');
+    t.match(output2.toString(), /^\/foo\s+GET\s+foo/m, '/foo route correct');
+    t.match(output2.toString(), /^\s{2}\+\/bar\s+POST\s+"bar"/m, '/bar route with name');
+    t.match(output2.toString(), /^\s{2}\+\/baz\s+GET\s+baz/m, '/baz route correct');
+
+    const output3 = await captureOutput(async () => {
+      await app.cli.start('routes', '-v');
+    });
+    t.match(output3.toString(), /\/\s+\*\s+\/\^\/s/, 'correct pattern');
+    t.match(output3.toString(), /^\/foo\s+GET\s+foo\s+\/\^\\\/foo\/s/m, 'correct pattern');
+    t.match(output3.toString(), /^\s{2}\+\/bar\s+POST\s+"bar"\s+\/\^\\\/bar\/s/m, 'correct pattern');
+    t.match(output3.toString(), /^\s{2}\+\/baz\s+GET\s+baz\s+\/\^\\\/baz\\\/\?\\\.\(html\)\$\/s/m, 'correct pattern');
+  });
+
   await t.test('server', async t => {
     const output = await captureOutput(async () => {
       await app.cli.start('server', '-h');
