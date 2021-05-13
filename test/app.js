@@ -72,7 +72,9 @@ t.test('App', async t => {
   // GET /session/members
   app.get('/session/members', ctx => {
     const user = ctx.session.user ?? 'not logged in';
-    ctx.render({text: `Member: ${user}`});
+    const extra = ctx.req.getCookie('mojo-extra') ?? 'no extra cookie';
+    ctx.res.setCookie('mojo-extra', 'with extra cookie');
+    ctx.render({text: `Member: ${user}, ${extra}`});
   });
 
   // GET /session/update/*
@@ -223,12 +225,12 @@ t.test('App', async t => {
   });
 
   await t.test('Session', async t => {
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in, no extra cookie');
     (await client.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
     (await client.getOk('/session/update/sri')).statusIs(200).bodyIs('Update: sri');
     (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: sri');
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in, with extra cookie');
 
     (await client.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
     t.match(client.res.get('Set-Cookie'), /Path=\//);
@@ -238,37 +240,37 @@ t.test('App', async t => {
     (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
 
     (await client.getOk('/session/members', {headers: {Cookie: 'mojo=something'}})).statusIs(200)
-      .bodyIs('Member: not logged in');
+      .bodyIs('Member: not logged in, with extra cookie');
     const realValue = 'mojo=eyJ1c2VyIjoia3JhaWgiLCJleHBpcmVzIjoxNjIwOTQwOTIzfQ--';
     (await client.getOk('/session/members', {headers: {Cookie: realValue}})).statusIs(200)
-      .bodyIs('Member: not logged in');
+      .bodyIs('Member: not logged in, with extra cookie');
     (await client.getOk('/session/members', {headers: {Cookie: 'realValue--abcdef'}})).statusIs(200)
-      .bodyIs('Member: not logged in');
+      .bodyIs('Member: not logged in, with extra cookie');
   });
 
   await t.test('Session (secret rotation)', async t => {
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in, with extra cookie');
     (await client.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
 
     app.session.secrets.unshift('AlsoInsecure');
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
 
     t.equal(app.session.secrets.pop(), 'Insecure');
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
     (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in, with extra cookie');
   });
 
   await t.test('Session (different cookie name)', async t => {
     app.session.cookieName = 'myapp-session';
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in, with extra cookie');
     (await client.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
     t.match(client.res.get('Set-Cookie'), /myapp-session=/);
     (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
-    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in, with extra cookie');
   });
 
   t.test('Forbidden helpers', t => {
