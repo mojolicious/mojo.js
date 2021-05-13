@@ -63,6 +63,30 @@ t.test('App', async t => {
     ctx.render({text: `Cookie: ${foo}`});
   });
 
+  // GET /session/login/*
+  app.get('/session/login/:name', ctx => {
+    ctx.session.user = ctx.stash.name;
+    ctx.render({text: `Login: ${ctx.stash.name}`});
+  });
+
+  // GET /session/members
+  app.get('/session/members', ctx => {
+    const user = ctx.session.user ?? 'not logged in';
+    ctx.render({text: `Member: ${user}`});
+  });
+
+  // GET /session/update/*
+  app.get('/session/update/:name', ctx => {
+    ctx.session.user = ctx.stash.name;
+    ctx.render({text: `Update: ${ctx.session.user}`});
+  });
+
+  // GET /session/logout
+  app.get('/session/logout', ctx => {
+    ctx.session.expires = 1;
+    ctx.render({text: `Logout: ${ctx.session.user}`});
+  });
+
   // GET /client
   app.get('/client', async ctx => {
     const res = await ctx.client.get(client.server.urls[0] + 'config');
@@ -196,6 +220,55 @@ t.test('App', async t => {
   await t.test('Response API', async t => {
     (await client.getOk('/res')).statusIs(200).headerExists('Content-Length').headerExistsNot('Content-Type')
       .bodyIs('Hello World!');
+  });
+
+  await t.test('Session', async t => {
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+    (await client.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+    (await client.getOk('/session/update/sri')).statusIs(200).bodyIs('Update: sri');
+    (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: sri');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+
+    (await client.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
+    t.match(client.res.get('Set-Cookie'), /Path=\//);
+    t.match(client.res.get('Set-Cookie'), /HttpOnly/);
+    t.match(client.res.get('Set-Cookie'), /SameSite=Lax/);
+    t.match(client.res.get('Set-Cookie'), /mojo=/);
+    (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
+
+    (await client.getOk('/session/members', {headers: {Cookie: 'mojo=something'}})).statusIs(200)
+      .bodyIs('Member: not logged in');
+    const realValue = 'mojo=eyJ1c2VyIjoia3JhaWgiLCJleHBpcmVzIjoxNjIwOTQwOTIzfQ--';
+    (await client.getOk('/session/members', {headers: {Cookie: realValue}})).statusIs(200)
+      .bodyIs('Member: not logged in');
+    (await client.getOk('/session/members', {headers: {Cookie: 'realValue--abcdef'}})).statusIs(200)
+      .bodyIs('Member: not logged in');
+  });
+
+  await t.test('Session (secret rotation)', async t => {
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+    (await client.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+
+    app.session.secrets.unshift('AlsoInsecure');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+
+    t.equal(app.session.secrets.pop(), 'Insecure');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+    (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+  });
+
+  await t.test('Session (different cookie name)', async t => {
+    app.session.cookieName = 'myapp-session';
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
+    (await client.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih');
+    t.match(client.res.get('Set-Cookie'), /myapp-session=/);
+    (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
+    (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in');
   });
 
   t.test('Forbidden helpers', t => {
