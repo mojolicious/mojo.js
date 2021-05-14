@@ -33,7 +33,14 @@ t.test('Static app', async t => {
   await t.test('0', async t => {
     (await client.getOk('/public/0')).statusIs(200).headerIs('Content-Length', '1').bodyIs('0');
     (await client.getOk('/0')).statusIs(200).headerIs('Content-Length', '4').bodyIs('Zero');
-    (await client.getOk('/public/../lib/mojo.js')).statusIs(404);
+  });
+
+  await t.test('Directory traversal', async t => {
+    (await client.getOk('/public/../../lib/mojo.js')).statusIs(404);
+    (await client.getOk('/public/..%2F..%2Flib/mojo.js')).statusIs(404);
+    (await client.getOk('/public/missing/..%2F..%2F..%2Flib/mojo.js')).statusIs(404);
+    (await client.getOk('/public/..%5C..%5Clib/mojo.js')).statusIs(404);
+    (await client.getOk('/public/missing/..%5C..%5C..%5Clib/mojo.js')).statusIs(404);
   });
 
   await t.test('Range', async t => {
