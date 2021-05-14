@@ -23,6 +23,6 @@ renderer.get('/hello/:name').to('foo#withView');
 renderer.get('/inline/:name').to('foo#withInlineView');
 renderer.put('/another.view').to('foo#anotherView');
 
-app.get('/static').to(ctx => ctx.sendFile(ctx.home.child('public', 'test.txt').toString()));
+app.get('/static').to(ctx => ctx.sendFile(ctx.home.child('public', 'test.txt')));
 
 app.start();
