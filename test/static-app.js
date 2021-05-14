@@ -7,7 +7,9 @@ t.test('Static app', async t => {
   await t.test('0', async t => {
     (await client.getOk('/public/0')).statusIs(200).headerIs('Content-Length', '1').bodyIs('0');
     (await client.getOk('/0')).statusIs(200).headerIs('Content-Length', '4').bodyIs('Zero');
-    (await client.getOk('/public/../lib/mojo.js')).statusIs(404);
+    (await client.getOk('/public/../../lib/mojo.js')).statusIs(404); // this test could be a false negative
+    (await client.getOk('/public/..%2F..%2Flib/mojo.js')).statusIs(404); // actual traversal test
+    (await client.getOk('/public/..%5C..%5Clib/mojo.js')).statusIs(404); // windows backslash test
   });
 
   await t.test('Range', async t => {
