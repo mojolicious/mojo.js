@@ -33,8 +33,8 @@ t.test('extname', t => {
 });
 
 t.test('isAbsolute', t => {
-  t.equal(new File('file.t').isAbsolute(), false);
-  t.equal(new File('/etc/passwd').isAbsolute(), true);
+  t.same(new File('file.t').isAbsolute(), false);
+  t.same(new File('/etc/passwd').isAbsolute(), true);
   t.end();
 });
 
