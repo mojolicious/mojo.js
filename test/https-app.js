@@ -1,5 +1,5 @@
 import File from '../lib/file.js';
-import mojo from '../index.js';
+import mojo from '../lib/mojo.js';
 import Server from '../lib/server.js';
 import t from 'tap';
 

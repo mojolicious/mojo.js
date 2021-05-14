@@ -1,4 +1,4 @@
-import mojo from '../index.js';
+import mojo from '../lib/mojo.js';
 import t from 'tap';
 
 t.test('App', async t => {

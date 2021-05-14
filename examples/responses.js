@@ -1,7 +1,7 @@
 /*
  * Application demonstrating the various HTTP response variants for debugging
  */
-import mojo from '../index.js';
+import mojo from '../lib/mojo.js';
 
 const app = mojo();
 
