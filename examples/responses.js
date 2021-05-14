@@ -10,9 +10,9 @@ app.get('/res1', ctx => {
 });
 
 app.get('/res2', ctx => {
-  ctx.res.write('Hello ');
-  ctx.res.write('World!');
-  ctx.res.end();
+  ctx.res.raw.write('Hello ');
+  ctx.res.raw.write('World!');
+  ctx.res.raw.end();
 });
 
 app.get('/res3', ctx => {
@@ -25,6 +25,14 @@ app.get('/res4', ctx => {
 
 app.get('/res5', ctx => {
   ctx.render({inline: "<% throw new Error('Hello World!') %>"});
+});
+
+app.get('/res6', ctx => {
+  ctx.res.status(200).send('Hello World!');
+});
+
+app.get('/res7', ctx => {
+  ctx.render({json: {hello: 'world'}});
 });
 
 app.start();
