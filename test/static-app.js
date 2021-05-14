@@ -4,6 +4,32 @@ import t from 'tap';
 t.test('Static app', async t => {
   const client = await app.newTestClient({tap: t});
 
+  await t.test('Bundled files', async t => {
+    (await client.getOk('/public/mojo/bootstrap/bootstrap.bundle.min.js')).statusIs(200)
+      .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
+    (await client.getOk('/public/mojo/bootstrap/bootstrap.min.css')).statusIs(200).headerIs('Content-Type', 'text/css')
+      .headerExists('Content-Length');
+
+    (await client.getOk('/public/mojo/failraptor.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+      .headerExists('Content-Length');
+    (await client.getOk('/public/mojo/favicon.ico')).statusIs(200).headerIs('Content-Type', 'image/x-icon')
+      .headerExists('Content-Length');
+    (await client.getOk('/public/mojo/logo-white-2x.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+      .headerExists('Content-Length');
+    (await client.getOk('/public/mojo/logo-white.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+      .headerExists('Content-Length');
+    (await client.getOk('/public/mojo/mojo.css')).statusIs(200).headerIs('Content-Type', 'text/css')
+      .headerExists('Content-Length');
+    (await client.getOk('/public/mojo/no-raptor.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+      .headerExists('Content-Length');
+    (await client.getOk('/public/mojo/not-found.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+      .headerExists('Content-Length');
+    (await client.getOk('/public/mojo/pinstripe-dark.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+      .headerExists('Content-Length');
+    (await client.getOk('/public/mojo/pinstripe-light.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+      .headerExists('Content-Length');
+  });
+
   await t.test('0', async t => {
     (await client.getOk('/public/0')).statusIs(200).headerIs('Content-Length', '1').bodyIs('0');
     (await client.getOk('/0')).statusIs(200).headerIs('Content-Length', '4').bodyIs('Zero');
@@ -44,30 +70,47 @@ t.test('Static app', async t => {
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=4-1'}})).statusIs(416);
   });
 
-  await t.test('Bundled files', async t => {
-    (await client.getOk('/public/mojo/bootstrap/bootstrap.bundle.min.js')).statusIs(200)
-      .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/bootstrap/bootstrap.min.css')).statusIs(200).headerIs('Content-Type', 'text/css')
-      .headerExists('Content-Length');
+  await t.test('Etag', async t => {
+    (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
+      .headerExists('Accept-Ranges').headerLike('Etag', /"[a-f0-9]+"/).bodyLike(/Hello World!/);
+  });
 
-    (await client.getOk('/public/mojo/failraptor.png')).statusIs(200).headerIs('Content-Type', 'image/png')
-      .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/favicon.ico')).statusIs(200).headerIs('Content-Type', 'image/x-icon')
-      .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/logo-white-2x.png')).statusIs(200).headerIs('Content-Type', 'image/png')
-      .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/logo-white.png')).statusIs(200).headerIs('Content-Type', 'image/png')
-      .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/mojo.css')).statusIs(200).headerIs('Content-Type', 'text/css')
-      .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/no-raptor.png')).statusIs(200).headerIs('Content-Type', 'image/png')
-      .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/not-found.png')).statusIs(200).headerIs('Content-Type', 'image/png')
-      .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/pinstripe-dark.png')).statusIs(200).headerIs('Content-Type', 'image/png')
-      .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/pinstripe-light.png')).statusIs(200).headerIs('Content-Type', 'image/png')
-      .headerExists('Content-Length');
+  await t.test('Last-Modified', async t => {
+    (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
+      .headerExists('Accept-Ranges').headerExists('Etag')
+      .headerLike('Last-Modified', /\w+\W+(\d+)\W+(\w+)\W+(\d+)\W+(\d+):(\d+):(\d+)\W*\w+/).bodyLike(/Hello World!/);
+  });
+
+  await t.test('If-None-Match', async t => {
+    (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
+      .headerExists('Accept-Ranges').headerLike('Etag', /"[a-f0-9]+"/).bodyLike(/Hello World!/);
+    const etag = client.res.get('Etag');
+    (await client.getOk('/public/hello.txt', {headers: {'If-None-Match': etag}})).statusIs(304).bodyIs('');
+    (await client.getOk('/public/hello.txt', {headers: {'If-None-Match': `"whatever", ${etag}, "abcdef123345"`}}))
+      .statusIs(304).bodyIs('');
+
+    (await client.getOk('/public/hello.txt', {headers: {'If-None-Match': '"whatever", "abcdef123345"'}}))
+      .statusIs(200).headerExists('Content-Type').headerExists('Content-Length').headerExists('Accept-Ranges')
+      .headerExists('Etag').headerExists('Last-Modified').bodyLike(/Hello World!/);
+  });
+
+  await t.test('If-Modified-Since', async t => {
+    (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
+      .headerExists('Accept-Ranges').headerExists('Etag').headerExists('Last-Modified').bodyLike(/Hello World!/);
+
+    const past = 'Sun, 06 Nov 1994 08:49:37 GMT';
+    (await client.getOk('/public/hello.txt', {headers: {'If-Modified-Since': past}})).statusIs(200)
+      .headerExists('Content-Type').headerExists('Content-Length').headerExists('Accept-Ranges').headerExists('Etag')
+      .headerExists('Last-Modified').bodyLike(/Hello World!/);
+
+    const future = new Date();
+    future.setFullYear(future.getFullYear() + 1);
+    (await client.getOk('/public/hello.txt', {headers: {'If-Modified-Since': future.toUTCString()}})).statusIs(304)
+      .bodyIs('');
+
+    (await client.getOk('/public/hello.txt', {headers: {'If-Modified-Since': 'whatever'}})).statusIs(200)
+      .headerExists('Content-Type').headerExists('Content-Length').headerExists('Accept-Ranges').headerExists('Etag')
+      .headerExists('Last-Modified').bodyLike(/Hello World!/);
   });
 
   await client.stop();
