@@ -32,6 +32,12 @@ t.test('extname', t => {
   t.end();
 });
 
+t.test('isAbsolute', t => {
+  t.equal(new File('file.t').isAbsolute(), false);
+  t.equal(new File('/etc/passwd').isAbsolute(), true);
+  t.end();
+});
+
 t.test('realpath', async t => {
   t.equal((await new File('.').realpath()).toString(), await fs.realpath('.'));
 });
