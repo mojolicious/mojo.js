@@ -57,7 +57,12 @@ t.test('Command app', async t => {
     const output2 = await captureOutput({stderr: true}, async () => {
       await app.cli.start('get', '-v', '/');
     });
-    t.match(output2.toString(), /Content-Length.*Hello Mojo!/s);
+    t.match(output2.toString(), /GET.*Host.*Content-Length.*Hello Mojo!/s);
+
+    const output3 = await captureOutput({stderr: true}, async () => {
+      await app.cli.start('get', '-H', 'Accept: application/json', '-v', '/');
+    });
+    t.match(output3.toString(), /GET.*Accept.*Content-Length.*Hello Mojo!/s);
   });
 
   await t.test('routes', async t => {
