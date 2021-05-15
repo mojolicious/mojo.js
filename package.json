@@ -25,7 +25,7 @@
   "main": "./lib/mojo.js",
   "type": "module",
   "devDependencies": {
-    "@istanbuljs/esm-loader-hook": "^0.1.2",
+    "@istanbuljs/esm-loader-hook": ">=0.1.2",
     "eslint": ">=7.22.0",
     "eslint-config-semistandard": ">=15.0.1",
     "tap": ">=15.0.6"
