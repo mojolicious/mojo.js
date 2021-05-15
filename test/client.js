@@ -247,6 +247,13 @@ t.test('Client', async t => {
     t.equal(await res3.text(), 'basic: foo:bar:baz, body: test');
   });
 
+  await t.test('Events', async t => {
+    client.once('request', config => config.url.searchParams.append('status', 201));
+    const res = await client.get('/status');
+    t.equal(res.status, 201);
+    t.equal(await res.text(), '');
+  });
+
   await t.test('Custom agent', async t => {
     const keepAlive = new http.Agent({keepAlive: true});
     const noKeepAlive = new http.Agent({keepAlive: false});
