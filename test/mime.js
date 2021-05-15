@@ -15,3 +15,74 @@ t.test('Types', t => {
   t.equal(mime.extType('.html.ejs'), null);
   t.end();
 });
+
+t.test('Detect common MIME types', t => {
+  const mime = new Mime();
+  t.same(mime.detect('text/cache-manifest'), ['appcache']);
+  t.same(mime.detect('application/atom+xml'), ['atom']);
+  t.same(mime.detect('application/octet-stream'), ['bin']);
+  t.same(mime.detect('text/css'), ['css']);
+  t.same(mime.detect('image/gif'), ['gif']);
+  t.same(mime.detect('application/x-gzip'), ['gz']);
+  t.same(mime.detect('text/html'), ['htm', 'html']);
+  t.same(mime.detect('image/x-icon'), ['ico']);
+  t.same(mime.detect('image/jpeg'), ['jpeg', 'jpg']);
+  t.same(mime.detect('application/javascript'), ['js', 'mjs']);
+  t.same(mime.detect('application/json'), ['json']);
+  t.same(mime.detect('audio/mpeg'), ['mp3']);
+  t.same(mime.detect('video/mp4'), ['mp4']);
+  t.same(mime.detect('audio/ogg'), ['ogg']);
+  t.same(mime.detect('video/ogg'), ['ogv']);
+  t.same(mime.detect('application/pdf'), ['pdf']);
+  t.same(mime.detect('image/png'), ['png']);
+  t.same(mime.detect('application/rss+xml'), ['rss']);
+  t.same(mime.detect('image/svg+xml'), ['svg']);
+  t.same(mime.detect('font/ttf'), ['ttf']);
+  t.same(mime.detect('text/plain'), ['txt']);
+  t.same(mime.detect('video/webm'), ['webm']);
+  t.same(mime.detect('font/woff'), ['woff']);
+  t.same(mime.detect('font/woff2'), ['woff2']);
+  t.same(mime.detect('application/xml'), ['xml']);
+  t.same(mime.detect('text/xml'), ['xml']);
+  t.same(mime.detect('application/zip'), ['zip']);
+  t.end();
+});
+
+t.test('Detect special cases', t => {
+  const mime = new Mime();
+  t.same(mime.detect(''), []);
+  t.same(mime.detect('Application/Xml'), ['xml']);
+  t.same(mime.detect(' Text/Xml '), ['xml']);
+  t.same(mime.detect('APPLICATION/XML'), ['xml']);
+  t.same(mime.detect('TEXT/XML'), ['xml']);
+  t.same(mime.detect('text/html;q=0.9'), ['htm', 'html']);
+  t.same(mime.detect('TEXT/HTML;Q=0.9'), ['htm', 'html']);
+  t.end();
+});
+
+t.test('Alternatives', t => {
+  const mime = new Mime();
+  mime.types.json = ['application/json', 'text/x-json'];
+  t.same(mime.detect('application/json'), ['json']);
+  t.same(mime.detect('text/x-json'), ['json']);
+  t.same(mime.detect('TEXT/X-JSON;q=0.1'), ['json']);
+  t.same(mime.detect('APPLICATION/JsoN'), ['json']);
+  t.same(mime.detect('text/html'), ['htm', 'html']);
+  t.equal(mime.extType('json'), 'application/json');
+  t.equal(mime.extType('htm'), 'text/html;charset=UTF-8');
+  t.equal(mime.extType('html'), 'text/html;charset=UTF-8');
+  t.end();
+});
+
+t.test('Prioritize', t => {
+  const mime = new Mime();
+  t.same(mime.detect('text/plain'), ['txt']);
+  t.same(mime.detect('text/plain,text/html'), ['txt', 'htm', 'html']);
+  t.same(mime.detect('TEXT/HTML; q=0.8 '), ['htm', 'html']);
+  t.same(mime.detect('TEXT/HTML  ;  q  =  0.8 '), ['htm', 'html']);
+  t.same(mime.detect('TEXT/HTML;Q=0.8,text/plain;Q=0.9'), ['txt', 'htm', 'html']);
+  t.same(mime.detect(' TEXT/HTML , text/plain;Q=0.9'), ['htm', 'html', 'txt']);
+  t.same(mime.detect('text/plain;q=0.5, text/xml, application/xml;q=0.1'), ['xml', 'txt', 'xml']);
+  t.same(mime.detect('application/json, text/javascript, X/*; q=0.01'), ['json']);
+  t.end();
+});

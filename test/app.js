@@ -120,6 +120,24 @@ t.test('App', async t => {
   // GET /res
   app.get('/res', async ctx => ctx.res.status(200).send('Hello World!'));
 
+  // GET /content/negotiation
+  // GET /content/negotiation.html
+  // GET /content/negotiation.json
+  app.get('/content/negotiation', {ext: ['html', 'json']}, async ctx => {
+    await ctx.respondTo({
+      html: ctx => ctx.render({text: 'Some HTML', format: 'html'}),
+      json: ctx => ctx.render({json: {some: 'JSON'}})
+    });
+  }).to({ext: null});
+
+  // GET /content/negotiation/fallback
+  app.get('/content/negotiation/fallback', async ctx => {
+    await ctx.respondTo({
+      any: ctx => ctx.render({text: 'Fallback'}),
+      json: ctx => ctx.render({json: {just: 'JSON'}})
+    });
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -271,6 +289,46 @@ t.test('App', async t => {
     t.match(client.res.get('Set-Cookie'), /myapp-session=/);
     (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
     (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in, with extra cookie');
+  });
+
+  await t.test('Content negotiation', async t => {
+    (await client.getOk('/content/negotiation', {headers: {Accept: 'application/json'}})).statusIs(200)
+      .headerIs('Content-Type', 'application/json;charset=UTF-8').jsonIs({some: 'JSON'});
+    (await client.getOk('/content/negotiation', {headers: {Accept: 'text/html'}})).statusIs(200)
+      .headerIs('Content-Type', 'text/html;charset=UTF-8').bodyIs('Some HTML');
+    (await client.getOk('/content/negotiation', {headers: {Accept: 'text/plain'}})).statusIs(204).bodyIs('');
+
+    (await client.getOk('/content/negotiation.json')).statusIs(200)
+      .headerIs('Content-Type', 'application/json;charset=UTF-8').jsonIs({some: 'JSON'});
+    (await client.getOk('/content/negotiation.html')).statusIs(200)
+      .headerIs('Content-Type', 'text/html;charset=UTF-8').bodyIs('Some HTML');
+    (await client.getOk('/content/negotiation.txt')).statusIs(404);
+
+    (await client.getOk('/content/negotiation.json', {headers: {Accept: 'application/json'}})).statusIs(200)
+      .headerIs('Content-Type', 'application/json;charset=UTF-8').jsonIs({some: 'JSON'});
+    (await client.getOk('/content/negotiation.html', {headers: {Accept: 'text/html'}})).statusIs(200)
+      .headerIs('Content-Type', 'text/html;charset=UTF-8').bodyIs('Some HTML');
+
+    (await client.getOk('/content/negotiation.html', {headers: {Accept: 'application/json'}})).statusIs(200)
+      .headerIs('Content-Type', 'text/html;charset=UTF-8').bodyIs('Some HTML');
+    (await client.getOk('/content/negotiation.json', {headers: {Accept: 'text/html'}})).statusIs(200)
+      .headerIs('Content-Type', 'application/json;charset=UTF-8').jsonIs({some: 'JSON'});
+
+    (await client.getOk('/content/negotiation', {headers: {Accept: 'text/plain, application/json'}})).statusIs(200)
+      .headerIs('Content-Type', 'application/json;charset=UTF-8').jsonIs({some: 'JSON'});
+    (await client.getOk('/content/negotiation', {headers: {Accept: 'text/plain, application/json, */*'}}))
+      .statusIs(200).headerIs('Content-Type', 'application/json;charset=UTF-8').jsonIs({some: 'JSON'});
+    (await client.getOk('/content/negotiation', {headers: {Accept: '*/*, application/json'}}))
+      .statusIs(200).headerIs('Content-Type', 'application/json;charset=UTF-8').jsonIs({some: 'JSON'});
+    (await client.getOk('/content/negotiation', {headers: {Accept: 'application/json, text/html;Q=1.5'}})).statusIs(200)
+      .headerIs('Content-Type', 'text/html;charset=UTF-8').bodyIs('Some HTML');
+
+    (await client.getOk('/content/negotiation/fallback', {headers: {Accept: 'application/json'}})).statusIs(200)
+      .headerIs('Content-Type', 'application/json;charset=UTF-8').jsonIs({just: 'JSON'});
+    (await client.getOk('/content/negotiation/fallback', {headers: {Accept: 'text/plain'}})).statusIs(200)
+      .headerIs('Content-Type', 'text/plain;charset=UTF-8').bodyIs('Fallback');
+    (await client.getOk('/content/negotiation/fallback')).statusIs(200)
+      .headerIs('Content-Type', 'text/plain;charset=UTF-8').bodyIs('Fallback');
   });
 
   t.test('Forbidden helpers', t => {
