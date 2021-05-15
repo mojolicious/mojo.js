@@ -11,6 +11,8 @@ t.test('Client', async t => {
   app.get('/hello', ctx => ctx.render({text: 'Hello World!'}));
 
   app.get('/status', ctx => {
+    const test = ctx.req.query.get('test') ?? 'missing';
+    ctx.res.set('X-Test', test);
     ctx.render({text: '', status: parseInt(ctx.req.query.get('status'))});
   });
 
@@ -145,6 +147,18 @@ t.test('Client', async t => {
     const res3 = await client.put('/body', {body: Buffer.from('I ♥ Mojolicious!')});
     t.equal(res3.status, 200);
     t.equal((await res3.buffer()).toString(), 'I ♥ Mojolicious!');
+  });
+
+  await t.test('Query', async t => {
+    const res = await client.get('/headers', {query: {header: 'user-agent'}});
+    t.equal(res.status, 200);
+    t.equal(res.get('X-Test'), 'works too');
+    t.equal(await res.text(), 'mojo 1.0');
+
+    const res2 = await client.get('/status', {query: {status: 201, test: 'works'}});
+    t.equal(res2.status, 201);
+    t.equal(res2.get('X-Test'), 'works');
+    t.equal(await res2.text(), '');
   });
 
   await t.test('JSON', async t => {
