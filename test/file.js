@@ -41,8 +41,10 @@ t.test('I/O', async t => {
   t.ok(dir);
   t.ok(await dir.stat());
   t.same(await dir.child('test.txt').exists(), false);
+  t.same(dir.child('test.txt').existsSync(), false);
   await dir.child('test.txt').writeFile('Hello Mojo!');
   t.same(await dir.child('test.txt').exists(), true);
+  t.same(dir.child('test.txt').existsSync(), true);
   t.same(await dir.child('test.txt').isReadable(), true);
   t.ok(await dir.child('test.txt').stat());
   t.equal((await dir.child('test.txt').readFile()).toString(), 'Hello Mojo!');
