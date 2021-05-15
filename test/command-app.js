@@ -63,6 +63,11 @@ t.test('Command app', async t => {
       await app.cli.start('get', '-H', 'Accept: application/json', '-v', '/');
     });
     t.match(output3.toString(), /GET.*Accept.*Content-Length.*Hello Mojo!/s);
+
+    const output4 = await captureOutput({stderr: true}, async () => {
+      await app.cli.start('get', '-b', 'works', '-v', '/');
+    });
+    t.match(output4.toString(), /GET.*Content-Length.*Content-Length.*Hello Mojo!/s);
   });
 
   await t.test('routes', async t => {
