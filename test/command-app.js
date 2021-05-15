@@ -81,18 +81,18 @@ t.test('Command app', async t => {
     const output2 = await captureOutput(async () => {
       await app.cli.start('routes');
     });
-    t.match(output2.toString(), /^\/\s+\*/);
-    t.match(output2.toString(), /^\/foo\s+GET\s+foo/m);
-    t.match(output2.toString(), /^\s{2}\+\/bar\s+POST\s+"bar"/m);
-    t.match(output2.toString(), /^\s{2}\+\/baz\s+GET\s+baz/m);
+    t.match(output2.toString(), /\/.*\*/);
+    t.match(output2.toString(), /\/foo.*GET.*foo/m);
+    t.match(output2.toString(), /\s{2}\+\/bar.*POST.*bar/m);
+    t.match(output2.toString(), /\s{2}\+\/baz.*GET.*baz/m);
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('routes', '-v');
     });
-    t.match(output3.toString(), /\/\s+\*\s+\/\^\/s/);
-    t.match(output3.toString(), /^\/foo\s+GET\s+foo\s+\/\^\\\/foo\/s/m);
-    t.match(output3.toString(), /^\s{2}\+\/bar\s+POST\s+"bar"\s+\/\^\\\/bar\/s/m);
-    t.match(output3.toString(), /^\s{2}\+\/baz\s+GET\s+baz\s+\/\^\\\/baz\\\/\?\\\.\(html\)\$\/s/m);
+    t.match(output3.toString(), /\/.*\*.*\/\^\/s/);
+    t.match(output3.toString(), /\/foo.*GET.*foo.*\/\^\\\/foo\/s/m);
+    t.match(output3.toString(), /\s{2}\+\/bar.*POST.*bar.*\/\^\\\/bar\/s/m);
+    t.match(output3.toString(), /\s{2}\+\/baz.*GET.*baz.*\/\^\\\/baz\\\/\?\\\.\(html\)\$\/s/m);
   });
 
   await t.test('server', async t => {
