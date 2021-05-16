@@ -277,10 +277,10 @@ t.test('App', async t => {
     (await client.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
     (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
 
-    app.session.secrets.unshift('AlsoInsecure');
+    app.secrets.unshift('AlsoInsecure');
     (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
 
-    t.equal(app.session.secrets.pop(), 'Insecure');
+    t.equal(app.secrets.pop(), 'Insecure');
     (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
     (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
     (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');

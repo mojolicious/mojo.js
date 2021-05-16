@@ -47,6 +47,37 @@ t.test('Client', async t => {
     return ctx.render({text: `basic: ${auth}, body: ${body}`});
   });
 
+  app.post('/redirect/:code', ctx => {
+    const location = ctx.req.query.get('location');
+    ctx.res.status(ctx.stash.code).set('Location', location).send();
+  });
+
+  app.get('/redirect/again', ctx => ctx.redirectTo('hello'));
+
+  app.get('/redirect/infinite/:num/:code', ctx => {
+    const code = ctx.stash.code;
+    const num = parseInt(ctx.stash.num) + 1;
+    ctx.redirectTo('infinite', {status: code, values: {code, num}});
+  }).name('infinite');
+
+  app.any('/redirect/introspect', async ctx => {
+    await ctx.render({
+      json: {
+        method: ctx.req.method,
+        headers: {
+          authorization: ctx.req.get('Authorization'),
+          content: ctx.req.get('Content-Disposition'),
+          cookie: ctx.req.get('Cookie'),
+          referer: ctx.req.get('Referer'),
+          test: ctx.req.get('X-Test')
+        },
+        body: await ctx.req.text()
+      }
+    });
+  }).name('introspect');
+
+  app.any('/redirect/introspect/:code', ctx => ctx.redirectTo('introspect', {status: ctx.stash.code}));
+
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
   const client = new Client({baseURL: server.urls[0], name: 'mojo 1.0'});
@@ -268,6 +299,113 @@ t.test('Client', async t => {
     t.equal(res2.get('Connection'), 'keep-alive');
     t.equal(await res2.text(), 'Hello World!');
     keepAlive.destroy();
+  });
+
+  await t.test('Redirect', async t => {
+    const hello = new URL('/hello', client.baseURL);
+    const res = await client.post('/redirect/301', {query: {location: hello.toString()}});
+    t.equal(res.status, 301);
+    t.equal(res.get('Location'), hello.toString());
+    t.equal(await res.text(), '');
+
+    client.maxRedirects = 1;
+    const res2 = await client.post('/redirect/301', {query: {location: hello.toString()}});
+    t.equal(res2.status, 200);
+    t.same(res2.get('Location'), undefined);
+    t.equal(await res2.text(), 'Hello World!');
+
+    const res3 = await client.post('/redirect/302', {query: {location: hello.toString()}});
+    t.equal(res3.status, 200);
+    t.same(res3.get('Location'), undefined);
+    t.equal(await res3.text(), 'Hello World!');
+
+    const res4 = await client.post('/redirect/303', {query: {location: hello.toString()}});
+    t.equal(res4.status, 200);
+    t.same(res4.get('Location'), undefined);
+    t.equal(await res4.text(), 'Hello World!');
+
+    const res5 = await client.post('/redirect/333', {query: {location: hello.toString()}});
+    t.equal(res5.status, 333);
+    t.equal(res5.get('Location'), hello.toString());
+    t.equal(await res5.text(), '');
+
+    const again = new URL('/redirect/again', client.baseURL);
+    const res6 = await client.post('/redirect/301', {query: {location: again.toString()}});
+    t.equal(res6.status, 302);
+    t.equal(res6.get('Location'), hello.toString());
+    t.equal(await res6.text(), '');
+
+    client.maxRedirects = 2;
+    const res7 = await client.post('/redirect/301', {query: {location: again.toString()}});
+    t.equal(res7.status, 200);
+    t.same(res7.get('Location'), undefined);
+    t.equal(await res7.text(), 'Hello World!');
+
+    client.maxRedirects = 5;
+    const res8 = await client.get('/redirect/infinite/0/302');
+    t.equal(res8.status, 302);
+    t.match(res8.get('Location'), /\/infinite\/6/);
+    t.equal(await res8.text(), '');
+
+    const res9 = await client.get('/redirect/infinite/0/307');
+    t.equal(res9.status, 307);
+    t.match(res9.get('Location'), /\/infinite\/6/);
+    t.equal(await res9.text(), '');
+    client.maxRedirects = 0;
+  });
+
+  await t.test('Redirect (header removal)', async t => {
+    function defaultOptions () {
+      return {
+        headers: {
+          Authorization: 'one',
+          Cookie: 'two',
+          Referer: 'three',
+          'Content-Disposition': 'four',
+          'X-Test': 'five'
+        },
+        body: 'works'
+      };
+    }
+
+    client.maxRedirects = 3;
+    const res = await client.put('/redirect/introspect', defaultOptions());
+    t.equal(res.status, 200);
+    t.same(await res.json(), {
+      method: 'PUT',
+      headers: {
+        authorization: 'one',
+        content: 'four',
+        cookie: 'two',
+        referer: 'three',
+        test: 'five'
+      },
+      body: 'works'
+    });
+
+    const res2 = await client.put('/redirect/introspect/301', defaultOptions());
+    t.equal(res2.status, 200);
+    t.same(await res2.json(), {method: 'PUT', headers: {test: 'five'}, body: ''});
+
+    const res3 = await client.put('/redirect/introspect/302', defaultOptions());
+    t.equal(res3.status, 200);
+    t.same(await res3.json(), {method: 'PUT', headers: {test: 'five'}, body: ''});
+
+    const res4 = await client.put('/redirect/introspect/303', defaultOptions());
+    t.equal(res4.status, 200);
+    t.same(await res4.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
+
+    const res5 = await client.put('/redirect/introspect/307', defaultOptions());
+    t.equal(res5.status, 200);
+    t.same(await res5.json(), {method: 'PUT', headers: {content: 'four', test: 'five'}, body: 'works'});
+
+    const res6 = await client.put('/redirect/introspect/308', defaultOptions());
+    t.equal(res6.status, 200);
+    t.same(await res6.json(), {method: 'PUT', headers: {content: 'four', test: 'five'}, body: 'works'});
+
+    const res7 = await client.post('/redirect/introspect/302', defaultOptions());
+    t.equal(res7.status, 200);
+    t.same(await res7.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
   });
 
   await t.test('Optional dependencies', async t => {
