@@ -20,9 +20,9 @@ t.test('App', async t => {
 
   // GET /nested
   // *   /nested/methods
-  const nested = app.under('/nested').to(ctx => {
+  const nested = app.under('/nested').to(async ctx => {
     if (ctx.req.query.get('auth') === '1') return;
-    ctx.render({text: 'Permission denied'});
+    await ctx.render({text: 'Permission denied'});
     return false;
   });
   nested.get('/').to(ctx => ctx.render({text: 'Authenticated'}));
@@ -60,13 +60,13 @@ t.test('App', async t => {
   app.get('/cookie', ctx => {
     const foo = ctx.req.getCookie('foo') ?? 'not present';
     if (foo === 'not present') ctx.res.setCookie('foo', 'present');
-    ctx.render({text: `Cookie: ${foo}`});
+    return ctx.render({text: `Cookie: ${foo}`});
   });
 
   // GET /session/login/*
   app.get('/session/login/:name', ctx => {
     ctx.session.user = ctx.stash.name;
-    ctx.render({text: `Login: ${ctx.stash.name}`});
+    return ctx.render({text: `Login: ${ctx.stash.name}`});
   });
 
   // GET /session/members
@@ -74,25 +74,25 @@ t.test('App', async t => {
     const user = ctx.session.user ?? 'not logged in';
     const extra = ctx.req.getCookie('mojo-extra') ?? 'no extra cookie';
     ctx.res.setCookie('mojo-extra', 'with extra cookie');
-    ctx.render({text: `Member: ${user}, ${extra}`});
+    return ctx.render({text: `Member: ${user}, ${extra}`});
   });
 
   // GET /session/update/*
   app.get('/session/update/:name', ctx => {
     ctx.session.user = ctx.stash.name;
-    ctx.render({text: `Update: ${ctx.session.user}`});
+    return ctx.render({text: `Update: ${ctx.session.user}`});
   });
 
   // GET /session/logout
   app.get('/session/logout', ctx => {
     ctx.session.expires = 1;
-    ctx.render({text: `Logout: ${ctx.session.user}`});
+    return ctx.render({text: `Logout: ${ctx.session.user}`});
   });
 
   // GET /client
   app.get('/client', async ctx => {
     const res = await ctx.client.get(client.server.urls[0] + 'config');
-    ctx.render({text: await res.text()});
+    return ctx.render({text: await res.text()});
   });
 
   // * /url_for
@@ -100,7 +100,7 @@ t.test('App', async t => {
     const form = await ctx.req.form();
     const target = form.get('target');
     const values = form.has('msg') ? {msg: form.get('msg')} : undefined;
-    ctx.render({text: ctx.urlFor(target, values)});
+    return ctx.render({text: ctx.urlFor(target, values)});
   }).to({msg: 'fail'});
   app.any('/websocket').websocket('/route').any('/works').name('websocket_route');
 

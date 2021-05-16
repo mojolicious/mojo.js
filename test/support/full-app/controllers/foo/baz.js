@@ -1,5 +1,5 @@
 export class Controller {
   test (ctx) {
-    ctx.render({text: 'Multiple levels'});
+    return ctx.render({text: 'Multiple levels'});
   }
 }
