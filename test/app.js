@@ -138,6 +138,12 @@ t.test('App', async t => {
     });
   });
 
+  // GET /remote_address
+  app.get('/remote_address', ctx => ctx.render({text: `Address: ${ctx.req.remoteAddress}`}));
+
+  // GET /protocol
+  app.get('/protocol', ctx => ctx.render({text: `Protocol: ${ctx.req.protocol}`}));
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -329,6 +335,33 @@ t.test('App', async t => {
       .headerIs('Content-Type', 'text/plain;charset=UTF-8').bodyIs('Fallback');
     (await client.getOk('/content/negotiation/fallback')).statusIs(200)
       .headerIs('Content-Type', 'text/plain;charset=UTF-8').bodyIs('Fallback');
+  });
+
+  await t.test('Reverse proxy (X-Forwarded-For)', async t => {
+    (await client.getOk('/remote_address')).statusIs(200).bodyUnlike(/104\.24\.31\.8/);
+    (await client.getOk('/remote_address', {headers: {'X-Forwarded-For': '104.24.31.8'}})).statusIs(200)
+      .bodyUnlike(/104\.24\.31\.8/);
+
+    client.server.reverseProxy = true;
+    (await client.getOk('/remote_address')).statusIs(200).bodyUnlike(/104\.24\.31\.8/);
+    (await client.getOk('/remote_address', {headers: {'X-Forwarded-For': '104.24.31.8'}})).statusIs(200)
+      .bodyIs('Address: 104.24.31.8');
+    (await client.getOk('/remote_address', {headers: {'X-Forwarded-For': '192.0.2.2, 192.0.2.1'}})).statusIs(200)
+      .bodyIs('Address: 192.0.2.1');
+    (await client.getOk('/remote_address', {headers: {'X-Forwarded-For': '192.0.2.2,192.0.2.1'}})).statusIs(200)
+      .bodyIs('Address: 192.0.2.1');
+    client.server.reverseProxy = false;
+  });
+
+  await t.test('Reverse proxy (X-Forwarded-Proto)', async t => {
+    (await client.getOk('/protocol')).statusIs(200).bodyIs('Protocol: http');
+    (await client.getOk('/protocol', {headers: {'X-Forwarded-Proto': 'https'}})).statusIs(200).bodyIs('Protocol: http');
+
+    client.server.reverseProxy = true;
+    (await client.getOk('/protocol')).statusIs(200).bodyIs('Protocol: http');
+    (await client.getOk('/protocol', {headers: {'X-Forwarded-Proto': 'https'}})).statusIs(200)
+      .bodyIs('Protocol: https');
+    client.server.reverseProxy = false;
   });
 
   t.test('Forbidden helpers', t => {
