@@ -13,26 +13,26 @@ t.test('Client', async t => {
   app.get('/status', ctx => {
     const test = ctx.req.query.get('test') ?? 'missing';
     ctx.res.set('X-Test', test);
-    ctx.render({text: '', status: parseInt(ctx.req.query.get('status'))});
+    return ctx.render({text: '', status: parseInt(ctx.req.query.get('status'))});
   });
 
   app.get('/headers', ctx => {
     const name = ctx.req.query.get('header');
     const value = ctx.req.get(name) || 'fail';
     ctx.res.set('X-Test', 'works too');
-    ctx.render({text: value});
+    return ctx.render({text: value});
   });
 
   app.put('/body', async ctx => {
     const body = await ctx.req.text();
-    ctx.render({text: body});
+    return ctx.render({text: body});
   });
 
   app.post('/form', async ctx => {
     const form = await ctx.req.form();
     const foo = form.get('foo') ?? 'missing';
     const bar = form.get('bar') ?? 'missing';
-    ctx.render({text: `Form: ${foo}, ${bar}`});
+    return ctx.render({text: `Form: ${foo}, ${bar}`});
   });
 
   app.get('/hello', {ext: 'json'}, ctx => ctx.render({json: {hello: 'world'}}));
@@ -44,7 +44,7 @@ t.test('Client', async t => {
   app.get('/auth/basic', async ctx => {
     const auth = ctx.req.userinfo ?? 'nothing';
     const body = (await ctx.req.text()) || 'nothing';
-    ctx.render({text: `basic: ${auth}, body: ${body}`});
+    return ctx.render({text: `basic: ${auth}, body: ${body}`});
   });
 
   const server = new Server(app, {listen: ['http://*'], quiet: true});
