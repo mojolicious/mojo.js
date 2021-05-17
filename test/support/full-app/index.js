@@ -25,4 +25,6 @@ renderer.put('/another.view').to('foo#anotherView');
 
 app.get('/static').to(ctx => ctx.sendFile(ctx.home.child('public', 'test.txt')));
 
+app.get('/default/view').to('foo#defaultView');
+
 app.start();

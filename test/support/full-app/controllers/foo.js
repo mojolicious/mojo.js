@@ -15,4 +15,8 @@ export default class FooController {
   works (ctx) {
     return ctx.render({text: 'Action works!'});
   }
+
+  defaultView (ctx) {
+    return ctx.render();
+  }
 }

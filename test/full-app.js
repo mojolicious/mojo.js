@@ -42,6 +42,8 @@ t.test('Full app', async t => {
     (await client.getOk('/renderer/hello/bar')).statusIs(200).bodyLike(/Hey bar\r?\n/);
 
     (await client.putOk('/renderer/another.view')).statusIs(200).bodyLike(/User sri\r?\nis an admin\r?\n/);
+
+    (await client.getOk('/default/view')).statusIs(200).bodyLike(/Default for foo and defaultView/);
   });
 
   await t.test('Static files', async t => {
