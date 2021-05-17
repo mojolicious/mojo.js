@@ -1,3 +1,4 @@
+import File from '../lib/file.js';
 import t from 'tap';
 import * as util from '../lib/util.js';
 
@@ -30,6 +31,44 @@ t.test('decodeURIComponentSafe', async t => {
   t.same(decode('%E0%A4%A'), null);
   t.same(decode('te%2fst'), 'te/st');
   t.same(decode('te%2Fst'), 'te/st');
+  t.end();
+});
+
+t.test('exceptionContext', async t => {
+  const exceptionContext = util.exceptionContext;
+  let result;
+  try {
+    throw new Error('Test');
+  } catch (error) {
+    result = error;
+  }
+  t.same(await exceptionContext(result, {lines: 2}), {
+    file: File.currentFile().toString(),
+    line: 41,
+    column: 11,
+    source: [
+      {
+        line: 39,
+        code: '  let result;'
+      },
+      {
+        line: 40,
+        code: '  try {'
+      },
+      {
+        line: 41,
+        code: "    throw new Error('Test');"
+      },
+      {
+        line: 42,
+        code: '  } catch (error) {'
+      },
+      {
+        line: 43,
+        code: '    result = error;'
+      }
+    ]
+  });
   t.end();
 });
 
