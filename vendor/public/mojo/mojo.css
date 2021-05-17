@@ -60,6 +60,10 @@ th {
   color: #eee;
   text-shadow: #333 0 1px 0;
 }
+.mojo-context {
+  padding: 0;
+  padding-left: 1em;
+}
 .mojo-error {
   color: #fff;
   font: 1.5em 'Helvetica Neue', Helvetica, sans-serif;
@@ -69,6 +73,9 @@ th {
 .mojo-fixed-table {
   table-layout: fixed;
 }
+.mojo-important {
+  background-color: rgba(47, 48, 50, .75);
+ }
 .mojo-key {
   width: 20%;
 }

@@ -5,10 +5,13 @@
     <title>Debug</title>
     <%- ctx.mojoFaviconTag() %>
     <%- ctx.scriptTag('/mojo/bootstrap/bootstrap.bundle.min.js') %>
+    <%- ctx.scriptTag('/mojo/highlight.js/highlight.pack.js') %>
     <%- ctx.styleTag('/mojo/bootstrap/bootstrap.min.css') %>
+    <%- ctx.styleTag('/mojo/highlight.js/highlight-mojo-dark.css') %>
     <%- ctx.styleTag('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css') %>
     <%- ctx.styleTag('/mojo/mojo.css') %>
     <script>
+      hljs.initHighlightingOnLoad();
       window.onload = function() {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -66,6 +69,20 @@
               </div>
               <div id="showcase" class="mojo-box mojo-code mojo-no-bottom-border mojo-no-top-border mojo-border-radius-top">
                 <pre id="error" class="mojo-error"><%= exception %></pre>
+                <% const context = await ctx.app.mojo.util.exceptionContext(exception) %>
+                <% if (context !== null) { %>
+                  <div>
+                    <table class="mojo-wide">
+                      <% for (const line of context.source) { %>
+                        <% const extra = context.line === line.num ? ' mojo-important' : ''; %>
+                        <tr>
+                          <td class="text-right<%= extra %>"><%= line.num %></td>
+                          <td class="mojo-context mojo-wide<%= extra %>"><pre><code><%= line.code %></code></pre></td>
+                        </tr>
+                      <% } %>
+                    </table>
+                  </div>
+                <% } %>
               </div>
               <div id="trace" class="mojo-box mojo-no-padding more mojo-no-top-border mojo-border-radius-bottom">
                 <div id="frames" class="more">

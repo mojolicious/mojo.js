@@ -10,6 +10,11 @@ t.test('Static app', async t => {
     (await client.getOk('/public/mojo/bootstrap/bootstrap.min.css')).statusIs(200).headerIs('Content-Type', 'text/css')
       .headerExists('Content-Length');
 
+    (await client.getOk('/public/mojo/highlight.js/highlight.pack.js')).statusIs(200)
+      .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
+    (await client.getOk('/public/mojo/highlight.js/highlight-mojo-dark.css')).statusIs(200)
+      .headerIs('Content-Type', 'text/css').headerExists('Content-Length');
+
     (await client.getOk('/public/mojo/failraptor.png')).statusIs(200).headerIs('Content-Type', 'image/png')
       .headerExists('Content-Length');
     (await client.getOk('/public/mojo/favicon.ico')).statusIs(200).headerIs('Content-Type', 'image/x-icon')

@@ -48,23 +48,23 @@ t.test('exceptionContext', async t => {
     column: 11,
     source: [
       {
-        line: 39,
+        num: 39,
         code: '  let result;'
       },
       {
-        line: 40,
+        num: 40,
         code: '  try {'
       },
       {
-        line: 41,
+        num: 41,
         code: "    throw new Error('Test');"
       },
       {
-        line: 42,
+        num: 42,
         code: '  } catch (error) {'
       },
       {
-        line: 43,
+        num: 43,
         code: '    result = error;'
       }
     ]
