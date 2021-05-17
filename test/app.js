@@ -146,6 +146,21 @@ t.test('App', async t => {
 
   const client = await app.newTestClient({tap: t});
 
+  t.test('Options', t => {
+    const app = mojo();
+    t.same(app.config, {});
+    t.equal(app.exceptionFormat, 'html');
+    t.equal(app.mode, 'development');
+    t.same(app.secrets, ['Insecure']);
+
+    const app2 = mojo({config: {it: 'works'}, exceptionFormat: 'json', mode: 'production', secrets: ['Secure']});
+    t.same(app2.config, {it: 'works'});
+    t.equal(app2.exceptionFormat, 'json');
+    t.equal(app2.mode, 'production');
+    t.same(app2.secrets, ['Secure']);
+    t.end();
+  });
+
   await t.test('Hello World', async t => {
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
     (await client.getOk('/')).statusIs(200).headerLike('Content-Length', /1/).bodyLike(/Mojo/);
