@@ -171,7 +171,7 @@ t.test('App', async t => {
   });
 
   await t.test('Not found', async t => {
-    (await client.putOk('/does_not_exist')).statusIs(404);
+    (await client.putOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'text/plain;charset=UTF-8');
   });
 
   await t.test('Exception', async t => {

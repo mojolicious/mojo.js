@@ -22,8 +22,18 @@ t.test('Exception app', async t => {
     });
 
     await t.test('Not found', async t => {
-      (await client.getOk('/does_not_exist')).statusIs(404).bodyLike(/This application is in.*development.*mode/);
-      (await client.getOk('/does_not_exist')).statusIs(404).bodyUnlike(/no-raptor\.png/);
+      app.exceptionFormat = 'html';
+      (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'text/html;charset=UTF-8')
+        .bodyLike(/This application is in.*development.*mode/).bodyUnlike(/no-raptor\.png/);
+
+      app.exceptionFormat = 'txt';
+      (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'text/plain;charset=UTF-8')
+        .bodyIs('Not Found');
+
+      app.exceptionFormat = 'json';
+      (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'application/json;charset=UTF-8')
+        .jsonIs({error: {message: 'Not Found'}});
+      app.exceptionFormat = 'html';
     });
 
     await t.test('Exception', async t => {
@@ -31,14 +41,26 @@ t.test('Exception app', async t => {
       const file = dir.child('development.log');
       app.log.destination = file.createWriteStream();
 
-      (await client.getOk('/exception')).statusIs(500).bodyLike(/This application is in.*development.*mode/);
-      (await client.getOk('/exception')).statusIs(500).bodyUnlike(/\/public\/mojo\/failraptor\.png/);
+      app.exceptionFormat = 'html';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'text/html;charset=UTF-8')
+        .bodyLike(/This application is in.*development.*mode/).bodyUnlike(/\/public\/mojo\/failraptor\.png/);
+
+      app.exceptionFormat = 'txt';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'text/plain;charset=UTF-8')
+        .bodyLike(/Test exception/);
+
+      app.exceptionFormat = 'json';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'application/json;charset=UTF-8')
+        .bodyLike(/Test exception/);
+      app.exceptionFormat = 'html';
 
       t.equal(app.log.history[0].level, 'error');
       t.match(app.log.history[0].msg, /Error: Test exception/);
       t.equal(app.log.history[1].level, 'error');
       t.match(app.log.history[1].msg, /Error: Test exception/);
-      t.same(app.log.history[2], undefined);
+      t.equal(app.log.history[2].level, 'error');
+      t.match(app.log.history[2].msg, /Error: Test exception/);
+      t.same(app.log.history[3], undefined);
       t.match(await file.readFile(), /Error: Test exception/);
     });
 
@@ -65,8 +87,18 @@ t.test('Exception app', async t => {
     });
 
     await t.test('Not found', async t => {
-      (await client.getOk('/does_not_exist')).statusIs(404).bodyUnlike(/This application is in.*development.*mode/);
-      (await client.getOk('/does_not_exist')).statusIs(404).bodyLike(/no-raptor\.png/);
+      app.exceptionFormat = 'html';
+      (await client.getOk('/does_not_exist')).statusIs(404).bodyUnlike(/This application is in.*development.*mode/)
+        .bodyLike(/no-raptor\.png/);
+
+      app.exceptionFormat = 'txt';
+      (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'text/plain;charset=UTF-8')
+        .bodyIs('Not Found');
+
+      app.exceptionFormat = 'json';
+      (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'application/json;charset=UTF-8')
+        .jsonIs({error: {message: 'Not Found'}});
+      app.exceptionFormat = 'html';
     });
 
     await t.test('Exception', async t => {
@@ -74,8 +106,18 @@ t.test('Exception app', async t => {
       const file = dir.child('production.log');
       app.log.destination = file.createWriteStream();
 
-      (await client.getOk('/exception')).statusIs(500).bodyUnlike(/This application is in.*development.*mode/);
-      (await client.getOk('/exception')).statusIs(500).bodyLike(/failraptor\.png/);
+      app.exceptionFormat = 'html';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'text/html;charset=UTF-8')
+        .bodyUnlike(/This application is in.*development.*mode/).bodyLike(/failraptor\.png/);
+
+      app.exceptionFormat = 'txt';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'text/plain;charset=UTF-8')
+        .bodyIs('Internal Server Error');
+
+      app.exceptionFormat = 'json';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'application/json;charset=UTF-8')
+        .jsonIs({error: {message: 'Internal Server Error'}});
+      app.exceptionFormat = 'html';
 
       t.same(app.log.history, []);
       t.match(await file.readFile(), /Error: Test exception/);
