@@ -69,7 +69,6 @@ t.test('exceptionContext', async t => {
       }
     ]
   });
-  t.end();
 });
 
 t.test('sleep', async t => {

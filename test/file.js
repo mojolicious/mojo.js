@@ -61,7 +61,7 @@ t.test('I/O', async t => {
   t.same(await dir.child('test.txt').isReadable(), false);
 });
 
-t.test('I/O streams', async t => {
+t.test('I/O (streams)', async t => {
   const dir = await File.tempDir();
   const write = dir.child('test.txt').createWriteStream({encoding: 'utf8'});
   await new Promise(resolve => write.write('Hello World!', resolve));
@@ -70,6 +70,17 @@ t.test('I/O streams', async t => {
   read.on('data', chunk => { str = str + chunk; });
   await new Promise(resolve => read.on('end', resolve));
   t.equal(str, 'Hello World!');
+});
+
+t.test('I/O (lines)', async t => {
+  const dir = await File.tempDir();
+  const file = dir.child('test.txt');
+  await file.writeFile('foo\nbar\nI ♥ Mojolicious\n', {encoding: 'UTF-8'});
+  const lines = [];
+  for await (const line of file.lines({encoding: 'UTF-8'})) {
+    lines.push(line);
+  }
+  t.same(lines, ['foo', 'bar', 'I ♥ Mojolicious']);
 });
 
 t.test('touch', async t => {
