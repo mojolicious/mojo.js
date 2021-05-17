@@ -67,6 +67,50 @@ t.test('Exception app', async t => {
     await client.stop();
   });
 
+  t.test('Development (custom views)', async t => {
+    const app = mojo();
+    app.renderer.viewPaths.push(File.currentFile().sibling('support', 'exception-app', 'views').toString());
+
+    app.any('/exception', ctx => {
+      throw new Error('Another test exception');
+    });
+
+    const client = await app.newTestClient({tap: t});
+
+    await t.test('Not found', async t => {
+      app.exceptionFormat = 'html';
+      (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'text/html;charset=UTF-8')
+        .bodyLike(/Custom not found/);
+
+      app.exceptionFormat = 'txt';
+      (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'text/plain;charset=UTF-8')
+        .bodyIs('Not Found');
+    });
+
+    await t.test('Exception', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('development.log');
+      app.log.destination = file.createWriteStream();
+
+      app.exceptionFormat = 'html';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'text/html;charset=UTF-8')
+        .bodyLike(/Custom exception: Error: Another test exception/);
+
+      app.exceptionFormat = 'txt';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'text/plain;charset=UTF-8')
+        .bodyLike(/Error: Another test exception/);
+
+      t.equal(app.log.history[0].level, 'error');
+      t.match(app.log.history[0].msg, /Error: Another test exception/);
+      t.equal(app.log.history[1].level, 'error');
+      t.match(app.log.history[1].msg, /Error: Another test exception/);
+      t.same(app.log.history[2], undefined);
+      t.match(await file.readFile(), /Error: Another test exception/);
+    });
+
+    await client.stop();
+  });
+
   t.test('Production', async t => {
     process.env.NODE_ENV = 'production';
     const app = mojo();
@@ -121,6 +165,47 @@ t.test('Exception app', async t => {
 
       t.same(app.log.history, []);
       t.match(await file.readFile(), /Error: Test exception/);
+    });
+
+    await client.stop();
+  });
+
+  t.test('Production (custom views)', async t => {
+    process.env.NODE_ENV = 'production';
+    const app = mojo();
+    app.renderer.viewPaths.push(File.currentFile().sibling('support', 'exception-app', 'views').toString());
+
+    app.any('/exception', ctx => {
+      throw new Error('Another test exception');
+    });
+
+    const client = await app.newTestClient({tap: t});
+
+    await t.test('Not found', async t => {
+      app.exceptionFormat = 'html';
+      (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'text/html;charset=UTF-8')
+        .bodyLike(/Production not found/);
+
+      app.exceptionFormat = 'txt';
+      (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'text/plain;charset=UTF-8')
+        .bodyIs('Not Found');
+    });
+
+    await t.test('Exception', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('production.log');
+      app.log.destination = file.createWriteStream();
+
+      app.exceptionFormat = 'html';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'text/html;charset=UTF-8')
+        .bodyLike(/Production exception/);
+
+      app.exceptionFormat = 'txt';
+      (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'text/plain;charset=UTF-8')
+        .bodyIs('Internal Server Error');
+
+      t.same(app.log.history, []);
+      t.match(await file.readFile(), /Error: Another test exception/);
     });
 
     await client.stop();
