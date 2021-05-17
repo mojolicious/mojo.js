@@ -33,7 +33,7 @@ t.test('Exception app', async t => {
       app.exceptionFormat = 'json';
       (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'application/json;charset=UTF-8')
         .jsonIs({error: {message: 'Not Found'}});
-      app.exceptionFormat = 'html';
+      app.exceptionFormat = 'txt';
     });
 
     await t.test('Exception', async t => {
@@ -52,7 +52,7 @@ t.test('Exception app', async t => {
       app.exceptionFormat = 'json';
       (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'application/json;charset=UTF-8')
         .bodyLike(/Test exception/);
-      app.exceptionFormat = 'html';
+      app.exceptionFormat = 'txt';
 
       t.equal(app.log.history[0].level, 'error');
       t.match(app.log.history[0].msg, /Error: Test exception/);
@@ -98,7 +98,7 @@ t.test('Exception app', async t => {
       app.exceptionFormat = 'json';
       (await client.getOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'application/json;charset=UTF-8')
         .jsonIs({error: {message: 'Not Found'}});
-      app.exceptionFormat = 'html';
+      app.exceptionFormat = 'txt';
     });
 
     await t.test('Exception', async t => {
@@ -117,7 +117,7 @@ t.test('Exception app', async t => {
       app.exceptionFormat = 'json';
       (await client.getOk('/exception')).statusIs(500).headerIs('Content-Type', 'application/json;charset=UTF-8')
         .jsonIs({error: {message: 'Internal Server Error'}});
-      app.exceptionFormat = 'html';
+      app.exceptionFormat = 'txt';
 
       t.same(app.log.history, []);
       t.match(await file.readFile(), /Error: Test exception/);
