@@ -129,17 +129,28 @@ t.test('Command app', async t => {
     t.match(app.cli.commands['gen-lite-app'].description, /Generate single file application/);
     t.match(app.cli.commands['gen-lite-app'].usage, /Usage: APPLICATION gen-lite-app/);
 
-    const file = dir.child('index.js');
+    const file = dir.child('myapp.js');
     const output2 = await captureOutput(async () => {
       await app.cli.start('gen-lite-app', file.toString());
     });
-    t.match(output2.toString(), /\[write\] .+index\.js/);
+    t.match(output2.toString(), /\[write\].+myapp\.js/);
     t.same(await file.exists(), true);
     t.match(await file.readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('gen-lite-app', file.toString());
     });
-    t.match(output3.toString(), /\[exist\] .+index\.js/);
+    t.match(output3.toString(), /\[exist\].+myapp\.js/);
+
+    const file2 = dir.child('index.js');
+    const cwd = process.cwd();
+    process.chdir(dir.toString());
+    const output4 = await captureOutput(async () => {
+      await app.cli.start('gen-lite-app');
+    });
+    t.match(output4.toString(), /\[write\].+index\.js/);
+    t.same(await file2.exists(), true);
+    t.match(await file2.readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+    process.chdir(cwd);
   });
 });
