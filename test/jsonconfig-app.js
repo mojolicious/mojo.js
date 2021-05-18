@@ -35,7 +35,7 @@ t.test('JSONConfig app', async t => {
     const app = mojo();
     t.throws(() => {
       app.plugin(jsonConfigPlugin(app, {file: 'missing.json'}));
-    }, 'ENOENT: no such file or directory');
+    }, {code: 'ENOENT'});
     t.end();
   });
 });
