@@ -162,8 +162,11 @@ t.test('App', async t => {
   });
 
   await t.test('Hello World', async t => {
+    t.equal(app.router.cache.itemCount, 0);
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
+    t.equal(app.router.cache.itemCount, 1);
     (await client.getOk('/')).statusIs(200).headerLike('Content-Length', /1/).bodyLike(/Mojo/);
+    t.equal(app.router.cache.itemCount, 1);
   });
 
   await t.test('Methods', async t => {
