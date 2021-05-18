@@ -1,5 +1,6 @@
 import {app} from './support/command-app/index.js';
 import {captureOutput} from '../lib/util.js';
+import File from '../lib/file.js';
 import t from 'tap';
 
 t.test('Command app', async t => {
@@ -116,5 +117,29 @@ t.test('Command app', async t => {
     t.match(output, /mojo\.js\s+\(\d\.\d\.\d(?:-(?:alpha|beta)\.\d+)?\)/);
     t.match(app.cli.commands.version.description, /Show version/);
     t.match(app.cli.commands.version.usage, /Usage: APPLICATION version/);
+  });
+
+  await t.test('gen-lite-app', async t => {
+    const dir = await File.tempDir();
+
+    const output = await captureOutput(async () => {
+      await app.cli.start('gen-lite-app', '-h');
+    });
+    t.match(output.toString(), /Usage: APPLICATION gen-lite-app/);
+    t.match(app.cli.commands['gen-lite-app'].description, /Generate single file application/);
+    t.match(app.cli.commands['gen-lite-app'].usage, /Usage: APPLICATION gen-lite-app/);
+
+    const file = dir.child('index.js');
+    const output2 = await captureOutput(async () => {
+      await app.cli.start('gen-lite-app', file.toString());
+    });
+    t.match(output2.toString(), /\[write\] .+index\.js/);
+    t.same(await file.exists(), true);
+    t.match(await file.readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+
+    const output3 = await captureOutput(async () => {
+      await app.cli.start('gen-lite-app', file.toString());
+    });
+    t.match(output3.toString(), /\[exist\] .+index\.js/);
   });
 });
