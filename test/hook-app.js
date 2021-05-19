@@ -23,7 +23,7 @@ t.test('Hook app', async t => {
     const first = ctx.req.query.get('first');
     if (first !== '1') return;
     await util.sleep(1);
-    ctx.render({text: 'First request hook'});
+    await ctx.render({text: 'First request hook'});
     return true;
   });
 
@@ -34,7 +34,7 @@ t.test('Hook app', async t => {
   app.addHook('request', async ctx => {
     const second = ctx.req.query.get('second');
     if (second !== '1') return;
-    ctx.render({text: 'Second request hook'});
+    await ctx.render({text: 'Second request hook'});
     return true;
   });
 
