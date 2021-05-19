@@ -5,6 +5,7 @@ import * as util from '../lib/util.js';
 t.test('Hook app', async t => {
   const app = mojo();
 
+  app.log.level = 'fatal';
   app.config.serverHooks = 'works';
 
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
@@ -54,6 +55,13 @@ t.test('Hook app', async t => {
     });
   });
 
+  app.addHook('request', async ctx => {
+    await util.sleep(1);
+    const exception = ctx.req.query.get('exception');
+    if (exception !== '1') return;
+    throw new Error('Hook exception');
+  });
+
   t.same(serverHooks, []);
   const client = await app.newTestClient({tap: t});
   t.same(serverHooks, ['start: works']);
@@ -78,6 +86,10 @@ t.test('Hook app', async t => {
     await client.websocketOk('/whatever?third=1');
     t.equal(await client.messageOk(), 'Hello World!');
     await client.finishedOk(1005);
+  });
+
+  await t.test('Request hook exception', async t => {
+    (await client.getOk('/?exception=1')).statusIs(500).headerIs('X-Hook', 'works').bodyLike(/Error: Hook exception/);
   });
 
   t.same(serverHooks, ['start: works']);
