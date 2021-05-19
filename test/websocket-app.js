@@ -40,6 +40,10 @@ t.test('WebSocket app', async t => {
     });
   });
 
+  app.websocket('/rejected').to(ctx => {
+    ctx.log.trace('Rejecting WebSocket');
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Simple roundtrip', async t => {
@@ -111,6 +115,16 @@ t.test('WebSocket app', async t => {
     await client.websocketOk('/one_sided');
     t.equal(await client.messageOk(), 'I ♥ Mojolicious!');
     await client.finishedOk(1005);
+  });
+
+  await t.test('Rejected WebSocket connection', async t => {
+    let fail;
+    try {
+      await client.websocketOk('/rejected');
+    } catch (error) {
+      fail = error;
+    }
+    t.match(fail, {code: 'ECONNRESET'});
   });
 
   await client.stop();
