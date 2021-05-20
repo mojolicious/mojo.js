@@ -6,6 +6,14 @@ t.test('Test client', async t => {
 
   app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
+  app.websocket('/echo').to(ctx => {
+    ctx.on('connection', ws => {
+      ws.on('message', message => {
+        ws.send(`echo: ${message}`);
+      });
+    });
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -35,6 +43,18 @@ t.test('Test client', async t => {
     ]);
   });
 
+  await t.test('Status', async t => {
+    const results = [];
+    client.assert = (name, args, msg) => results.push([name, args, msg]);
+
+    (await client.getOk('/')).statusIs(200);
+
+    t.same(results, [
+      ['ok', [true], 'GET request for /'],
+      ['equal', [200, 200], 'response status is 200']
+    ]);
+  });
+
   await t.test('Headers', async t => {
     const results = [];
     client.assert = (name, args, msg) => results.push([name, args, msg]);
@@ -48,6 +68,39 @@ t.test('Test client', async t => {
       ['notOk', [false], 'no "Content-Disposition" header'],
       ['equal', ['text/plain;charset=UTF-8', 'text/plain'], 'Content-Type: text/plain'],
       ['match', ['text/plain;charset=UTF-8', /plain/], 'Content-Type is similar']
+    ]);
+  });
+
+  await t.test('Body', async t => {
+    const results = [];
+    client.assert = (name, args, msg) => results.push([name, args, msg]);
+
+    (await client.getOk('/')).bodyIs('test').bodyLike(/that/).bodyUnlike(/whatever/);
+
+    t.same(results, [
+      ['ok', [true], 'GET request for /'],
+      ['equal', ['Hello Mojo!', 'test'], 'body is equal'],
+      ['match', ['Hello Mojo!', /that/], 'body is similar'],
+      ['notMatch', ['Hello Mojo!', /whatever/], 'body is not similar']
+    ]);
+  });
+
+  await t.test('WebSocket', async t => {
+    const results = [];
+    client.assert = (name, args, msg) => results.push([name, args, msg]);
+
+    await client.websocketOk('/echo');
+    await client.sendOk('hello');
+    await client.messageOk();
+    await client.finishOk(1000);
+    await client.finishedOk(1000);
+
+    t.same(results, [
+      ['ok', [true], 'WebSocket handshake with /echo'],
+      ['ok', [true], 'send message'],
+      ['ok', [true], 'message received'],
+      ['ok', [true], 'closed WebSocket'],
+      ['equal', [1000, 1000], 'WebSocket closed with status 1000']
     ]);
   });
 
