@@ -44,6 +44,17 @@ t.test('WebSocket app', async t => {
     ctx.log.trace('Rejecting WebSocket');
   });
 
+  app.post('/login', ctx => {
+    ctx.session.user = 'kraih';
+    ctx.render({text: `Welcome ${ctx.session.user}`});
+  });
+
+  app.websocket('/restricted').to(ctx => {
+    ctx.on('connection', ws => {
+      ws.send(`Welcome back ${ctx.session.user}`, () => ws.close());
+    });
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Simple roundtrip', async t => {
@@ -125,6 +136,13 @@ t.test('WebSocket app', async t => {
       fail = error;
     }
     t.match(fail, {code: 'ECONNRESET'});
+  });
+
+  await t.test('Session', async t => {
+    (await (await client.postOk('/login')).statusIs(200).bodyIs('Welcome kraih'));
+    await client.websocketOk('/restricted');
+    t.equal(await client.messageOk(), 'Welcome back kraih');
+    await client.finishedOk(1005);
   });
 
   await client.stop();
