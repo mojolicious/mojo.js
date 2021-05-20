@@ -153,4 +153,61 @@ t.test('Command app', async t => {
     t.match(await file2.readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
     process.chdir(cwd);
   });
+
+  await t.test('gen-full-app', async t => {
+    const dir = await File.tempDir();
+
+    const output = await captureOutput(async () => {
+      await app.cli.start('gen-full-app', '-h');
+    });
+    t.match(output.toString(), /Usage: APPLICATION gen-full-app/);
+    t.match(app.cli.commands['gen-full-app'].description, /Generate application directory structure/);
+    t.match(app.cli.commands['gen-full-app'].usage, /Usage: APPLICATION gen-full-app/);
+
+    const cwd = process.cwd();
+    process.chdir(dir.toString());
+    const output2 = await captureOutput(async () => {
+      await app.cli.start('gen-full-app');
+    });
+    t.match(output2.toString(), /\[write\].+config\.json/);
+    t.same(await dir.child('myapp', 'config.json').exists(), true);
+    t.match(await dir.child('myapp', 'config.json').readFile('utf8'), /"secrets"/);
+    t.match(output2.toString(), /\[write\].+index\.js/);
+    t.same(await dir.child('myapp', 'index.js').exists(), true);
+    t.match(await dir.child('myapp', 'index.js').readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+    t.match(output2.toString(), /\[write\].+package\.json/);
+    t.same(await dir.child('myapp', 'package.json').exists(), true);
+    t.match(await dir.child('myapp', 'package.json').readFile('utf8'), /"@mojojs\/mojo"/);
+    t.match(output2.toString(), /\[write\].+controllers.+example\.js/);
+    t.same(await dir.child('myapp', 'controllers', 'example.js').exists(), true);
+    t.match(await dir.child('myapp', 'controllers', 'example.js').readFile('utf8'), /export class Controller/);
+    t.match(output2.toString(), /\[write\].+default\.html\.ejs/);
+    t.same(await dir.child('myapp', 'views', 'layouts', 'default.html.ejs').exists(), true);
+    t.match(await dir.child('myapp', 'views', 'layouts', 'default.html.ejs').readFile('utf8'), /Welcome/);
+    t.match(output2.toString(), /\[write\].+welcome\.html\.ejs/);
+    t.same(await dir.child('myapp', 'views', 'example', 'welcome.html.ejs').exists(), true);
+    t.match(await dir.child('myapp', 'views', 'example', 'welcome.html.ejs').readFile('utf8'), /This page/);
+    t.match(output2.toString(), /\[write\].+test.+example\.js/);
+    t.same(await dir.child('myapp', 'test', 'example.js').exists(), true);
+    t.match(await dir.child('myapp', 'test', 'example.js').readFile('utf8'), /getOk/);
+
+    const output3 = await captureOutput(async () => {
+      await app.cli.start('gen-full-app');
+    });
+    t.match(output3.toString(), /\[exist\].+config\.json/);
+    t.match(output3.toString(), /\[exist\].+index\.js/);
+    t.match(output3.toString(), /\[exist\].+package\.json/);
+    t.match(output3.toString(), /\[exist\].+controllers.+example\.js/);
+    t.match(output3.toString(), /\[exist\].+default\.html\.ejs/);
+    t.match(output3.toString(), /\[exist\].+welcome\.html\.ejs/);
+    t.match(output3.toString(), /\[exist\].+test.+example\.js/);
+
+    const output4 = await captureOutput(async () => {
+      await app.cli.start('gen-full-app', 'test-app');
+    });
+    t.match(output4.toString(), /\[write\].+test-app.+index\.js/);
+    t.same(await dir.child('test-app', 'index.js').exists(), true);
+    t.match(await dir.child('test-app', 'index.js').readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+    process.chdir(cwd);
+  });
 });

@@ -2,93 +2,113 @@ import File from '../lib/file.js';
 import t from 'tap';
 import * as util from '../lib/util.js';
 
-t.test('captureOutput', async t => {
-  const output = await util.captureOutput(async () => {
-    console.log('test works');
-  });
-  t.match(output, /test works/);
-
-  let output2, error;
-  try {
-    output2 = await util.captureOutput(async () => {
-      throw new Error('Capture error');
+t.test('Util', async t => {
+  await t.test('captureOutput', async t => {
+    const output = await util.captureOutput(async () => {
+      console.log('test works');
     });
-  } catch (err) {
-    error = err;
-  }
-  t.same(output2, undefined);
-  t.match(error, /Capture error/);
+    t.match(output, /test works/);
 
-  const output3 = await util.captureOutput({stderr: true}, async () => {
-    process.stdout.write('works');
-    process.stderr.write('too');
+    let output2, error;
+    try {
+      output2 = await util.captureOutput(async () => {
+        throw new Error('Capture error');
+      });
+    } catch (err) {
+      error = err;
+    }
+    t.same(output2, undefined);
+    t.match(error, /Capture error/);
+
+    const output3 = await util.captureOutput({stderr: true}, async () => {
+      process.stdout.write('works');
+      process.stderr.write('too');
+    });
+    t.match(output3, /workstoo/);
   });
-  t.match(output3, /workstoo/);
-});
 
-t.test('decodeURIComponentSafe', async t => {
-  const decode = util.decodeURIComponentSafe;
-  t.same(decode('%E0%A4%A'), null);
-  t.same(decode('te%2fst'), 'te/st');
-  t.same(decode('te%2Fst'), 'te/st');
-  t.end();
-});
+  await t.test('cliCreate*', async t => {
+    const dir = await File.tempDir();
+    const cwd = process.cwd();
+    process.chdir(dir.toString());
 
-t.test('exceptionContext', async t => {
-  const exceptionContext = util.exceptionContext;
-  let result;
-  try {
-    throw new Error('Test');
-  } catch (error) {
-    result = error;
-  }
-  t.same(await exceptionContext(result, {lines: 2}), {
-    file: File.currentFile().toString(),
-    line: 41,
-    column: 11,
-    source: [
-      {
-        num: 39,
-        code: '  let result;'
-      },
-      {
-        num: 40,
-        code: '  try {'
-      },
-      {
-        num: 41,
-        code: "    throw new Error('Test');"
-      },
-      {
-        num: 42,
-        code: '  } catch (error) {'
-      },
-      {
-        num: 43,
-        code: '    result = error;'
-      }
-    ]
+    const output = await util.captureOutput(async () => {
+      await util.cliCreateDir('foo/bar');
+      await util.cliCreateFile('foo/bar/yada.txt', 'it <%= test %>', {test: 'works'}, {chmod: 0o744});
+    });
+    t.match(output.toString(), /\[mkdir\].+bar/);
+    t.match(output.toString(), /\[write\].+yada\.txt/);
+    t.match(output.toString(), /\[chmod\].+yada\.txt\ \(744\)/);
+    t.same(await dir.child('foo', 'bar', 'yada.txt').exists(), true);
+    t.match(await dir.child('foo', 'bar', 'yada.txt').readFile('utf8'), /it works/);
+
+    process.chdir(cwd);
   });
-});
 
-t.test('sleep', async t => {
-  const sleep = util.sleep(1);
-  t.ok(sleep instanceof Promise);
-  t.same(await sleep, undefined);
-});
+  t.test('decodeURIComponentSafe', t => {
+    const decode = util.decodeURIComponentSafe;
+    t.same(decode('%E0%A4%A'), null);
+    t.same(decode('te%2fst'), 'te/st');
+    t.same(decode('te%2Fst'), 'te/st');
+    t.end();
+  });
 
-t.test('tablify', t => {
-  const tablify = util.tablify;
-  t.equal(typeof tablify, 'function');
-  t.equal(tablify([['foo']]), 'foo\n');
-  t.equal(tablify([['f\r\no o\r\n', 'bar']]), 'fo o  bar\n');
-  t.equal(tablify([['  foo', '  b a r']]), '  foo    b a r\n');
-  t.equal(tablify([['foo', 'yada'], ['yada', 'yada']]), 'foo   yada\nyada  yada\n');
-  t.equal(tablify([[undefined, 'yada'], ['yada', null]]), '      yada\nyada  \n');
-  t.equal(tablify([['foo', 'bar', 'baz'], ['yada', 'yada', 'yada']]), 'foo   bar   baz\nyada  yada  yada\n');
-  t.equal(tablify([['a', '', 0], [0, '', 'b']]), 'a    0\n0    b\n');
-  t.equal(tablify([[1, 2], [3]]), '1  2\n3\n');
-  t.equal(tablify([[1], [2, 3]]), '1\n2  3\n');
-  t.equal(tablify([[1], [], [2, 3]]), '1\n\n2  3\n');
-  t.end();
+  await t.test('exceptionContext', async t => {
+    const exceptionContext = util.exceptionContext;
+    let result;
+    try {
+      throw new Error('Test');
+    } catch (error) {
+      result = error;
+    }
+    t.same(await exceptionContext(result, {lines: 2}), {
+      file: File.currentFile().toString(),
+      line: 60,
+      column: 13,
+      source: [
+        {
+          num: 58,
+          code: '    let result;'
+        },
+        {
+          num: 59,
+          code: '    try {'
+        },
+        {
+          num: 60,
+          code: "      throw new Error('Test');"
+        },
+        {
+          num: 61,
+          code: '    } catch (error) {'
+        },
+        {
+          num: 62,
+          code: '      result = error;'
+        }
+      ]
+    });
+  });
+
+  await t.test('sleep', async t => {
+    const sleep = util.sleep(1);
+    t.ok(sleep instanceof Promise);
+    t.same(await sleep, undefined);
+  });
+
+  t.test('tablify', t => {
+    const tablify = util.tablify;
+    t.equal(typeof tablify, 'function');
+    t.equal(tablify([['foo']]), 'foo\n');
+    t.equal(tablify([['f\r\no o\r\n', 'bar']]), 'fo o  bar\n');
+    t.equal(tablify([['  foo', '  b a r']]), '  foo    b a r\n');
+    t.equal(tablify([['foo', 'yada'], ['yada', 'yada']]), 'foo   yada\nyada  yada\n');
+    t.equal(tablify([[undefined, 'yada'], ['yada', null]]), '      yada\nyada  \n');
+    t.equal(tablify([['foo', 'bar', 'baz'], ['yada', 'yada', 'yada']]), 'foo   bar   baz\nyada  yada  yada\n');
+    t.equal(tablify([['a', '', 0], [0, '', 'b']]), 'a    0\n0    b\n');
+    t.equal(tablify([[1, 2], [3]]), '1  2\n3\n');
+    t.equal(tablify([[1], [2, 3]]), '1\n2  3\n');
+    t.equal(tablify([[1], [], [2, 3]]), '1\n\n2  3\n');
+    t.end();
+  });
 });
