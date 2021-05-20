@@ -3,23 +3,23 @@ import t from 'tap';
 
 t.test('Text pattern', t => {
   const pattern = new Pattern('/test/123');
-  t.same(pattern.match('/test/123'), {});
-  t.same(pattern.match('/test'), null);
+  t.same(pattern.match('/test/123', {isEndpoint: false}), {});
+  t.same(pattern.match('/test', {isEndpoint: false}), null);
   t.end();
 });
 
 t.test('Normal pattern with text, placeholders and a default value', t => {
   const pattern = new Pattern('/test/<controller>/:action', {defaults: {action: 'index'}});
   t.same(pattern.match('/test/foo/bar', {isEndpoint: true}), {controller: 'foo', action: 'bar'});
-  t.same(pattern.match('/test/foo'), {controller: 'foo', action: 'index'});
-  t.same(pattern.match('/test/foo/'), {controller: 'foo', action: 'index'});
-  t.same(pattern.match('/test/'), null);
+  t.same(pattern.match('/test/foo', {isEndpoint: false}), {controller: 'foo', action: 'index'});
+  t.same(pattern.match('/test/foo/', {isEndpoint: false}), {controller: 'foo', action: 'index'});
+  t.same(pattern.match('/test/', {isEndpoint: false}), null);
   t.equal(pattern.render({controller: 'foo'}), '/test/foo');
 
   const pattern2 = new Pattern().parse('/foo/:bar');
   pattern2.defaults = {...pattern2.defaults, bar: 'baz'};
-  t.same(pattern2.match('/foo/bar'), {bar: 'bar'});
-  t.same(pattern2.match('/foo'), {bar: 'baz'});
+  t.same(pattern2.match('/foo/bar', {isEndpoint: false}), {bar: 'bar'});
+  t.same(pattern2.match('/foo', {isEndpoint: false}), {bar: 'baz'});
   t.end();
 });
 
@@ -28,7 +28,7 @@ t.test('Optional placeholder in the middle', t => {
   pattern.defaults = {name: 'foo'};
   t.same(pattern.match('/test123', {isEndpoint: true}), {name: 'foo'});
   t.same(pattern.match('/testbar123', {isEndpoint: true}), {name: 'bar'});
-  t.same(pattern.match('/test/123'), null);
+  t.same(pattern.match('/test/123', {isEndpoint: false}), null);
   t.equal(pattern.render(), '/testfoo123');
   t.equal(pattern.render({name: 'bar'}), '/testbar123');
   pattern.defaults = {name: ''};
@@ -39,7 +39,7 @@ t.test('Optional placeholder in the middle', t => {
   pattern2.defaults = {name: 'foo'};
   t.same(pattern2.match('/test/123', {isEndpoint: true}), {name: 'foo'});
   t.same(pattern2.match('/test/bar/123', {isEndpoint: true}), {name: 'bar'});
-  t.same(pattern2.match('/test'), null);
+  t.same(pattern2.match('/test', {isEndpoint: false}), null);
   t.equal(pattern2.render(), '/test/foo/123');
   t.equal(pattern2.render({name: 'bar'}), '/test/bar/123');
   t.end();
@@ -48,10 +48,10 @@ t.test('Optional placeholder in the middle', t => {
 t.test('Multiple optional placeholders in the middle', t => {
   const pattern = new Pattern('/test/:a/123/:b/456');
   pattern.defaults = {a: 'a', b: 'b'};
-  t.same(pattern.match('/test/123/456', {ext: 1}), {a: 'a', b: 'b'});
-  t.same(pattern.match('/test/c/123/456', 1), {a: 'c', b: 'b'});
-  t.same(pattern.match('/test/123/c/456', 1), {a: 'a', b: 'c'});
-  t.same(pattern.match('/test/c/123/d/456', 1), {a: 'c', b: 'd'});
+  t.same(pattern.match('/test/123/456', {isEndpoint: true}), {a: 'a', b: 'b'});
+  t.same(pattern.match('/test/c/123/456', {isEndpoint: true}), {a: 'c', b: 'b'});
+  t.same(pattern.match('/test/123/c/456', {isEndpoint: true}), {a: 'a', b: 'c'});
+  t.same(pattern.match('/test/c/123/d/456', {isEndpoint: true}), {a: 'c', b: 'd'});
   t.equal(pattern.render(), '/test/a/123/b/456');
   t.equal(pattern.render({a: 'c'}), '/test/c/123/b/456');
   t.equal(pattern.render({b: 'c'}), '/test/a/123/c/456');
@@ -63,8 +63,8 @@ t.test('Root', t => {
   const pattern = new Pattern('/');
   t.equal(pattern.unparsed, '');
   pattern.defaults = {action: 'index'};
-  t.same(pattern.match('/test/foo/bar'), null);
-  t.same(pattern.match('/'), {action: 'index'});
+  t.same(pattern.match('/test/foo/bar', {isEndpoint: false}), null);
+  t.same(pattern.match('/', {isEndpoint: false}), {action: 'index'});
   t.equal(pattern.render(), '');
   t.equal(pattern.render({ext: 'txt'}, {isEndpoint: true}), '.txt');
   t.end();
@@ -73,8 +73,8 @@ t.test('Root', t => {
 t.test('Regex in pattern', t => {
   const pattern = new Pattern('/test/<controller>/:action/<id>', {constraints: {id: /\d+/}});
   pattern.defaults = {action: 'index', id: 1};
-  t.same(pattern.match('/test/foo/bar/203'), {controller: 'foo', action: 'bar', id: 203});
-  t.same(pattern.match('/test/foo/bar/baz'), null);
+  t.same(pattern.match('/test/foo/bar/203', {isEndpoint: false}), {controller: 'foo', action: 'bar', id: 203});
+  t.same(pattern.match('/test/foo/bar/baz', {isEndpoint: false}), null);
   t.equal(pattern.render({controller: 'zzz', action: 'index', id: 13}), '/test/zzz/index/13');
   t.equal(pattern.render({controller: 'zzz'}), '/test/zzz');
   t.end();
@@ -82,19 +82,19 @@ t.test('Regex in pattern', t => {
 
 t.test('Quoted placeholders', t => {
   const pattern = new Pattern('/<:controller>test/<action>', {defaults: {action: 'index'}});
-  t.same(pattern.match('/footest/bar'), {controller: 'foo', action: 'bar'});
+  t.same(pattern.match('/footest/bar', {isEndpoint: false}), {controller: 'foo', action: 'bar'});
   t.equal(pattern.render({controller: 'zzz', action: 'lala'}), '/zzztest/lala');
-  t.same(pattern.match('/test/lala'), null);
+  t.same(pattern.match('/test/lala', {isEndpoint: false}), null);
   t.end();
 });
 
 t.test('Relaxed', t => {
   const pattern = new Pattern('/test/#controller/:action');
-  t.same(pattern.match('/test/foo.bar/baz'), {controller: 'foo.bar', action: 'baz'});
+  t.same(pattern.match('/test/foo.bar/baz', {isEndpoint: false}), {controller: 'foo.bar', action: 'baz'});
   t.equal(pattern.render({controller: 'foo.bar', action: 'baz'}), '/test/foo.bar/baz');
 
   const pattern2 = new Pattern('/test/<#groovy>');
-  t.same(pattern2.match('/test/foo.bar'), {groovy: 'foo.bar'});
+  t.same(pattern2.match('/test/foo.bar', {isEndpoint: false}), {groovy: 'foo.bar'});
   t.same(pattern2.defaults.ext, undefined);
   t.equal(pattern2.render({groovy: 'foo.bar'}), '/test/foo.bar');
   t.end();
@@ -102,11 +102,11 @@ t.test('Relaxed', t => {
 
 t.test('Wildcard', t => {
   const pattern = new Pattern('/test/<:controller>/<*action>');
-  t.same(pattern.match('/test/foo/bar.baz/yada'), {controller: 'foo', action: 'bar.baz/yada'});
+  t.same(pattern.match('/test/foo/bar.baz/yada', {isEndpoint: false}), {controller: 'foo', action: 'bar.baz/yada'});
   t.equal(pattern.render({controller: 'foo', action: 'bar.baz/yada'}), '/test/foo/bar.baz/yada');
 
   const pattern2 = new Pattern('/tset/:controller/*action');
-  t.same(pattern2.match('/tset/foo/bar.baz/yada'), {controller: 'foo', action: 'bar.baz/yada'});
+  t.same(pattern2.match('/tset/foo/bar.baz/yada', {isEndpoint: false}), {controller: 'foo', action: 'bar.baz/yada'});
   t.equal(pattern2.render({controller: 'foo', action: 'bar.baz/yada'}), '/tset/foo/bar.baz/yada');
   t.end();
 });
@@ -116,20 +116,20 @@ t.test('False value', t => {
   t.equal(pattern.render({id: 0}), '/0');
   pattern.defaults = {id: 0};
   t.equal(pattern.render(), '/0');
-  t.same(pattern.match('/0'), {id: '0'});
+  t.same(pattern.match('/0', {isEndpoint: false}), {id: '0'});
   t.end();
 });
 
 t.test('Regex in path', t => {
   const pattern = new Pattern('/:test');
-  t.same(pattern.match('/test(test)(\\Qtest\\E)('), {test: 'test(test)(\\Qtest\\E)('});
+  t.same(pattern.match('/test(test)(\\Qtest\\E)(', {isEndpoint: false}), {test: 'test(test)(\\Qtest\\E)('});
   t.equal(pattern.render({test: '23'}), '/23');
   t.end();
 });
 
 t.test('Regex in pattern', t => {
   const pattern = new Pattern('/.+<:test>');
-  t.same(pattern.match('/.+test'), {test: 'test'});
+  t.same(pattern.match('/.+test', {isEndpoint: false}), {test: 'test'});
   t.equal(pattern.render({test: '23'}), '/.+23');
   t.end();
 });
@@ -137,19 +137,19 @@ t.test('Regex in pattern', t => {
 t.test('Unusual values', t => {
   const pattern = new Pattern('/:test');
   let value = decodeURIComponent('abc%3Ccba');
-  t.same(pattern.match(`/${value}`), {test: value});
+  t.same(pattern.match(`/${value}`, {isEndpoint: false}), {test: value});
   t.equal(pattern.render({test: value}), `/${value}`);
   value = decodeURIComponent('abc%3Ecba');
-  t.same(pattern.match(`/${value}`), {test: value});
+  t.same(pattern.match(`/${value}`, {isEndpoint: false}), {test: value});
   t.equal(pattern.render({test: value}), `/${value}`);
   value = decodeURIComponent('abc%25cba');
-  t.same(pattern.match(`/${value}`), {test: value});
+  t.same(pattern.match(`/${value}`, {isEndpoint: false}), {test: value});
   t.equal(pattern.render({test: value}), `/${value}`);
   value = decodeURIComponent('abc%20cba');
-  t.same(pattern.match(`/${value}`), {test: value});
+  t.same(pattern.match(`/${value}`, {isEndpoint: false}), {test: value});
   t.equal(pattern.render({test: value}), `/${value}`);
   value = 'abc%20cba';
-  t.same(pattern.match(`/${value}`), {test: value});
+  t.same(pattern.match(`/${value}`, {isEndpoint: false}), {test: value});
   t.equal(pattern.render({test: value}), `/${value}`);
   t.end();
 });
@@ -160,24 +160,24 @@ t.test('Extension detection', t => {
   pattern.constraints = {ext: ['xml', 'html']};
   t.same(pattern.match('/test.xml', {isEndpoint: true}), {action: 'index', ext: 'xml'});
   t.same(pattern.match('/test.html', {isEndpoint: true}), {action: 'index', ext: 'html'});
-  t.same(pattern.match('/test.json'), null);
+  t.same(pattern.match('/test.json', {isEndpoint: false}), null);
 
   const pattern2 = new Pattern('/test.json');
   pattern2.defaults = {action: 'index'};
-  t.same(pattern2.match('/test.json'), {action: 'index'});
+  t.same(pattern2.match('/test.json', {isEndpoint: false}), {action: 'index'});
   t.same(pattern2.match('/test.json', {isEndpoint: true}), {action: 'index'});
-  t.same(pattern2.match('/test.xml'), null);
-  t.same(pattern2.match('/test'), null);
+  t.same(pattern2.match('/test.xml', {isEndpoint: false}), null);
+  t.same(pattern2.match('/test', {isEndpoint: false}), null);
 
   const pattern3 = new Pattern('/test');
   pattern3.defaults = {action: 'index'};
-  t.same(pattern3.match('/test.xml'), null);
-  t.same(pattern3.match('/test'), {action: 'index'});
+  t.same(pattern3.match('/test.xml', {isEndpoint: false}), null);
+  t.same(pattern3.match('/test', {isEndpoint: false}), {action: 'index'});
 
   const pattern4 = new Pattern('/test', {constraints: {ext: 'txt'}, defaults: {ext: null}});
   t.same(pattern4.match('/test.txt', {isEndpoint: true}), {ext: 'txt'});
   t.same(pattern4.match('/test', {isEndpoint: true}), {ext: null});
-  t.same(pattern4.match('/test.xml'), null);
+  t.same(pattern4.match('/test.xml', {isEndpoint: false}), null);
   t.end();
 });
 
@@ -290,7 +290,7 @@ t.test('Optional extension with constraint', t => {
 
 t.test('Unicode', t => {
   const pattern = new Pattern('/<one>♥<two>');
-  const result = pattern.match('/i♥mojolicious');
+  const result = pattern.match('/i♥mojolicious', {isEndpoint: false});
   t.same(result, {one: 'i', two: 'mojolicious'});
   t.equal(pattern.render(result, {isEndpoint: true}), '/i♥mojolicious');
   t.end();
@@ -304,9 +304,9 @@ t.test('Placeholder types', t => {
   t.same(pattern.match('/foo/bar/baz', {isEndpoint: true}), null);
 
   const pattern2 = new Pattern('/foo/<bar:color>/baz', {types: {color: ['blue', 'red']}});
-  t.same(pattern2.match('/foo/blue/baz'), {bar: 'blue'});
-  t.same(pattern2.match('/foo/red/baz'), {bar: 'red'});
-  t.same(pattern2.match('/foo/green/baz'), null);
+  t.same(pattern2.match('/foo/blue/baz', {isEndpoint: false}), {bar: 'blue'});
+  t.same(pattern2.match('/foo/red/baz', {isEndpoint: false}), {bar: 'red'});
+  t.same(pattern2.match('/foo/green/baz', {isEndpoint: false}), null);
   t.end();
 });
 
