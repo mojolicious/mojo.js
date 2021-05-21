@@ -409,14 +409,7 @@ t.test('Client', async t => {
   });
 
   await t.test('Optional dependencies', async t => {
-    let skipJSDOM = false;
-    try {
-      await import('jsdom');
-    } catch {
-      skipJSDOM = true;
-    }
-
-    await t.test('JSDOM', {skip: skipJSDOM}, async t => {
+    await t.test('JSDOM', async t => {
       const res = await client.get('/test.html');
       const dom = await res.dom();
       t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!');
