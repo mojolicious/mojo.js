@@ -84,6 +84,25 @@ t.test('File', async t => {
     t.same(lines, ['foo', 'bar', 'I ♥ Mojolicious']);
   });
 
+  await t.test('copyFile and rename', async t => {
+    const dir = await File.tempDir();
+    const oldFile = dir.child('test.txt');
+    await oldFile.writeFile('Hello Mojo!');
+    t.same(await oldFile.exists(), true);
+    const newFile = dir.child('test.new');
+    t.same(await newFile.exists(), false);
+    await oldFile.copyFile(newFile);
+    t.same(await oldFile.exists(), true);
+    t.same(await newFile.exists(), true);
+
+    await oldFile.rm();
+    t.same(await oldFile.exists(), false);
+    await newFile.rename(oldFile);
+    t.same(await oldFile.exists(), true);
+    t.same(await newFile.exists(), false);
+    t.equal(await oldFile.readFile('utf8'), 'Hello Mojo!');
+  });
+
   await t.test('touch', async t => {
     const dir = await File.tempDir();
     const file = dir.child('test.txt');
