@@ -174,7 +174,7 @@ t.test('Command app', async t => {
     t.match(await dir.child('myapp', 'config.json').readFile('utf8'), /"secrets"/);
     t.match(output2.toString(), /\[write\].+index\.js/);
     t.same(await dir.child('myapp', 'index.js').exists(), true);
-    t.match(await dir.child('myapp', 'index.js').readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+    t.match(await dir.child('myapp', 'index.js').readFile('utf8'), /import mojo.+from '@mojojs\/mojo'/);
     t.match(output2.toString(), /\[write\].+package\.json/);
     t.same(await dir.child('myapp', 'package.json').exists(), true);
     t.match(await dir.child('myapp', 'package.json').readFile('utf8'), /"@mojojs\/mojo"/);
@@ -207,7 +207,7 @@ t.test('Command app', async t => {
     });
     t.match(output4.toString(), /\[write\].+test-app.+index\.js/);
     t.same(await dir.child('test-app', 'index.js').exists(), true);
-    t.match(await dir.child('test-app', 'index.js').readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+    t.match(await dir.child('test-app', 'index.js').readFile('utf8'), /import mojo.+from '@mojojs\/mojo'/);
     process.chdir(cwd);
   });
 });
