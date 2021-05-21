@@ -27,20 +27,34 @@ t.test('Util', async t => {
     t.match(output3, /workstoo/);
   });
 
-  await t.test('cliCreate*', async t => {
+  await t.test('cli*', async t => {
     const dir = await File.tempDir();
     const cwd = process.cwd();
     process.chdir(dir.toString());
 
     const output = await util.captureOutput(async () => {
+      await dir.child('package.json').writeFile('{"name": "test"}');
       await util.cliCreateDir('foo/bar');
       await util.cliCreateFile('foo/bar/yada.txt', 'it <%= test %>', {test: 'works'}, {chmod: 0o744});
+      await util.cliFixPackage();
     });
     t.match(output.toString(), /\[mkdir\].+bar/);
     t.match(output.toString(), /\[write\].+yada\.txt/);
-    t.match(output.toString(), /\[chmod\].+yada\.txt\ \(744\)/);
+    t.match(output.toString(), /\[chmod\].+yada\.txt \(744\)/);
+    t.match(output.toString(), /\[fixed\].+package\.json/);
     t.same(await dir.child('foo', 'bar', 'yada.txt').exists(), true);
     t.match(await dir.child('foo', 'bar', 'yada.txt').readFile('utf8'), /it works/);
+    t.same(JSON.parse(await dir.child('package.json').readFile('utf8')), {name: 'test', type: 'module'});
+
+    const dir2 = await File.tempDir();
+    process.chdir(dir2.toString());
+    const output2 = await util.captureOutput(async () => {
+      await util.cliFixPackage();
+      await util.cliFixPackage();
+    });
+    t.match(output2.toString(), /\[write\].+package\.json/);
+    t.match(output2.toString(), /\[exists\].+package\.json/);
+    t.same(JSON.parse(await dir2.child('package.json').readFile('utf8')), {type: 'module'});
 
     process.chdir(cwd);
   });
@@ -63,27 +77,27 @@ t.test('Util', async t => {
     }
     t.same(await exceptionContext(result, {lines: 2}), {
       file: File.currentFile().toString(),
-      line: 60,
+      line: 74,
       column: 13,
       source: [
         {
-          num: 58,
+          num: 72,
           code: '    let result;'
         },
         {
-          num: 59,
+          num: 73,
           code: '    try {'
         },
         {
-          num: 60,
+          num: 74,
           code: "      throw new Error('Test');"
         },
         {
-          num: 61,
+          num: 75,
           code: '    } catch (error) {'
         },
         {
-          num: 62,
+          num: 76,
           code: '      result = error;'
         }
       ]

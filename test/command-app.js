@@ -138,11 +138,14 @@ t.test('Command app', async t => {
     t.match(output2.toString(), /\[write\].+myapp\.js/);
     t.same(await file.exists(), true);
     t.match(await file.readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+    t.match(output2.toString(), /\[write\].+package\.json/);
+    t.same(await dir.child('package.json').exists(), true);
+    t.match(await dir.child('package.json').readFile('utf8'), /module/);
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('gen-lite-app', 'myapp.js');
     });
-    t.match(output3.toString(), /\[exist\].+myapp\.js/);
+    t.match(output3.toString(), /\[exists\].+myapp\.js/);
 
     const file2 = dir.child('index.js');
     const output4 = await captureOutput(async () => {
@@ -187,16 +190,19 @@ t.test('Command app', async t => {
     t.match(output2.toString(), /\[write\].+test.+example\.js/);
     t.same(await dir.child('test', 'example.js').exists(), true);
     t.match(await dir.child('test', 'example.js').readFile('utf8'), /getOk/);
+    t.match(output2.toString(), /\[write\].+package\.json/);
+    t.same(await dir.child('package.json').exists(), true);
+    t.match(await dir.child('package.json').readFile('utf8'), /module/);
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('gen-full-app');
     });
-    t.match(output3.toString(), /\[exist\].+config\.json/);
-    t.match(output3.toString(), /\[exist\].+index\.js/);
-    t.match(output3.toString(), /\[exist\].+controllers.+example\.js/);
-    t.match(output3.toString(), /\[exist\].+default\.html\.ejs/);
-    t.match(output3.toString(), /\[exist\].+welcome\.html\.ejs/);
-    t.match(output3.toString(), /\[exist\].+test.+example\.js/);
+    t.match(output3.toString(), /\[exists\].+config\.json/);
+    t.match(output3.toString(), /\[exists\].+index\.js/);
+    t.match(output3.toString(), /\[exists\].+controllers.+example\.js/);
+    t.match(output3.toString(), /\[exists\].+default\.html\.ejs/);
+    t.match(output3.toString(), /\[exists\].+welcome\.html\.ejs/);
+    t.match(output3.toString(), /\[exists\].+test.+example\.js/);
 
     const dir2 = dir.child('test-app');
     await dir2.mkdir();
