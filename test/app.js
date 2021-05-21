@@ -95,6 +95,19 @@ t.test('App', async t => {
     return ctx.render({text: await res.text()});
   });
 
+  // POST /form/data
+  app.post('/form/data', async ctx => {
+    const form = await ctx.req.formData();
+    const data = {fields: form.fields};
+
+    if (form.files.second !== undefined) {
+      const content = await new mojo.File(form.files.second.path).readFile('utf8');
+      data.file = {size: form.files.second.size, content};
+    }
+
+    return ctx.render({json: data});
+  });
+
   // * /url_for
   app.any('/url_for/:msg', async ctx => {
     const form = await ctx.req.form();
@@ -380,6 +393,21 @@ t.test('App', async t => {
     (await client.getOk('/protocol', {headers: {'X-Forwarded-Proto': 'https'}})).statusIs(200)
       .bodyIs('Protocol: https');
     client.server.reverseProxy = false;
+  });
+
+  await t.test('multipart/form-data', async t => {
+    (await client.postOk('/form/data', {formData: {hello: 'world'}})).statusIs(200).jsonIs({fields: {hello: 'world'}});
+
+    const form = client.formData();
+    form.append('first', 'One');
+    form.append('second', 'Two');
+    (await client.postOk('/form/data', {formData: form})).statusIs(200).jsonIs({fields: {first: 'One', second: 'Two'}});
+
+    const form2 = client.formData();
+    form2.append('first', 'One');
+    form2.append('second', 'Two', {filename: 'test.txt'});
+    (await client.postOk('/form/data', {formData: form2})).statusIs(200)
+      .jsonIs({fields: {first: 'One'}, file: {size: 3, content: 'Two'}});
   });
 
   t.test('Forbidden helpers', t => {
