@@ -91,6 +91,13 @@ t.test('Logger', async t => {
     t.same(logger.destination, process.stderr);
   });
 
+  t.test('Unsupported level', async t => {
+    const logger = new Logger();
+    t.throws(() => {
+      logger.level = 'unknown';
+    }, {code: 'ERR_ASSERTION'});
+  });
+
   t.test('trace', async t => {
     const file = dir.child('trace.log');
     const stream = (await file.touch()).createWriteStream();
