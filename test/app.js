@@ -100,7 +100,7 @@ t.test('App', async t => {
     const form = await ctx.req.formData();
     const data = {first: form.get('first') ?? 'missing', second: form.get('second') ?? 'missing'};
 
-    const upload = form.upload('second');
+    const upload = form.getUpload('second');
     if (upload !== null) data.file = {size: upload.size, content: await upload.file.readFile('utf8')};
 
     return ctx.render({json: data});
@@ -397,16 +397,11 @@ t.test('App', async t => {
     (await client.postOk('/form/data', {formData: {first: 'works'}})).statusIs(200)
       .jsonIs({first: 'works', second: 'missing'});
 
-    const form = client.formData();
-    form.append('first', 'One');
-    form.append('second', 'Two');
-    (await client.postOk('/form/data', {formData: form})).statusIs(200).jsonIs({first: 'One', second: 'Two'});
+    (await client.postOk('/form/data', {formData: {first: 'One', second: 'Two'}})).statusIs(200)
+      .jsonIs({first: 'One', second: 'Two'});
 
-    const form2 = client.formData();
-    form2.append('first', 'One');
-    form2.append('second', 'Two', {filename: 'test.txt'});
-    (await client.postOk('/form/data', {formData: form2})).statusIs(200)
-      .jsonIs({first: 'One', second: 'missing', file: {size: 3, content: 'Two'}});
+    (await client.postOk('/form/data', {formData: {first: 'One', second: {content: 'Two', filename: 'test.txt'}}}))
+      .statusIs(200).jsonIs({first: 'One', second: 'missing', file: {size: 3, content: 'Two'}});
   });
 
   t.test('Forbidden helpers', t => {
