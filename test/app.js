@@ -98,12 +98,10 @@ t.test('App', async t => {
   // POST /form/data
   app.post('/form/data', async ctx => {
     const form = await ctx.req.formData();
-    const data = {fields: form.fields};
+    const data = {first: form.get('first') ?? 'missing', second: form.get('second') ?? 'missing'};
 
-    if (form.files.second !== undefined) {
-      const content = await new mojo.File(form.files.second.path).readFile('utf8');
-      data.file = {size: form.files.second.size, content};
-    }
+    const upload = form.upload('second');
+    if (upload !== null) data.file = {size: upload.size, content: await upload.file.readFile('utf8')};
 
     return ctx.render({json: data});
   });
@@ -396,18 +394,19 @@ t.test('App', async t => {
   });
 
   await t.test('multipart/form-data', async t => {
-    (await client.postOk('/form/data', {formData: {hello: 'world'}})).statusIs(200).jsonIs({fields: {hello: 'world'}});
+    (await client.postOk('/form/data', {formData: {first: 'works'}})).statusIs(200)
+      .jsonIs({first: 'works', second: 'missing'});
 
     const form = client.formData();
     form.append('first', 'One');
     form.append('second', 'Two');
-    (await client.postOk('/form/data', {formData: form})).statusIs(200).jsonIs({fields: {first: 'One', second: 'Two'}});
+    (await client.postOk('/form/data', {formData: form})).statusIs(200).jsonIs({first: 'One', second: 'Two'});
 
     const form2 = client.formData();
     form2.append('first', 'One');
     form2.append('second', 'Two', {filename: 'test.txt'});
     (await client.postOk('/form/data', {formData: form2})).statusIs(200)
-      .jsonIs({fields: {first: 'One'}, file: {size: 3, content: 'Two'}});
+      .jsonIs({first: 'One', second: 'missing', file: {size: 3, content: 'Two'}});
   });
 
   t.test('Forbidden helpers', t => {
