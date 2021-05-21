@@ -38,16 +38,19 @@ t.test('Renderer app', async t => {
   });
 
   await t.test('Inline layout', async t => {
-    (await client.getOk('/inline/layout')).statusIs(200).bodyLike(/Header.+this works.+Footer/s);
+    (await client.getOk('/inline/layout')).statusIs(200).bodyLike(/Header: Test.+this works.+Footer/s);
   });
 
   await client.stop();
 });
 
-const inlineTemplate = 'this <%= what %>';
+const inlineTemplate = `
+<% stash.title = 'Test'; %>
+this <%= what %>
+`;
 
 const inlineLayout = `
-Header
+Header: <%= title %>
 <%- view.content %>
 Footer
 `;
