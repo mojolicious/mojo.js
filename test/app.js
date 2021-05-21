@@ -101,7 +101,14 @@ t.test('App', async t => {
     const data = {first: form.get('first') ?? 'missing', second: form.get('second') ?? 'missing'};
 
     const upload = form.getUpload('second');
-    if (upload !== null) data.file = {size: upload.size, content: await upload.file.readFile('utf8')};
+    if (upload !== null) {
+      data.upload = {
+        content: await upload.file.readFile('utf8'),
+        filename: upload.filename,
+        size: upload.size,
+        type: upload.type
+      };
+    }
 
     return ctx.render({json: data});
   });
@@ -400,8 +407,20 @@ t.test('App', async t => {
     (await client.postOk('/form/data', {formData: {first: 'One', second: 'Two'}})).statusIs(200)
       .jsonIs({first: 'One', second: 'Two'});
 
-    (await client.postOk('/form/data', {formData: {first: 'One', second: {content: 'Two', filename: 'test.txt'}}}))
-      .statusIs(200).jsonIs({first: 'One', second: 'missing', file: {size: 3, content: 'Two'}});
+    (await client.postOk('/form/data', {
+      formData: {
+        first: 'One',
+        second: {
+          content: 'Two',
+          filename: 'test.txt',
+          type: 'text/whatever'
+        }
+      }
+    })).statusIs(200).jsonIs({
+      first: 'One',
+      second: 'missing',
+      upload: {content: 'Two', filename: 'test.txt', size: 3, type: 'text/whatever'}
+    });
   });
 
   t.test('Forbidden helpers', t => {
