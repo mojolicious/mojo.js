@@ -74,6 +74,12 @@ t.test('Command app', async t => {
       await app.cli.start('get', '-r', '-X', 'POST', '-v', '/redirect');
     });
     t.match(output5.toString(), /GET.*\/.*Content-Length.*Hello Mojo!/s);
+
+    const output6 = await captureOutput({stderr: true}, async () => {
+      await app.cli.start('get', '/index.html', 'h2');
+    });
+    t.match(output6.toString(), /Second/s);
+    t.notMatch(output6.toString(), /First/s);
   });
 
   await t.test('routes', async t => {
