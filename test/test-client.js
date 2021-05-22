@@ -68,8 +68,8 @@ t.test('Test client', async t => {
       ['ok', [true], 'GET request for /'],
       ['ok', [true], 'header "Content-Type" exists'],
       ['notOk', [false], 'no "Content-Disposition" header'],
-      ['equal', ['text/plain;charset=UTF-8', 'text/plain'], 'Content-Type: text/plain'],
-      ['match', ['text/plain;charset=UTF-8', /plain/], 'Content-Type is similar']
+      ['equal', ['text/plain; charset=utf-8', 'text/plain'], 'Content-Type: text/plain'],
+      ['match', ['text/plain; charset=utf-8', /plain/], 'Content-Type is similar']
     ]);
   });
 
