@@ -104,19 +104,6 @@ t.test('Util', async t => {
     });
   });
 
-  await t.test('optionalDependency', async t => {
-    const optionalDependency = util.optionalDependency;
-    t.ok(await optionalDependency('jsdom'));
-
-    let fail;
-    try {
-      await optionalDependency('@mojojs/module_that_does_not_exist');
-    } catch (error) {
-      fail = error;
-    }
-    t.equal(fail.message, 'This feature requires "@mojojs/module_that_does_not_exist" to be installed');
-  });
-
   await t.test('sleep', async t => {
     const sleep = util.sleep(1);
     t.ok(sleep instanceof Promise);

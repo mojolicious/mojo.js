@@ -30,8 +30,7 @@
   "devDependencies": {
     "@istanbuljs/esm-loader-hook": ">=0.1.2",
     "eslint": ">=7.22.0",
-    "eslint-config-semistandard": ">=15.0.1",
-    "tap": ">=15.0.6"
+    "eslint-config-semistandard": ">=15.0.1"
   },
   "engines": {
     "node": ">= 15"
@@ -43,13 +42,12 @@
     "escape-string-regexp": ">=2.0.0",
     "form-data": ">=2.3.3",
     "formidable": ">=1.2.2",
+    "jsdom": ">=16.5.3",
     "lru-cache": ">=6.0.0",
     "nopt": ">=5.0.0",
     "stack-utils": ">=1.0.5",
+    "tap": ">=15.0.6",
     "tough-cookie": ">=4.0.0",
     "ws": ">=7.4.5"
-  },
-  "optionalDependencies": {
-    "jsdom": ">=16.5.3"
   }
 }

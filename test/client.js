@@ -408,12 +408,10 @@ t.test('Client', async t => {
     t.same(await res7.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
   });
 
-  await t.test('Optional dependencies', async t => {
-    await t.test('JSDOM', async t => {
-      const res = await client.get('/test.html');
-      const dom = await res.dom();
-      t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!');
-    });
+  await t.test('JSDOM', async t => {
+    const res = await client.get('/test.html');
+    const dom = await res.dom();
+    t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!');
   });
 
   await server.stop();
