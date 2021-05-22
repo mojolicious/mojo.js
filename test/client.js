@@ -39,7 +39,7 @@ t.test('Client', async t => {
 
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
-  app.any('/test.html', ctx => ctx.render({text: '<!DOCTYPE html><p>Hello JSDOM!</p>'}));
+  app.any('/test.html', ctx => ctx.render({text: '<!DOCTYPE html><p>Hello!</p>'}));
 
   app.get('/auth/basic', async ctx => {
     const auth = ctx.req.userinfo ?? 'nothing';
@@ -408,10 +408,10 @@ t.test('Client', async t => {
     t.same(await res7.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
   });
 
-  await t.test('JSDOM', async t => {
+  await t.test('DOM', async t => {
     const res = await client.get('/test.html');
     const dom = await res.dom();
-    t.equal(dom.window.document.querySelector('p').textContent, 'Hello JSDOM!');
+    t.equal(dom('p').text(), 'Hello!');
   });
 
   await server.stop();
