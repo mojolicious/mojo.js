@@ -6,6 +6,8 @@ t.test('Test client', async t => {
 
   app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
+  app.any('/index.html', ctx => ctx.render({text: '<p>One</p><div>Two</div>'}));
+
   app.websocket('/echo').to(ctx => {
     ctx.on('connection', ws => {
       ws.on('message', message => {
@@ -82,6 +84,22 @@ t.test('Test client', async t => {
       ['equal', ['Hello Mojo!', 'test'], 'body is equal'],
       ['match', ['Hello Mojo!', /that/], 'body is similar'],
       ['notMatch', ['Hello Mojo!', /whatever/], 'body is not similar']
+    ]);
+  });
+
+  await t.test('HTML', async t => {
+    const results = [];
+    client.assert = (name, args, msg) => results.push([name, args, msg]);
+
+    (await client.getOk('/index.html')).elementExists('p').elementExists('h1').elementExistsNot('h1')
+      .elementExistsNot('div');
+
+    t.same(results, [
+      ['ok', [true], 'GET request for /index.html'],
+      ['ok', [true], 'element for selector "p" exists'],
+      ['ok', [false], 'element for selector "h1" exists'],
+      ['ok', [true], 'no element for selector "h1"'],
+      ['ok', [false], 'no element for selector "div"']
     ]);
   });
 
