@@ -46,8 +46,8 @@ app.websocket('/title', ctx => {
   ctx.on('connection', ws => {
     ws.on('message', async url => {
       const res   = await ctx.client.get(url);
-      const page  = await res.dom();
-      const title = page('title').text();
+      const html  = await res.html();
+      const title = html('title').text();
       ws.send(title);
     });
   });

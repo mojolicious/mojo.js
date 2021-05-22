@@ -39,7 +39,10 @@ t.test('Client', async t => {
 
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
-  app.any('/test.html', ctx => ctx.render({text: '<!DOCTYPE html><p>Hello!</p>'}));
+  app.any('/test.html').to(ctx => ctx.render({text: '<div>Test<br>123</div>'}));
+
+  app.any('/test.xml')
+    .to(ctx => ctx.render({text: '<?xml version=\'1.0\' encoding=\'UTF-8\'?><script><p>Hello</p></script>'}));
 
   app.get('/auth/basic', async ctx => {
     const auth = ctx.req.userinfo ?? 'nothing';
@@ -408,10 +411,19 @@ t.test('Client', async t => {
     t.same(await res7.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
   });
 
-  await t.test('DOM', async t => {
+  await t.test('HTML/XML', async t => {
     const res = await client.get('/test.html');
-    const dom = await res.dom();
-    t.equal(dom('p').text(), 'Hello!');
+    const html = await res.html();
+    t.equal(html('div').text(), 'Test123');
+
+    const res2 = await client.get('/test.xml');
+    const xml = await res2.xml();
+    t.equal(xml('script p').length, 1);
+    t.equal(xml('script p').text(), 'Hello');
+
+    const res3 = await client.get('/test.xml');
+    const html2 = await res3.html();
+    t.equal(html2('script p').length, 0);
   });
 
   await server.stop();
