@@ -6,7 +6,7 @@ t.test('Types', t => {
   t.equal(mime.extType('txt'), 'text/plain; charset=utf-8');
   t.equal(mime.extType('json'), 'application/json; charset=utf-8');
   t.equal(mime.extType('html'), 'text/html; charset=utf-8');
-  t.equal(mime.extType('css'), 'text/css; charset=utf-8');
+  t.equal(mime.extType('css'), 'text/css');
   t.equal(mime.extType('xml'), 'application/xml');
   t.same(mime.extType('.unknown'), null);
   t.same(mime.extType('unknown'), null);
@@ -64,7 +64,7 @@ t.test('Alternatives', t => {
   t.same(mime.detect('APPLICATION/JsoN'), ['json']);
   t.same(mime.detect('text/html'), ['html']);
   t.equal(mime.extType('json'), 'application/json; charset=utf-8');
-  t.equal(mime.extType('htm'), 'text/html; charset=utf-8');
+  t.equal(mime.extType('htm'), 'text/html');
   t.equal(mime.extType('html'), 'text/html; charset=utf-8');
   t.end();
 });

@@ -8,12 +8,12 @@ t.test('Static app', async t => {
     (await client.getOk('/public/mojo/bootstrap/bootstrap.bundle.min.js')).statusIs(200)
       .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
     (await client.getOk('/public/mojo/bootstrap/bootstrap.min.css')).statusIs(200)
-      .headerIs('Content-Type', 'text/css; charset=utf-8').headerExists('Content-Length');
+      .headerIs('Content-Type', 'text/css').headerExists('Content-Length');
 
     (await client.getOk('/public/mojo/highlight.js/highlight.pack.js')).statusIs(200)
       .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
     (await client.getOk('/public/mojo/highlight.js/highlight-mojo-dark.css')).statusIs(200)
-      .headerIs('Content-Type', 'text/css; charset=utf-8').headerExists('Content-Length');
+      .headerIs('Content-Type', 'text/css').headerExists('Content-Length');
 
     (await client.getOk('/public/mojo/failraptor.png')).statusIs(200).headerIs('Content-Type', 'image/png')
       .headerExists('Content-Length');
@@ -23,7 +23,7 @@ t.test('Static app', async t => {
       .headerExists('Content-Length');
     (await client.getOk('/public/mojo/logo-white.png')).statusIs(200).headerIs('Content-Type', 'image/png')
       .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/mojo.css')).statusIs(200).headerIs('Content-Type', 'text/css; charset=utf-8')
+    (await client.getOk('/public/mojo/mojo.css')).statusIs(200).headerIs('Content-Type', 'text/css')
       .headerExists('Content-Length');
     (await client.getOk('/public/mojo/no-raptor.png')).statusIs(200).headerIs('Content-Type', 'image/png')
       .headerExists('Content-Length');
