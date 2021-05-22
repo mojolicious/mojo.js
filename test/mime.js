@@ -3,16 +3,14 @@ import t from 'tap';
 
 t.test('Types', t => {
   const mime = new Mime();
-  t.equal(mime.extType('.txt'), 'text/plain; charset=utf-8');
   t.equal(mime.extType('txt'), 'text/plain; charset=utf-8');
-  t.equal(mime.extType('.json'), 'application/json; charset=utf-8');
   t.equal(mime.extType('json'), 'application/json; charset=utf-8');
   t.equal(mime.extType('html'), 'text/html; charset=utf-8');
   t.equal(mime.extType('css'), 'text/css; charset=utf-8');
   t.equal(mime.extType('xml'), 'application/xml');
   t.same(mime.extType('.unknown'), null);
   t.same(mime.extType('unknown'), null);
-  t.equal(mime.extType('.html.ejs'), null);
+  t.equal(mime.extType('html.ejs'), null);
   t.end();
 });
 

@@ -6,12 +6,12 @@ t.test('Static app', async t => {
 
   await t.test('Bundled files', async t => {
     (await client.getOk('/public/mojo/bootstrap/bootstrap.bundle.min.js')).statusIs(200)
-      .headerIs('Content-Type', 'application/javascript; charset=utf-8').headerExists('Content-Length');
+      .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
     (await client.getOk('/public/mojo/bootstrap/bootstrap.min.css')).statusIs(200)
       .headerIs('Content-Type', 'text/css; charset=utf-8').headerExists('Content-Length');
 
     (await client.getOk('/public/mojo/highlight.js/highlight.pack.js')).statusIs(200)
-      .headerIs('Content-Type', 'application/javascript; charset=utf-8').headerExists('Content-Length');
+      .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
     (await client.getOk('/public/mojo/highlight.js/highlight-mojo-dark.css')).statusIs(200)
       .headerIs('Content-Type', 'text/css; charset=utf-8').headerExists('Content-Length');
 
