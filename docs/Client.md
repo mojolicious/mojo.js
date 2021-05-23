@@ -70,7 +70,7 @@ const res = await client.request({
   // Data structure to be send in JSON format
   json: {hello: ['world']},
 
-  // Object with key/value pairs to be sent in `application\/x-www-form-urlencoded` format
+  // Object with key/value pairs to be sent in `application/x-www-form-urlencoded` format
   form: {fieldA: 'first value', fieldB: 'second value'},
 
   // Object with key/value pairs to be sent in `multipart/form-data` format
