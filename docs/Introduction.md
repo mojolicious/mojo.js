@@ -248,12 +248,6 @@ const method = ctx.req.method;
 // Full request URL
 const url = ctx.req.url;
 
-// Request header
-const accept = ctx.req.get('Accept');
-
-// Get cookie
-const cookie = ctx.req.getCookie('foo');
-
 // Remote address
 const address = ctx.req.remoteAddress;
 
@@ -262,6 +256,12 @@ const userinfo = ctx.req.userinfo;
 
 // Request ID
 const requestId = ctx.req.requestId;
+
+// Request header
+const accept = ctx.req.get('Accept');
+
+// Get cookie
+const cookie = ctx.req.getCookie('foo');
 
 // Request body as string
 const content = await ctx.req.text();
