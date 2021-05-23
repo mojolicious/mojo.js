@@ -237,8 +237,9 @@ app.get('/agent', async ctx => {
 app.start();
 ```
 
-Use this little cheatsheet to remember the most commonly used request and response methods. For URLs we always use
-standard [URL](https://nodejs.org/api/url.html#url_the_whatwg_url_api) objects.
+Use this little cheatsheet to remember the most commonly used request and response properties that are not otherwise
+mentioned in this guide. For URLs we always use standard
+[URL](https://nodejs.org/api/url.html#url_the_whatwg_url_api) objects.
 
 ```js
 // Request method
@@ -268,18 +269,10 @@ const content = await ctx.req.text();
 // Request body as `Buffer`
 const buffer = await ctx.req.buffer();
 
-// Parsed JSON
-const data = await ctx.req.json();
-
-// Parsed HTML (`cheerio`)
-const htmlDocument = await ctx.req.html();
-
-// Parsed XML (`cheerio`)
-const xmlDocument = await ctx.req.xml();
-
 // Pipe request body to `stream.Writable` object
 await ctx.req.pipe(process.stdout);
-
+```
+```js
 // Set response code
 ctx.res.status(200);
 
@@ -291,4 +284,29 @@ ctx.res.setCookie('user', 'Bender', {path: '/', httpOnly: true});
 
 // Send `stream.Readable` object as response body
 ctx.res.send(stream);
+```
+
+## JSON
+
+Of course there is first class support for JSON as well.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// Modify the received JSON object and return it
+app.put('/add/quote', async ctx => {
+  const data = await ctx.req.json();
+  data.quote = "I don't remember ever fighting Godzilla... But that is so what I would have done!";
+  await ctx.render({json: data});
+});
+
+app.start();
+```
+
+You can test all these examples right from the command line with the `get` command.
+
+```
+$ node myapp.js get -X PUT -b '{"hello":"mojo"}' /add/quote
 ```
