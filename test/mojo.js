@@ -40,4 +40,11 @@ t.test('Public API', async t => {
     t.ok(log.debug instanceof Function);
     t.end();
   });
+
+  t.test('mojo.TestClient', t => {
+    t.ok(mojo.TestClient !== undefined);
+    const client = new mojo.TestClient();
+    t.ok(client.getOk instanceof Function);
+    t.end();
+  });
 });
