@@ -55,13 +55,13 @@ const res = await client.request({
   // HTTP method for request
   method: 'GET',
 
-  // URL of request target as a string or URL object, maybe be relative to `client.baseURL`
+  // URL of request target as a string or URL object, may be be relative to `client.baseURL`
   url: new URL('https://mojolicious.org'),
 
   // Headers to include in request
   headers: {Accept: '*/*', Authorization: 'token 123456789abcdef'},
 
-  // Object with key/value pairs to be send as query string
+  // Object with key/value pairs to be sent with the query string
   query: {fieldA: 'first value', fieldB: 'second value'},
 
   // Request body as a string, `Buffer` or `stream.Readable` object
@@ -70,16 +70,16 @@ const res = await client.request({
   // Data structure to be send in JSON format
   json: {hello: ['world']},
 
-  // Object with key/value pairs to be sent  in `application\/x-www-form-urlencoded` format
+  // Object with key/value pairs to be sent in `application\/x-www-form-urlencoded` format
   form: {fieldA: 'first value', fieldB: 'second value'},
 
-  // Object with key/value pairs to be sent  in `multipart/form-data` format
+  // Object with key/value pairs to be sent in `multipart/form-data` format
   formData: {fieldA: 'first value', fieldB: 'second value'},
 
   // Basic authentication
   auth: 'user:password',
 
-  // Alternative `http.Agent` object to use, can be used for keep-alive or SOCKS proxy support with `proxy-agent`
+  // Alternative `http.Agent` object to use, for keep-alive or SOCKS proxy support with `proxy-agent`
   agent: agentObject,
 
   // Request is WebSocket handshake
