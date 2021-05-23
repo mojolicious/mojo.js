@@ -8,7 +8,7 @@
 
 [Mojolicious](https://mojolicious.org) for Node.js. This project is still **under heavy development** and not ready
 for production use yet. If you want to help out, you're welcome to join us on
-[IRC](https://webchat.freenode.net/#mojo.js) (`#mojo.js` on Freenode).
+[IRC](https://kiwiirc.com/nextclient/#ircs://irc.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
 
 ```js
 import mojo from '@mojojs/mojo';
