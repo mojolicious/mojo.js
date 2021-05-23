@@ -79,7 +79,7 @@ const res = await client.request({
   // Basic authentication
   auth: 'user:password',
 
-  // Alternative `http.Agent` object to use, can be used for keep-alive or SOCKS proxy support
+  // Alternative `http.Agent` object to use, can be used for keep-alive or SOCKS proxy support with `proxy-agent`
   agent: agentObject,
 
   // Request is WebSocket handshake
