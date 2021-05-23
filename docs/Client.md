@@ -1,9 +1,8 @@
 
 # The mojo.js HTTP and WebSocket Client
 
-[mojo.js](https://mojojs.org) is not just for the server-side. The framework also contains a full featured HTTP and
-WebSocket user agent. And while its primary purpose is integration testing of web applications, it can also be used for
-many other things.
+The [mojo.js](https://mojojs.org) toolkit contains a full featured HTTP and WebSocket user agent. And while its primary
+purpose is integration testing of web applications, it can also be used for many other things.
 
 ```js
 import mojo from '@mojojs/mojo';

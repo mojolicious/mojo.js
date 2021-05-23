@@ -113,6 +113,22 @@ t.test('App', async t => {
     return ctx.render({json: data});
   });
 
+  // POST /form/mixed
+  app.post('/form/mixed', async ctx => {
+    const params = await ctx.params();
+
+    const data = {
+      one: params.get('one') ?? 'missing',
+      two: params.get('two') ?? 'missing',
+      three: params.get('three') ?? 'missing'
+    };
+
+    const upload = params.getUpload('four');
+    if (upload !== null) data.four = {content: await upload.file.readFile('utf8')};
+
+    return ctx.render({json: data});
+  });
+
   // * /url_for
   app.any('/url_for/:msg', async ctx => {
     const form = await ctx.req.form();
@@ -421,6 +437,30 @@ t.test('App', async t => {
       second: 'missing',
       upload: {content: 'Two', filename: 'test.txt', size: 3, type: 'text/whatever'}
     });
+  });
+
+  await t.test('Mixed forms', async t => {
+    (await client.postOk('/form/mixed?one=works')).statusIs(200)
+      .jsonIs({one: 'works', two: 'missing', three: 'missing'});
+
+    (await client.postOk('/form/mixed', {query: {two: 'works'}})).statusIs(200)
+      .jsonIs({one: 'missing', two: 'works', three: 'missing'});
+
+    (await client.postOk('/form/mixed', {form: {three: 'works'}})).statusIs(200)
+      .jsonIs({one: 'missing', two: 'missing', three: 'works'});
+
+    (await client.postOk('/form/mixed?one=works', {form: {two: 'too'}})).statusIs(200)
+      .jsonIs({one: 'works', two: 'too', three: 'missing'});
+
+    (await client.postOk('/form/mixed?two=works', {formData: {three: 'works'}})).statusIs(200)
+      .jsonIs({one: 'missing', two: 'works', three: 'works'});
+
+    (await client.postOk('/form/mixed?two=TWO', {
+      formData: {
+        three: 'THREE',
+        four: {content: 'FOUR', filename: 'test.txt'}
+      }
+    })).statusIs(200).jsonIs({one: 'missing', two: 'TWO', three: 'THREE', four: {content: 'FOUR'}});
   });
 
   t.test('Forbidden helpers', t => {
