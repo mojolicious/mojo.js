@@ -163,7 +163,7 @@ const text = await res.text();
 // Buffer
 const buffer = await res.buffer();
 
-// Pipe content into stream
+// Pipe content to `stream.Writable` object
 await res.pipe(process.stdout);
 
 // Parsed JSON
@@ -288,7 +288,7 @@ client object.
   .elementExistsNot('body #error');
 ```
 
-Testing WebSockets is almost as easy, but all operations are async and  have to return promises.
+Testing WebSockets is almost as easy, but all operations are async and  have to return a `Promise`.
 
 ```js
 await client.websocketOk('/echo');
