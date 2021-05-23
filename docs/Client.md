@@ -80,7 +80,7 @@ const res = await client.request({
   auth: 'user:password',
 
   // Alternative `http.Agent` object to use, for keep-alive or SOCKS proxy support with `proxy-agent`
-  agent: agentObject,
+  agent: new http.Agent({keepAlive: true}),
 
   // Request is WebSocket handshake
   websocket: false,
@@ -112,7 +112,7 @@ const res = await client.put('https://mojolicious.org');
 All remaining config values can be passed with a second argument to any one of the shortcut methods.
 
 ```js
-const res = await client.post('/search', {form: {query: 'mojo'}});
+const res = await client.post('/search', {form: {q: 'mojo'}});
 ```
 
 ## Response Headers
@@ -247,14 +247,14 @@ There are test alternatives for all HTTP method shortcuts.
 
 ```js
 await client.deleteOk('/foo');
-await client.getOk('/foo');
-await client.headOk('/foo');
-await client.optionsOk('/foo');
-await client.patchOk('/foo');
-await client.postOk('/foo');
+await client.getOk('/foo', {headers: {Host: 'mojolicious.org'}});
+await client.headOk('/foo', {headers: {Accept: '*/*'}});
+await client.optionsOk('/foo', {auth: 'kraih:s3cret'});
+await client.patchOk('/foo', {formData: {role: 'admin'}});
+await client.postOk('/foo', {body: Buffer.from('Hello Mojo!')});
 await client.putOk('/foo', {json: {hello: 'world'}});
 
-await client.websocketOk('/ws');
+await client.websocketOk('/ws', {protocols: ['test/1', 'test/2']});
 ```
 
 All test methods return the client object again to allow for easy method chaining and all state is stored inside the
