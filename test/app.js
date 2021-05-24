@@ -272,7 +272,7 @@ t.test('App', async t => {
   });
 
   await t.test('Not found', async t => {
-    (await client.putOk('/does_not_exist')).statusIs(404).headerIs('Content-Type', 'text/plain; charset=utf-8');
+    (await client.putOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8');
   });
 
   await t.test('Exception', async t => {
@@ -400,42 +400,42 @@ t.test('App', async t => {
 
   await t.test('Content negotiation', async t => {
     (await client.getOk('/content/negotiation', {headers: {Accept: 'application/json'}})).statusIs(200)
-      .headerIs('Content-Type', 'application/json; charset=utf-8').jsonIs({some: 'JSON'});
+      .typeIs('application/json; charset=utf-8').jsonIs({some: 'JSON'});
     (await client.getOk('/content/negotiation', {headers: {Accept: 'text/html'}})).statusIs(200)
-      .headerIs('Content-Type', 'text/html; charset=utf-8').bodyIs('Some HTML');
+      .typeIs('text/html; charset=utf-8').bodyIs('Some HTML');
     (await client.getOk('/content/negotiation', {headers: {Accept: 'text/plain'}})).statusIs(204).bodyIs('');
 
     (await client.getOk('/content/negotiation.json')).statusIs(200)
-      .headerIs('Content-Type', 'application/json; charset=utf-8').jsonIs({some: 'JSON'});
+      .typeIs('application/json; charset=utf-8').jsonIs({some: 'JSON'});
     (await client.getOk('/content/negotiation.html')).statusIs(200)
-      .headerIs('Content-Type', 'text/html; charset=utf-8').bodyIs('Some HTML');
+      .typeIs('text/html; charset=utf-8').bodyIs('Some HTML');
     (await client.getOk('/content/negotiation.txt')).statusIs(404);
 
     (await client.getOk('/content/negotiation.json', {headers: {Accept: 'application/json'}})).statusIs(200)
-      .headerIs('Content-Type', 'application/json; charset=utf-8').jsonIs({some: 'JSON'});
+      .typeIs('application/json; charset=utf-8').jsonIs({some: 'JSON'});
     (await client.getOk('/content/negotiation.html', {headers: {Accept: 'text/html'}})).statusIs(200)
-      .headerIs('Content-Type', 'text/html; charset=utf-8').bodyIs('Some HTML');
+      .typeIs('text/html; charset=utf-8').bodyIs('Some HTML');
 
     (await client.getOk('/content/negotiation.html', {headers: {Accept: 'application/json'}})).statusIs(200)
-      .headerIs('Content-Type', 'text/html; charset=utf-8').bodyIs('Some HTML');
+      .typeIs('text/html; charset=utf-8').bodyIs('Some HTML');
     (await client.getOk('/content/negotiation.json', {headers: {Accept: 'text/html'}})).statusIs(200)
-      .headerIs('Content-Type', 'application/json; charset=utf-8').jsonIs({some: 'JSON'});
+      .typeIs('application/json; charset=utf-8').jsonIs({some: 'JSON'});
 
     (await client.getOk('/content/negotiation', {headers: {Accept: 'text/plain, application/json'}})).statusIs(200)
-      .headerIs('Content-Type', 'application/json; charset=utf-8').jsonIs({some: 'JSON'});
+      .typeIs('application/json; charset=utf-8').jsonIs({some: 'JSON'});
     (await client.getOk('/content/negotiation', {headers: {Accept: 'text/plain, application/json, */*'}}))
-      .statusIs(200).headerIs('Content-Type', 'application/json; charset=utf-8').jsonIs({some: 'JSON'});
+      .statusIs(200).typeIs('application/json; charset=utf-8').jsonIs({some: 'JSON'});
     (await client.getOk('/content/negotiation', {headers: {Accept: '*/*, application/json'}}))
-      .statusIs(200).headerIs('Content-Type', 'application/json; charset=utf-8').jsonIs({some: 'JSON'});
+      .statusIs(200).typeIs('application/json; charset=utf-8').jsonIs({some: 'JSON'});
     (await client.getOk('/content/negotiation', {headers: {Accept: 'application/json, text/html;Q=1.5'}})).statusIs(200)
-      .headerIs('Content-Type', 'text/html; charset=utf-8').bodyIs('Some HTML');
+      .typeIs('text/html; charset=utf-8').bodyIs('Some HTML');
 
     (await client.getOk('/content/negotiation/fallback', {headers: {Accept: 'application/json'}})).statusIs(200)
-      .headerIs('Content-Type', 'application/json; charset=utf-8').jsonIs({just: 'JSON'});
+      .typeIs('application/json; charset=utf-8').jsonIs({just: 'JSON'});
     (await client.getOk('/content/negotiation/fallback', {headers: {Accept: 'text/plain'}})).statusIs(200)
-      .headerIs('Content-Type', 'text/plain; charset=utf-8').bodyIs('Fallback');
-    (await client.getOk('/content/negotiation/fallback')).statusIs(200)
-      .headerIs('Content-Type', 'text/plain; charset=utf-8').bodyIs('Fallback');
+      .typeIs('text/plain; charset=utf-8').bodyIs('Fallback');
+    (await client.getOk('/content/negotiation/fallback')).statusIs(200).typeIs('text/plain; charset=utf-8')
+      .bodyIs('Fallback');
   });
 
   await t.test('Reverse proxy (X-Forwarded-For)', async t => {

@@ -266,6 +266,8 @@ client object.
 
 // Header tests
 (await client.getOk('/foo'))
+  .typeIs('text/html')
+  .typeLike(/html/)
   .headerIs('Content-Type', 'text/html')
   .headerLike('Content-Type', /html/)
   .headerExists('Content-Type')

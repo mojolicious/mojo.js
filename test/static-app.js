@@ -6,32 +6,32 @@ t.test('Static app', async t => {
 
   await t.test('Bundled files', async t => {
     (await client.getOk('/public/mojo/bootstrap/bootstrap.bundle.min.js')).statusIs(200)
-      .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/bootstrap/bootstrap.min.css')).statusIs(200)
-      .headerIs('Content-Type', 'text/css').headerExists('Content-Length');
+      .typeIs('application/javascript').headerExists('Content-Length');
+    (await client.getOk('/public/mojo/bootstrap/bootstrap.min.css')).statusIs(200).typeIs('text/css')
+      .headerExists('Content-Length');
 
     (await client.getOk('/public/mojo/highlight.js/highlight.pack.js')).statusIs(200)
-      .headerIs('Content-Type', 'application/javascript').headerExists('Content-Length');
-    (await client.getOk('/public/mojo/highlight.js/highlight-mojo-dark.css')).statusIs(200)
-      .headerIs('Content-Type', 'text/css').headerExists('Content-Length');
+      .typeIs('application/javascript').headerExists('Content-Length');
+    (await client.getOk('/public/mojo/highlight.js/highlight-mojo-dark.css')).statusIs(200).typeIs('text/css')
+      .headerExists('Content-Length');
 
-    (await client.getOk('/public/mojo/failraptor.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+    (await client.getOk('/public/mojo/failraptor.png')).statusIs(200).typeIs('image/png')
       .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/favicon.ico')).statusIs(200).headerIs('Content-Type', 'image/vnd.microsoft.icon')
+    (await client.getOk('/public/mojo/favicon.ico')).statusIs(200).typeIs('image/vnd.microsoft.icon')
       .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/logo-white-2x.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+    (await client.getOk('/public/mojo/logo-white-2x.png')).statusIs(200).typeIs('image/png')
       .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/logo-white.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+    (await client.getOk('/public/mojo/logo-white.png')).statusIs(200).typeIs('image/png')
       .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/mojo.css')).statusIs(200).headerIs('Content-Type', 'text/css')
+    (await client.getOk('/public/mojo/mojo.css')).statusIs(200).typeIs('text/css')
       .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/no-raptor.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+    (await client.getOk('/public/mojo/no-raptor.png')).statusIs(200).typeIs('image/png')
       .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/not-found.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+    (await client.getOk('/public/mojo/not-found.png')).statusIs(200).typeIs('image/png')
       .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/pinstripe-dark.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+    (await client.getOk('/public/mojo/pinstripe-dark.png')).statusIs(200).typeIs('image/png')
       .headerExists('Content-Length');
-    (await client.getOk('/public/mojo/pinstripe-light.png')).statusIs(200).headerIs('Content-Type', 'image/png')
+    (await client.getOk('/public/mojo/pinstripe-light.png')).statusIs(200).typeIs('image/png')
       .headerExists('Content-Length');
   });
 
@@ -49,7 +49,7 @@ t.test('Static app', async t => {
   });
 
   await t.test('Range', async t => {
-    (await client.getOk('/public/empty.txt')).statusIs(200).headerIs('Content-Type', 'text/plain; charset=utf-8')
+    (await client.getOk('/public/empty.txt')).statusIs(200).typeIs('text/plain; charset=utf-8')
       .headerIs('Content-Length', '0').headerIs('Accept-Ranges', 'bytes').bodyIs('');
     (await client.getOk('/public/empty.txt', {headers: {Range: 'bytes=1-5'}})).statusIs(416).bodyIs('');
 

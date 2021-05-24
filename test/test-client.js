@@ -61,11 +61,14 @@ t.test('Test client', async t => {
     const results = [];
     client.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await client.getOk('/')).headerExists('Content-Type').headerExistsNot('Content-Disposition')
-      .headerIs('Content-Type', 'text/plain').headerLike('Content-Type', /plain/);
+    (await client.getOk('/')).typeIs('text/plain').typeLike(/plain/).headerExists('Content-Type')
+      .headerExistsNot('Content-Disposition').headerIs('Content-Type', 'text/plain')
+      .headerLike('Content-Type', /plain/);
 
     t.same(results, [
       ['ok', [true], 'GET request for /'],
+      ['equal', ['text/plain; charset=utf-8', 'text/plain'], 'Content-Type: text/plain'],
+      ['match', ['text/plain; charset=utf-8', /plain/], 'Content-Type is similar'],
       ['ok', [true], 'header "Content-Type" exists'],
       ['notOk', [false], 'no "Content-Disposition" header'],
       ['equal', ['text/plain; charset=utf-8', 'text/plain'], 'Content-Type: text/plain'],
