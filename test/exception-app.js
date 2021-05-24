@@ -16,7 +16,6 @@ t.test('Exception app', async t => {
 
     await t.test('Mode', async t => {
       t.equal(app.mode, 'development');
-      t.equal(app.log.historySize, 10);
       t.equal(app.log.level, 'debug');
       (await client.getOk('/')).statusIs(200).bodyIs('Hello World!');
     });
@@ -124,7 +123,6 @@ t.test('Exception app', async t => {
 
     await t.test('Mode', async t => {
       t.equal(app.mode, 'production');
-      t.equal(app.log.historySize, 0);
       t.equal(app.log.level, 'info');
       (await client.getOk('/')).statusIs(200).bodyIs('Hello World!');
     });

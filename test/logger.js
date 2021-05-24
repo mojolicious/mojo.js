@@ -45,7 +45,6 @@ t.test('Logger', async t => {
     const stream = (await file.touch()).createWriteStream();
     const logger = new Logger({destination: stream, level: 'info', historySize: 5, formatter: Logger.stringFormatter});
     t.same(logger.destination, stream);
-    t.equal(logger.historySize, 5);
     logger.error('First');
     logger.fatal('Second');
     logger.debug('Third');
