@@ -17,6 +17,9 @@ const foo = app.config.foo;
 // home: a `mojo.File` object with the path of the application home directory
 const path = app.home.child('config.json').toString();
 const content = app.home.child('views', 'foo.html.ejs').readFile('utf8');
+
+// models: plain object to store arbitray models
+app.models.users = [{name: 'kraih'}, {name: 'jberger'}, {name: 'marcus'}];
 ```
 
 ### Context
@@ -55,6 +58,12 @@ ctx.log.debug('Shut up and take my money!');
 // session: signed cookie based session
 ctx.session.user = 'kraih';
 const user = ctx.session.user;
+
+// config: access application config
+const foo = ctx.config.foo;
+
+// models: access application models
+const users = ctx.models.users;
 
 // app: the mojo.js application object
 const app = ctx.app;
@@ -139,6 +148,7 @@ ctx.res.setCookie('user', 'Bender', {path: '/', httpOnly: true});
 // send: send response (with `stream.Readable` object as response body or without a body)
 ctx.res.send(stream);
 ctx.res.send();
+ctx.res.status(200).type('text/plain').length(12).send('Hello World!');
 ```
 
 The `raw` property contains an [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse)
