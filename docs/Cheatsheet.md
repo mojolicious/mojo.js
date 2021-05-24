@@ -28,11 +28,9 @@ The main object representing an HTTP request or WebSocket handshake.
 
 ```js
 // req: the request object
-const req = ctx.req;
 const url = ctx.req.url;
 
 // res: the response object
-const res = ctx.res;
 ctx.res.status(200).type('test.html').send('Hello World!');
 
 // params: all form parameters
@@ -42,6 +40,8 @@ const foo = params.get('foo');
 // render: render a response
 ctx.render({text: 'Hello World!'});
 ctx.render({json: {hello: 'world'}});
+ctx.render({view: 'foo/bar'});
+ctx.render({inline: 'Hello <%= name %>'}, {name: 'Mojo'});
 
 // renderToString: render something, but return it as a string
 const json = ctx.renderToString({json: {hello: 'world'}});
@@ -145,10 +145,10 @@ ctx.res.length(12);
 // setCookie: set cookie
 ctx.res.setCookie('user', 'Bender', {path: '/', httpOnly: true});
 
-// send: send response (with `stream.Readable` object as response body or without a body)
-ctx.res.send(stream);
-ctx.res.send();
+// send: send response (with `stream.Readable` object as body, string as body, or without a body)
+ctx.res.status(200).send(stream);
 ctx.res.status(200).type('text/plain').length(12).send('Hello World!');
+ctx.res.status(204).send();
 ```
 
 The `raw` property contains an [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse)
