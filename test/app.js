@@ -108,13 +108,13 @@ t.test('App', async t => {
     const form = await ctx.req.formData();
     const data = {first: form.get('first') ?? 'missing', second: form.get('second') ?? 'missing'};
 
-    const upload = form.getUpload('second');
-    if (upload !== null) {
+    const files = await ctx.req.files();
+    if (files.second !== undefined) {
       data.upload = {
-        content: await upload.file.readFile('utf8'),
-        filename: upload.filename,
-        size: upload.size,
-        type: upload.type
+        content: await files.second.file.readFile('utf8'),
+        filename: files.second.filename,
+        size: files.second.size,
+        type: files.second.type
       };
     }
 
@@ -131,8 +131,8 @@ t.test('App', async t => {
       three: params.get('three') ?? 'missing'
     };
 
-    const upload = params.getUpload('four');
-    if (upload !== null) data.four = {content: await upload.file.readFile('utf8')};
+    const files = await ctx.req.files();
+    if (files.four !== undefined) data.four = {content: await files.four.file.readFile('utf8')};
 
     return ctx.render({json: data});
   });
@@ -191,6 +191,22 @@ t.test('App', async t => {
     const validate = ctx.schema('user');
     const data = await ctx.req.json();
     const valid = validate(data);
+    await ctx.render({json: {valid}});
+  });
+
+  // PUT /schema/form
+  app.put('/schema/form', async ctx => {
+    const validate = ctx.schema({
+      type: 'object',
+      properties: {
+        test: {type: 'string'}
+      },
+      required: ['test']
+    });
+
+    const params = await ctx.params();
+    const valid = validate(params.toObject());
+
     await ctx.render({json: {valid}});
   });
 
@@ -505,6 +521,18 @@ t.test('App', async t => {
     (await client.putOk('/schema/dynamic', {json: {test: 123}})).statusIs(200).jsonIs({valid: true});
     t.ok(app.validator.getSchema('test123'));
     (await client.putOk('/schema/dynamic', {json: {test: '123'}})).statusIs(200).jsonIs({valid: false});
+
+    (await client.putOk('/schema/form', {form: {test: 'works'}})).statusIs(200).jsonIs({valid: true});
+    (await client.putOk('/schema/form', {form: {test2: 'fails'}})).statusIs(200).jsonIs({valid: false});
+
+    (await client.putOk('/schema/form', {formData: {test: 'works'}})).statusIs(200).jsonIs({valid: true});
+    (await client.putOk('/schema/form', {formData: {test2: 'fails'}})).statusIs(200).jsonIs({valid: false});
+
+    (await client.putOk('/schema/form', {query: {test: 'works'}})).statusIs(200).jsonIs({valid: true});
+    (await client.putOk('/schema/form', {query: {test2: 'fails'}})).statusIs(200).jsonIs({valid: false});
+
+    (await client.putOk('/schema/form?test=works')).statusIs(200).jsonIs({valid: true});
+    (await client.putOk('/schema/form?test2=fails')).statusIs(200).jsonIs({valid: false});
   });
 
   t.test('Forbidden helpers', t => {
