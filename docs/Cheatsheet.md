@@ -39,6 +39,25 @@ const foo = params.get('foo');
 // render: render a response
 ctx.render({text: 'Hello World!'});
 ctx.render({json: {hello: 'world'}});
+
+// renderToString: render something, but return it as a string
+const json = ctx.renderToString({json: {hello: 'world'}});
+
+// urlFor: generate URLs for routes
+const url = ctx.urlFor('index');
+
+// urlForFile: generate URLs for static files
+const url = ctx.urlFor('foo/app.css');
+
+// log: log messages with request id as context
+ctx.log.debug('Shut up and take my money!');
+
+// session: signed cookie based session
+ctx.session.user = 'kraih';
+const user = ctx.session.user;
+
+// app: the mojo.js application object
+const app = ctx.app;
 ```
 
 ### Request
