@@ -9,7 +9,7 @@ t.test('App', async t => {
   app.config.appName = 'Test';
   app.models.test = {it: 'works'};
 
-  app.validator.addSchema({
+  app.addSchema({
     type: 'object',
     properties: {
       username: {type: 'string'}
@@ -501,9 +501,9 @@ t.test('App', async t => {
     (await client.putOk('/schema/user', {json: {user: 'kraih'}})).statusIs(200).jsonIs({valid: false});
     (await client.putOk('/schema/user', {json: {username: 'sri'}})).statusIs(200).jsonIs({valid: true});
 
-    t.notOk(app.validator.getSchema('test123'));
+    t.notOk(app.schema('test123'));
     (await client.putOk('/schema/dynamic', {json: {test: 123}})).statusIs(200).jsonIs({valid: true});
-    t.ok(app.validator.getSchema('test123'));
+    t.ok(app.schema('test123'));
     (await client.putOk('/schema/dynamic', {json: {test: '123'}})).statusIs(200).jsonIs({valid: false});
   });
 
