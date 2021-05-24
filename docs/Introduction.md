@@ -296,7 +296,7 @@ little more control, you can also access the underlying
 const version = ctx.req.raw.httpVersion;
 
 // Check if response has been written already
-const isFinished = ctx.res.raw..writableFinished;
+const isFinished = ctx.res.raw.writableFinished;
 ```
 
 ## JSON

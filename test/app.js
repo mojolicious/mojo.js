@@ -9,6 +9,14 @@ t.test('App', async t => {
   app.config.appName = 'Test';
   app.models.test = {it: 'works'};
 
+  app.validator.addSchema({
+    type: 'object',
+    properties: {
+      username: {type: 'string'}
+    },
+    required: ['username']
+  }, 'user');
+
   // GET /
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
@@ -177,6 +185,31 @@ t.test('App', async t => {
 
   // GET /protocol
   app.get('/protocol', ctx => ctx.render({text: `Protocol: ${ctx.req.protocol}`}));
+
+  // PUT /schema/user
+  app.put('/schema/user', async ctx => {
+    const validate = ctx.schema('user');
+    const data = await ctx.req.json();
+    const valid = validate(data);
+    await ctx.render({json: {valid}});
+  });
+
+  // PUT /schema/dynamic
+  app.put('/schema/dynamic', async ctx => {
+    const validate = ctx.schema({
+      $id: 'test123',
+      type: 'object',
+      properties: {
+        test: {type: 'number'}
+      },
+      required: ['test']
+    });
+
+    const data = await ctx.req.json();
+    const valid = validate(data);
+
+    await ctx.render({json: {valid}});
+  });
 
   const client = await app.newTestClient({tap: t});
 
@@ -461,6 +494,17 @@ t.test('App', async t => {
         four: {content: 'FOUR', filename: 'test.txt'}
       }
     })).statusIs(200).jsonIs({one: 'missing', two: 'TWO', three: 'THREE', four: {content: 'FOUR'}});
+  });
+
+  await t.test('Validation', async t => {
+    (await client.putOk('/schema/user', {json: {username: 'kraih'}})).statusIs(200).jsonIs({valid: true});
+    (await client.putOk('/schema/user', {json: {user: 'kraih'}})).statusIs(200).jsonIs({valid: false});
+    (await client.putOk('/schema/user', {json: {username: 'sri'}})).statusIs(200).jsonIs({valid: true});
+
+    t.notOk(app.validator.getSchema('test123'));
+    (await client.putOk('/schema/dynamic', {json: {test: 123}})).statusIs(200).jsonIs({valid: true});
+    t.ok(app.validator.getSchema('test123'));
+    (await client.putOk('/schema/dynamic', {json: {test: '123'}})).statusIs(200).jsonIs({valid: false});
   });
 
   t.test('Forbidden helpers', t => {

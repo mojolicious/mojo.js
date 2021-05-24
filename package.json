@@ -36,6 +36,7 @@
     "node": ">= 15"
   },
   "dependencies": {
+    "ajv": ">=6.12.6",
     "chalk": ">=4.1.1",
     "cheerio": "^1.0.0-rc.9",
     "cookie": ">=0.4.1",
