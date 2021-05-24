@@ -257,7 +257,7 @@ const userinfo = ctx.req.userinfo;
 // Request ID
 const requestId = ctx.req.requestId;
 
-// Request header
+// Request headers
 const accept = ctx.req.get('Accept');
 
 // Get cookie
@@ -276,14 +276,19 @@ await ctx.req.pipe(process.stdout);
 // Set response code
 ctx.res.status(200);
 
-// Set response header
-ctx.res.set('Content-Type', 'quote/futurama');
+// Set response headers
+ctx.res.set('Server', 'Mojo/1.0');
+ctx.res.type('quote/futurama');
+ctx.res.length(12);
 
 // Set cookie
 ctx.res.setCookie('user', 'Bender', {path: '/', httpOnly: true});
 
 // Send `stream.Readable` object as response body
 ctx.res.send(stream);
+
+// Send response without body
+ctx.res.send();
 ```
 
 For URLs we always use standard [URL](https://nodejs.org/api/url.html#url_the_whatwg_url_api) objects. And if you need a
