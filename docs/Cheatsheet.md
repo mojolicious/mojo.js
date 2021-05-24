@@ -32,6 +32,10 @@ const url = ctx.req.url;
 const res = ctx.res;
 ctx.res.status(200).type('test.html').send('Hello World!');
 
+// params: all form parameters
+const params = await ctx.params();
+const foo = params.get('foo');
+
 // render: render a response
 ctx.render({text: 'Hello World!'});
 ctx.render({json: {hello: 'world'}});
@@ -39,7 +43,9 @@ ctx.render({json: {hello: 'world'}});
 
 ### Request
 
-The `req` property of the [context](#Context) object.
+The `req` property of the [context](#Context) object. All URLs use
+[URL](https://nodejs.org/api/url.html#url_the_whatwg_url_api) objects and form parameters
+[URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) objects.
 
 ```js
 // raw: the raw `http.IncomingMessage` object
@@ -72,9 +78,21 @@ const content = await ctx.req.text();
 // buffer: retrieve request body as a `Buffer`
 const buffer = await ctx.req.buffer();
 
+// query: query parameters
+const params = ctx.req.query();
+
+// form: "application/x-www-form-urlencoded" form parameters
+const params = await ctx.req.form();
+
+// formData: "multipart/form-data" form parameters
+const params = await ctx.req.formData();
+
 // pipe: pipe request body to `stream.Writable` object
 await ctx.req.pipe(process.stdout);
 ```
+
+The `raw` property contains an [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage)
+object.
 
 ### Response
 
@@ -103,3 +121,6 @@ ctx.res.setCookie('user', 'Bender', {path: '/', httpOnly: true});
 ctx.res.send(stream);
 ctx.res.send();
 ```
+
+The `raw` property contains an [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse)
+object.
