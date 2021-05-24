@@ -14,3 +14,7 @@ A quick and fun introduction to the basic concepts of [mojo.js](https://mojojs.o
 * [Client](Client.md)
 
 How to use the full featured HTTP and WebSocket user agent that ships with the mojo.js framework.
+
+* [Cheatsheet](Cheatsheet.md)
+
+An overview of the most commonly encountered mojo.js objects.

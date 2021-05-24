@@ -238,71 +238,8 @@ app.get('/agent', async ctx => {
 app.start();
 ```
 
-Use this little cheatsheet to remember the most commonly used request and response properties that are not otherwise
-mentioned in this guide.
-
-```js
-// Request method
-const method = ctx.req.method;
-
-// Full request URL
-const url = ctx.req.url;
-
-// Remote address
-const address = ctx.req.remoteAddress;
-
-// Userinfo (Basic authentication)
-const userinfo = ctx.req.userinfo;
-
-// Request ID
-const requestId = ctx.req.requestId;
-
-// Request headers
-const accept = ctx.req.get('Accept');
-
-// Get cookie
-const cookie = ctx.req.getCookie('foo');
-
-// Request body as string
-const content = await ctx.req.text();
-
-// Request body as `Buffer`
-const buffer = await ctx.req.buffer();
-
-// Pipe request body to `stream.Writable` object
-await ctx.req.pipe(process.stdout);
-```
-```js
-// Set response code
-ctx.res.status(200);
-
-// Set response headers
-ctx.res.set('Server', 'Mojo/1.0');
-ctx.res.type('quote/futurama');
-ctx.res.length(12);
-
-// Set cookie
-ctx.res.setCookie('user', 'Bender', {path: '/', httpOnly: true});
-
-// Send `stream.Readable` object as response body
-ctx.res.send(stream);
-
-// Send response without body
-ctx.res.send();
-```
-
-For URLs we always use standard [URL](https://nodejs.org/api/url.html#url_the_whatwg_url_api) objects. And if you need a
-little more control, you can also access the underlying
-[http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) and
-[http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) objects via the `raw` property.
-
-```js
-// Get HTTP version
-const version = ctx.req.raw.httpVersion;
-
-// Check if response has been written already
-const isFinished = ctx.res.raw.writableFinished;
-```
+Thake a look at the [Cheatsheet](Cheatsheet.md) to get a more complete overview of what properties and methods are
+available.
 
 ## JSON
 
