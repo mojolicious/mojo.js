@@ -4,11 +4,13 @@ A quick overview of the most important [mojo.js](https://mojojs.org) objects.
 
 ## App
 
-The mojo.js application object.
+The mojo.js application object, usually called `app`.
 
 ```js
 // client: a `mojo.Client` object for use inside the application
-const res = app.client.get('https://mojolicious.org');
+const res = await app.client.get('https://mojolicious.org');
+const document = await res.html();
+const title = document('title').text();
 
 // config: plain configuration object, filled with data by config plugins, use it to to store arbitrary information
 app.config.foo = 'bar';
@@ -18,39 +20,50 @@ const foo = app.config.foo;
 const path = app.home.child('config.json').toString();
 const content = app.home.child('views', 'foo.html.ejs').readFile('utf8');
 
-// models: plain object to store arbitray models
+// models: plain object, use it to store arbitray models
 app.models.frameworks = [{name: 'Catalyst'}, {name: 'Mojolicious'}, {name: 'mojo.js'}];
+
+// log: the application logger
+const child = app.log.child({someContextValue: 123, anotherContextValue: 'test'});
+child.debug('Shut up and take my money!');
+```
+
+The `router` is the most commonly used application property and there are various shortcut methods for it.
+
+```js
+// Create routes to controllers
+app.router.get('/users/:id').to('#users#show');
+
+// Create routes to controllers via shortcut method
+app.get('/users/:id').to('users#show');
+
+// Add placeholder types
+app.router.addType('futuramaName', ['bender', 'leela']);
+
+// Create routes directly to actions
+app.any('/hello/<name:futuramaName>', ctx => ctx.render({text: `Hello ${ctx.stash.name}`}));
 ```
 
 ### Context
 
-The main object representing an HTTP request or WebSocket handshake.
+The main object representing an HTTP request or WebSocket handshake, usually called `ctx`.
 
 ```js
 // req: the request object
 const url = ctx.req.url;
 
 // res: the response object
-ctx.res.status(200).type('test.html').send('Hello World!');
+ctx.res.status(200).type('text/html').send('Hello World!');
 
-// params: all form parameters
+// params: all form parameters combined
 const params = await ctx.params();
 const foo = params.get('foo');
-
-// render: render a response
-ctx.render({text: 'Hello World!'});
-ctx.render({json: {hello: 'world'}});
-ctx.render({view: 'foo/bar'});
-ctx.render({inline: 'Hello <%= name %>'}, {name: 'Mojo'});
-
-// renderToString: render something, but return it as a string
-const json = ctx.renderToString({json: {hello: 'world'}});
 
 // urlFor: generate URLs for routes
 const url = ctx.urlFor('index');
 
 // urlForFile: generate URLs for static files
-const url = ctx.urlFor('foo/app.css');
+const url = ctx.urlForFile('foo/app.css');
 
 // log: log messages with request id as context
 ctx.log.debug('Shut up and take my money!');
@@ -69,6 +82,25 @@ const users = ctx.models.users;
 const app = ctx.app;
 ```
 
+The `render` method is the most common way to generate a response.
+
+```js
+// Create a response from a string
+await ctx.render({text: 'Hello World!'});
+
+// Create a JSON response from a data structure
+await ctx.render({json: {hello: 'world'}});
+
+// Create a response by rendering the view "views/foo/bar.*.*"
+await ctx.render({view: 'foo/bar'});
+
+// Create a response by rendering an inline view (ejs by default)
+await ctx.render({inline: 'Hello <%= name %>'}, {name: 'Mojo'});
+
+// Render something, but return it as a string
+const json = await ctx.renderToString({json: {hello: 'world'}});
+```
+
 ### Request
 
 The `req` property of the [context](#Context) object. All URLs use
@@ -76,9 +108,6 @@ The `req` property of the [context](#Context) object. All URLs use
 [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) objects.
 
 ```js
-// raw: the raw `http.IncomingMessage` object
-const version = ctx.req.raw.httpVersion;
-
 // method: HTTP request method
 const method = ctx.req.method;
 
@@ -100,36 +129,45 @@ const accept = ctx.req.get('Accept');
 // getCookie: get cookie values
 const cookie = ctx.req.getCookie('foo');
 
-// text: retrieve request body as a string
-const content = await ctx.req.text();
-
-// buffer: retrieve request body as a `Buffer`
-const buffer = await ctx.req.buffer();
-
 // query: query parameters
 const params = ctx.req.query();
+```
 
-// form: "application/x-www-form-urlencoded" form parameters
+There are multiple methods to receive the request content in various formats.
+
+```js
+// Retrieve request body as a string
+const content = await ctx.req.text();
+
+// Retrieve request body as a `Buffer`
+const buffer = await ctx.req.buffer();
+
+// Retrieve "application/x-www-form-urlencoded" form parameters
 const params = await ctx.req.form();
 
-// formData: "multipart/form-data" form parameters
+// Retrieve "multipart/form-data" form parameters
 const params = await ctx.req.formData();
 
-// pipe: pipe request body to `stream.Writable` object
+// Retrieve files uploaded with "multipart/form-data" request (returns `null` if limits exceeded)
+const files = await ctx.req.files();
+
+// Pipe request body to `stream.Writable` object
 await ctx.req.pipe(process.stdout);
 ```
 
 The `raw` property contains an [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage)
 object.
 
+```js
+// Get HTTP version
+const version = ctx.req.raw.httpVersion;
+```
+
 ### Response
 
 The `res` property of the [context](#Context) object.
 
 ```js
-// raw: the raw `http.ServerResponse` object
-const isFinished = ctx.res.raw.writableFinished;
-
 // status: set response code
 ctx.res.status(200);
 
@@ -144,12 +182,25 @@ ctx.res.length(12);
 
 // setCookie: set cookie
 ctx.res.setCookie('user', 'Bender', {path: '/', httpOnly: true});
+```
 
-// send: send response (with `stream.Readable` object as body, string as body, or without a body)
+The `send` method is used to actually send the response.
+
+```js
+// Send response with `stream.Readable` object as body
 ctx.res.status(200).send(stream);
+
+// Send response with a string as body
 ctx.res.status(200).type('text/plain').length(12).send('Hello World!');
+
+// Send response without a body
 ctx.res.status(204).send();
 ```
 
 The `raw` property contains an [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse)
 object.
+
+```js
+// Check if a response has already been sent
+const isFinished = ctx.res.raw.writableFinished;
+```

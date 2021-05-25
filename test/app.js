@@ -8,6 +8,8 @@ t.test('App', async t => {
 
   app.config.appName = 'Test';
   app.models.test = {it: 'works'};
+  app.config.maxFileSize = 10;
+  app.models.uploadDir = await mojo.File.tempDir();
 
   app.validator.addSchema({
     type: 'object',
@@ -135,6 +137,21 @@ t.test('App', async t => {
     if (files.four !== undefined) data.four = {content: await files.four.file.readFile('utf8')};
 
     return ctx.render({json: data});
+  });
+
+  // POST /form/upload
+  app.post('/form/upload', async ctx => {
+    ctx.req.maxFileSize = ctx.config.maxFileSize;
+    ctx.req.uploadDir = ctx.models.uploadDir.toString();
+
+    const files = await ctx.req.files();
+    if (files === null) return ctx.render({json: {error: 'Upload limit exceeded'}, status: 400});
+
+    const size = files.test.size;
+    const path = files.test.file.toString();
+    const content = await files.test.file.readFile('utf8');
+
+    return ctx.render({json: {size, path, content}});
   });
 
   // * /url_for
@@ -510,6 +527,17 @@ t.test('App', async t => {
         four: {content: 'FOUR', filename: 'test.txt'}
       }
     })).statusIs(200).jsonIs({one: 'missing', two: 'TWO', three: 'THREE', four: {content: 'FOUR'}});
+  });
+
+  await t.test('Uploads', async t => {
+    (await client.postOk('/form/upload', {formData: {test: {content: 'Hello!', filename: 'test.txt'}}})).statusIs(200);
+    const data = JSON.parse(client.body);
+    t.equal(data.size, 6);
+    t.equal(data.content, 'Hello!');
+    t.ok(data.path.startsWith(app.models.uploadDir.toString()));
+
+    (await client.postOk('/form/upload', {formData: {test: {content: 'Hello World!', filename: 'test.txt'}}}))
+      .statusIs(400).jsonIs({error: 'Upload limit exceeded'});
   });
 
   await t.test('Validation', async t => {
