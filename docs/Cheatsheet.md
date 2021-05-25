@@ -19,7 +19,7 @@ const path = app.home.child('config.json').toString();
 const content = app.home.child('views', 'foo.html.ejs').readFile('utf8');
 
 // models: plain object to store arbitray models
-app.models.users = [{name: 'kraih'}, {name: 'jberger'}, {name: 'marcus'}];
+app.models.frameworks = [{name: 'Catalyst'}, {name: 'Mojolicious'}, {name: 'mojo.js'}];
 ```
 
 ### Context
