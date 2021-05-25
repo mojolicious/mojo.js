@@ -129,8 +129,10 @@ t.test('App', async t => {
     ctx.req.on('file', (fieldname, file, filename) => {
       upload.name = fieldname;
       upload.filename = filename;
+      upload.limit = false;
 
       const parts = [];
+      file.on('limit', () => (upload.limit = true));
       file.on('data', chunk => parts.push(chunk));
       file.on('end', () => (upload.content = Buffer.concat(parts).toString()));
     });
@@ -501,6 +503,7 @@ t.test('App', async t => {
     t.equal(data.upload.filename, 'test.txt');
     t.equal(data.upload.content, 'Hello!');
     t.same(data.params, {it: 'works'});
+    t.equal(data.upload.limit, false);
 
     (await client.postOk('/form/upload', {formData: {test: {content: 'Hello World!', filename: 'test2.txt'}}}))
       .statusIs(200);
@@ -508,6 +511,7 @@ t.test('App', async t => {
     t.equal(data2.upload.name, 'test');
     t.equal(data2.upload.filename, 'test2.txt');
     t.equal(data2.upload.content, 'Hello Worl');
+    t.equal(data2.upload.limit, true);
     t.same(data2.params, {});
   });
 
