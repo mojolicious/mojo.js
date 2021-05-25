@@ -142,14 +142,8 @@ const content = await ctx.req.text();
 // Retrieve request body as a `Buffer`
 const buffer = await ctx.req.buffer();
 
-// Retrieve "application/x-www-form-urlencoded" form parameters
+// Retrieve "application/x-www-form-urlencoded" or "multipart/form-data" form parameters
 const params = await ctx.req.form();
-
-// Retrieve "multipart/form-data" form parameters
-const params = await ctx.req.formData();
-
-// Retrieve files uploaded with "multipart/form-data" request (returns `null` if limits exceeded)
-const files = await ctx.req.files();
 
 // Pipe request body to `stream.Writable` object
 await ctx.req.pipe(process.stdout);

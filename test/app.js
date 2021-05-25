@@ -8,8 +8,6 @@ t.test('App', async t => {
 
   app.config.appName = 'Test';
   app.models.test = {it: 'works'};
-  app.config.maxFileSize = 10;
-  app.models.uploadDir = await mojo.File.tempDir();
 
   app.validator.addSchema({
     type: 'object',
@@ -107,19 +105,8 @@ t.test('App', async t => {
 
   // POST /form/data
   app.post('/form/data', async ctx => {
-    const form = await ctx.req.formData();
+    const form = await ctx.req.form();
     const data = {first: form.get('first') ?? 'missing', second: form.get('second') ?? 'missing'};
-
-    const files = await ctx.req.files();
-    if (files.second !== undefined) {
-      data.upload = {
-        content: await files.second.file.readFile('utf8'),
-        filename: files.second.filename,
-        size: files.second.size,
-        type: files.second.type
-      };
-    }
-
     return ctx.render({json: data});
   });
 
@@ -133,25 +120,24 @@ t.test('App', async t => {
       three: params.get('three') ?? 'missing'
     };
 
-    const files = await ctx.req.files();
-    if (files.four !== undefined) data.four = {content: await files.four.file.readFile('utf8')};
-
     return ctx.render({json: data});
   });
 
   // POST /form/upload
   app.post('/form/upload', async ctx => {
-    ctx.req.maxFileSize = ctx.config.maxFileSize;
-    ctx.req.uploadDir = ctx.models.uploadDir.toString();
+    const upload = {};
+    ctx.req.on('file', (fieldname, file, filename) => {
+      upload.name = fieldname;
+      upload.filename = filename;
 
-    const files = await ctx.req.files();
-    if (files === null) return ctx.render({json: {error: 'Upload limit exceeded'}, status: 400});
+      const parts = [];
+      file.on('data', chunk => parts.push(chunk));
+      file.on('end', () => (upload.content = Buffer.concat(parts).toString()));
+    });
 
-    const size = files.test.size;
-    const path = files.test.file.toString();
-    const content = await files.test.file.readFile('utf8');
+    const params = await ctx.req.form({limits: {fileSize: 10}});
 
-    return ctx.render({json: {size, path, content}});
+    return ctx.render({json: {upload, params: params.toObject()}});
   });
 
   // * /url_for
@@ -488,21 +474,6 @@ t.test('App', async t => {
 
     (await client.postOk('/form/data', {formData: {first: 'One', second: 'Two'}})).statusIs(200)
       .jsonIs({first: 'One', second: 'Two'});
-
-    (await client.postOk('/form/data', {
-      formData: {
-        first: 'One',
-        second: {
-          content: 'Two',
-          filename: 'test.txt',
-          type: 'text/whatever'
-        }
-      }
-    })).statusIs(200).jsonIs({
-      first: 'One',
-      second: 'missing',
-      upload: {content: 'Two', filename: 'test.txt', size: 3, type: 'text/whatever'}
-    });
   });
 
   await t.test('Mixed forms', async t => {
@@ -520,24 +491,24 @@ t.test('App', async t => {
 
     (await client.postOk('/form/mixed?two=works', {formData: {three: 'works'}})).statusIs(200)
       .jsonIs({one: 'missing', two: 'works', three: 'works'});
-
-    (await client.postOk('/form/mixed?two=TWO', {
-      formData: {
-        three: 'THREE',
-        four: {content: 'FOUR', filename: 'test.txt'}
-      }
-    })).statusIs(200).jsonIs({one: 'missing', two: 'TWO', three: 'THREE', four: {content: 'FOUR'}});
   });
 
   await t.test('Uploads', async t => {
-    (await client.postOk('/form/upload', {formData: {test: {content: 'Hello!', filename: 'test.txt'}}})).statusIs(200);
+    (await client.postOk('/form/upload', {formData: {test: {content: 'Hello!', filename: 'test.txt'}, it: 'works'}}))
+      .statusIs(200);
     const data = JSON.parse(client.body);
-    t.equal(data.size, 6);
-    t.equal(data.content, 'Hello!');
-    t.ok(data.path.startsWith(app.models.uploadDir.toString()));
+    t.equal(data.upload.name, 'test');
+    t.equal(data.upload.filename, 'test.txt');
+    t.equal(data.upload.content, 'Hello!');
+    t.same(data.params, {it: 'works'});
 
-    (await client.postOk('/form/upload', {formData: {test: {content: 'Hello World!', filename: 'test.txt'}}}))
-      .statusIs(400).jsonIs({error: 'Upload limit exceeded'});
+    (await client.postOk('/form/upload', {formData: {test: {content: 'Hello World!', filename: 'test2.txt'}}}))
+      .statusIs(200);
+    const data2 = JSON.parse(client.body);
+    t.equal(data2.upload.name, 'test');
+    t.equal(data2.upload.filename, 'test2.txt');
+    t.equal(data2.upload.content, 'Hello Worl');
+    t.same(data2.params, {});
   });
 
   await t.test('Validation', async t => {

@@ -179,11 +179,8 @@ And for a little more control there are also methods to retrieve parameters sepa
 // Query parameters
 const params = ctx.req.query();
 
-// "application/x-www-form-urlencoded"
+// "application/x-www-form-urlencoded" or "multipart/form-data"
 const params = await ctx.req.form();
-
-// "multipart/form-data"
-const params = await ctx.req.formData();
 ```
 
 ## Stash and Views
