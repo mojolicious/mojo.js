@@ -279,6 +279,13 @@ t.test('Client', async t => {
     const res3 = await client.get('/auth/basic', {auth: 'foo:bar:baz', body: 'test'});
     t.equal(res3.status, 200);
     t.equal(await res3.text(), 'basic: foo:bar:baz, body: test');
+
+    const url = new URL('/auth/basic', client.baseURL);
+    url.username = 'foo@example.com';
+    url.password = 'bar';
+    const res4 = await client.get(url);
+    t.equal(res4.status, 200);
+    t.equal(await res4.text(), 'basic: foo@example.com:bar, body: nothing');
   });
 
   await t.test('Events', async t => {
