@@ -135,6 +135,7 @@ t.test('App', async t => {
         parts.push(chunk);
       }
       upload.content = Buffer.concat(parts).toString();
+      upload.limit = file.truncated;
     }
 
     const params = await ctx.req.form();
@@ -499,13 +500,13 @@ t.test('App', async t => {
     (await client.postOk('/form/upload', {formData: {test: {content: 'Hello!', filename: 'test.txt'}, it: 'works'}}))
       .statusIs(200);
     const data = JSON.parse(client.body);
-    t.same(data.uploads, [{fieldname: 'test', filename: 'test.txt', content: 'Hello!'}]);
+    t.same(data.uploads, [{fieldname: 'test', filename: 'test.txt', content: 'Hello!', limit: false}]);
     t.same(data.params, {it: 'works'});
 
     (await client.postOk('/form/upload', {formData: {test: {content: 'Hello World!', filename: 'test2.txt'}}}))
       .statusIs(200);
     const data2 = JSON.parse(client.body);
-    t.same(data2.uploads, [{fieldname: 'test', filename: 'test2.txt', content: 'Hello Worl'}]);
+    t.same(data2.uploads, [{fieldname: 'test', filename: 'test2.txt', content: 'Hello Worl', limit: true}]);
     t.same(data2.params, {});
 
     (await client.postOk('/form/upload', {
@@ -519,9 +520,9 @@ t.test('App', async t => {
     })).statusIs(200);
     const data3 = JSON.parse(client.body);
     t.same(data3.uploads, [
-      {fieldname: 'test', filename: 'test2.txt', content: 'Hello'},
-      {fieldname: 'test2', filename: 'test3.txt', content: 'World'},
-      {fieldname: 'test3', filename: 'test4.txt', content: '!'}
+      {fieldname: 'test', filename: 'test2.txt', content: 'Hello', limit: false},
+      {fieldname: 'test2', filename: 'test3.txt', content: 'World', limit: false},
+      {fieldname: 'test3', filename: 'test4.txt', content: '!', limit: false}
     ]);
     t.same(data3.params, {test4: 'One', test5: 'Two'});
 
