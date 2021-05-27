@@ -200,10 +200,13 @@ ws.on('open', () => {
 ws.on('message', data => {
   console.log(data);
 });
+
+ws.on('ping', data => {
+  ws.pong(data);
+});
 ```
 
-After the initial HTTP based WebSocket handshake we use [ws](https://www.npmjs.com/package/ws). Cookies will of course
-also be available for the handshake, so you can use them for things like authentication.
+Cookies will of course also be available for the handshake, so you can use them for things like authentication.
 
 ## Testing
 
