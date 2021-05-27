@@ -15,7 +15,7 @@ const client = await app.newMockClient();
 const ws = await client.websocket('/ws');
 let i = 0;
 ws.on('message', message => {
-  i++ > 100000 ? ws.close() : ws.send(i.toString());
+  i++ > 100000 ? ws.close() : ws.send(message);
 });
 ws.send('Hello Mojo!');
 
