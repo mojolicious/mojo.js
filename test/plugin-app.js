@@ -20,12 +20,13 @@ t.test('Plugin app', async t => {
   app.get('/method', ctx => ctx.render({text: ctx.testMethod('test')}));
 
   app.websocket('/websocket/mixed').to(ctx => {
-    ctx.on('connection', ws => {
+    ctx.on('connection', async ws => {
       const before = ctx.testProp;
       ctx.testProp = 'works too';
       const after = ctx.testProp;
       const also = ctx.testHelper('test');
-      ws.send(`before: ${before}, after: ${after}, also: ${also}`, () => ws.close());
+      await ws.send(`before: ${before}, after: ${after}, also: ${also}`);
+      ws.close();
     });
   });
 

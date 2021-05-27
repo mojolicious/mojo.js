@@ -42,16 +42,18 @@ t.test('Hook app', async t => {
   app.addHook('websocket', async ctx => {
     const third = ctx.req.query.get('third');
     if (third !== '1') return;
-    ctx.on('connection', ws => {
-      ws.send('Hello World!', () => ws.close());
+    ctx.on('connection', async ws => {
+      await ws.send('Hello World!');
+      ws.close();
     });
     await util.sleep(1);
     return true;
   });
 
   app.websocket('/hello').to(ctx => {
-    ctx.on('connection', ws => {
-      ws.send('Hello Mojo!', () => ws.close());
+    ctx.on('connection', async ws => {
+      await ws.send('Hello Mojo!');
+      ws.close();
     });
   });
 

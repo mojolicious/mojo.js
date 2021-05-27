@@ -191,20 +191,33 @@ information from documents with just a CSS selector and almost no code at all.
 And for WebSockets there is of course also a convenient shortcut available.
 
 ```js
-const ws = await client.websocket('/ws', {headers: {Authorization: 'token 123456789abcdef'}});
-
+// Events
+const ws = await client.websocket('/ws');
 ws.send('something');
-
-ws.on('message', data => {
-  console.log(data);
+ws.on('message', message => {
+  console.log(message);
 });
 
+// Async iterator
+const ws = await client.websocket('/ws');
+ws.send('something');
+for await (const message of ws) {
+  console.log(message);
+}
+```
+
+With support for `ping` and `pong` frames.
+
+```js
+// Handshake with authentication headers
+const ws = await client.websocket('/ws', {headers: {Authorization: 'token 123456789abcdef'}});
 ws.on('ping', data => {
   ws.pong(data);
 });
 ```
 
-Cookies will of course also be available for the handshake, so you can use them for things like authentication.
+Cookies from the cookie jar will of course also be available for the handshake, so you can rely on them for things like
+authentication.
 
 ## Testing
 

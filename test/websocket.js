@@ -14,10 +14,18 @@ t.test('WebSocket', async t => {
     });
   });
 
+  app.websocket('/ws/iterator').to(ctx => {
+    ctx.on('connection', async ws => {
+      for await (const message of ws) {
+        await ws.send(message);
+      }
+    });
+  });
+
   app.websocket('/ping').to(ctx => {
     ctx.on('connection', ws => {
-      ws.on('ping', data => {
-        ws.pong(data);
+      ws.on('ping', async data => {
+        await ws.pong(data);
       });
     });
   });
@@ -32,28 +40,40 @@ t.test('WebSocket', async t => {
     const ws = await client.websocket('/ws');
     ws.send('Hello Mojo!');
     const message = await new Promise(resolve => {
-      ws.on('message', data => {
-        ws.on('close', () => resolve(data));
+      ws.on('message', message => {
+        ws.on('close', () => resolve(message));
         ws.close();
       });
     });
     t.equal(message, 'Hello Mojo!');
   });
 
-  await t.test('WebSocket roundtrip (iterator)', async t => {
+  await t.test('WebSocket roundtrip (client iterator)', async t => {
     const ws = await client.websocket('/ws');
     ws.send('Hello Mojo!');
-    let message;
-    for await (const data of ws) {
-      message = data;
+    let result;
+    for await (const message of ws) {
+      result = message;
       ws.close();
     }
+    t.equal(result, 'Hello Mojo!');
+  });
+
+  await t.test('WebSocket roundtrip (server iterator)', async t => {
+    const ws = await client.websocket('/ws/iterator');
+    ws.send('Hello Mojo!');
+    const message = await new Promise(resolve => {
+      ws.on('message', message => {
+        ws.on('close', () => resolve(message));
+        ws.close();
+      });
+    });
     t.equal(message, 'Hello Mojo!');
   });
 
   await t.test('Ping/Pong', async t => {
     const ws = await client.websocket('/ping');
-    ws.ping(Buffer.from('Hello Mojo!'));
+    await ws.ping(Buffer.from('Hello Mojo!'));
     const data = await new Promise(resolve => {
       ws.on('pong', data => {
         ws.on('close', () => resolve(data));
