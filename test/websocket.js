@@ -17,7 +17,7 @@ t.test('WebSocket', async t => {
   app.websocket('/ws/iterator').to(ctx => {
     ctx.on('connection', async ws => {
       for await (const message of ws) {
-        await ws.send(message);
+        ws.send(message);
       }
     });
   });
@@ -25,7 +25,7 @@ t.test('WebSocket', async t => {
   app.websocket('/ping').to(ctx => {
     ctx.on('connection', ws => {
       ws.on('ping', async data => {
-        await ws.pong(data);
+        ws.pong(data);
       });
     });
   });
@@ -73,7 +73,7 @@ t.test('WebSocket', async t => {
 
   await t.test('Ping/Pong', async t => {
     const ws = await client.websocket('/ping');
-    await ws.ping(Buffer.from('Hello Mojo!'));
+    ws.ping(Buffer.from('Hello Mojo!'));
     const data = await new Promise(resolve => {
       ws.on('pong', data => {
         ws.on('close', () => resolve(data));

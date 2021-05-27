@@ -35,8 +35,8 @@ t.test('WebSocket app', async t => {
   });
 
   app.websocket('/one_sided').to(ctx => {
-    ctx.on('connection', async ws => {
-      await ws.send('I ♥ Mojolicious!');
+    ctx.on('connection', ws => {
+      ws.send('I ♥ Mojolicious!');
       ws.close();
     });
   });
@@ -51,8 +51,8 @@ t.test('WebSocket app', async t => {
   });
 
   app.websocket('/restricted').to(ctx => {
-    ctx.on('connection', async ws => {
-      await ws.send(`Welcome back ${ctx.session.user}`);
+    ctx.on('connection', ws => {
+      ws.send(`Welcome back ${ctx.session.user}`);
       ws.close();
     });
   });
