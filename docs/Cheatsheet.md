@@ -153,7 +153,7 @@ const parts = [];
 for await (const chunk of ctx.req) {
   parts.push(chunk);
 }
- const text = Buffer.concat(parts).toString();
+const buffer = Buffer.concat(parts);
 ```
 
 The `raw` property contains an [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage)

@@ -182,7 +182,7 @@ t.test('Client', async t => {
     t.equal(res3.status, 200);
     t.equal((await res3.buffer()).toString(), 'I ♥ Mojolicious!');
 
-    const res4 = await client.put('/body', {body: Buffer.from('I ♥ Mojolicious!')});
+    const res4 = await client.put('/body', {body: 'I ♥ Mojolicious!'});
     t.equal(res4.status, 200);
     const parts = [];
     for await (const chunk of res4) {

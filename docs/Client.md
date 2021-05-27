@@ -180,7 +180,7 @@ const parts = [];
 for await (const chunk of res) {
   parts.push(chunk);
 }
-const text = Buffer.concat(parts).toString();
+const buffer = Buffer.concat(parts);
 ```
 
 For HTML and XML parsing [cheerio](https://www.npmjs.com/package/cheerio) will be used. Making it very easy to extract
