@@ -137,7 +137,7 @@ There are multiple methods to receive the request content in various formats.
 
 ```js
 // Retrieve request body as a string
-const content = await ctx.req.text();
+const text = await ctx.req.text();
 
 // Retrieve request body as a `Buffer`
 const buffer = await ctx.req.buffer();
@@ -147,6 +147,13 @@ const params = await ctx.req.form();
 
 // Pipe request body to `stream.Writable` object
 await ctx.req.pipe(process.stdout);
+
+// Retrieve request body from async iterator
+const parts = [];
+for await (const chunk of ctx.req) {
+  parts.push(chunk);
+}
+ const text = Buffer.concat(parts).toString();
 ```
 
 The `raw` property contains an [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage)

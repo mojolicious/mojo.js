@@ -174,6 +174,13 @@ const title = document('title').text();
 
 // Parsed XML via `cheerio`
 const document = await res.xml();
+
+// Async iterator
+const parts = [];
+for await (const chunk of res) {
+  parts.push(chunk);
+}
+const text = Buffer.concat(parts).toString();
 ```
 
 For HTML and XML parsing [cheerio](https://www.npmjs.com/package/cheerio) will be used. Making it very easy to extract
