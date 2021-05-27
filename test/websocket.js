@@ -42,6 +42,19 @@ t.test('WebSocket', async t => {
     t.equal(message, 'Hello Mojo!');
   });
 
+  await t.test('WebSocket roundtrip (iterator)', async t => {
+    const ws = await client.websocket('/ws');
+    ws.on('open', () => {
+      ws.send('Hello Mojo!');
+    });
+    let message;
+    for await (const data of ws) {
+      message = data;
+      ws.close();
+    }
+    t.equal(message, 'Hello Mojo!');
+  });
+
   await t.test('Ping/Pong', async t => {
     const ws = await client.websocket('/ping');
     ws.on('open', () => {
