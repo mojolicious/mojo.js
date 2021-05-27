@@ -76,8 +76,7 @@ t.test('WebSocket app', async t => {
   });
 
   await t.test('Custom headers and protocols', async t => {
-    const headers = {'X-Greeting': 'hello mojo'};
-    await client.websocketOk('/echo', {headers, protocols: ['foo', 'bar', 'baz']});
+    await client.websocketOk('/echo', {headers: {'X-Greeting': 'hello mojo'}, protocols: ['foo', 'bar', 'baz']});
     client.headerIs('Upgrade', 'websocket').headerIs('Connection', 'Upgrade').headerIs('Sec-WebSocket-Protocol', 'foo');
     t.equal(await client.messageOk(), 'greeting: hello mojo');
     await client.sendOk('hello');

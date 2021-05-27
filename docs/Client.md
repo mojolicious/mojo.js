@@ -193,9 +193,7 @@ And for WebSockets there is of course also a convenient shortcut available.
 ```js
 const ws = await client.websocket('/ws', {headers: {Authorization: 'token 123456789abcdef'}});
 
-ws.on('open', () => {
-  ws.send('something');
-});
+ws.send('something');
 
 ws.on('message', data => {
   console.log(data);

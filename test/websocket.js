@@ -30,9 +30,7 @@ t.test('WebSocket', async t => {
 
   await t.test('WebSocket roundtrip', async t => {
     const ws = await client.websocket('/ws');
-    ws.on('open', () => {
-      ws.send('Hello Mojo!');
-    });
+    ws.send('Hello Mojo!');
     const message = await new Promise(resolve => {
       ws.on('message', data => {
         ws.on('close', () => resolve(data));
@@ -44,9 +42,7 @@ t.test('WebSocket', async t => {
 
   await t.test('WebSocket roundtrip (iterator)', async t => {
     const ws = await client.websocket('/ws');
-    ws.on('open', () => {
-      ws.send('Hello Mojo!');
-    });
+    ws.send('Hello Mojo!');
     let message;
     for await (const data of ws) {
       message = data;
@@ -57,9 +53,7 @@ t.test('WebSocket', async t => {
 
   await t.test('Ping/Pong', async t => {
     const ws = await client.websocket('/ping');
-    ws.on('open', () => {
-      ws.ping(Buffer.from('Hello Mojo!'));
-    });
+    ws.ping(Buffer.from('Hello Mojo!'));
     const data = await new Promise(resolve => {
       ws.on('pong', data => {
         ws.on('close', () => resolve(data));
