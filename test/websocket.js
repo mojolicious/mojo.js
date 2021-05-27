@@ -14,6 +14,14 @@ t.test('WebSocket', async t => {
     });
   });
 
+  app.websocket('/ping').to(ctx => {
+    ctx.on('connection', ws => {
+      ws.on('ping', data => {
+        ws.pong(data);
+      });
+    });
+  });
+
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
@@ -32,6 +40,20 @@ t.test('WebSocket', async t => {
       });
     });
     t.equal(message, 'Hello Mojo!');
+  });
+
+  await t.test('Ping/Pong', async t => {
+    const ws = await client.websocket('/ping');
+    ws.on('open', () => {
+      ws.ping(Buffer.from('Hello Mojo!'));
+    });
+    const data = await new Promise(resolve => {
+      ws.on('pong', data => {
+        ws.on('close', () => resolve(data));
+        ws.close();
+      });
+    });
+    t.equal(data.toString(), 'Hello Mojo!');
   });
 
   await client.stop();
