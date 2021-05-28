@@ -15,7 +15,15 @@ t.test('WebSocket', async t => {
   });
 
   app.websocket('/ws/iterator').to(ctx => {
-    ctx.on('connection', async ws => {
+    ctx.plain(async ws => {
+      for await (const message of ws) {
+        ws.send(message);
+      }
+    });
+  });
+
+  app.websocket('/ws/json').to(ctx => {
+    ctx.json(async ws => {
       for await (const message of ws) {
         ws.send(message);
       }
@@ -46,6 +54,7 @@ t.test('WebSocket', async t => {
       });
     });
     t.equal(message, 'Hello Mojo!');
+    t.same(ws.json, false);
   });
 
   await t.test('WebSocket roundtrip (client iterator)', async t => {
@@ -69,6 +78,18 @@ t.test('WebSocket', async t => {
       });
     });
     t.equal(message, 'Hello Mojo!');
+  });
+
+  await t.test('WebSocket (JSON)', async t => {
+    const ws = await client.websocket('/ws/json', {json: true});
+    ws.send({hello: 'world'});
+    let result;
+    for await (const message of ws) {
+      result = message;
+      ws.close();
+    }
+    t.same(result, {hello: 'world'});
+    t.same(ws.json, true);
   });
 
   await t.test('Ping/Pong', async t => {

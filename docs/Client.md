@@ -66,7 +66,7 @@ const res = await client.request({
   // Request body as a string, `Buffer` or `stream.Readable` object
   body: 'Some content to send with request',
 
-  // Data structure to be send in JSON format
+  // Data structure to be send in JSON format, or for WebSockets a `true` value to enable JSON mode
   json: {hello: ['world']},
 
   // Object with key/value pairs to be sent in `application/x-www-form-urlencoded` format
