@@ -43,13 +43,13 @@ app.get('/', ctx => {
 });
 
 app.websocket('/title', ctx => {
-  ctx.on('connection', ws => {
-    ws.on('message', async url => {
+  ctx.on('connection', async ws => {
+    for await (const url of ws) {
       const res   = await ctx.client.get(url);
       const html  = await res.html();
       const title = html('title').text();
       ws.send(title);
-    });
+    }
   });
 });
 
