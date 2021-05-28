@@ -7,8 +7,8 @@
 [![](https://github.com/mojolicious/mojo.js/workflows/test/badge.svg)](https://github.com/mojolicious/mojo.js/actions)
 
 [Mojolicious](https://mojolicious.org) for Node.js. This project is still **under heavy development** and not ready
-for production use yet. If you want to help out, you're welcome to join us on
-[IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
+for production use yet. If you want to help out, you're welcome to join us on [IRC](https://web.libera.chat/#mojo.js)
+(`#mojo.js` on Libera.Chat).
 
 ```js
 import mojo from '@mojojs/mojo';
