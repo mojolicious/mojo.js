@@ -43,7 +43,7 @@ app.get('/', ctx => {
 });
 
 app.websocket('/title', ctx => {
-  ctx.on('connection', async ws => {
+  ctx.plain(async ws => {
     for await (const url of ws) {
       const res   = await ctx.client.get(url);
       const html  = await res.html();
