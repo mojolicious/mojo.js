@@ -54,7 +54,7 @@ t.test('WebSocket', async t => {
       });
     });
     t.equal(message, 'Hello Mojo!');
-    t.same(ws.json, false);
+    t.same(ws.jsonMode, false);
   });
 
   await t.test('WebSocket roundtrip (client iterator)', async t => {
@@ -80,7 +80,7 @@ t.test('WebSocket', async t => {
     t.equal(message, 'Hello Mojo!');
   });
 
-  await t.test('WebSocket (JSON)', async t => {
+  await t.test('WebSocket roundtrip (JSON)', async t => {
     const ws = await client.websocket('/ws/json', {json: true});
     ws.send({hello: 'world'});
     let result;
@@ -89,7 +89,7 @@ t.test('WebSocket', async t => {
       ws.close();
     }
     t.same(result, {hello: 'world'});
-    t.same(ws.json, true);
+    t.same(ws.jsonMode, true);
   });
 
   await t.test('Ping/Pong', async t => {

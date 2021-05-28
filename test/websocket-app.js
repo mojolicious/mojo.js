@@ -22,6 +22,15 @@ t.test('WebSocket app', async t => {
 
   app.get('/echo').to(ctx => ctx.render({text: 'plain echo!'}));
 
+  app.websocket('/echo.json').to(ctx => {
+    ctx.json(async ws => {
+      for await (const message of ws) {
+        message.hello = message.hello + '!';
+        ws.send(message);
+      }
+    });
+  });
+
   app.websocket('/push').to(ctx => {
     ctx.on('connection', ws => {
       let i = 1;
@@ -63,6 +72,16 @@ t.test('WebSocket app', async t => {
     await client.websocketOk('/echo');
     await client.sendOk('hello');
     t.equal(await client.messageOk(), 'echo: hello');
+    await client.finishOk(1000);
+    await client.finishedOk(1000);
+  });
+
+  await t.test('JSON roundtrip', async t => {
+    await client.websocketOk('/echo.json', {json: true});
+    await client.sendOk({hello: 'world'});
+    t.same(await client.messageOk(), {hello: 'world!'});
+    await client.sendOk({hello: 'mojo'});
+    t.same(await client.messageOk(), {hello: 'mojo!'});
     await client.finishOk(1000);
     await client.finishedOk(1000);
   });
