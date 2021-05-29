@@ -209,13 +209,23 @@ t.test('Exception app', async t => {
   t.test('WebSocket', async t => {
     const app = mojo();
 
-    app.websocket('/ws/exception/before').to(ctx => {
-      throw new Error('WebSocket test exception before');
+    app.websocket('/ws/exception/before/sync').to(ctx => {
+      throw new Error('Sync WebSocket test exception before');
     });
 
-    app.websocket('/ws/exception/after').to(ctx => {
+    app.websocket('/ws/exception/before/async').to(async ctx => {
+      throw new Error('Async WebSocket test exception before');
+    });
+
+    app.websocket('/ws/exception/after/async').to(ctx => {
       ctx.plain(async ws => {
-        throw new Error('WebSocket test exception after');
+        throw new Error('Async WebSocket test exception after');
+      });
+    });
+
+    app.websocket('/ws/exception/after/sync').to(ctx => {
+      ctx.on('connection', ws => {
+        throw new Error('Sync WebSocket test exception after');
       });
     });
 
@@ -230,32 +240,60 @@ t.test('Exception app', async t => {
 
     const client = await app.newTestClient({tap: t});
 
-    await t.test('WebSocket exception (during handshake)', async t => {
+    await t.test('WebSocket exception (during handshake and sync)', async t => {
       const dir = await File.tempDir();
-      const file = dir.child('websocket.log');
+      const file = dir.child('websocket1a.log');
       app.log.destination = file.createWriteStream();
 
       let result;
       try {
-        await client.websocket('/ws/exception/before');
+        await client.websocket('/ws/exception/before/sync');
       } catch (error) {
         result = error;
       }
 
       t.match(result, {code: 'ECONNRESET'});
-      t.match(await file.readFile(), /Error: WebSocket test exception before/);
+      t.match(await file.readFile(), /Error: Sync WebSocket test exception before/);
     });
 
-    await t.test('WebSocket exception (after handshake)', async t => {
+    await t.test('WebSocket exception (during handshake and async)', async t => {
       const dir = await File.tempDir();
-      const file = dir.child('websocket2.log');
+      const file = dir.child('websocket1b.log');
       app.log.destination = file.createWriteStream();
 
-      const ws = await client.websocket('/ws/exception/after');
+      let result;
+      try {
+        await client.websocket('/ws/exception/before/async');
+      } catch (error) {
+        result = error;
+      }
+
+      t.match(result, {code: 'ECONNRESET'});
+      t.match(await file.readFile(), /Error: Async WebSocket test exception before/);
+    });
+
+    await t.test('WebSocket exception (after handshake and async)', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('websocket2a.log');
+      app.log.destination = file.createWriteStream();
+
+      const ws = await client.websocket('/ws/exception/after/async');
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
-      t.match(await file.readFile(), /Error: WebSocket test exception after/);
+      t.match(await file.readFile(), /Error: Async WebSocket test exception after/);
+    });
+
+    await t.test('WebSocket exception (after handshake and sync)', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('websocket2b.log');
+      app.log.destination = file.createWriteStream();
+
+      const ws = await client.websocket('/ws/exception/after/sync');
+      const code = await new Promise(resolve => ws.on('close', resolve));
+
+      t.equal(code, 1011);
+      t.match(await file.readFile(), /Error: Sync WebSocket test exception after/);
     });
 
     await t.test('WebSocket exception (iterator)', async t => {
