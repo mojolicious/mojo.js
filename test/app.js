@@ -186,6 +186,15 @@ t.test('App', async t => {
     });
   });
 
+  // GET /accepts
+  app.get('/accepts', {ext: ['txt']}).to({
+    ext: null,
+    fn: async ctx => {
+      const allowed = await ctx.req.json() ?? undefined;
+      await ctx.render({json: {accepts: ctx.accepts(allowed)}});
+    }
+  });
+
   // GET /remote_address
   app.get('/remote_address', ctx => ctx.render({text: `Address: ${ctx.req.remoteAddress}`}));
 
@@ -442,6 +451,29 @@ t.test('App', async t => {
       .typeIs('text/plain; charset=utf-8').bodyIs('Fallback');
     (await client.getOk('/content/negotiation/fallback')).statusIs(200).typeIs('text/plain; charset=utf-8')
       .bodyIs('Fallback');
+  });
+
+  await t.test('Content negotiation (accepts)', async t => {
+    (await client.getOk('/accepts', {headers: {Accept: 'application/json'}, json: null})).statusIs(200)
+      .jsonIs({accepts: ['json']});
+    (await client.getOk('/accepts', {headers: {Accept: 'application/json, text/html;Q=1.5'}, json: null})).statusIs(200)
+      .jsonIs({accepts: ['html', 'json']});
+
+    (await client.getOk('/accepts.txt', {headers: {Accept: 'application/json, text/html;Q=1.5'}, json: null}))
+      .statusIs(200).jsonIs({accepts: ['txt', 'html', 'json']});
+
+    (await client.getOk('/accepts.txt', {
+      headers: {Accept: 'application/json, text/html;Q=1.5'},
+      json: ['json', 'html']
+    })).statusIs(200).jsonIs({accepts: ['html', 'json']});
+    (await client.getOk('/accepts', {headers: {Accept: 'application/json, text/html;Q=1.5'}, json: ['json']}))
+      .statusIs(200).jsonIs({accepts: ['json']});
+
+    (await client.getOk('/accepts', {json: null})).statusIs(200).jsonIs({accepts: null});
+    (await client.getOk('/accepts', {headers: {Accept: 'application/json, text/html;Q=1.5'}, json: ['png']}))
+      .statusIs(200).jsonIs({accepts: null});
+    (await client.getOk('/accepts', {headers: {Accept: 'application/json, text/html;Q=1.5'}, json: []}))
+      .statusIs(200).jsonIs({accepts: null});
   });
 
   await t.test('Reverse proxy (X-Forwarded-For)', async t => {
