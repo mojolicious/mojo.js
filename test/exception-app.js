@@ -238,6 +238,14 @@ t.test('Exception app', async t => {
       });
     });
 
+    app.websocket('/ws/exception/event').to(ctx => {
+      ctx.on('connection', ws => {
+        ws.on('message', message => {
+          throw new Error('WebSocket event test exception');
+        });
+      });
+    });
+
     const client = await app.newTestClient({tap: t});
 
     await t.test('WebSocket exception (during handshake and sync)', async t => {
@@ -298,7 +306,7 @@ t.test('Exception app', async t => {
 
     await t.test('WebSocket exception (iterator)', async t => {
       const dir = await File.tempDir();
-      const file = dir.child('websocket3.log');
+      const file = dir.child('websocket3a.log');
       app.log.destination = file.createWriteStream();
 
       const ws = await client.websocket('/ws/exception/iterator');
@@ -307,6 +315,19 @@ t.test('Exception app', async t => {
 
       t.equal(code, 1011);
       t.match(await file.readFile(), /Error: WebSocket iterator test exception/);
+    });
+
+    await t.test('WebSocket exception (events)', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('websocket3b.log');
+      app.log.destination = file.createWriteStream();
+
+      const ws = await client.websocket('/ws/exception/event');
+      await ws.send('test');
+      const code = await new Promise(resolve => ws.on('close', resolve));
+
+      t.equal(code, 1011);
+      t.match(await file.readFile(), /Error: WebSocket event test exception/);
     });
 
     await client.stop();
