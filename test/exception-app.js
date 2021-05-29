@@ -205,4 +205,72 @@ t.test('Exception app', async t => {
 
     await client.stop();
   });
+
+  t.test('WebSocket', async t => {
+    const app = mojo();
+
+    app.websocket('/ws/exception/before').to(ctx => {
+      throw new Error('WebSocket test exception before');
+    });
+
+    app.websocket('/ws/exception/after').to(ctx => {
+      ctx.plain(async ws => {
+        throw new Error('WebSocket test exception after');
+      });
+    });
+
+    app.websocket('/ws/exception/iterator').to(ctx => {
+      ctx.plain(async ws => {
+        // eslint-disable-next-line no-unreachable-loop, no-unused-vars
+        for await (const message of ws) {
+          throw new Error('WebSocket iterator test exception');
+        }
+      });
+    });
+
+    const client = await app.newTestClient({tap: t});
+
+    await t.test('WebSocket exception (during handshake)', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('websocket.log');
+      app.log.destination = file.createWriteStream();
+
+      let result;
+      try {
+        await client.websocket('/ws/exception/before');
+      } catch (error) {
+        result = error;
+      }
+
+      t.match(result, {code: 'ECONNRESET'});
+      t.match(await file.readFile(), /Error: WebSocket test exception before/);
+    });
+
+    await t.test('WebSocket exception (after handshake)', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('websocket2.log');
+      app.log.destination = file.createWriteStream();
+
+      const ws = await client.websocket('/ws/exception/after');
+      const code = await new Promise(resolve => ws.on('close', resolve));
+
+      t.equal(code, 1011);
+      t.match(await file.readFile(), /Error: WebSocket test exception after/);
+    });
+
+    await t.test('WebSocket exception (iterator)', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('websocket3.log');
+      app.log.destination = file.createWriteStream();
+
+      const ws = await client.websocket('/ws/exception/iterator');
+      await ws.send('test');
+      const code = await new Promise(resolve => ws.on('close', resolve));
+
+      t.equal(code, 1011);
+      t.match(await file.readFile(), /Error: WebSocket iterator test exception/);
+    });
+
+    await client.stop();
+  });
 });
