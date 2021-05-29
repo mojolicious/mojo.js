@@ -246,6 +246,31 @@ t.test('Exception app', async t => {
       });
     });
 
+    app.websocket('/ws/exception/ping').to(ctx => {
+      ctx.on('connection', ws => {
+        ws.on('ping', message => {
+          throw new Error('WebSocket ping test exception');
+        });
+      });
+    });
+
+    app.websocket('/ws/exception/pong').to(ctx => {
+      ctx.on('connection', ws => {
+        ws.on('pong', message => {
+          throw new Error('WebSocket pong test exception');
+        });
+        ws.ping('test');
+      });
+    });
+
+    app.websocket('/ws/exception/close').to(ctx => {
+      ctx.on('connection', ws => {
+        ws.on('close', message => {
+          throw new Error('WebSocket close test exception');
+        });
+      });
+    });
+
     const client = await app.newTestClient({tap: t});
 
     await t.test('WebSocket exception (during handshake and sync)', async t => {
@@ -328,6 +353,44 @@ t.test('Exception app', async t => {
 
       t.equal(code, 1011);
       t.match(await file.readFile(), /Error: WebSocket event test exception/);
+    });
+
+    await t.test('WebSocket exception (ping)', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('websocket3c.log');
+      app.log.destination = file.createWriteStream();
+
+      const ws = await client.websocket('/ws/exception/ping');
+      await ws.ping('test');
+      const code = await new Promise(resolve => ws.on('close', resolve));
+
+      t.equal(code, 1011);
+      t.match(await file.readFile(), /Error: WebSocket ping test exception/);
+    });
+
+    await t.test('WebSocket exception (pong)', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('websocket3d.log');
+      app.log.destination = file.createWriteStream();
+
+      const ws = await client.websocket('/ws/exception/pong');
+      const code = await new Promise(resolve => ws.on('close', resolve));
+
+      t.equal(code, 1011);
+      t.match(await file.readFile(), /Error: WebSocket pong test exception/);
+    });
+
+    await t.test('WebSocket exception (close)', async t => {
+      const dir = await File.tempDir();
+      const file = dir.child('websocket3e.log');
+      app.log.destination = file.createWriteStream();
+
+      const ws = await client.websocket('/ws/exception/close');
+      ws.close(1000);
+      const code = await new Promise(resolve => ws.on('close', resolve));
+
+      t.equal(code, 1000);
+      t.match(await file.readFile(), /Error: WebSocket close test exception/);
     });
 
     await client.stop();
