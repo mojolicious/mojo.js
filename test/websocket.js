@@ -4,6 +4,8 @@ import t from 'tap';
 t.test('WebSocket', async t => {
   const app = mojo();
 
+  app.config.ping = null;
+
   app.get('/').to(ctx => ctx.render({text: 'Hello Mojo!'}));
 
   app.websocket('/ws').to(ctx => {
@@ -31,9 +33,9 @@ t.test('WebSocket', async t => {
   });
 
   app.websocket('/ping').to(ctx => {
-    ctx.on('connection', ws => {
-      ws.on('ping', async data => {
-        await ws.pong(data);
+    ctx.plain(ws => {
+      ws.on('ping', data => {
+        ctx.config.ping = data.toString();
       });
     });
   });
@@ -93,6 +95,7 @@ t.test('WebSocket', async t => {
   });
 
   await t.test('Ping/Pong', async t => {
+    t.same(app.config.ping, null);
     const ws = await client.websocket('/ping');
     await ws.ping(Buffer.from('Hello Mojo!'));
     const data = await new Promise(resolve => {
@@ -102,6 +105,7 @@ t.test('WebSocket', async t => {
       });
     });
     t.equal(data.toString(), 'Hello Mojo!');
+    t.same(app.config.ping, 'Hello Mojo!');
   });
 
   await client.stop();
