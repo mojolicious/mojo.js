@@ -211,7 +211,7 @@ integrated, and will work just as well.
 
 ## HTTP
 
-The `req` and `res` properties of the context object give you full access to all HTTP features and information.
+The `ctx.req` and `ctx.res` properties of the context object give you full access to all HTTP features and information.
 
 ```js
 import mojo from '@mojojs/mojo';
@@ -295,16 +295,18 @@ And of course they can be customised as well.
 
 ## Route Names
 
-All routes can have a name associated with them, this allows backreferencing with methods like `urlFor`. Nameless routes
-get an automatically generated name assigned, based on the route pattern.
+All routes can have a name associated with them, this allows backreferencing with methods like `ctx.urlFor()`. Nameless
+routes get an automatically generated name assigned, based on the route pattern.
 
 ```js
 import mojo from '@mojojs/mojo';
 
 const app = mojo();
 
+// Render an inline view with links to named routes
 app.get('/').to(ctx => ctx.render({inline: inlineTemplate})).name('one');
 
+// Render plain text
 app.get('/another/page').to(ctx => ctx.render({text: 'Page two'})).name('two');
 
 app.start();
@@ -314,3 +316,67 @@ const inlineTemplate = `
 <a href="<%= ctx.urlFor('two') %>">Two</a>
 `;
 ```
+
+## Layouts
+
+Layouts are special views that wrap around the result of another view, which is made available as `view.content` in the
+layout. Here we use the inline variant again for out single file app, but layouts are usually kept as separate files in
+a `views/layouts` directory.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+app.get('/', ctx => ctx.render({inline: indexTemplate, inlineLayout: defaultLayout}, {title: 'Hello'}));
+
+app.start();
+
+const indexTemplate = `
+Hello World!
+`;
+
+const defaultLayout = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+  </head>
+  <body><%- view.content %></body>
+</html>
+`;
+```
+
+The rendering guide will cover this in much more detail.
+
+## Helpers
+
+Helpers are little functions you can create with `app.addHelper()` and reuse throughout your whole application via the
+context (`ctx`), from actions to views.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+app.addHelper('whois', ctx => {
+  const agent = ctx.req.get('User-Agent') ?? 'Anonymous';
+  const ip = ctx.req.remoteAddress;
+  return `${agent} (${ip})`;
+});
+
+app.get('/secret', async ctx => {
+  const user = ctx.whois();
+  ctx.log.debug(`Request from ${user}`);
+  await ctx.render({inline: indexTemplate});
+});
+
+app.start();
+
+const indexTemplate = `
+We know who you are <%= ctx.whois() %>
+`;
+```
+
+While helpers themselves can be redefined to change the behaviour of your application, they cannot overload properties
+inherited from the prototype chain of the context object. So core mojo.js functionality is protected.
