@@ -88,3 +88,7 @@ level of quality you would expect from [Mojolicious](https://mojolicious.org) it
 ## Install
 
     $ npm install @mojojs/mojo
+
+## Want to know more?
+
+Take a look at our [documentation](https://github.com/mojolicious/mojo.js/tree/main/docs)!
