@@ -24,6 +24,11 @@
   },
   "main": "./lib/mojo.js",
   "type": "module",
+  "files": [
+    "bin/",
+    "lib/",
+    "vendor/"
+  ],
   "bin": {
     "mojo": "./bin/mojo.js"
   },
