@@ -160,6 +160,7 @@
                 <%= keyValue('Method', ctx.req.method) %>
                 <%= keyValue('Path', ctx.req.path) %>
                 <%= keyValue('Base URL', ctx.req.baseURL) %>
+                <%= keyValue('Parameters', ctx.inspect((await ctx.params()).toObject())) %>
                 <%= keyValue('Stash', ctx.inspect(ctx.stash) ) %>
                 <% const rawHeaders = ctx.req.raw.rawHeaders %>
                 <% for (let i = 0; i < rawHeaders.length; i += 2) { %>
