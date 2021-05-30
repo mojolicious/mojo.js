@@ -262,3 +262,33 @@ You can test all these examples right from the command line with the `get` comma
 ```
 $ node myapp.js get -X PUT -b '{"hello":"mojo"}' /add/quote
 ```
+
+## Built-in Exception and Not Found Pages
+
+During development you will encounter these pages whenever you make a mistake, they are gorgeous and contain a lot of
+valuable information that will aid you in debugging your application.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// Not found (404)
+app.get('/missing', async ctx => ctx.notFound());
+
+// Exception (500)
+app.get('/dies', async ctx => {
+  throw new Error('Intentional error');
+});
+
+app.start();
+```
+
+![Exception](exception_development.png)
+
+Don't worry about revealing too much information on these pages, they are only available during development, and
+will be replaced automatically with pages that don't reveal any sensitive information in a production environment.
+
+![Exception](exception_production.png)
+
+And of course they can be customised as well.
