@@ -123,10 +123,10 @@
                       <pre><%= route.methods.join(', ').toUpperCase() || '*' %></pre>
                     </td>
                     <td class="mojo-value">
-                      <% if (route.customName === undefined) { %>
-                        <span class="badge badge-success"><%= route.customName %></span>
-                      <% } else if (route.defaultName) { %>
-                        <span class="badge badge-secondary"><%= route.defaultName %></span>
+                      <% if (route.customName !== undefined) { %>
+                        <span class="badge bg-success"><%= route.customName %></span>
+                      <% } else if (route.defaultName !== undefined) { %>
+                        <span class="badge bg-secondary"><%= route.defaultName %></span>
                       <% } %>
                     </td>
                   </tr>
