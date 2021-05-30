@@ -195,8 +195,8 @@ t.test('App', async t => {
     }
   });
 
-  // GET /remote_address
-  app.get('/remote_address', ctx => ctx.render({text: `Address: ${ctx.req.remoteAddress}`}));
+  // GET /ip
+  app.get('/ip', ctx => ctx.render({text: `Address: ${ctx.req.ip}`}));
 
   // GET /protocol
   app.get('/protocol', ctx => ctx.render({text: `Protocol: ${ctx.req.protocol}`}));
@@ -477,17 +477,17 @@ t.test('App', async t => {
   });
 
   await t.test('Reverse proxy (X-Forwarded-For)', async t => {
-    (await client.getOk('/remote_address')).statusIs(200).bodyUnlike(/104\.24\.31\.8/);
-    (await client.getOk('/remote_address', {headers: {'X-Forwarded-For': '104.24.31.8'}})).statusIs(200)
+    (await client.getOk('/ip')).statusIs(200).bodyUnlike(/104\.24\.31\.8/);
+    (await client.getOk('/ip', {headers: {'X-Forwarded-For': '104.24.31.8'}})).statusIs(200)
       .bodyUnlike(/104\.24\.31\.8/);
 
     client.server.reverseProxy = true;
-    (await client.getOk('/remote_address')).statusIs(200).bodyUnlike(/104\.24\.31\.8/);
-    (await client.getOk('/remote_address', {headers: {'X-Forwarded-For': '104.24.31.8'}})).statusIs(200)
+    (await client.getOk('/ip')).statusIs(200).bodyUnlike(/104\.24\.31\.8/);
+    (await client.getOk('/ip', {headers: {'X-Forwarded-For': '104.24.31.8'}})).statusIs(200)
       .bodyIs('Address: 104.24.31.8');
-    (await client.getOk('/remote_address', {headers: {'X-Forwarded-For': '192.0.2.2, 192.0.2.1'}})).statusIs(200)
+    (await client.getOk('/ip', {headers: {'X-Forwarded-For': '192.0.2.2, 192.0.2.1'}})).statusIs(200)
       .bodyIs('Address: 192.0.2.1');
-    (await client.getOk('/remote_address', {headers: {'X-Forwarded-For': '192.0.2.2,192.0.2.1'}})).statusIs(200)
+    (await client.getOk('/ip', {headers: {'X-Forwarded-For': '192.0.2.2,192.0.2.1'}})).statusIs(200)
       .bodyIs('Address: 192.0.2.1');
     client.server.reverseProxy = false;
   });

@@ -114,8 +114,8 @@ const method = ctx.req.method;
 // url: a `URL` object with full request URL (protocol might be from the X-Forwarded-Proto header)
 const url = ctx.req.url;
 
-// remoteAddress: the client address (may be from the X-Forwarded-For header)
-const address = ctx.req.remoteAddress;
+// ip: the client IP address (may be from the X-Forwarded-For header)
+const address = ctx.req.ip;
 
 // userinfo: Basic authentication data
 const userinfo = ctx.req.userinfo;
