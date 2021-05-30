@@ -292,3 +292,25 @@ will be replaced automatically with pages that don't reveal any sensitive inform
 ![Exception](exception_production.png)
 
 And of course they can be customised as well.
+
+## Route Names
+
+All routes can have a name associated with them, this allows backreferencing with methods like `urlFor`. Nameless routes
+get an automatically generated name assigned, based on the route pattern.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+app.get('/').to(ctx => ctx.render({inline: inlineTemplate})).name('one');
+
+app.get('/another/page').to(ctx => ctx.render({text: 'Page two'})).name('two');
+
+app.start();
+
+const inlineTemplate = `
+<a href="<%= ctx.urlFor('one') %>">One</a>
+<a href="<%= ctx.urlFor('two') %>">Two</a>
+`;
+```
