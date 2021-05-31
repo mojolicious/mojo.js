@@ -4,6 +4,8 @@ import t from 'tap';
 t.test('Full app', async t => {
   const client = await app.newTestClient({tap: t});
 
+  t.equal(app.log.level, 'debug');
+
   await t.test('Hello World', async t => {
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
   });

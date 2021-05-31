@@ -6,7 +6,7 @@ import Server from '../lib/server.js';
 import t from 'tap';
 
 t.test('Client', async t => {
-  const app = mojo();
+  const app = mojo({developmentLogLevel: 'debug'});
 
   app.get('/hello', ctx => ctx.render({text: 'Hello World!'}));
 

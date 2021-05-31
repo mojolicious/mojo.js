@@ -5,7 +5,9 @@ import * as util from '../lib/util.js';
 t.test('Hook app', async t => {
   const app = mojo();
 
+  t.equal(app.log.level, 'trace');
   app.log.level = 'fatal';
+
   app.config.serverHooks = 'works';
 
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));

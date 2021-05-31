@@ -4,6 +4,7 @@ import t from 'tap';
 t.test('Renderer app', async t => {
   const app = mojo();
 
+  t.equal(app.log.level, 'trace');
   app.log.level = 'fatal';
 
   app.renderer.addEngine('custom', (ctx, options) => {

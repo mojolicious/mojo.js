@@ -4,7 +4,7 @@ import Server from '../lib/server.js';
 import t from 'tap';
 
 t.test('HTTPS app', async t => {
-  const app = mojo();
+  const app = mojo({developmentLogLevel: 'debug'});
 
   app.get('/', ctx => ctx.render({text: `HTTPS: ${ctx.req.isSecure}`}));
 

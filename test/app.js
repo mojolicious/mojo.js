@@ -4,6 +4,7 @@ import t from 'tap';
 t.test('App', async t => {
   const app = mojo();
 
+  t.equal(app.log.level, 'trace');
   app.log.level = 'fatal';
 
   app.config.appName = 'Test';

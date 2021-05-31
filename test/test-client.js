@@ -2,7 +2,7 @@ import mojo from '../lib/mojo.js';
 import t from 'tap';
 
 t.test('Test client', async t => {
-  const app = mojo();
+  const app = mojo({developmentLogLevel: 'debug'});
 
   app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 

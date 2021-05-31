@@ -4,7 +4,7 @@ import t from 'tap';
 
 t.test('Exception app', async t => {
   t.test('Development', async t => {
-    const app = mojo();
+    const app = mojo({developmentLogLevel: 'debug'});
 
     app.get('/', ctx => ctx.render({text: 'Hello World!'}));
 
@@ -66,7 +66,7 @@ t.test('Exception app', async t => {
   });
 
   t.test('Development (custom views)', async t => {
-    const app = mojo();
+    const app = mojo({developmentLogLevel: 'debug'});
     app.renderer.viewPaths.push(File.currentFile().sibling('support', 'exception-app', 'views').toString());
 
     app.any('/exception', ctx => {
@@ -111,7 +111,7 @@ t.test('Exception app', async t => {
 
   t.test('Production', async t => {
     process.env.NODE_ENV = 'production';
-    const app = mojo();
+    const app = mojo({developmentLogLevel: 'debug'});
 
     app.get('/', ctx => ctx.render({text: 'Hello World!'}));
 
@@ -168,7 +168,7 @@ t.test('Exception app', async t => {
 
   t.test('Production (custom views)', async t => {
     process.env.NODE_ENV = 'production';
-    const app = mojo();
+    const app = mojo({developmentLogLevel: 'debug'});
     app.renderer.viewPaths.push(File.currentFile().sibling('support', 'exception-app', 'views').toString());
 
     app.any('/exception', ctx => {
@@ -207,7 +207,7 @@ t.test('Exception app', async t => {
   });
 
   t.test('WebSocket', async t => {
-    const app = mojo();
+    const app = mojo({developmentLogLevel: 'debug'});
 
     app.websocket('/ws/exception/before/sync').to(ctx => {
       throw new Error('Sync WebSocket test exception before');

@@ -2,7 +2,7 @@ import mojo from '../lib/mojo.js';
 import t from 'tap';
 
 t.test('Condition app', async t => {
-  const app = mojo();
+  const app = mojo({developmentLogLevel: 'debug'});
 
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
   t.notSame(app.router.cache, null);
