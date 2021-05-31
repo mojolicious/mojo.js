@@ -1,7 +1,9 @@
 import mojo from '../../../lib/mojo.js';
 import Users from './models/users.js';
 
-export const app = mojo({developmentLogLevel: 'debug'});
+export const app = mojo();
+
+if (app.mode === 'development') app.log.level = 'debug';
 
 app.config.name = 'Full';
 

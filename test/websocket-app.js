@@ -2,7 +2,9 @@ import mojo from '../lib/mojo.js';
 import t from 'tap';
 
 t.test('WebSocket app', async t => {
-  const app = mojo({developmentLogLevel: 'debug'});
+  const app = mojo();
+
+  if (app.mode === 'development') app.log.level = 'debug';
 
   app.websocket('/echo').to(ctx => {
     const greeting = ctx.req.get('X-Greeting');
