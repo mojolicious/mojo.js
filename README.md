@@ -6,9 +6,9 @@
 
 [![](https://github.com/mojolicious/mojo.js/workflows/test/badge.svg)](https://github.com/mojolicious/mojo.js/actions)
 
-[Mojolicious](https://mojolicious.org) for Node.js. This project is still **experimental** and not quite ready for
-production use yet (but soon!). If you want to stay up to date on the latest developments join us on
-[IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
+[Mojolicious](https://mojolicious.org) for [Node.js](https://nodejs.org/). This project is still **experimental** and
+not quite ready for production use yet (but soon!). If you want to stay up to date on the latest developments join us
+on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
 
 ## Features
 
@@ -23,6 +23,14 @@ production use yet (but soon!). If you want to stay up to date on the latest dev
   * Designed for modern JavaScript with `async`/`await`.
   * Actively maintained by a team with more than 20 years of experience developing mainstream web frameworks such as
     [Mojolicious](https://mojolicious.org) and [Catalyst](http://www.catalystframework.org).
+
+## Installation
+
+All you need is a recent Node.js release.
+
+```
+$ npm install -g @mojojs/mojo
+```
 
 ## Getting Started
 
