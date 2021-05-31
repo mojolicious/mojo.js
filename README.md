@@ -6,32 +6,56 @@
 
 [![](https://github.com/mojolicious/mojo.js/workflows/test/badge.svg)](https://github.com/mojolicious/mojo.js/actions)
 
-[Mojolicious](https://mojolicious.org) for Node.js. This project is still **under heavy development** and not ready
-for production use yet. If you want to help out, you're welcome to join us on [IRC](https://web.libera.chat/#mojo.js)
-(`#mojo.js` on Libera.Chat).
+[Mojolicious](https://mojolicious.org) for Node.js. This project is still **experimental** and not quite ready for
+production use yet (but soon!). If you want to stay up to date on the latest developments join us on
+[IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
+
+## Features
+
+  * An amazing **real-time web framework**, allowing you to easily grow single file prototypes into well-structured MVC
+    web applications.
+    * Everything you need to build cloud-native web applications for state of the art container environments.
+    * Powerful out of the box with RESTful routes, WebSockets, HTTP/HTTPS client, plugins, commands, templates, content
+      negotiation, cookies, session management, multipart forms, form and JSON validation, testing framework, HTML/XML
+      parser, static file server, first class Unicode support and much more for you to discover.
+    * Model layer agnostic, just use your favorite database.
+  * Batteries included, yet faster than Express and Koa.
+  * Designed for modern JavaScript with `async`/`await`.
+  * Actively maintained by a team with more than 20 years of experience developing mainstream web frameworks such as
+    [Mojolicious](https://mojolicious.org) and [Catalyst](http://www.catalystframework.org).
+
+## Getting Started
+
+  These four lines are a whole web application.
 
 ```js
 import mojo from '@mojojs/mojo';
 
 const app = mojo();
 
-app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
+app.get('/', ctx => ctx.render({text: 'I ♥ Mojo!'}));
 
 app.start();
 ```
 
-Use the command system to start your web server.
+  Use the built-in command system to start your web server.
 
 ```
-$ node index.js server --help
-...
-
-$ node index.js server
+$ node index.mjs server
 [77264] Web application available at http://127.0.0.1:3000/
 ```
 
-Batteries included. This real-time web framework will not only provide a very high level of performance, it will also
-include everything you need to build sophisticated web services.
+  Test it with any HTTP client you prefer.
+
+```
+$ curl http://127.0.0.1:3000/
+I ♥ Mojo!
+```
+
+## Duct tape for the HTML5 web
+
+  Use all the latest Node.js and HTML features in convenient single file prototypes like this one, and grow them easily
+  into well-structured **Model-View-Controller** web applications.
 
 ```js
 import mojo from '@mojojs/mojo';
@@ -63,31 +87,6 @@ const inlineTemplate = `
 </script>
 `;
 ```
-
-But the examples above are just simplified single file apps. We use those for prototyping and to shorten examples in
-documentation. Real applications use a proper MVC architecture with a clean directory structure.
-
-```
-|-- controllers
-|   |-- bar.js
-|   `-- foo.js
-|-- models
-|   `-- users.js
-|-- public
-|   `-- test.txt
-|-- views
-|   |-- foo
-|   |   `-- bar.html.ejs
-|   `-- foo.html.ejs
-`-- index.js
-```
-
-More documentation will follow very soon, as the project moves closer to the 1.0 release. We are aiming for the same
-level of quality you would expect from [Mojolicious](https://mojolicious.org) itself.
-
-## Install
-
-    $ npm install @mojojs/mojo
 
 ## Want to know more?
 
