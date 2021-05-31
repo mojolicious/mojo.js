@@ -63,7 +63,8 @@ I ♥ Mojo!
 ## Duct tape for the HTML5 web
 
   Use all the latest Node.js and HTML features in convenient single file prototypes like this one, and grow them easily
-  into well-structured **Model-View-Controller** web applications.
+  into well-structured **Model-View-Controller** web applications. Pair mojo.js with frontend frameworks like
+  [React](https://reactjs.org) and [Vue](https://vuejs.org) for a great development experience.
 
 ```js
 import mojo from '@mojojs/mojo';
