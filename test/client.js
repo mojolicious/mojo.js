@@ -52,9 +52,9 @@ t.test('Client', async t => {
     return ctx.render({text: `basic: ${auth}, body: ${body}`});
   });
 
-  app.post('/redirect/:code', ctx => {
+  app.post('/redirect/:code', async ctx => {
     const location = ctx.req.query.get('location');
-    ctx.res.status(ctx.stash.code).set('Location', location).send();
+    await ctx.res.status(ctx.stash.code).set('Location', location).send();
   });
 
   app.get('/redirect/again', ctx => ctx.redirectTo('hello'));

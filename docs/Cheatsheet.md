@@ -53,7 +53,7 @@ The main object representing an HTTP request or WebSocket handshake, usually cal
 const url = ctx.req.url;
 
 // res: the response object
-ctx.res.status(200).type('text/html').send('Hello World!');
+await ctx.res.status(200).type('text/html').send('Hello World!');
 
 // params: all form parameters combined
 const params = await ctx.params();
@@ -68,9 +68,10 @@ const url = ctx.urlForFile('foo/app.css');
 // log: log messages with request id as context
 ctx.log.debug('Shut up and take my money!');
 
-// session: signed cookie based session
-ctx.session.user = 'kraih';
-const user = ctx.session.user;
+// session: encrypted cookie based session
+const session = await ctx.session();
+session.user = 'kraih';
+const user = session.user;
 
 // config: access application config
 const foo = ctx.config.foo;
@@ -189,13 +190,13 @@ The `ctx.res.send()` method is used to actually send the response.
 
 ```js
 // Send response with `stream.Readable` object as body
-ctx.res.status(200).send(stream);
+await ctx.res.status(200).send(stream);
 
 // Send response with a string as body
-ctx.res.status(200).type('text/plain').length(12).send('Hello World!');
+await ctx.res.status(200).type('text/plain').length(12).send('Hello World!');
 
 // Send response without a body
-ctx.res.status(204).send();
+await ctx.res.status(204).send();
 ```
 
 The `ctx.res.raw` property contains an

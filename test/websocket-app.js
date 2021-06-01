@@ -56,14 +56,16 @@ t.test('WebSocket app', async t => {
     ctx.log.trace('Rejecting WebSocket');
   });
 
-  app.post('/login', ctx => {
-    ctx.session.user = 'kraih';
-    ctx.render({text: `Welcome ${ctx.session.user}`});
+  app.post('/login', async ctx => {
+    const session = await ctx.session();
+    session.user = 'kraih';
+    ctx.render({text: `Welcome ${session.user}`});
   });
 
-  app.websocket('/restricted').to(ctx => {
+  app.websocket('/restricted').to(async ctx => {
+    const session = await ctx.session();
     ctx.on('connection', ws => {
-      ws.send(`Welcome back ${ctx.session.user}`);
+      ws.send(`Welcome back ${session.user}`);
       ws.close();
     });
   });

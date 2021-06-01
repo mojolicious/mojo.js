@@ -73,29 +73,33 @@ t.test('App', async t => {
   });
 
   // GET /session/login/*
-  app.get('/session/login/:name', ctx => {
-    ctx.session.user = ctx.stash.name;
+  app.get('/session/login/:name', async ctx => {
+    const session = await ctx.session();
+    session.user = ctx.stash.name;
     return ctx.render({text: `Login: ${ctx.stash.name}`});
   });
 
   // GET /session/members
-  app.get('/session/members', ctx => {
-    const user = ctx.session.user ?? 'not logged in';
+  app.get('/session/members', async ctx => {
+    const session = await ctx.session();
+    const user = session.user ?? 'not logged in';
     const extra = ctx.req.getCookie('mojo-extra') ?? 'no extra cookie';
     ctx.res.setCookie('mojo-extra', 'with extra cookie');
     return ctx.render({text: `Member: ${user}, ${extra}`});
   });
 
   // GET /session/update/*
-  app.get('/session/update/:name', ctx => {
-    ctx.session.user = ctx.stash.name;
-    return ctx.render({text: `Update: ${ctx.session.user}`});
+  app.get('/session/update/:name', async ctx => {
+    const session = await ctx.session();
+    session.user = ctx.stash.name;
+    return ctx.render({text: `Update: ${session.user}`});
   });
 
   // GET /session/logout
-  app.get('/session/logout', ctx => {
-    ctx.session.expires = 1;
-    return ctx.render({text: `Logout: ${ctx.session.user}`});
+  app.get('/session/logout', async ctx => {
+    const session = await ctx.session();
+    session.expires = 1;
+    return ctx.render({text: `Logout: ${session.user}`});
   });
 
   // GET /client
@@ -402,6 +406,22 @@ t.test('App', async t => {
     (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: kraih, with extra cookie');
     (await client.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
     (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in, with extra cookie');
+  });
+
+  await t.test('Session (bad cookies)', async t => {
+    const cookieJar = client.cookieJar;
+    client.cookieJar = null;
+
+    (await client.getOk('/session/members', {headers: {Cookie: 'mojo=invalid'}})).statusIs(200)
+      .bodyIs('Member: not logged in, no extra cookie');
+    (await client.getOk('/session/members', {headers: {Cookie: '--'}})).statusIs(200)
+      .bodyIs('Member: not logged in, no extra cookie');
+    (await client.getOk('/session/members', {headers: {Cookie: 'mojo=very--bar'}})).statusIs(200)
+      .bodyIs('Member: not logged in, no extra cookie');
+    (await client.getOk('/session/members', {headers: {Cookie: ''}})).statusIs(200)
+      .bodyIs('Member: not logged in, no extra cookie');
+
+    client.cookieJar = cookieJar;
   });
 
   await t.test('Session (different cookie name)', async t => {
