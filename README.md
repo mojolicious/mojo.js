@@ -18,7 +18,10 @@ on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
     * Powerful out of the box with RESTful routes, WebSockets, HTTP/HTTPS client, plugins, commands, templates, content
       negotiation, cookies, session management, multipart forms, form and JSON validation, testing framework, HTML/XML
       parser, static file server, first class Unicode support and much more for you to discover.
-    * Model layer agnostic, just use your favorite database.
+    * No default Model. Just use your favorite database. We like [PostgreSQL](https://www.postgresql.org) and
+      [Knex.js](http://knexjs.org).
+    * No default frontend framework. Pair it with [React](https://reactjs.org) or [Vue](https://vuejs.org) for a great
+      development experience.
   * Batteries included, yet faster than Express and Koa.
   * Designed for modern JavaScript with `async`/`await`.
   * Actively maintained by a team with more than 20 years of experience developing mainstream web frameworks such as
@@ -63,8 +66,7 @@ I ♥ Mojo!
 ## Duct tape for the HTML5 web
 
   Use all the latest Node.js and HTML features in convenient single file prototypes like this one, and grow them easily
-  into well-structured **Model-View-Controller** web applications. Pair mojo.js with frontend frameworks like
-  [React](https://reactjs.org) and [Vue](https://vuejs.org) for a great development experience.
+  into well-structured **Model-View-Controller** web applications.
 
 ```js
 import mojo from '@mojojs/mojo';
