@@ -82,7 +82,7 @@ const users = ctx.models.users;
 const app = ctx.app;
 ```
 
-The `render` method is the most common way to generate a response.
+The `ctx.render()` method is the most common way to generate a response.
 
 ```js
 // Create a response from a string
@@ -103,7 +103,7 @@ const json = await ctx.renderToString({json: {hello: 'world'}});
 
 ### Request
 
-The `req` property of the [context](#Context) object. All URLs use
+The `ctx.req` property of the [context](#Context) object. All URLs use
 [URL](https://nodejs.org/api/url.html#url_the_whatwg_url_api) objects and form parameters
 [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) objects.
 
@@ -156,8 +156,8 @@ for await (const chunk of ctx.req) {
 const buffer = Buffer.concat(parts);
 ```
 
-The `raw` property contains an [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage)
-object.
+The `ctx.req.raw` property contains an
+[http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) object.
 
 ```js
 // Get HTTP version
@@ -166,7 +166,7 @@ const version = ctx.req.raw.httpVersion;
 
 ### Response
 
-The `res` property of the [context](#Context) object.
+The `ctx.res` property of the [context](#Context) object.
 
 ```js
 // status: set response code
@@ -185,7 +185,7 @@ ctx.res.length(12);
 ctx.res.setCookie('user', 'Bender', {path: '/', httpOnly: true});
 ```
 
-The `send` method is used to actually send the response.
+The `ctx.res.send()` method is used to actually send the response.
 
 ```js
 // Send response with `stream.Readable` object as body
@@ -198,8 +198,8 @@ ctx.res.status(200).type('text/plain').length(12).send('Hello World!');
 ctx.res.status(204).send();
 ```
 
-The `raw` property contains an [http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse)
-object.
+The `ctx.res.raw` property contains an
+[http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) object.
 
 ```js
 // Check if a response has already been sent
