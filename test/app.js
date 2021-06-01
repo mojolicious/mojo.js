@@ -423,23 +423,10 @@ t.test('App', async t => {
     (await client.getOk('/session/members', {headers: {Cookie: ''}})).statusIs(200)
       .bodyIs('Member: not logged in, no extra cookie');
 
-    const signed = mojo.Session.sign(app.secrets[0], 'another--test');
-    t.same(mojo.Session.verify(app.secrets, signed), 'another--test');
-    t.same(mojo.Session.verify(app.secrets, `${signed}fails`), null);
-    (await client.getOk('/session/members', {headers: {Cookie: `mojo=${signed}`}})).statusIs(200)
-      .bodyIs('Member: not logged in, no extra cookie');
-
-    const emptySigned = mojo.Session.sign(app.secrets[0], '--');
-    (await client.getOk('/session/members', {headers: {Cookie: `mojo=${emptySigned}`}})).statusIs(200)
-      .bodyIs('Member: not logged in, no extra cookie');
-
-    const encrypted = await mojo.Session.encrypt(app.secrets[0], 'works');
-    t.same(await mojo.Session.decrypt(app.secrets, encrypted), 'works');
+    const encrypted = await mojo.Session.encrypt(app.secrets[0], '{"user":"test"}');
+    t.same(await mojo.Session.decrypt(app.secrets, encrypted), '{"user":"test"}');
     t.same(await mojo.Session.decrypt(app.secrets, `fails${encrypted}`), null);
-
-    const session = JSON.stringify({user: 'test'});
-    const manual = mojo.Session.sign(app.secrets[0], await mojo.Session.encrypt(app.secrets[0], session));
-    (await client.getOk('/session/members', {headers: {Cookie: `mojo=${manual}`}})).statusIs(200)
+    (await client.getOk('/session/members', {headers: {Cookie: `mojo=${encrypted}`}})).statusIs(200)
       .bodyIs('Member: test, no extra cookie');
 
     client.cookieJar = cookieJar;
