@@ -122,9 +122,9 @@ t.test('Hook app', async t => {
 
   await t.test('Send hooks', async t => {
     (await client.getOk('/send?powered=1')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
-      .headerIs('X-Powered-By', 'mojo.js').bodyIs('{"hello":"world"}');
+      .headerIs('X-Powered-By', 'mojo.js').jsonIs({hello: 'world'});
     (await client.getOk('/send?powered=0')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
-      .headerExistsNot('X-Powered-By').bodyIs('{"hello":"world"}');
+      .headerExistsNot('X-Powered-By').jsonIs({hello: 'world'});
   });
 
   t.same(serverHooks, ['start: works']);
