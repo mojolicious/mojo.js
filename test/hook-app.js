@@ -70,7 +70,7 @@ t.test('Hook app', async t => {
 
     const json = JSON.stringify(body);
     res.type('application/json').length(Buffer.byteLength(json));
-    raw.writeHead(res.code, res.headers);
+    raw.writeHead(res.statusCode, res.headers);
     raw.end(json);
 
     return true;
