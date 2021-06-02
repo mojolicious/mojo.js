@@ -1,4 +1,5 @@
 import mojo from '../lib/mojo.js';
+import Stream from 'stream';
 import t from 'tap';
 import * as util from '../lib/util.js';
 
@@ -11,6 +12,10 @@ t.test('Hook app', async t => {
   app.config.serverHooks = 'works';
 
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
+
+  app.get('/send', async ctx => {
+    await ctx.res.send({hello: 'world'});
+  });
 
   const serverHooks = [];
   app.addHook('start', async app => {
@@ -49,6 +54,25 @@ t.test('Hook app', async t => {
       ws.close();
     });
     await util.sleep(1);
+    return true;
+  });
+
+  app.addHook('send', async ctx => {
+    const params = await ctx.params();
+    if (params.get('powered') === '1') ctx.res.set('X-Powered-By', 'mojo.js');
+  });
+
+  app.addHook('send', async (ctx, body) => {
+    if (typeof body !== 'object' || Buffer.isBuffer(body) || body instanceof Stream) return;
+
+    const res = ctx.res;
+    const raw = res.raw;
+
+    const json = JSON.stringify(body);
+    res.type('application/json').length(Buffer.byteLength(json));
+    raw.writeHead(res.code, res.headers);
+    raw.end(json);
+
     return true;
   });
 
@@ -94,6 +118,13 @@ t.test('Hook app', async t => {
 
   await t.test('Request hook exception', async t => {
     (await client.getOk('/?exception=1')).statusIs(500).headerIs('X-Hook', 'works').bodyLike(/Error: Hook exception/);
+  });
+
+  await t.test('Send hooks', async t => {
+    (await client.getOk('/send?powered=1')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
+      .headerIs('X-Powered-By', 'mojo.js').bodyIs('{"hello":"world"}');
+    (await client.getOk('/send?powered=0')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
+      .headerExistsNot('X-Powered-By').bodyIs('{"hello":"world"}');
   });
 
   t.same(serverHooks, ['start: works']);
