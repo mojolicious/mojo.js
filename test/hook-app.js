@@ -90,6 +90,19 @@ t.test('Hook app', async t => {
     throw new Error('Hook exception');
   });
 
+  app.addHook('static', async ctx => {
+    const params = await ctx.params();
+    if (params.get('cache') === '1') ctx.res.set('Cache-Control', 'public, max-age=604800, immutable');
+  });
+
+  app.addHook('static', async (ctx, file) => {
+    const params = await ctx.params();
+    if (!params.has('hijack')) return;
+
+    ctx.res.send(`Hijacked: ${file.basename()}`);
+    return true;
+  });
+
   t.same(serverHooks, []);
   const client = await app.newTestClient({tap: t});
   t.same(serverHooks, ['start: works']);
@@ -125,6 +138,20 @@ t.test('Hook app', async t => {
       .headerIs('X-Powered-By', 'mojo.js').jsonIs({hello: 'world'});
     (await client.getOk('/send?powered=0')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
       .headerExistsNot('X-Powered-By').jsonIs({hello: 'world'});
+  });
+
+  await t.test('Static hooks', async t => {
+    (await client.getOk('/public/mojo/favicon.ico?cache=1')).statusIs(200).typeIs('image/vnd.microsoft.icon')
+      .headerExists('Content-Length').headerIs('Cache-Control', 'public, max-age=604800, immutable');
+    (await client.getOk('/public/mojo/favicon.ico?cache=0')).statusIs(200).typeIs('image/vnd.microsoft.icon')
+      .headerExists('Content-Length').headerExistsNot('Cache-Control');
+
+    (await client.getOk('/public/mojo/favicon.ico?cache=1&hijack=1')).statusIs(200).headerExists('Content-Length')
+      .headerIs('Cache-Control', 'public, max-age=604800, immutable').bodyIs('Hijacked: favicon.ico');
+
+    (await client.getOk('/public/mojo/favicon.ico?cache=1&hijack=1&powered=1')).statusIs(200)
+      .headerExists('Content-Length').headerIs('Cache-Control', 'public, max-age=604800, immutable')
+      .headerIs('X-Powered-By', 'mojo.js').bodyIs('Hijacked: favicon.ico');
   });
 
   t.same(serverHooks, ['start: works']);
