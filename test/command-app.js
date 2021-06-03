@@ -22,6 +22,13 @@ t.test('Command app', async t => {
     t.match(output3, /eval.*get.*server.*version/s);
   });
 
+  await t.test('Unknown command', async t => {
+    const output = await captureOutput(async () => {
+      await app.cli.start('does-not-exist');
+    });
+    t.match(output, /Unknown command "does-not-exist", maybe you need to install it\?/s);
+  });
+
   await t.test('Custom command', async t => {
     t.equal(await app.cli.start('test', 'works'), 'Test works!');
     t.equal(app.cli.commands.test.description, 'Test description');
@@ -122,7 +129,7 @@ t.test('Command app', async t => {
       await ctx.render({text: 'Stopping server'});
     });
     const output2 = await captureOutput(async () => {
-      await app2.cli.start('server', '-l', 'http://*');
+      await app2.cli.start('server', '-L', 'error', '-l', 'http://*');
     });
     t.match(output2.toString(), /Web application available at http:/);
     const client = new mojo.TestClient({tap: t});
