@@ -1,6 +1,7 @@
 import {app} from './support/command-app/index.js';
 import {captureOutput} from '../lib/util.js';
 import File from '../lib/file.js';
+import mojo from '../lib/mojo.js';
 import t from 'tap';
 
 t.test('Command app', async t => {
@@ -114,6 +115,20 @@ t.test('Command app', async t => {
     t.match(output.toString(), /Usage: APPLICATION server/);
     t.match(app.cli.commands.server.description, /Start application with HTTP server/);
     t.match(app.cli.commands.server.usage, /Usage: APPLICATION server/);
+
+    const app2 = mojo({mode: 'production'});
+    app2.get('/', async ctx => {
+      ctx.res.raw.on('finish', () => ctx.app.server.stop());
+      await ctx.render({text: 'Stopping server'});
+    });
+    const output2 = await captureOutput(async () => {
+      await app2.cli.start('server', '-l', 'http://*');
+    });
+    t.match(output2.toString(), /Web application available at http:/);
+    const client = new mojo.TestClient({tap: t});
+    const match = output2.match(/(http:\/\/.+)$/s);
+    t.notSame(match, null);
+    (await client.getOk(match[1])).statusIs(200).bodyIs('Stopping server');
   });
 
   await t.test('version', async t => {

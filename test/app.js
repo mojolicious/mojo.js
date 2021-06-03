@@ -59,7 +59,10 @@ t.test('App', async t => {
   app.options('/', ctx => ctx.render({text: 'Options'}));
 
   // POST /
-  app.post('/', ctx => ctx.render({text: 'Post'}));
+  app.post('/', async ctx => {
+    await ctx.render({text: 'Post'});
+    await ctx.render({text: 'failed!'});
+  });
 
   // GET /custom/request_id
   const custom = app.under(ctx => (ctx.req.requestId = '123'));
