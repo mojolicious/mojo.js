@@ -1,7 +1,9 @@
 /*
  * Application demonstrating the various HTTP response variants for debugging
  */
-import mojo from '../lib/mojo.js';
+'use strict';
+
+const mojo = require('../lib/mojo');
 
 const app = mojo();
 

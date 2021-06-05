@@ -1,4 +1,6 @@
-import http from 'http';
+'use strict';
+
+const http = require('http');
 
 const server = http.createServer((req, res) => {
   res.writeHead(200, {'Content-Type': 'text/plain', 'Content-Length': 12});

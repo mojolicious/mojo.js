@@ -1,5 +1,7 @@
-import mojo from '../lib/mojo.js';
-import t from 'tap';
+'use strict';
+
+const mojo = require('../lib/mojo');
+const t = require('tap');
 
 t.test('Public API', async t => {
   t.test('mojo', t => {

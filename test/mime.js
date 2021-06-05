@@ -1,5 +1,7 @@
-import Mime from '../lib/mime.js';
-import t from 'tap';
+'use strict';
+
+const Mime = require('../lib/mime');
+const t = require('tap');
 
 t.test('Types', t => {
   const mime = new Mime();

@@ -79,7 +79,7 @@ web application. The whole framework was specifically designed with `async`/`awa
 returns a `Promise`.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -139,7 +139,7 @@ they match the path part of the request URL. The first argument passed to all ac
 containing both the HTTP request and response.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -159,7 +159,7 @@ All `GET` and `POST` parameters sent with the request are accessible via `ctx.pa
 resolves with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) object.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -189,7 +189,7 @@ The `stash` is a plain object and a property of the context object. It is used p
 while views can be inlined for single file apps, they are usually kept as separate files in a `views` directory.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -214,7 +214,7 @@ integrated, and will work just as well.
 The `ctx.req` and `ctx.res` properties of the context object give you full access to all HTTP features and information.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -243,7 +243,7 @@ available.
 Of course there is first class support for JSON as well.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -269,7 +269,7 @@ During development you will encounter these pages whenever you make a mistake, t
 valuable information that will aid you in debugging your application.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -299,7 +299,7 @@ All routes can have a name associated with them, this allows backreferencing wit
 routes get an automatically generated name assigned, based on the route pattern.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -324,7 +324,7 @@ layout. Here we use the inline variant again for out single file app, but layout
 a `views/layouts` directory.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -355,7 +355,7 @@ Helpers are little functions you can create with `app.addHelper()` and reuse thr
 context (`ctx`), from actions to views.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -387,7 +387,7 @@ Plugins are application extensions that help with code sharing and organization.
 as part of your application. You can register plugins with `app.plugin()`.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo({config: {foo = 'default value'}});
 
@@ -412,7 +412,7 @@ Route placeholders allow capturing parts of a request path until a `/` or `.` se
 expression `([^/.]+)`. Results are accessible via `ctx.stash`.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 

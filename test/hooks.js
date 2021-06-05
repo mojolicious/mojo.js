@@ -1,6 +1,8 @@
-import Hooks from '../lib/hooks.js';
-import t from 'tap';
-import * as util from '../lib/util.js';
+'use strict';
+
+const Hooks = require('../lib/hooks');
+const t = require('tap');
+const util = require('../lib/util');
 
 t.test('Hooks', async t => {
   await t.test('Simple hook chain', async t => {

@@ -1,4 +1,6 @@
-export class Controller {
+'use strict';
+
+class Controller {
   hello (ctx) {
     return ctx.render({text: ctx.stash.msg});
   }
@@ -8,3 +10,5 @@ export class Controller {
     return ctx.render({json: data});
   }
 }
+
+module.exports = Controller;

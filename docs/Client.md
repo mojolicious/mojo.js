@@ -5,7 +5,7 @@ The [mojo.js](https://mojojs.org) toolkit contains a full featured HTTP and WebS
 purpose is integration testing of web applications, it can also be used for many other things.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const client = new mojo.Client();
 const res = await client.get('https://mojolicious.org');
@@ -233,8 +233,8 @@ const client = mojo.TestClient({baseURL: 'https://mojolicious.org'});
 with the `tap` option.
 
 ```js
-import mojo from '@mojojs/mojo';
-import t from 'tap';
+const mojo = require('@mojojs/mojo');
+const t = require('tap');
 
 t.test('Mojolicious', async t => {
   const client = new mojo.TestClient({baseURL: 'https://mojolicious.org', tap: t});
@@ -249,8 +249,8 @@ And to test mojo.js web applications there is no need to mock anything. The test
 manage a web server listening to a random port for you.
 
 ```js
-import {app} from '../index.js';
-import t from 'tap';
+const app = require('../index');
+const t = require('tap');
 
 t.test('Example application', async t => {
   const client = await app.newTestClient({tap: t});

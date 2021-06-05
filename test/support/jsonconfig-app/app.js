@@ -1,7 +1,9 @@
-import jsonConfigPlugin from '../../../lib/plugins/json-config.js';
-import mojo from '../../../lib/mojo.js';
+'use strict';
 
-export const app = mojo();
+const jsonConfigPlugin = require('../../../lib/plugins/json-config');
+const mojo = require('../../../lib/mojo');
+
+const app = module.exports = mojo();
 
 app.log.level = 'debug';
 app.config = {drink: 'Martini'};

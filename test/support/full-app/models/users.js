@@ -1,4 +1,6 @@
-export default class Users {
+'use strict';
+
+class Users {
   constructor () {
     this._data = {sri: 'admin'};
   }
@@ -7,3 +9,5 @@ export default class Users {
     return this._data[name];
   }
 }
+
+module.exports = Users;

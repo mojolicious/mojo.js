@@ -1,8 +1,10 @@
-import {app} from './support/jsonconfig-app/app.js';
-import File from '../lib/file.js';
-import jsonConfigPlugin from '../lib/plugins/json-config.js';
-import mojo from '../lib/mojo.js';
-import t from 'tap';
+'use strict';
+
+const app = require('./support/jsonconfig-app/app');
+const File = require('../lib/file');
+const jsonConfigPlugin = require('../lib/plugins/json-config');
+const mojo = require('../lib/mojo');
+const t = require('tap');
 
 t.test('JSONConfig app', async t => {
   const client = await app.newTestClient({tap: t});

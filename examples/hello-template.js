@@ -1,7 +1,9 @@
 /*
  * Minimal "Hello World" application with template for profiling
  */
-import mojo from '../lib/mojo.js';
+'use strict';
+
+const mojo = require('../lib/mojo');
 
 const app = mojo();
 

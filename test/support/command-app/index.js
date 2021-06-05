@@ -1,6 +1,8 @@
-import mojo from '../../../lib/mojo.js';
+'use strict';
 
-export const app = mojo();
+const mojo = require('../../../lib/mojo');
+
+const app = module.exports = mojo();
 
 if (app.mode === 'development') app.log.level = 'debug';
 

@@ -1,4 +1,6 @@
-export default class FooController {
+'use strict';
+
+class FooController {
   anotherView (ctx) {
     const role = ctx.models.users.getRole('sri');
     return ctx.render({view: 'foo'}, {role});
@@ -20,3 +22,5 @@ export default class FooController {
     return ctx.render();
   }
 }
+
+module.exports = FooController;

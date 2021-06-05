@@ -1,6 +1,8 @@
-import File from '../lib/file.js';
-import mojo from '../lib/mojo.js';
-import t from 'tap';
+'use strict';
+
+const File = require('../lib/file');
+const mojo = require('../lib/mojo');
+const t = require('tap');
 
 t.test('Exception app', async t => {
   t.test('Development', async t => {

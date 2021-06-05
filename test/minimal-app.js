@@ -1,5 +1,7 @@
-import {app} from './support/minimal-app/myapp.js';
-import t from 'tap';
+'use strict';
+
+const app = require('./support/minimal-app/myapp');
+const t = require('tap');
 
 t.test('Minimal app', async t => {
   const client = await app.newTestClient({tap: t});

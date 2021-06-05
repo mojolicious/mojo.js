@@ -23,7 +23,7 @@ on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
     * No default frontend framework. Pair it with [React](https://reactjs.org) or [Vue](https://vuejs.org) for a great
       development experience.
   * Batteries included, yet faster than Express and Koa.
-  * Designed for modern JavaScript with `async`/`await`, classes and ES modules.
+  * Designed for modern JavaScript with `async`/`await`.
   * Actively maintained by a team with more than 20 years of experience developing mainstream web frameworks such as
     [Mojolicious](https://mojolicious.org) and [Catalyst](http://www.catalystframework.org).
 
@@ -40,7 +40,7 @@ $ npm install -g @mojojs/mojo
   These four lines are a whole web application.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 
@@ -69,7 +69,7 @@ I ♥ Mojo!
   into well-structured **Model-View-Controller** web applications.
 
 ```js
-import mojo from '@mojojs/mojo';
+const mojo = require('@mojojs/mojo');
 
 const app = mojo();
 

@@ -1,6 +1,8 @@
-import mojo from '../../lib/mojo.js';
+'use strict';
 
-const app = mojo();
+const mojo = require('../../lib/mojo');
+
+const app = mojo({mode: 'production'});
 
 app.websocket('/ws').to(ctx => {
   ctx.on('connection', ws => {
@@ -10,13 +12,15 @@ app.websocket('/ws').to(ctx => {
   });
 });
 
-const client = await app.newMockClient();
+(async () => {
+  const client = await app.newMockClient();
 
-const ws = await client.websocket('/ws');
-let i = 0;
-ws.on('message', message => {
-  i++ > 100000 ? ws.close() : ws.send(message);
-});
-ws.send('Hello Mojo!');
+  const ws = await client.websocket('/ws');
+  let i = 0;
+  ws.on('message', message => {
+    i++ > 100000 ? ws.close() : ws.send(message);
+  });
+  ws.send('Hello Mojo!');
 
-await client.stop();
+  await client.stop();
+})();

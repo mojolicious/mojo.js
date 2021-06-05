@@ -1,7 +1,9 @@
-import mojo from '../../../lib/mojo.js';
-import Users from './models/users.js';
+'use strict';
 
-export const app = mojo();
+const mojo = require('../../../lib/mojo');
+const Users = require('./models/users');
+
+const app = module.exports = mojo();
 
 if (app.mode === 'development') app.log.level = 'debug';
 
