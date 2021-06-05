@@ -14,7 +14,7 @@ on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
 
   * An amazing **real-time web framework**, allowing you to easily grow single file prototypes into well-structured MVC
     web applications.
-    * Everything you need to build cloud-native web applications for state of the art container environments.
+    * Everything you need to build cloud-native microservices for state of the art container environments.
     * Powerful out of the box with RESTful routes, WebSockets, HTTP/HTTPS client, plugins, commands, templates, content
       negotiation, cookies, session management, multipart forms, form and JSON validation, testing framework, HTML/XML
       parser, static file server, first class Unicode support and much more for you to discover.
