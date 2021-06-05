@@ -16,26 +16,20 @@ t.test('JSONConfig app', async t => {
 
   t.test('Named config file', t => {
     const app = mojo();
+    app.log.level = 'debug';
     app.config = {name: 'overridden', extra: 'option'};
     const file = File.currentFile().dirname().child('support', 'jsonconfig-app', 'custom', 'named.json').toString();
     app.plugin(jsonConfigPlugin, {file});
     t.same(app.config, {name: 'namedConfig', extra: 'option', deep: {option: ['deep']}});
     t.end();
   });
+
   t.test('Named config file with custom mode', t => {
     const app = mojo({mode: 'test'});
     app.config = {name: 'overridden', extra: 'option'};
     const file = File.currentFile().dirname().child('support', 'jsonconfig-app', 'custom', 'named.json').toString();
     app.plugin(jsonConfigPlugin, {file});
     t.same(app.config, {name: 'namedConfig', extra: 'required', deep: {option: ['deep']}});
-    t.end();
-  });
-
-  t.test('Missing config file', t => {
-    const app = mojo();
-    t.throws(() => {
-      app.plugin(jsonConfigPlugin(app, {file: 'missing.json'}));
-    }, {code: 'ENOENT'});
     t.end();
   });
 });

@@ -380,3 +380,28 @@ We know who you are <%= ctx.whois() %>
 
 While helpers themselves can be redefined to change the behaviour of your application, they cannot overload properties
 inherited from the prototype chain of the context object. So core mojo.js functionality is protected.
+
+## Plugins
+
+Plugins are application extensions that help with code sharing and organization. They are distributed as NPM modules or
+as part of your application. You can register plugins with `app.plugin()`.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo({config: {foo = 'default value'}});
+
+app.plugin(mojo.jsonConfigPlugin, {file: '/etc/myapp.conf'});
+
+// Return configured foo value
+app.get('/foo', async ctx => {
+  const foo = ctx.config.foo;
+  await ctx.render({json: {foo}});
+});
+
+app.start();
+```
+
+`mojo.jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config
+file. Plugins can also set up routes, hooks, helpers, template engines and many many other things we will later explore
+in the plugin guide.
