@@ -405,3 +405,33 @@ app.start();
 `mojo.jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config
 file. Plugins can also set up routes, hooks, helpers, template engines and many many other things we will later explore
 in the plugin guide.
+
+## Placeholders
+
+Route placeholders allow capturing parts of a request path until a `/` or `.` separator occurs, similar to the regular
+expression `([^/.]+)`. Results are accessible via `ctx.stash`.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// GET /foo/test
+// GET /foo/test123
+app.get('/foo/:bar', async ctx => {
+  const bar = ctx.stash.bar;
+  await ctx.render({text: `Our :bar placeholder matched ${bar}`});
+});
+
+// GET /testsomething/foo
+// GET /test123something/foo
+app.get('/<:bar>something/foo', async ctx => {
+  const bar = ctx.stash.bar;
+  await ctx.render({text: `Our :bar placeholder matched ${bar}`});
+});
+
+app.start();
+```
+
+To separate them from the surrounding text, you can surround your placeholders with `<` and `>`, which also makes the
+colon prefix optional.
