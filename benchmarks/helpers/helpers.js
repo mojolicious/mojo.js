@@ -1,8 +1,6 @@
 'use strict';
 
-const mojo = require('../../lib/mojo');
-
-const app = mojo();
+const app = require('../../lib/mojo')();
 
 app.addHelper('test', ctx => {
   return ctx;

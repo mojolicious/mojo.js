@@ -1,8 +1,6 @@
 'use strict';
 
-const mojo = require('../../lib/mojo');
-
-const app = mojo({mode: 'production'});
+const app = require('../../lib/mojo')({mode: 'production'});
 
 app.websocket('/ws').to(ctx => {
   ctx.on('connection', ws => {

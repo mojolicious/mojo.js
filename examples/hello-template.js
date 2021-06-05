@@ -3,9 +3,7 @@
  */
 'use strict';
 
-const mojo = require('../lib/mojo');
-
-const app = mojo();
+const app = require('../lib/mojo')();
 
 app.any('/hello', ctx => ctx.render({inline: hello}));
 

@@ -3,9 +3,7 @@
  */
 'use strict';
 
-const mojo = require('../lib/mojo');
-
-const app = mojo();
+const app = require('../lib/mojo')();
 
 app.get('/res1', ctx => {
   return ctx.render({text: 'Hello World!'});
