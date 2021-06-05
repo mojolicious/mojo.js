@@ -403,8 +403,8 @@ app.start();
 ```
 
 `mojo.jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config
-file. Plugins can also set up routes, hooks, helpers, template engines and many many other things we will later explore
-in the plugin guide.
+file (`config.json` in the application directory by default). Plugins can also set up routes, hooks, helpers, template
+engines and many many other things we will later explore in the plugin guide.
 
 ## Placeholders
 
