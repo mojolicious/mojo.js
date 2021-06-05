@@ -79,9 +79,7 @@ web application. The whole framework was specifically designed with `async`/`awa
 returns a `Promise`.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 app.get('/', async ctx => {
   await ctx.render({text: 'Hello World!'});
@@ -139,9 +137,7 @@ they match the path part of the request URL. The first argument passed to all ac
 containing both the HTTP request and response.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 // Route leading to an action that renders some text
 app.get('/foo', async ctx => {
@@ -159,9 +155,7 @@ All `GET` and `POST` parameters sent with the request are accessible via `ctx.pa
 resolves with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) object.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 // GET /foo?user=sri
 app.get('/foo', async ctx => {
@@ -189,9 +183,7 @@ The `stash` is a plain object and a property of the context object. It is used p
 while views can be inlined for single file apps, they are usually kept as separate files in a `views` directory.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 // Route leading to an action that renders a view
 app.get('/foo', async ctx => {
@@ -214,9 +206,7 @@ integrated, and will work just as well.
 The `ctx.req` and `ctx.res` properties of the context object give you full access to all HTTP features and information.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 // Access request information
 app.get('/agent', async ctx => {
@@ -243,9 +233,7 @@ available.
 Of course there is first class support for JSON as well.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 // Modify the received JSON object and return it
 app.put('/add/quote', async ctx => {
@@ -269,9 +257,7 @@ During development you will encounter these pages whenever you make a mistake, t
 valuable information that will aid you in debugging your application.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 // Not found (404)
 app.get('/missing', async ctx => ctx.notFound());
@@ -299,9 +285,7 @@ All routes can have a name associated with them, this allows backreferencing wit
 routes get an automatically generated name assigned, based on the route pattern.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 // Render an inline view with links to named routes
 app.get('/').to(ctx => ctx.render({inline: inlineTemplate})).name('one');
@@ -324,9 +308,7 @@ layout. Here we use the inline variant again for out single file app, but layout
 a `views/layouts` directory.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 app.get('/', ctx => ctx.render({inline: indexTemplate, inlineLayout: defaultLayout}, {title: 'Hello'}));
 
@@ -355,9 +337,7 @@ Helpers are little functions you can create with `app.addHelper()` and reuse thr
 context (`ctx`), from actions to views.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 app.addHelper('whois', ctx => {
   const agent = ctx.req.get('User-Agent') ?? 'Anonymous';
@@ -412,9 +392,7 @@ Route placeholders allow capturing parts of a request path until a `/` or `.` se
 expression `([^/.]+)`. Results are accessible via `ctx.stash`.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 // GET /foo/test
 // GET /foo/test123

@@ -37,12 +37,10 @@ $ npm install -g @mojojs/mojo
 
 ## Getting Started
 
-  These four lines are a whole web application.
+  These three lines are a whole web application.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 app.get('/', ctx => ctx.render({text: 'I ♥ Mojo!'}));
 
@@ -69,9 +67,7 @@ I ♥ Mojo!
   into well-structured **Model-View-Controller** web applications.
 
 ```js
-const mojo = require('@mojojs/mojo');
-
-const app = mojo();
+const app = require('@mojojs/mojo')();
 
 app.get('/', ctx => {
   ctx.render({inline: inlineTemplate});
