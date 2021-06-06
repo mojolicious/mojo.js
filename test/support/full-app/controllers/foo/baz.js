@@ -1,9 +1,5 @@
-'use strict';
-
-class Controller {
+export class Controller {
   test (ctx) {
     return ctx.render({text: 'Multiple levels'});
   }
 }
-
-module.exports = Controller;

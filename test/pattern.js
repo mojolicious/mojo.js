@@ -1,7 +1,5 @@
-'use strict';
-
-const Pattern = require('../lib/router/pattern');
-const t = require('tap');
+import Pattern from '../lib/router/pattern.js';
+import t from 'tap';
 
 t.test('Text pattern', t => {
   const pattern = new Pattern('/test/123');

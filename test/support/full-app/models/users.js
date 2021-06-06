@@ -1,6 +1,4 @@
-'use strict';
-
-class Users {
+export default class Users {
   constructor () {
     this._data = {sri: 'admin'};
   }
@@ -9,5 +7,3 @@ class Users {
     return this._data[name];
   }
 }
-
-module.exports = Users;

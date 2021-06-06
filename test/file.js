@@ -1,10 +1,8 @@
-'use strict';
-
-const File = require('../lib/file');
-const fs = require('fs/promises');
-const path = require('path');
-const t = require('tap');
-const url = require('url');
+import File from '../lib/file.js';
+import fs from 'fs/promises';
+import path from 'path';
+import t from 'tap';
+import url from 'url';
 
 t.test('File', async t => {
   t.test('Constructor', t => {

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-'use strict';
+import mojo from '../lib/mojo.js';
 
-const app = require('../lib/mojo')({detectImport: false});
+const app = mojo({detectImport: false});
 
 app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 

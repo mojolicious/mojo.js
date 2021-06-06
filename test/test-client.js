@@ -1,7 +1,5 @@
-'use strict';
-
-const mojo = require('../lib/mojo');
-const t = require('tap');
+import mojo from '../lib/mojo.js';
+import t from 'tap';
 
 t.test('Test client', async t => {
   const app = mojo();

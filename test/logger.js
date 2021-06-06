@@ -1,10 +1,8 @@
-'use strict';
-
-const {captureOutput, sleep} = require('../lib/util');
-const chalk = require('chalk');
-const File = require('../lib/file');
-const Logger = require('../lib/logger');
-const t = require('tap');
+import {captureOutput, sleep} from '../lib/util.js';
+import chalk from 'chalk';
+import File from '../lib/file.js';
+import Logger from '../lib/logger.js';
+import t from 'tap';
 
 t.test('Logger', async t => {
   const dir = await File.tempDir();

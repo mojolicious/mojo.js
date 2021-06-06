@@ -1,9 +1,7 @@
-'use strict';
-
-const File = require('../lib/file');
-const mojo = require('../lib/mojo');
-const Server = require('../lib/server');
-const t = require('tap');
+import File from '../lib/file.js';
+import mojo from '../lib/mojo.js';
+import Server from '../lib/server.js';
+import t from 'tap';
 
 t.test('HTTPS app', async t => {
   const app = mojo();

@@ -1,6 +1,6 @@
-'use strict';
+import mojo from '../../lib/mojo.js';
 
-const app = require('../../lib/mojo')();
+const app = mojo();
 
 app.any('/', ctx => ctx.render({text: 'Hello World!'}));
 

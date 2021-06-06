@@ -23,7 +23,7 @@ on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
     * No default frontend framework. Pair it with [React](https://reactjs.org) or [Vue](https://vuejs.org) for a great
       development experience.
   * Batteries included, yet faster than Express and Koa.
-  * Designed for modern JavaScript with `async`/`await`.
+  * Designed for modern JavaScript with `async`/`await`, classes and ES modules.
   * Actively maintained by a team with more than 20 years of experience developing mainstream web frameworks such as
     [Mojolicious](https://mojolicious.org) and [Catalyst](http://www.catalystframework.org).
 
@@ -37,10 +37,12 @@ $ npm install -g @mojojs/mojo
 
 ## Getting Started
 
-  These three lines are a whole web application.
+  These four lines are a whole web application.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 app.get('/', ctx => ctx.render({text: 'I ♥ Mojo!'}));
 
@@ -50,7 +52,7 @@ app.start();
   Use the built-in command system to start your web server.
 
 ```
-$ node index.js server
+$ node index.mjs server
 [77264] Web application available at http://127.0.0.1:3000/
 ```
 
@@ -67,7 +69,9 @@ I ♥ Mojo!
   into well-structured **Model-View-Controller** web applications.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 app.get('/', ctx => {
   ctx.render({inline: inlineTemplate});

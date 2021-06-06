@@ -1,6 +1,6 @@
 {
   "name": "@mojojs/mojo",
-  "version": "0.0.1-alpha.34",
+  "version": "0.0.1-alpha.33",
   "description": "Real-time web framework",
   "keywords": [
     "web",
@@ -19,10 +19,11 @@
   "scripts": {
     "lint": "eslint \"lib/**/*.js\" \"lib/*.js\" \"test/*.js\"",
     "test": "tap --no-coverage test/*.js",
-    "coverage": "tap test/*.js",
-    "coverage-html": "tap --coverage-report=html test/*.js"
+    "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
+    "coverage-html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js"
   },
   "main": "./lib/mojo.js",
+  "type": "module",
   "files": [
     "bin/",
     "lib/",
@@ -32,6 +33,7 @@
     "mojo": "./bin/mojo.js"
   },
   "devDependencies": {
+    "@istanbuljs/esm-loader-hook": ">=0.1.2",
     "eslint": ">=7.22.0",
     "eslint-config-semistandard": ">=15.0.1"
   },
@@ -45,6 +47,7 @@
     "cheerio": "^1.0.0-rc.9",
     "cookie": "^0.4.1",
     "ejs": "^3.1.6",
+    "escape-string-regexp": "^5.0.0",
     "form-data": "^4.0.0",
     "lru-cache": "^6.0.0",
     "mime-types": "^2.1.30",

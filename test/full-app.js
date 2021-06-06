@@ -1,7 +1,5 @@
-'use strict';
-
-const app = require('./support/full-app/index');
-const t = require('tap');
+import {app} from './support/full-app/index.js';
+import t from 'tap';
 
 t.test('Full app', async t => {
   const client = await app.newTestClient({tap: t});

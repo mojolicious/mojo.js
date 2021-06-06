@@ -1,9 +1,9 @@
 /*
  * Minimal "Hello World" application with template for profiling
  */
-'use strict';
+import mojo from '../lib/mojo.js';
 
-const app = require('../lib/mojo')();
+const app = mojo();
 
 app.any('/hello', ctx => ctx.render({inline: hello}));
 

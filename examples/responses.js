@@ -1,9 +1,9 @@
 /*
  * Application demonstrating the various HTTP response variants for debugging
  */
-'use strict';
+import mojo from '../lib/mojo.js';
 
-const app = require('../lib/mojo')();
+const app = mojo();
 
 app.get('/res1', ctx => {
   return ctx.render({text: 'Hello World!'});

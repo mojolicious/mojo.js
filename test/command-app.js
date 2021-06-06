@@ -1,10 +1,8 @@
-'use strict';
-
-const app = require('./support/command-app/index');
-const {captureOutput} = require('../lib/util');
-const File = require('../lib/file');
-const mojo = require('../lib/mojo');
-const t = require('tap');
+import {app} from './support/command-app/index.js';
+import {captureOutput} from '../lib/util.js';
+import File from '../lib/file.js';
+import mojo from '../lib/mojo.js';
+import t from 'tap';
 
 t.test('Command app', async t => {
   await t.test('Help', async t => {
@@ -167,7 +165,10 @@ t.test('Command app', async t => {
     });
     t.match(output2.toString(), /\[write\].+myapp\.js/);
     t.same(await file.exists(), true);
-    t.match(await file.readFile('utf8'), /const mojo = require\('@mojojs\/mojo'\)/);
+    t.match(await file.readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+    t.match(output2.toString(), /\[write\].+package\.json/);
+    t.same(await dir.child('package.json').exists(), true);
+    t.match(await dir.child('package.json').readFile('utf8'), /module/);
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('gen-lite-app', 'myapp.js');
@@ -180,7 +181,7 @@ t.test('Command app', async t => {
     });
     t.match(output4.toString(), /\[write\].+index\.js/);
     t.same(await file2.exists(), true);
-    t.match(await file2.readFile('utf8'), /const mojo = require\('@mojojs\/mojo'\)/);
+    t.match(await file2.readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
     process.chdir(cwd);
   });
 
@@ -204,10 +205,10 @@ t.test('Command app', async t => {
     t.match(await dir.child('config.json').readFile('utf8'), /"secrets"/);
     t.match(output2.toString(), /\[write\].+index\.js/);
     t.same(await dir.child('index.js').exists(), true);
-    t.match(await dir.child('index.js').readFile('utf8'), /const mojo = require\('@mojojs\/mojo'\)/);
+    t.match(await dir.child('index.js').readFile('utf8'), /import mojo.+from '@mojojs\/mojo'/);
     t.match(output2.toString(), /\[write\].+controllers.+example\.js/);
     t.same(await dir.child('controllers', 'example.js').exists(), true);
-    t.match(await dir.child('controllers', 'example.js').readFile('utf8'), /class Controller/);
+    t.match(await dir.child('controllers', 'example.js').readFile('utf8'), /export class Controller/);
     t.match(output2.toString(), /\[write\].+default\.html\.ejs/);
     t.same(await dir.child('views', 'layouts', 'default.html.ejs').exists(), true);
     t.match(await dir.child('views', 'layouts', 'default.html.ejs').readFile('utf8'), /Welcome/);
@@ -217,6 +218,9 @@ t.test('Command app', async t => {
     t.match(output2.toString(), /\[write\].+test.+example\.js/);
     t.same(await dir.child('test', 'example.js').exists(), true);
     t.match(await dir.child('test', 'example.js').readFile('utf8'), /getOk/);
+    t.match(output2.toString(), /\[write\].+package\.json/);
+    t.same(await dir.child('package.json').exists(), true);
+    t.match(await dir.child('package.json').readFile('utf8'), /module/);
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('gen-full-app');
@@ -236,7 +240,7 @@ t.test('Command app', async t => {
     });
     t.match(output4.toString(), /\[write\].+test-app.+myapp\.js/);
     t.same(await dir2.child('myapp.js').exists(), true);
-    t.match(await dir2.child('myapp.js').readFile('utf8'), /const mojo = require\('@mojojs\/mojo'\)/);
+    t.match(await dir2.child('myapp.js').readFile('utf8'), /import mojo.+from '@mojojs\/mojo'/);
     process.chdir(cwd);
   });
 });

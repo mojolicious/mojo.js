@@ -1,6 +1,6 @@
-'use strict';
+import mojo from '../../lib/mojo.js';
 
-const app = require('../../lib/mojo')({mode: 'production'});
+const app = mojo();
 
 app.websocket('/ws').to(ctx => {
   ctx.on('connection', ws => {
@@ -10,15 +10,13 @@ app.websocket('/ws').to(ctx => {
   });
 });
 
-(async () => {
-  const client = await app.newMockClient();
+const client = await app.newMockClient();
 
-  const ws = await client.websocket('/ws');
-  let i = 0;
-  ws.on('message', message => {
-    i++ > 100000 ? ws.close() : ws.send(message);
-  });
-  ws.send('Hello Mojo!');
+const ws = await client.websocket('/ws');
+let i = 0;
+ws.on('message', message => {
+  i++ > 100000 ? ws.close() : ws.send(message);
+});
+ws.send('Hello Mojo!');
 
-  await client.stop();
-})();
+await client.stop();

@@ -60,6 +60,18 @@ $ npm i @mojojs/mojo
 ...
 ```
 
+Be aware that mojo.js uses [ES modules](https://nodejs.org/api/esm.html), so your `package.json` should include a
+`"type": "module"`. Or you have to use the `.mjs` file extension instead of `.js`.
+
+```json
+{
+  "type": "module",
+  "dependencies": {
+    "@mojojs/mojo": ">=0.0.1-alpha.21"
+  }
+}
+```
+
 ## Hello World
 
 A simple Hello World application looks like this. Save it into a file `myapp.js` and you already got a fully functional
@@ -67,7 +79,9 @@ web application. The whole framework was specifically designed with `async`/`awa
 returns a `Promise`.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 app.get('/', async ctx => {
   await ctx.render({text: 'Hello World!'});
@@ -125,7 +139,9 @@ they match the path part of the request URL. The first argument passed to all ac
 containing both the HTTP request and response.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 // Route leading to an action that renders some text
 app.get('/foo', async ctx => {
@@ -143,7 +159,9 @@ All `GET` and `POST` parameters sent with the request are accessible via `ctx.pa
 resolves with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) object.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 // GET /foo?user=sri
 app.get('/foo', async ctx => {
@@ -171,7 +189,9 @@ The `stash` is a plain object and a property of the context object. It is used p
 while views can be inlined for single file apps, they are usually kept as separate files in a `views` directory.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 // Route leading to an action that renders a view
 app.get('/foo', async ctx => {
@@ -194,7 +214,9 @@ integrated, and will work just as well.
 The `ctx.req` and `ctx.res` properties of the context object give you full access to all HTTP features and information.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 // Access request information
 app.get('/agent', async ctx => {
@@ -221,7 +243,9 @@ available.
 Of course there is first class support for JSON as well.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 // Modify the received JSON object and return it
 app.put('/add/quote', async ctx => {
@@ -245,7 +269,9 @@ During development you will encounter these pages whenever you make a mistake, t
 valuable information that will aid you in debugging your application.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 // Not found (404)
 app.get('/missing', async ctx => ctx.notFound());
@@ -273,7 +299,9 @@ All routes can have a name associated with them, this allows backreferencing wit
 routes get an automatically generated name assigned, based on the route pattern.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 // Render an inline view with links to named routes
 app.get('/').to(ctx => ctx.render({inline: inlineTemplate})).name('one');
@@ -296,9 +324,10 @@ layout. Here we use the inline variant again for out single file app, but layout
 a `views/layouts` directory.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
 
-// Render an inline view with an inline layout
+const app = mojo();
+
 app.get('/', ctx => ctx.render({inline: indexTemplate, inlineLayout: defaultLayout}, {title: 'Hello'}));
 
 app.start();
@@ -326,16 +355,16 @@ Helpers are little functions you can create with `app.addHelper()` and reuse thr
 context (`ctx`), from actions to views.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
 
-// A helper to identify visitors
+const app = mojo();
+
 app.addHelper('whois', ctx => {
   const agent = ctx.req.get('User-Agent') ?? 'Anonymous';
   const ip = ctx.req.remoteAddress;
   return `${agent} (${ip})`;
 });
 
-// Use helper in action and template
 app.get('/secret', async ctx => {
   const user = ctx.whois();
   ctx.log.debug(`Request from ${user}`);
@@ -358,12 +387,11 @@ Plugins are application extensions that help with code sharing and organization.
 as part of your application. You can register plugins with `app.plugin()`.
 
 ```js
-const mojo = require('@mojojs/mojo');
+import mojo from '@mojojs/mojo';
 
-// Create application with default configuration
 const app = mojo({config: {foo = 'default value'}});
 
-app.plugin(mojo.jsonConfigPlugin, {file: 'myapp.conf'});
+app.plugin(mojo.jsonConfigPlugin, {file: '/etc/myapp.conf'});
 
 // Return configured foo value
 app.get('/foo', async ctx => {
@@ -374,17 +402,9 @@ app.get('/foo', async ctx => {
 app.start();
 ```
 
-Now if you create a `myapp.conf` file in the same directory as your application, you can change the `default value`.
-
-```json
-{
-  "foo": "another value"
-}
-```
-
 `mojo.jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config
-file (`config.json` by default). For multiple config files you can register it more than once. Plugins can also set up
-routes, hooks, helpers, template engines and many many other things we will later explore in the plugin guide.
+file (`config.json` in the application directory by default). Plugins can also set up routes, hooks, helpers, template
+engines and many many other things we will later explore in the plugin guide.
 
 ## Placeholders
 
@@ -392,7 +412,9 @@ Route placeholders allow capturing parts of a request path until a `/` or `.` se
 expression `([^/.]+)`. Results are accessible via `ctx.stash`.
 
 ```js
-const app = require('@mojojs/mojo')();
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
 
 // GET /foo/test
 // GET /foo/test123
@@ -413,72 +435,3 @@ app.start();
 
 To separate them from the surrounding text, you can surround your placeholders with `<` and `>`, which also makes the
 colon prefix optional.
-
-## Relaxed Placeholders
-
-Relaxed placeholders allow matching of everything until a `/` occurs, similar to the regular expression `([^/]+)`.
-
-```js
-const app = require('@mojojs/mojo')();
-
-// GET /hello/test
-// GET /hello/test.html
-app.get('/hello/#you', async ctx => {
-  const you = ctx.stash.you;
-  await ctx.render({text: `Your name is ${you}`});
-});
-
-app.start();
-```
-
-## Wildcard Placeholders
-
-Wildcard placeholders allow matching absolutely everything, including `/` and `.`, similar to the regular expression
-`(.+)`.
-
-```js
-const app = require('@mojojs/mojo')();
-
-// GET /hello/test
-// GET /hello/test123
-// GET /hello/test.123/test/123
-app.get('/hello/*you', async ctx => {
-  const you = ctx.stash.you;
-  await ctx.render({text: `Your name is ${you}`});
-});
-
-app.start();
-```
-
-## HTTP Methods
-
-Routes can be restricted to specific request methods with different methods like `app.get()`, `app.post()` and
-`app.any()`.
-
-```js
-const app = require('@mojojs/mojo')();
-
-// GET /hello
-app.get('/hello', async ctx => {
-  await ctx.render({text: 'Hello World!'});
-});
-
-// PUT /hello
-app.get('/hello', async ctx => {
-  const size = Buffer.byteLengt(await ctx.req.buffer());
-  await ctx.render({text: `You uploaded ${size} bytes to /hello`});
-});
-
-// GET|POST|PATCH /bye
-app.any(['GET', 'POST', 'PATCH'], '/bye', async ctx => {
-  await ctx.render({text: 'Bye World!'});
-});
-
-// * /whatever
-app.any('/whatever', async ctx => {
-  const method = ctx.req.method;
-  await ctx.render({text: `You called /whatever with ${method}`});
-});
-
-app.start();
-```

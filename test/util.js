@@ -1,8 +1,6 @@
-'use strict';
-
-const File = require('../lib/file');
-const t = require('tap');
-const util = require('../lib/util');
+import File from '../lib/file.js';
+import t from 'tap';
+import * as util from '../lib/util.js';
 
 t.test('Util', async t => {
   await t.test('captureOutput', async t => {
@@ -38,12 +36,25 @@ t.test('Util', async t => {
       await dir.child('package.json').writeFile('{"name": "test"}');
       await util.cliCreateDir('foo/bar');
       await util.cliCreateFile('foo/bar/yada.txt', 'it <%= test %>', {test: 'works'}, {chmod: 0o744});
+      await util.cliFixPackage();
     });
     t.match(output.toString(), /\[mkdir\].+bar/);
     t.match(output.toString(), /\[write\].+yada\.txt/);
     t.match(output.toString(), /\[chmod\].+yada\.txt \(744\)/);
+    t.match(output.toString(), /\[fixed\].+package\.json/);
     t.same(await dir.child('foo', 'bar', 'yada.txt').exists(), true);
     t.match(await dir.child('foo', 'bar', 'yada.txt').readFile('utf8'), /it works/);
+    t.same(JSON.parse(await dir.child('package.json').readFile('utf8')), {name: 'test', type: 'module'});
+
+    const dir2 = await File.tempDir();
+    process.chdir(dir2.toString());
+    const output2 = await util.captureOutput(async () => {
+      await util.cliFixPackage();
+      await util.cliFixPackage();
+    });
+    t.match(output2.toString(), /\[write\].+package\.json/);
+    t.match(output2.toString(), /\[exists\].+package\.json/);
+    t.same(JSON.parse(await dir2.child('package.json').readFile('utf8')), {type: 'module'});
 
     process.chdir(cwd);
   });
@@ -53,13 +64,6 @@ t.test('Util', async t => {
     t.same(decode('%E0%A4%A'), null);
     t.same(decode('te%2fst'), 'te/st');
     t.same(decode('te%2Fst'), 'te/st');
-    t.end();
-  });
-
-  t.test('escapeRegExp', t => {
-    const escapeRegExp = util.escapeRegExp;
-    t.equal(escapeRegExp('te*s?t'), 'te\\*s\\?t', 'escaped');
-    t.equal(escapeRegExp('\\^$.*+?()[]{}|'), '\\\\\\^\\$\\.\\*\\+\\?\\(\\)\\[\\]\\{\\}\\|', 'escaped');
     t.end();
   });
 
@@ -73,41 +77,31 @@ t.test('Util', async t => {
     }
     t.same(await exceptionContext(result, {lines: 2}), {
       file: File.currentFile().toString(),
-      line: 70,
+      line: 74,
       column: 13,
       source: [
         {
-          num: 68,
+          num: 72,
           code: '    let result;'
         },
         {
-          num: 69,
+          num: 73,
           code: '    try {'
         },
         {
-          num: 70,
+          num: 74,
           code: "      throw new Error('Test');"
         },
         {
-          num: 71,
+          num: 75,
           code: '    } catch (error) {'
         },
         {
-          num: 72,
+          num: 76,
           code: '      result = error;'
         }
       ]
     });
-  });
-
-  await t.test('loadModules', async t => {
-    const loadModules = util.loadModules;
-    const modules = await loadModules([File.currentFile().sibling('support', 'full-app', 'controllers').toString()]);
-    t.notSame(modules.foo, undefined);
-    t.notSame(modules.bar, undefined);
-    t.notSame(modules['foo/baz'], undefined);
-    t.same(modules['foo/bar'], undefined);
-    t.same(modules.baz, undefined);
   });
 
   await t.test('sleep', async t => {

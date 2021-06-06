@@ -1,9 +1,7 @@
-'use strict';
-
-const mojo = require('../lib/mojo');
-const Stream = require('stream');
-const t = require('tap');
-const util = require('../lib/util');
+import mojo from '../lib/mojo.js';
+import Stream from 'stream';
+import t from 'tap';
+import * as util from '../lib/util.js';
 
 t.test('Hook app', async t => {
   const app = mojo();

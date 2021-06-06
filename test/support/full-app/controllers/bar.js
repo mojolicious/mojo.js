@@ -1,4 +1,4 @@
-export default class Controller {
+export class Controller {
   hello (ctx) {
     return ctx.render({text: ctx.stash.msg});
   }
