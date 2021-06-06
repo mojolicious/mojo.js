@@ -359,7 +359,7 @@ const mojo = require('@mojojs/mojo');
 
 const app = mojo({config: {foo = 'default value'}});
 
-app.plugin(mojo.jsonConfigPlugin, {file: '/etc/myapp.conf'});
+app.plugin(mojo.jsonConfigPlugin, {file: 'myapp.conf'});
 
 // Return configured foo value
 app.get('/foo', async ctx => {
@@ -368,6 +368,14 @@ app.get('/foo', async ctx => {
 });
 
 app.start();
+```
+
+Now if you create a `myapp.conf` file in the same directory as your application, you can change the `default value`.
+
+```json
+{
+  "foo": "another value"
+}
 ```
 
 `mojo.jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config
