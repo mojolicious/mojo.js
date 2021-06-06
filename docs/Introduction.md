@@ -628,8 +628,9 @@ import mojo from '@mojojs/mojo';
 
 const app = mojo();
 
-// * /admin
+// Authenticate based on name parameter
 const admin = app.under('/admin', async ctx => {
+
   // Authenticated
   const params = await ctx.params();
   if (params.get('name') === 'Bender') return;
@@ -645,4 +646,76 @@ admin.get('/', async ctx => {
 }});
 
 app.start();
+```
+
+## Extensions
+
+File extensions can be captured as well with the special `ext` route placeholder. Just use a restrictive placeholder to
+declare possible values.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// GET /detect.html
+// GET /detect.txt
+app.get('/detect', {ext: ['html', 'txt']}, async ctx => {
+  const ext = ctx.stash.ext;
+  await ctx.render({text: `Detected .${ext} extension.`});
+}});
+
+app.start();
+```
+
+And just like with placeholders you can use a default value to make the extension optional.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// GET /detect
+// GET /detect.htm
+// GET /detect.html
+app.get('/detect', {ext: /html?/}).to({ext: 'html'}, async ctx => {
+  const ext = ctx.stash.ext;
+  await ctx.render({text: `Detected .${ext} extension.`});
+}});
+
+app.start();
+```
+
+## Static files
+
+Static files will be served automatically from the `public` directory of your application if it exists. All static URLs
+have a `/public` prefix by default, to make it easier to integrate reverse proxy servers in production environments.
+
+```
+$ mkdir public
+$ echo 'Hello World!' > public/test.txt
+```
+
+Since the prefix is configurable, `ctx.urlForFile()` can be used to generate the URL.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// Redirect to static file
+app.get('/file', async ctx => {
+  const url = ctx.urlForFile('/test.txt');
+  await ctx.redirectTo(url);
+}});
+
+app.start();
+```
+
+For `GET` and `HEAD` requests static files have a higher precedence than routes. Content negotiation with `Range`,
+`If-None-Match` and `If-Modified-Since` headers is supported as well, and can be tested very easily with the `get`
+command.
+
+```
+$ node myapp.js get /test -v -H 'Range: bytes=2-4'
 ```

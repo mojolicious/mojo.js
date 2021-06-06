@@ -125,5 +125,19 @@ t.test('Static app', async t => {
       .headerExists('Last-Modified').bodyLike(/Hello World!/);
   });
 
+  await t.test('Methods', async t => {
+    (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
+      .headerExists('Accept-Ranges').headerExists('Etag').headerExists('Last-Modified').bodyLike(/Hello World!/);
+
+    (await client.headOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
+      .headerExists('Accept-Ranges').headerExists('Etag').headerExists('Last-Modified').bodyIs('');
+
+    (await client.postOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
+      .headerExistsNot('Accept-Ranges').headerExistsNot('Etag').headerExistsNot('Last-Modified').bodyIs('Route: POST');
+
+    (await client.putOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
+      .headerExistsNot('Accept-Ranges').headerExistsNot('Etag').headerExistsNot('Last-Modified').bodyIs('Route: PUT');
+  });
+
   await client.stop();
 });

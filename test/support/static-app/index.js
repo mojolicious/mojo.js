@@ -6,4 +6,8 @@ if (app.mode === 'development') app.log.level = 'debug';
 
 app.any('/0').to(ctx => ctx.render({text: 'Zero'}));
 
+app.any('/public/hello.txt', async ctx => {
+  await ctx.render({text: `Route: ${ctx.req.method}`});
+});
+
 app.start();
