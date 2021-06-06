@@ -521,3 +521,70 @@ app.any('/whatever', async ctx => {
 
 app.start();
 ```
+
+## Optional placeholders
+
+All placeholders require a value, but by assigning them default values you can make capturing optional. Methods like
+`app.get()` return a route object, which has a `route.to()` method that can be used to manually assign default values.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// GET /hello
+// GET /hello/Sara
+app.get('/hello/:name').to({name: 'Sebastian', day: 'Monday', fn: async ctx => {
+  const name = ctx.stash.name;
+  const day = ctx.stash.day;
+  await ctx.render({text: `My name is ${name} and it is ${day}`});
+}});
+
+app.start();
+```
+
+Default values that don't belong to a placeholder simply get merged into `ctx.stash` all the time. And actions are just
+a special case of default value with the name `fn`.
+
+## Restrictive placeholders
+
+A very easy way to make placeholders more restrictive are alternatives, you just make a list of possible values.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// * /test
+// * /123
+app.any('/:foo', {foo: ['test', '123']}, async ctx => {
+  const foo = ctx.stash.foo;
+  await ctx.render({text: `Our :foo placeholder matched ${foo}`});
+}});
+
+app.start();
+```
+
+All placeholders get compiled to a regular expression internally, this process can also be customized. Just make sure
+not to use `^` and `$`, or capturing groups `(...)`, non-capturing groups `(?:...)` are fine though.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// * /1
+// * /123
+app.any('/:bar', {bar: /\d+/}, async ctx => {
+  const bar = ctx.stash.bar;
+  await ctx.render({text: `Our :bar placeholder matched ${bar}`});
+}});
+
+app.start();
+```
+
+You can take a closer look at all the generated regular expressions with the `routes` command.
+
+```
+$ node myapp.js routes -v
+```
