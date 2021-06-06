@@ -686,7 +686,7 @@ app.get('/detect', {ext: /html?/}).to({ext: 'html'}, async ctx => {
 app.start();
 ```
 
-## Static files
+## Static Files
 
 Static files will be served automatically from the `public` directory of your application if it exists. All static URLs
 have a `/public` prefix by default, to make it easier to integrate reverse proxy servers in production environments.
@@ -722,7 +722,7 @@ $ node myapp.js get /test -v -H 'Range: bytes=2-4'
 
 ## External Views
 
-The renderer with seach for views in the `views` directory of your application if it exists. And for layouts in the
+The renderer will seach for views in the `views` directory of your application if it exists. And for layouts in the
 `views/layouts` subdirectory.
 
 ```
@@ -810,6 +810,8 @@ app.get('/bar').requires('host', /mojolicious\.org/).to(async ctx => {
 app.start();
 ```
 
+Adding your own router exptensions will be covered later in another guide.
+
 ## Sessions
 
 Encrypted cookie based sessions just work out of the box, as soon as you start using them through `ctx.session()`. Just
@@ -846,8 +848,8 @@ app.secrets = ['My secret passphrase here'];
 
 ## File Uploads
 
-Files uploaded via `multipart/form-data` request are available via `ctx.req.files()`. They are not cached and will be
-available as `stream` objects.
+Files uploaded with `multipart/form-data` requests are available via `ctx.req.files()`. They are not cached to disk, but
+instead streamed as data arrives.
 
 ```js
 import mojo from '@mojojs/mojo';
