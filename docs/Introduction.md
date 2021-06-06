@@ -235,7 +235,7 @@ app.get('/agent', async ctx => {
 app.start();
 ```
 
-Thake a look at the [Cheatsheet](Cheatsheet.md) to get a more complete overview of what properties and methods are
+Take a look at the [Cheatsheet](Cheatsheet.md) to get a more complete overview of what properties and methods are
 available.
 
 ## JSON
@@ -706,7 +706,7 @@ const app = mojo();
 // Redirect to static file
 app.get('/file', async ctx => {
   const url = ctx.urlForFile('/test.txt');
-  await ctx.redirectTo(url);
+  await ctx.redirectTo(url, {status: 301});
 }});
 
 app.start();
@@ -719,3 +719,317 @@ command.
 ```
 $ node myapp.js get /test -v -H 'Range: bytes=2-4'
 ```
+
+## External Views
+
+The renderer with seach for views in the `views` directory of your application if it exists. And for layouts in the
+`views/layouts` subdirectory.
+
+```
+$ mkdir -p views/layouts
+```
+```
+<%# views/hello.html.ejs %>
+Hello <%= name %>!
+```
+```
+<%# views/layouts/default.html.ejs %>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+  </head>
+  <body><%- view.content %></body>
+</html>
+```
+
+All views are expected to be in the format `name.format.engine`, such as `list.html.ejs`. The `format` and `engine`
+values are used to select the correct MIME type and template engine.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// Render a view "views/hello.html.ejs" with layout "views/layouts/default.html.ejs"
+app.get('/', async ctx => {
+  await ctx.render({view: 'hello', layout: 'default'}, {title: 'Hello', name: 'Isabell'});
+});
+
+app.start();
+```
+
+## Home
+
+The directory in which the main application script resides, usually called `index.js` is considered the application
+home directory. For convenience it is available as `app.home`.
+
+```
+$ mkdir cache
+$ echo 'Hello World!' > cache/hello.txt
+```
+
+The `mojo.File` object provides many useful `fs.*` and `path.*` functions from Node.js, as well as some custom
+additions.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// Load message into memory
+const hello = app.home.child('cache', 'hello.txt').readFileSync('utf8');
+
+// Display message
+app.get('/', async ctx => {
+  await ctx.render({text: hello});
+});
+
+app.start();
+```
+
+## Conditions
+
+Conditions such as `headers` and `host` are router extensions and allow for even more powerful route constructs.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// Firefox
+app.get('/foo').requires('headers', {'User-Agent': /Firefox/}).to(async ctx => {
+  await ctx.render({text: 'Congratulations, you are using a cool browser.'});
+});
+
+// http://mojolicious.org/bar
+app.get('/bar').requires('host', /mojolicious\.org/).to(async ctx => {
+  await ctx.render({text: 'Hello Mojolicious.'});
+});
+
+app.start();
+```
+
+## Sessions
+
+Encrypted cookie based sessions just work out of the box, as soon as you start using them through `ctx.session()`. Just
+be aware that all session data gets serialized as JSON.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// Access session data in action and template
+app.get('/counter', async ctx => {
+  const session = await ctx.session();
+
+  if (session.counter === undefined) session.counter = 0;
+  session.counter++;
+
+  await ctx.render({inline: inlineCounter}, {session});
+});
+
+app.start();
+
+const inlineCounter = `
+Counter: <%= session.counter %>
+`;
+```
+
+Note that you should use custom rotating secrets to make signed cookies really tamper resistant. Only the first secret
+will be used to encrypt new cookies, but all of them to decrypt existing ones.
+
+```js
+app.secrets = ['My secret passphrase here'];
+```
+
+## File Uploads
+
+Files uploaded via `multipart/form-data` request are available via `ctx.req.files()`. They are not cached and will be
+available as `stream` objects.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+app.get('/', async ctx => ctx.render({inline: inlineForm}));
+
+app.post('/upload', async ctx => {
+  let bytes = 0;
+
+  for await (const {fieldname, file, filename} of ctx.req.files()) {
+    ctx.log.debug(`Uploading file ${filename}`);
+
+    for await (const chunk of file) {
+      const size =  Buffer.byteLength(chunk);
+      bytes += size;
+      ctx.log.debug(`${size} byte chunk uploaded`);
+    }
+  }
+
+  await ctx.render({text: `${bytes} bytes uploaded.`});
+});
+
+app.start();
+
+const inlineForm = `
+<!DOCTYPE html>
+<html>
+  <head><title>Upload</title></head>
+  <body>
+    <form action="<%= ctx.urlFor('upload') %>" enctype="multipart/form-data" method="POST">
+      <input name="example" type="file">
+      <input type="submit" value="Upload">
+    </form>
+  </body>
+</html>
+`;
+```
+
+Just be aware that if you are also using `ctx.params()` or `ctx.req.form()`, they have to be called after
+`ctx.req.files()`.
+
+## Client
+
+While its primary purpose is testing, there is also a full featured HTTP and WebSocket  client available via
+`ctx.client`.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  const params = await ctx.params();
+  const url = params.get('url') ?? 'https://mojolicious.org';
+
+  const res   = await ctx.client.get(url);
+  const html  = await res.html();
+  const title = html('title').text();
+
+  await ctx.render({text: title});
+});
+
+app.start();
+```
+
+For more information take a look at the [Client](Cheatsheet.md) guide.
+
+## WebSockets
+
+WebSocket applications have never been this simple before. You can accept incoming connections with two methods,
+`ctx.plain()` to receive and send messages unaltered, and `ctx.json()` to have messages automatically JSON encoded and
+decoded.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+app.get('/', async ctx => ctx.render({inline: inlineTemplate}));
+
+app.websocket('/echo', async ctx => {
+  ctx.json(async ws => {
+    for await (const message of ws) {
+      message.hello = `echo: ${message.hello}`;
+      ws.send(message);
+    }
+  });
+});
+
+app.start();
+
+const inlineTemplate = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Echo</title>
+    <script>
+      var ws = new WebSocket('<%= ctx.urlFor('echo') %>');
+      ws.onmessage = event => {
+        document.body.innerHTML += JSON.parse(event.data).hello;
+      };
+      ws.onopen = event => {
+        ws.send(JSON.stringify({hello: 'I ♥ mojo.js!'}));
+      };
+    </script>
+  </head>
+</html>
+`;
+```
+
+## Modes
+
+Every mojo.js application has multiple operating modes, which can be selected with the `NODE_ENV` environment variable.
+
+```
+NODE_ENV=production node myapp.js server
+```
+
+The default operating mode is `development`, which sets the log level of `app.log` and `ctx.log` to the lowest level
+(`trace`). All other modes raise the level to `info`.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// Prepare mode specific message during startup
+const msg = app.mode === 'development' ? 'Development!' : 'Something else!';
+
+app.get('/', async ctx => {
+  ctx.log.trace('Rendering mode specific message');
+  await ctx.render({text: msg});
+});
+
+app.log.trace('Starting application');
+app.start();
+```
+
+Mode changes also affect a few other aspects of the framework, such as the built-in exception and not_found pages. Once
+you switch modes from `development` to `production`, no sensitive information will be revealed on those pages anymore.
+
+## Testing
+
+Testing you mojo.js application is as easy as creating a `test` directory and filling it with normal JavaScript tests
+like `test/basic.js`. Especially if you use [tap](https://www.npmjs.com/package/tap) and the built-in test client.
+
+```js
+import mojo from '@mojojs/mojo';
+
+export const app = mojo();
+
+app.get('/', async ctx => {
+  await ctx.render({text: 'Welcome to mojo.js!'});
+});
+
+app.start();
+```
+
+Just make sure to export `app` from your application script.
+
+```js
+import {app} from '../myapp.js';
+import t from 'tap';
+
+t.test('Basics', async t => {
+  const client = await app.newTestClient({tap: t});
+
+  await t.test('Index', async t => {
+    (await client.getOk('/')).statusIs(200).bodyLike(/mojo.js/);
+  });
+
+  await client.stop();
+});
+```
+
+And run your tests as scripts or with `tap`.
+
+```
+$ node test/basic.js
+$ tap --no-coverage test/*.js
+```
+
+For more information take a look at the [Client](Cheatsheet.md) guide.
