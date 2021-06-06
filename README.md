@@ -50,7 +50,7 @@ app.start();
   Use the built-in command system to start your web server.
 
 ```
-$ node index.mjs server
+$ node index.js server
 [77264] Web application available at http://127.0.0.1:3000/
 ```
 

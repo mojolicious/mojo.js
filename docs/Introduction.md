@@ -60,18 +60,6 @@ $ npm i @mojojs/mojo
 ...
 ```
 
-Be aware that mojo.js uses [ES modules](https://nodejs.org/api/esm.html), so your `package.json` should include a
-`"type": "module"`. Or you have to use the `.mjs` file extension instead of `.js`.
-
-```json
-{
-  "type": "module",
-  "dependencies": {
-    "@mojojs/mojo": ">=0.0.1-alpha.21"
-  }
-}
-```
-
 ## Hello World
 
 A simple Hello World application looks like this. Save it into a file `myapp.js` and you already got a fully functional
