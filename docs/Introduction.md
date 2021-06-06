@@ -377,7 +377,7 @@ app.get('/secret', async ctx => {
 app.start();
 
 const indexTemplate = `
-We know who you are <%= ctx.whois() %>
+We know who you are <%= ctx.whois() %>.
 `;
 ```
 
@@ -432,14 +432,14 @@ const app = mojo();
 // GET /foo/test123
 app.get('/foo/:bar', async ctx => {
   const bar = ctx.stash.bar;
-  await ctx.render({text: `Our :bar placeholder matched ${bar}`});
+  await ctx.render({text: `Our :bar placeholder matched ${bar}.`});
 });
 
 // GET /testsomething/foo
 // GET /test123something/foo
 app.get('/<:bar>something/foo', async ctx => {
   const bar = ctx.stash.bar;
-  await ctx.render({text: `Our :bar placeholder matched ${bar}`});
+  await ctx.render({text: `Our :bar placeholder matched ${bar}.`});
 });
 
 app.start();
@@ -460,7 +460,7 @@ const app = mojo();
 // GET /hello/test.html
 app.get('/hello/#you', async ctx => {
   const you = ctx.stash.you;
-  await ctx.render({text: `Your name is ${you}`});
+  await ctx.render({text: `Your name is ${you}.`});
 });
 
 app.start();
@@ -481,7 +481,7 @@ const app = mojo();
 // GET /hello/test.123/test/123
 app.get('/hello/*you', async ctx => {
   const you = ctx.stash.you;
-  await ctx.render({text: `Your name is ${you}`});
+  await ctx.render({text: `Your name is ${you}.`});
 });
 
 app.start();
@@ -505,7 +505,7 @@ app.get('/hello', async ctx => {
 // PUT /hello
 app.get('/hello', async ctx => {
   const size = Buffer.byteLengt(await ctx.req.buffer());
-  await ctx.render({text: `You uploaded ${size} bytes to /hello`});
+  await ctx.render({text: `You uploaded ${size} bytes to /hello.`});
 });
 
 // GET|POST|PATCH /bye
@@ -516,13 +516,13 @@ app.any(['GET', 'POST', 'PATCH'], '/bye', async ctx => {
 // * /whatever
 app.any('/whatever', async ctx => {
   const method = ctx.req.method;
-  await ctx.render({text: `You called /whatever with ${method}`});
+  await ctx.render({text: `You called /whatever with ${method}.`});
 });
 
 app.start();
 ```
 
-## Optional placeholders
+## Optional Placeholders
 
 All placeholders require a value, but by assigning them default values you can make capturing optional. Methods like
 `app.get()` return a route object, which has a `route.to()` method that can be used to manually assign default values.
@@ -537,7 +537,7 @@ const app = mojo();
 app.get('/hello/:name').to({name: 'Sebastian', day: 'Monday'}, async ctx => {
   const name = ctx.stash.name;
   const day = ctx.stash.day;
-  await ctx.render({text: `My name is ${name} and it is ${day}`});
+  await ctx.render({text: `My name is ${name} and it is ${day}.`});
 });
 
 app.start();
@@ -545,7 +545,7 @@ app.start();
 
 Default values that don't belong to a placeholder simply get merged into `ctx.stash` all the time.
 
-## Restrictive placeholders
+## Restrictive Placeholders
 
 A very easy way to make placeholders more restrictive are alternatives, you just make a list of possible values.
 
@@ -558,7 +558,7 @@ const app = mojo();
 // * /123
 app.any('/:foo', {foo: ['test', '123']}, async ctx => {
   const foo = ctx.stash.foo;
-  await ctx.render({text: `Our :foo placeholder matched ${foo}`});
+  await ctx.render({text: `Our :foo placeholder matched ${foo}.`});
 }});
 
 app.start();
@@ -576,7 +576,7 @@ const app = mojo();
 // * /123
 app.any('/:bar', {bar: /\d+/}, async ctx => {
   const bar = ctx.stash.bar;
-  await ctx.render({text: `Our :bar placeholder matched ${bar}`});
+  await ctx.render({text: `Our :bar placeholder matched ${bar}.`});
 }});
 
 app.start();
@@ -586,4 +586,63 @@ You can take a closer look at all the generated regular expressions with the `ro
 
 ```
 $ node myapp.js routes -v
+```
+
+## Nested Routes
+
+Routes can be nested in tree structures to organize them more efficiently and to share default values between branches.
+All methods for creating new routes, like `app.get()`, are therefore also available as `route.get()`.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// * /foo (cannot match on its own)
+const foo = app.any('/foo').to({name: 'Daniel'});
+
+// GET /foo/bar
+foo.get('/bar', async ctx => {
+  const name = ctx.stash.name;
+  await ctx.render({text: `My name is ${name}.`});
+}});
+
+// GET /foo/baz
+foo.get('/baz', async ctx => {
+  const name = ctx.stash.name;
+  await ctx.render({text: `My name is also ${name}.`});
+}});
+
+app.start();
+```
+
+Only the actual endpoints of a route can match, so a request for `/foo` would not yield a result.
+
+## Under
+
+Authentication and code shared between multiple routes can be realized easily with routes created by `app.under()`. All
+nested routes are only evaluated if the action returns a value other than `false`.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// * /admin
+const admin = app.under('/admin', async ctx => {
+  // Authenticated
+  const params = await ctx.params();
+  if (params.get('name') === 'Bender') return;
+
+  // Not authenticated
+  await ctx.render({text: 'You are not Bender, permission denied.'});
+  return false;
+});
+
+// GET /admin?name=Bender
+admin.get('/', async ctx => {
+  await ctx.render({text: 'Hi Bender!'});
+}});
+
+app.start();
 ```
