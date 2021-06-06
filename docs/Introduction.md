@@ -43,7 +43,7 @@ transition to proper MVC abstraction as they grow. This is one of the fundamenta
 
 ## Installation
 
-All you need to get started with mojo.js is [Node.js](https://nodejs.org) 15.0.0 (or newer). We do recommend the use of
+All you need to get started with mojo.js is [Node.js](https://nodejs.org) 16.0.0 (or newer). We do recommend the use of
 an [nvm](https://nvm.sh) environment though.
 
 ```
@@ -67,7 +67,7 @@ Be aware that mojo.js uses [ES modules](https://nodejs.org/api/esm.html), so you
 {
   "type": "module",
   "dependencies": {
-    "@mojojs/mojo": ">=0.0.1-alpha.21"
+    "@mojojs/mojo": ">=0.0.1-alpha.35"
   }
 }
 ```
@@ -534,17 +534,16 @@ const app = mojo();
 
 // GET /hello
 // GET /hello/Sara
-app.get('/hello/:name').to({name: 'Sebastian', day: 'Monday', fn: async ctx => {
+app.get('/hello/:name').to({name: 'Sebastian', day: 'Monday'}, async ctx => {
   const name = ctx.stash.name;
   const day = ctx.stash.day;
   await ctx.render({text: `My name is ${name} and it is ${day}`});
-}});
+});
 
 app.start();
 ```
 
-Default values that don't belong to a placeholder simply get merged into `ctx.stash` all the time. And actions are just
-a special case of default value with the name `fn`.
+Default values that don't belong to a placeholder simply get merged into `ctx.stash` all the time.
 
 ## Restrictive placeholders
 

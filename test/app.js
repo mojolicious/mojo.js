@@ -152,12 +152,12 @@ t.test('App', async t => {
   });
 
   // * /url_for
-  app.any('/url_for/:msg', async ctx => {
+  app.any('/url_for/:msg').to({msg: 'fail'}, async ctx => {
     const form = await ctx.req.form();
     const target = form.get('target');
     const values = form.has('msg') ? {msg: form.get('msg')} : undefined;
     return ctx.render({text: ctx.urlFor(target, values)});
-  }).to({msg: 'fail'});
+  });
   app.any('/websocket').websocket('/route').any('/works').name('websocket_route');
 
   // * /redirect
