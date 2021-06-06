@@ -298,6 +298,7 @@ a `views/layouts` directory.
 ```js
 const app = require('@mojojs/mojo')();
 
+// Render an inline view with an inline layout
 app.get('/', ctx => ctx.render({inline: indexTemplate, inlineLayout: defaultLayout}, {title: 'Hello'}));
 
 app.start();
@@ -327,12 +328,14 @@ context (`ctx`), from actions to views.
 ```js
 const app = require('@mojojs/mojo')();
 
+// A helper to identify visitors
 app.addHelper('whois', ctx => {
   const agent = ctx.req.get('User-Agent') ?? 'Anonymous';
   const ip = ctx.req.remoteAddress;
   return `${agent} (${ip})`;
 });
 
+// Use helper in action and template
 app.get('/secret', async ctx => {
   const user = ctx.whois();
   ctx.log.debug(`Request from ${user}`);
@@ -357,6 +360,7 @@ as part of your application. You can register plugins with `app.plugin()`.
 ```js
 const mojo = require('@mojojs/mojo');
 
+// Create application with default configuration
 const app = mojo({config: {foo = 'default value'}});
 
 app.plugin(mojo.jsonConfigPlugin, {file: 'myapp.conf'});
