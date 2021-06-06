@@ -413,3 +413,39 @@ app.start();
 
 To separate them from the surrounding text, you can surround your placeholders with `<` and `>`, which also makes the
 colon prefix optional.
+
+## Relaxed Placeholders
+
+Relaxed placeholders allow matching of everything until a `/` occurs, similar to the regular expression `([^/]+)`.
+
+```js
+const app = require('@mojojs/mojo')();
+
+// GET /hello/test
+// GET /hello/test.html
+app.get('/hello/#you', async ctx => {
+  const you = ctx.stash.you;
+  await ctx.render({text: `Your name is ${you}`});
+});
+
+app.start();
+```
+
+## Wildcard Placeholders
+
+Wildcard placeholders allow matching absolutely everything, including `/` and `.`, similar to the regular expression
+`(.+)`.
+
+```js
+const app = require('@mojojs/mojo')();
+
+// GET /hello/test
+// GET /hello/test123
+// GET /hello/test.123/test/123
+app.get('/hello/*you', async ctx => {
+  const you = ctx.stash.you;
+  await ctx.render({text: `Your name is ${you}`});
+});
+
+app.start();
+```
