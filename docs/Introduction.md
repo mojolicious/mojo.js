@@ -328,6 +328,7 @@ import mojo from '@mojojs/mojo';
 
 const app = mojo();
 
+// Render an inline view with an inline layout
 app.get('/', ctx => ctx.render({inline: indexTemplate, inlineLayout: defaultLayout}, {title: 'Hello'}));
 
 app.start();
@@ -359,12 +360,14 @@ import mojo from '@mojojs/mojo';
 
 const app = mojo();
 
+// A helper to identify visitors
 app.addHelper('whois', ctx => {
   const agent = ctx.req.get('User-Agent') ?? 'Anonymous';
   const ip = ctx.req.remoteAddress;
   return `${agent} (${ip})`;
 });
 
+// Use helper in action and template
 app.get('/secret', async ctx => {
   const user = ctx.whois();
   ctx.log.debug(`Request from ${user}`);
@@ -389,9 +392,10 @@ as part of your application. You can register plugins with `app.plugin()`.
 ```js
 import mojo from '@mojojs/mojo';
 
+// Create application with default configuration
 const app = mojo({config: {foo = 'default value'}});
 
-app.plugin(mojo.jsonConfigPlugin, {file: '/etc/myapp.conf'});
+app.plugin(mojo.jsonConfigPlugin, {file: 'myapp.conf'});
 
 // Return configured foo value
 app.get('/foo', async ctx => {
@@ -402,9 +406,17 @@ app.get('/foo', async ctx => {
 app.start();
 ```
 
+Now if you create a `myapp.conf` file in the same directory as your application, you can change the `default value`.
+
+```json
+{
+  "foo": "another value"
+}
+```
+
 `mojo.jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config
-file (`config.json` in the application directory by default). Plugins can also set up routes, hooks, helpers, template
-engines and many many other things we will later explore in the plugin guide.
+file (`config.json` by default). For multiple config files you can register it more than once. Plugins can also set up
+routes, hooks, helpers, template engines and many many other things we will later explore in the plugin guide.
 
 ## Placeholders
 
@@ -435,3 +447,77 @@ app.start();
 
 To separate them from the surrounding text, you can surround your placeholders with `<` and `>`, which also makes the
 colon prefix optional.
+
+## Relaxed Placeholders
+Relaxed placeholders allow matching of everything until a `/` occurs, similar to the regular expression `([^/]+)`.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// GET /hello/test
+// GET /hello/test.html
+app.get('/hello/#you', async ctx => {
+  const you = ctx.stash.you;
+  await ctx.render({text: `Your name is ${you}`});
+});
+
+app.start();
+```
+
+## Wildcard Placeholders
+
+Wildcard placeholders allow matching absolutely everything, including `/` and `.`, similar to the regular expression
+`(.+)`.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// GET /hello/test
+// GET /hello/test123
+// GET /hello/test.123/test/123
+app.get('/hello/*you', async ctx => {
+  const you = ctx.stash.you;
+  await ctx.render({text: `Your name is ${you}`});
+});
+
+app.start();
+```
+
+## HTTP Methods
+
+Routes can be restricted to specific request methods with different methods like `app.get()`, `app.post()` and
+`app.any()`.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// GET /hello
+app.get('/hello', async ctx => {
+  await ctx.render({text: 'Hello World!'});
+});
+
+// PUT /hello
+app.get('/hello', async ctx => {
+  const size = Buffer.byteLengt(await ctx.req.buffer());
+  await ctx.render({text: `You uploaded ${size} bytes to /hello`});
+});
+
+// GET|POST|PATCH /bye
+app.any(['GET', 'POST', 'PATCH'], '/bye', async ctx => {
+  await ctx.render({text: 'Bye World!'});
+});
+
+// * /whatever
+app.any('/whatever', async ctx => {
+  const method = ctx.req.method;
+  await ctx.render({text: `You called /whatever with ${method}`});
+});
+
+app.start();
+```
