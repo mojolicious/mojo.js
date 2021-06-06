@@ -379,8 +379,8 @@ Now if you create a `myapp.conf` file in the same directory as your application,
 ```
 
 `mojo.jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config
-file (`config.json` in the application directory by default). Plugins can also set up routes, hooks, helpers, template
-engines and many many other things we will later explore in the plugin guide.
+file (`config.json` by default). For multiple config files you can register it more than once. Plugins can also set up
+routes, hooks, helpers, template engines and many many other things we will later explore in the plugin guide.
 
 ## Placeholders
 
