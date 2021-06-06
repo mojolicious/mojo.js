@@ -100,6 +100,16 @@ t.test('Util', async t => {
     });
   });
 
+  await t.test('loadModules', async t => {
+    const loadModules = util.loadModules;
+    const modules = await loadModules([File.currentFile().sibling('support', 'full-app', 'controllers').toString()]);
+    t.notSame(modules.foo, undefined);
+    t.notSame(modules.bar, undefined);
+    t.notSame(modules['foo/baz'], undefined);
+    t.same(modules['foo/bar'], undefined);
+    t.same(modules.baz, undefined);
+  });
+
   await t.test('sleep', async t => {
     const sleep = util.sleep(1);
     t.ok(sleep instanceof Promise);
