@@ -449,3 +449,36 @@ app.get('/hello/*you', async ctx => {
 
 app.start();
 ```
+
+## HTTP Methods
+
+Routes can be restricted to specific request methods with different methods like `app.get()`, `app.post()` and
+`app.any()`.
+
+```js
+const app = require('@mojojs/mojo')();
+
+// GET /hello
+app.get('/hello', async ctx => {
+  await ctx.render({text: 'Hello World!'});
+});
+
+// PUT /hello
+app.get('/hello', async ctx => {
+  const size = Buffer.byteLengt(await ctx.req.buffer());
+  await ctx.render({text: `You uploaded ${size} bytes to /hello`});
+});
+
+// GET|POST|PATCH /bye
+app.any(['GET', 'POST', 'PATCH'], '/bye', async ctx => {
+  await ctx.render({text: 'Bye World!'});
+});
+
+// * /whatever
+app.any('/whatever', async ctx => {
+  const method = ctx.req.method;
+  await ctx.render({text: `You called /whatever with ${method}`});
+});
+
+app.start();
+```
