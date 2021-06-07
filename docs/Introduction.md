@@ -761,7 +761,7 @@ app.start();
 
 ## Validation
 
-Instead of form validation we use data structure validation with [JSON Schema](https://json-schema.org) via
+Instead of form validation we use [JSON Schema](https://json-schema.org) data structure validation with
 [ajv](https://www.npmjs.com/package/ajv) for everything.
 
 ```js
@@ -797,7 +797,7 @@ app.get('/form', async ctx => {
 app.start();
 ```
 
-Just remember to include a `$id` value so the validation function can be cached. Or even better, register the schema
+Just remember to include an `$id` value, so the validation function can be cached. Or even better, register the schema
 during application startup with `app.addSchema()`.
 
 ```js
