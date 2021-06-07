@@ -107,11 +107,12 @@ t.test('Util', async t => {
   await t.test('loadModules', async t => {
     const loadModules = util.loadModules;
     const modules = await loadModules([File.currentFile().sibling('support', 'full-app', 'controllers').toString()]);
-    t.notSame(modules.foo, undefined);
-    t.notSame(modules.bar, undefined);
-    t.notSame(modules['foo/baz'], undefined);
-    t.same(modules['foo/bar'], undefined);
-    t.same(modules.baz, undefined);
+    t.ok(modules.foo != null);
+    t.ok(modules.bar != null);
+    t.ok(modules['foo/baz'] != null);
+    t.ok(modules.yada === null);
+    t.ok(modules['foo/bar'] === undefined);
+    t.ok(modules.baz === undefined);
   });
 
   await t.test('sleep', async t => {
