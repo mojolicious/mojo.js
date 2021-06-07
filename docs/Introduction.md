@@ -761,7 +761,8 @@ app.start();
 
 ## Validation
 
-Instead of form validation we use data structure validation with [JSON Schema](https://json-schema.org) for everything.
+Instead of form validation we use data structure validation with [JSON Schema](https://json-schema.org) via
+[ajv](https://www.npmjs.com/package/ajv) for everything.
 
 ```js
 import mojo from '@mojojs/mojo';
@@ -770,6 +771,8 @@ const app = mojo();
 
 // GET /form?test=13
 app.get('/form', async ctx => {
+
+  // Prepare validation function for schema
   const validate = ctx.schema({
     $id: 'testForm',
     type: 'object',
@@ -779,10 +782,12 @@ app.get('/form', async ctx => {
     required: ['test']
   });
 
+  // Turn request parameters into a plain object
   const params = await ctx.params();
   const testData = params.toObject();
 
-  if (validate(testData)) {
+  // Validate request parameters
+  if (validate(testData) === true) {
     await ctx.render({json: testData});
   } else {
     await ctx.render({json: {error: 'Validation failed'}, status: 400});
