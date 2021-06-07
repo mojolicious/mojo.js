@@ -208,7 +208,7 @@ t.test('Command app', async t => {
     t.match(await dir.child('index.js').readFile('utf8'), /import mojo.+from '@mojojs\/mojo'/);
     t.match(output2.toString(), /\[write\].+controllers.+example\.js/);
     t.same(await dir.child('controllers', 'example.js').exists(), true);
-    t.match(await dir.child('controllers', 'example.js').readFile('utf8'), /export class Controller/);
+    t.match(await dir.child('controllers', 'example.js').readFile('utf8'), /export default class Controller/);
     t.match(output2.toString(), /\[write\].+default\.html\.ejs/);
     t.same(await dir.child('views', 'layouts', 'default.html.ejs').exists(), true);
     t.match(await dir.child('views', 'layouts', 'default.html.ejs').readFile('utf8'), /Welcome/);
