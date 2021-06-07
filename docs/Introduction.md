@@ -913,6 +913,7 @@ app.post('/upload', async ctx => {
   for await (const {fieldname, file, filename} of ctx.req.files()) {
     ctx.log.debug(`Uploading file ${filename}`);
 
+    // Files are `stream.Readable` objects
     for await (const chunk of file) {
       const size =  Buffer.byteLength(chunk);
       bytes += size;
