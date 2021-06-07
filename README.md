@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://mojojs.org">
-    <img src="https://github.com/mojolicious/mojo.js/blob/main/docs/logo.png?raw=true" style="margin: 0 auto;">
+    <img src="https://github.com/mojolicious/mojo.js/blob/main/docs/images/logo.png?raw=true" style="margin: 0 auto;">
   </a>
 </p>
 

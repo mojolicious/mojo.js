@@ -178,8 +178,9 @@ const params = await ctx.req.form();
 
 ## Stash and Views
 
-The `stash` is a plain object and a property of the context object. It is used primarily to pass data to views. And
-while views can be inlined for single file apps, they are usually kept as separate files in a `views` directory.
+`ctx.stash` is a plain object you can use to pass along arbitrary information. It is used primarily for data to be
+included in the output of views. And while views can be inlined for single file apps, they are usually kept as
+separate files in a `views` directory.
 
 ```js
 import mojo from '@mojojs/mojo';
@@ -277,12 +278,12 @@ app.get('/dies', async ctx => {
 app.start();
 ```
 
-![Exception](exception_development.png)
+![Exception](images/exception_development.png)
 
 Don't worry about revealing too much information on these pages, they are only available during development, and
 will be replaced automatically with pages that don't reveal any sensitive information in a production environment.
 
-![Exception](exception_production.png)
+![Exception](images/exception_production.png)
 
 And of course they can be customised as well.
 
@@ -356,7 +357,7 @@ const app = mojo();
 // A helper to identify visitors
 app.addHelper('whois', ctx => {
   const agent = ctx.req.get('User-Agent') ?? 'Anonymous';
-  const ip = ctx.req.remoteAddress;
+  const ip = ctx.req.ip;
   return `${agent} (${ip})`;
 });
 
@@ -783,7 +784,7 @@ app.get('/form', async ctx => {
   if (validate(testData) === true) {
     await ctx.render({json: testData});
   } else {
-    await ctx.render({json: {error: 'Validation failed'}, status: 400});
+    await ctx.render({json: {error: {message: 'Validation failed'}}, status: 400});
   }
 });
 
