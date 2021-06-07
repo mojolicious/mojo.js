@@ -759,6 +759,56 @@ app.get('/', async ctx => {
 app.start();
 ```
 
+## Validation
+
+Instead of form validation we use data structure validation with [JSON Schema](https://json-schema.org) for everything.
+
+```js
+import mojo from '@mojojs/mojo';
+
+const app = mojo();
+
+// GET /form?test=13
+app.get('/form', async ctx => {
+  const validate = ctx.schema({
+    $id: 'testForm',
+    type: 'object',
+    properties: {
+      test: {type: 'number'}
+    },
+    required: ['test']
+  });
+
+  const params = await ctx.params();
+  const testData = params.toObject();
+
+  if (validate(testData)) {
+    await ctx.render({json: testData});
+  } else {
+    await ctx.render({json: {error: 'Validation failed'}, status: 400});
+  }
+});
+
+app.start();
+```
+
+Just remember to include a `$id` value so the validation function can be cached. Or even better, register the schema
+during application startup with `app.addSchema()`.
+
+```js
+// Register schema
+app.addSchema({
+  type: 'object',
+  properties: {
+    test: {type: 'number'}
+  },
+  required: ['test']
+}, 'testForm');
+
+// Request schema by name from now on
+const validate = ctx.schema('testForm');
+```
+
 ## Home
 
 The directory in which the main application script resides, usually called `index.js` is considered the application
