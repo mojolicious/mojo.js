@@ -66,7 +66,8 @@ Whitespace characters around tags can be trimmed.
 ```
 
 At the beginning of the template, stash values get automatically initialized as normal variables. Additionally there is
-also a `stash` variable and the context object is available as `ctx`, giving you full access to helpers.
+also a `stash` variable and the context object is available as `ctx`, giving you full access to request information and
+helpers.
 
 ```
 ctx.stash.name = 'tester';

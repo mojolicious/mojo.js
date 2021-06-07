@@ -43,11 +43,11 @@ many protocols it is most commonly used with HTTP these days. In REST terms, whe
 `http://mojojs.org/foo` resource.
 
 ```
-+--------+                                  +--------+
-|        | -> http://mojolicious.org/foo -> |        |
-| Client |                                  | Server |
-|        | <-  <html>Mojo rocks!</html>  <- |        |
-+--------+                                  +--------+
++--------+                                 +--------+
+|        | -> http://mojojs.org/foo     -> |        |
+| Client |                                 | Server |
+|        | <-  <html>Mojo rocks!</html> <- |        |
++--------+                                 +--------+
 ```
 
 The fundamental idea here is that all resources are uniquely addressable with URLs and every resource can have
@@ -83,7 +83,7 @@ information across several HTTP requests.
 
 ```
 GET /login?user=sebastian&pass=s3cret HTTP/1.1
-Host: mojolicious.org
+Host: mojojs.org
 
 HTTP/1.1 200 OK
 Set-Cookie: sessionid=987654321
@@ -91,7 +91,7 @@ Content-Length: 10
 Hello sebastian.
 
 GET /protected HTTP/1.1
-Host: mojolicious.org
+Host: mojojs.org
 Cookie: sessionid=987654321
 
 HTTP/1.1 200 OK
@@ -108,7 +108,7 @@ Set-Cookie: session=aes-256-gcm(json({user: 'sebastian'}))
 ```
 
 In mojo.js however we are taking this concept one step further by storing everything JSON serialized in AES-256-GCM
-encryoted cookies, which is more compatible with the REST philosophy and reduces infrastructure requirements.
+encrypted cookies, which is more compatible with the REST philosophy and reduces infrastructure requirements.
 
 ### Test-Driven Development
 
