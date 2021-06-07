@@ -47,16 +47,9 @@ All you need to get started with mojo.js is [Node.js](https://nodejs.org) 16.0.0
 an [nvm](https://nvm.sh) environment though.
 
 ```
-$ npm install -g @mojojs/mojo
-...
-```
-
-You can install mojo.js with `npm` globally, or in a project specific `node_modules` directory.
-
-```
 $ mkdir myapp
 $ cd myapp
-$ npm i @mojojs/mojo
+$ npm install @mojojs/mojo
 ...
 ```
 
@@ -124,7 +117,7 @@ During development you don't want to restart your web server after every change,
 [nodemon](https://www.npmjs.com/package/nodemon).
 
 ```
-$ npm i nodemon
+$ npm install nodemon
 ...
 
 $ npx nodemon myapp.js server

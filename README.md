@@ -29,10 +29,10 @@ on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
 
 ## Installation
 
-All you need is a recent Node.js release.
+All you need is Node.js 16.0.0 (or newer).
 
 ```
-$ npm install -g @mojojs/mojo
+$ npm install @mojojs/mojo
 ```
 
 ## Getting Started
