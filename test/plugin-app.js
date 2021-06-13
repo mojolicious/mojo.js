@@ -54,7 +54,7 @@ t.test('Plugin app', async t => {
   await t.test('WebSocket', async t => {
     await client.websocketOk('/websocket/mixed');
     t.equal(await client.messageOk(), 'before: also works, after: works too, also: works too');
-    await client.finishedOk(1005);
+    await client.closedOk(1005);
   });
 
   await client.stop();

@@ -115,8 +115,8 @@ t.test('Test client', async t => {
     await client.websocketOk('/echo');
     await client.sendOk('hello');
     await client.messageOk();
-    await client.finishOk(1000);
-    await client.finishedOk(1000);
+    await client.closeOk(1000);
+    await client.closedOk(1000);
 
     t.same(results, [
       ['ok', [true], 'WebSocket handshake with /echo'],

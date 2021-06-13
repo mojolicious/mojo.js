@@ -76,8 +76,8 @@ t.test('WebSocket app', async t => {
     await client.websocketOk('/echo');
     await client.sendOk('hello');
     t.equal(await client.messageOk(), 'echo: hello');
-    await client.finishOk(1000);
-    await client.finishedOk(1000);
+    await client.closeOk(1000);
+    await client.closedOk(1000);
   });
 
   await t.test('JSON roundtrip', async t => {
@@ -86,8 +86,8 @@ t.test('WebSocket app', async t => {
     t.same(await client.messageOk(), {hello: 'world!'});
     await client.sendOk({hello: 'mojo'});
     t.same(await client.messageOk(), {hello: 'mojo!'});
-    await client.finishOk(1000);
-    await client.finishedOk(1000);
+    await client.closeOk(1000);
+    await client.closedOk(1000);
   });
 
   await t.test('Multiple roundtrips', async t => {
@@ -96,8 +96,8 @@ t.test('WebSocket app', async t => {
     t.equal(await client.messageOk(), 'echo: hello again');
     await client.sendOk('and one more time');
     t.equal(await client.messageOk(), 'echo: and one more time');
-    await client.finishOk(4000);
-    await client.finishedOk(4000);
+    await client.closeOk(4000);
+    await client.closedOk(4000);
   });
 
   await t.test('Custom headers and protocols', async t => {
@@ -106,21 +106,21 @@ t.test('WebSocket app', async t => {
     t.equal(await client.messageOk(), 'greeting: hello mojo');
     await client.sendOk('hello');
     t.equal(await client.messageOk(), 'echo: hello');
-    await client.finishOk();
+    await client.closeOk();
   });
 
   await t.test('Bytes', async t => {
     await client.websocketOk('/echo');
     await client.sendOk(Buffer.from('bytes!'));
     t.same(await client.messageOk(), Buffer.from('bytes!'));
-    await client.finishOk();
+    await client.closeOk();
   });
 
   await t.test('Zero', async t => {
     await client.websocketOk('/echo');
     await client.sendOk(0);
     t.equal(await client.messageOk(), 'echo: 0');
-    await client.finishOk();
+    await client.closeOk();
   });
 
   await t.test('Plain alternative', async t => {
@@ -132,24 +132,24 @@ t.test('WebSocket app', async t => {
     t.equal(await client.messageOk(), 'push 1');
     t.equal(await client.messageOk(), 'push 2');
     t.equal(await client.messageOk(), 'push 3');
-    await client.finishOk();
+    await client.closeOk();
 
     await client.websocketOk('/push');
     t.equal(await client.messageOk(), 'push 1');
     t.equal(await client.messageOk(), 'push 2');
     t.equal(await client.messageOk(), 'push 3');
-    await client.finishOk();
+    await client.closeOk();
   });
 
   await t.test('WebSocket connection gets closed right away', async t => {
     await client.websocketOk('/close');
-    await client.finishedOk(1001);
+    await client.closedOk(1001);
   });
 
   await t.test('WebSocket connection gets closed after one message', async t => {
     await client.websocketOk('/one_sided');
     t.equal(await client.messageOk(), 'I ♥ Mojolicious!');
-    await client.finishedOk(1005);
+    await client.closedOk(1005);
   });
 
   await t.test('Rejected WebSocket connection', async t => {
@@ -166,7 +166,7 @@ t.test('WebSocket app', async t => {
     (await (await client.postOk('/login')).statusIs(200).bodyIs('Welcome kraih'));
     await client.websocketOk('/restricted');
     t.equal(await client.messageOk(), 'Welcome back kraih');
-    await client.finishedOk(1005);
+    await client.closedOk(1005);
   });
 
   await client.stop();

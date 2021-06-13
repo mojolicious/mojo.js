@@ -118,15 +118,15 @@ t.test('Hook app', async t => {
   await t.test('WebSocket hooks', async t => {
     await client.websocketOk('/hello');
     t.equal(await client.messageOk(), 'Hello Mojo!');
-    await client.finishedOk(1005);
+    await client.closedOk(1005);
 
     await client.websocketOk('/hello?third=1');
     t.equal(await client.messageOk(), 'Hello World!');
-    await client.finishedOk(1005);
+    await client.closedOk(1005);
 
     await client.websocketOk('/whatever?third=1');
     t.equal(await client.messageOk(), 'Hello World!');
-    await client.finishedOk(1005);
+    await client.closedOk(1005);
   });
 
   await t.test('Request hook exception', async t => {

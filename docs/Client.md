@@ -316,8 +316,8 @@ Testing WebSockets is almost as easy, but all operations are async and  have to 
 await client.websocketOk('/echo');
 await client.sendOk('hello');
 assert.equal(await client.messageOk(), 'echo: hello');
-await client.finishOk(4000);
-await client.finishedOk(4000);
+await client.closeOk(4000);
+await client.closedOk(4000);
 ```
 
 And while the test client is very efficient for testing backend services, for frontend testing we recommend combining it
