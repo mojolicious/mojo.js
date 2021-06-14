@@ -6,9 +6,8 @@
 
 [![](https://github.com/mojolicious/mojo.js/workflows/test/badge.svg)](https://github.com/mojolicious/mojo.js/actions)
 
-[Mojolicious](https://mojolicious.org) for [Node.js](https://nodejs.org/). This project is still **experimental** and
-not quite ready for production use yet (but soon!). If you want to stay up to date on the latest developments join us
-on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
+[Mojolicious](https://mojolicious.org) for [Node.js](https://nodejs.org/). If you want to stay up to date on the latest
+developments join us on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
 
 ## Features
 
