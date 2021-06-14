@@ -1,4 +1,5 @@
 import Ajv from 'ajv';
+import {AnyArguments, AppOptions, RouteArguments, MojoContext} from './types.js';
 import CLI from './cli.js';
 import Client from './client.js';
 import {ClientRequest, ServerResponse} from 'http';
@@ -19,23 +20,6 @@ import Static from './static.js';
 import TestClient from './client/test.js';
 import viewHelpersPlugin from './plugins/view-helpers.js';
 import WebSocketContext from './context/websocket.js';
-
-// Route arguments
-export type AnyArguments = (string | string[] | Function | {[name: string]: string[] | RegExp})[];
-export type RouteArguments = (string | Function | {[name: string]: string[] | RegExp})[];
-
-// Context variants
-export interface HTTPContextWithHelpers extends HTTPContext { [key: string]: any }
-export interface WebSocketContextWithHelpers extends WebSocketContext { [key: string]: any }
-export type MojoContext = HTTPContextWithHelpers | WebSocketContextWithHelpers;
-
-export interface AppOptions {
-  config?: object,
-  exceptionFormat?: string,
-  detectImport?: boolean,
-  mode?: string,
-  secrets?: string[]
-}
 
 export default class App {
   cli: CLI = new CLI(this);
