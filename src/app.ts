@@ -1,6 +1,7 @@
 import Ajv from 'ajv';
 import CLI from './cli.js';
 import Client from './client.js';
+import {ClientRequest, ServerResponse} from 'http';
 import ejsEnginePlugin from './plugins/ejs-engine.js';
 import exceptionHelpersPlugin from './plugins/exception-helpers.js';
 import File from './file.js';
@@ -12,35 +13,55 @@ import Mime from './mime.js';
 import MockClient from './client/mock.js';
 import Renderer from './renderer.js';
 import Router from './router.js';
+import Server from './server.js';
 import Session from './session.js';
 import Static from './static.js';
 import TestClient from './client/test.js';
 import viewHelpersPlugin from './plugins/view-helpers.js';
 import WebSocketContext from './context/websocket.js';
 
+export type AnyArguments = (string | string[] | Function | {})[];
+
+export type RouteArguments = (string | Function | {})[];
+
+export interface AppOptions {
+  config?: object,
+  exceptionFormat?: string,
+  detectImport?: boolean,
+  mode?: string,
+  secrets?: string[]
+}
+
 export default class App {
-  constructor (options = {}) {
-    this.cli = new CLI(this);
-    this.client = new Client();
+  cli: CLI = new CLI(this);
+  client: Client = new Client();
+  config: object;
+  detectImport: boolean;
+  exceptionFormat: string;
+  hooks: Hooks = new Hooks();
+  home: File = undefined;
+  log: Logger;
+  mime: Mime = new Mime();
+  models: object = {};
+  mojo: Function = undefined;
+  renderer: Renderer = new Renderer();
+  router: Router = new Router();
+  secrets: string[];
+  session: Session = new Session(this);
+  static: Static = new Static();
+  validator: Ajv = new Ajv();
+  _httpContextClass: any = class extends HTTPContext {};
+  _mode: string;
+  _server: WeakRef<Server> = null;
+  _websocketContextClass: any = class extends WebSocketContext {};
+
+  constructor (options: AppOptions = {}) {
     this.config = options.config ?? {};
     this.detectImport = options.detectImport ?? true;
     this.exceptionFormat = options.exceptionFormat ?? 'html';
-    this.hooks = new Hooks();
-    this.home = undefined;
-    this.mime = new Mime();
-    this.models = {};
-    this.mojo = undefined;
-    this.renderer = new Renderer();
-    this.router = new Router();
     this.secrets = options.secrets ?? ['Insecure'];
-    this.session = new Session(this);
-    this.static = new Static();
-    this.validator = new Ajv();
 
-    this._httpContextClass = class extends HTTPContext {};
     this._mode = options.mode ?? process.env.NODE_ENV ?? 'development';
-    this._server = null;
-    this._websocketContextClass = class extends WebSocketContext {};
 
     const isDev = this._mode === 'development';
     this.log = new Logger({historySize: isDev ? 10 : 0, level: isDev ? 'trace' : 'info'});
@@ -51,22 +72,22 @@ export default class App {
     this.plugin(viewHelpersPlugin);
   }
 
-  addHelper (name, fn) {
+  addHelper (name: string, fn: Function) {
     return this.decorateContext(name, function (...args) {
       return fn(this, ...args);
     });
   }
 
-  addHook (name, fn) {
+  addHook (name:string, fn: Function) {
     this.hooks.addHook(name, fn);
     return this;
   }
 
-  any (methods, pattern, constraints, fn) {
-    return this.router.any(methods, pattern, constraints, fn);
+  any (...args: AnyArguments) {
+    return this.router.any(...args);
   }
 
-  decorateContext (name, fn) {
+  decorateContext (name: string, fn: PropertyDescriptor & ThisType<any>) {
     if (HTTPContext.prototype[name] !== undefined || WebSocketContext[name] !== undefined) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
     }
@@ -82,12 +103,12 @@ export default class App {
     return this;
   }
 
-  delete (pattern, constraints, fn) {
-    return this.router.delete(pattern, constraints, fn);
+  delete (...args: RouteArguments) {
+    return this.router.delete(...args);
   }
 
-  get (pattern, constraints, fn) {
-    return this.router.get(pattern, constraints, fn);
+  get (...args: RouteArguments) {
+    return this.router.get(...args);
   }
 
   async handleRequest (ctx) {
@@ -111,7 +132,7 @@ export default class App {
     return this._mode;
   }
 
-  newHTTPContext (req, res, options) {
+  newHTTPContext (req: ClientRequest, res: ServerResponse, options) {
     return new this._httpContextClass(this, req, res, options);
   }
 
@@ -123,7 +144,7 @@ export default class App {
     return TestClient.newTestClient(this, options);
   }
 
-  newWebSocketContext (req, options) {
+  newWebSocketContext (req: ClientRequest, options) {
     return new this._websocketContextClass(this, req, options);
   }
 
@@ -135,16 +156,16 @@ export default class App {
     return this.router.patch(pattern, constraints, fn);
   }
 
-  plugin (plugin, options) {
+  plugin (plugin: Function, options: object = {}) {
     return plugin(this, options);
   }
 
-  post (pattern, constraints, fn) {
-    return this.router.post(pattern, constraints, fn);
+  post (...args: RouteArguments) {
+    return this.router.post(...args);
   }
 
-  put (pattern, constraints, fn) {
-    return this.router.put(pattern, constraints, fn);
+  put (...args: RouteArguments) {
+    return this.router.put(...args);
   }
 
   get server () {
@@ -160,8 +181,8 @@ export default class App {
     return this.cli.start(command, ...args);
   }
 
-  under (methods, pattern, constraints, fn) {
-    return this.router.under(methods, pattern, constraints, fn);
+  under (...args: AnyArguments) {
+    return this.router.under(...args);
   }
 
   async warmup () {
@@ -169,7 +190,7 @@ export default class App {
     await this.router.warmup();
   }
 
-  websocket (pattern, constraints, fn) {
-    return this.router.websocket(pattern, constraints, fn);
+  websocket (...args: RouteArguments) {
+    return this.router.websocket(...args);
   }
 }

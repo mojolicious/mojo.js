@@ -3,11 +3,12 @@
     "outDir": "lib",
     "allowJs": true,
     "lib": [
-      "es2020"
+      "ESNext"
     ],
     "target": "es2020",
     "declaration": true,
-    "incremental": true
+    "incremental": true,
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*"

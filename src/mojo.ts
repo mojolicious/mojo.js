@@ -3,7 +3,7 @@
  * Copyright (C) 2021 Sebastian Riedel
  * MIT Licensed
  */
-import App from './app.js';
+import App, {AppOptions} from './app.js';
 import Client from './client.js';
 import File from './file.js';
 import jsonConfigPlugin from './plugins/json-config.js';
@@ -13,12 +13,7 @@ import Session from './session.js';
 import TestClient from './client/test.js';
 import * as util from './util.js';
 
-export default function mojo (options: {
-  config?: {},
-  exceptionFormat?: string,
-  mode?: string,
-  secrets?: string[]
-}) : App {
+export default function mojo (options: AppOptions) : App {
   const app = new App(options);
   app.mojo = mojo;
   const home = app.home = File.callerFile().dirname();
