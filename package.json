@@ -17,10 +17,14 @@
   },
   "homepage": "https://mojojs.org",
   "scripts": {
-    "lint": "eslint \"lib/**/*.js\" \"lib/*.js\" \"test/*.js\"",
-    "test": "tap --no-coverage test/*.js",
+    "build": "npx tsc",
+    "build:test": "npm run build; npm test",
+    "build:watch": "npx tsc --watch",
     "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
-    "coverage-html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js"
+    "coverage-html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js",
+    "lint": "eslint \"src/**/*.js\" \"src/*.js\" \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
+    "prepublish": "npm run build",
+    "test": "tap --no-coverage test/*.js"
   },
   "exports": "./lib/mojo.js",
   "type": "module",
@@ -33,9 +37,13 @@
     "mojo": "./bin/mojo.js"
   },
   "devDependencies": {
-    "@istanbuljs/esm-loader-hook": ">=0.1.2",
-    "eslint": ">=7.22.0",
-    "eslint-config-semistandard": ">=15.0.1"
+    "@istanbuljs/esm-loader-hook": "^=0.1.2",
+    "@types/node": "^=15.0.3",
+    "@typescript-eslint/eslint-plugin": "^=4.23.0",
+    "@typescript-eslint/parser": "^=4.23.0",
+    "eslint": "^=7.22.0",
+    "eslint-config-semistandard": "^=16.0.0",
+    "typescript": "^=4.2.4"
   },
   "engines": {
     "node": ">= 16"
@@ -44,7 +52,7 @@
     "ajv": "^8.5.0",
     "busboy": "^0.3.1",
     "chalk": "^4.1.1",
-    "cheerio": "^1.0.0-rc.9",
+    "cheerio": "^1.0.0-rc.10",
     "cookie": "^0.4.1",
     "ejs": "^3.1.6",
     "escape-string-regexp": "^5.0.0",

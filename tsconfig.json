@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "lib",
+    "allowJs": true,
+    "lib": [
+      "es2020"
+    ],
+    "target": "es2020",
+    "declaration": true,
+    "incremental": true
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

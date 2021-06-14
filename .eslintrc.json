@@ -1,4 +1,8 @@
 {
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "env": {
     "node": true,
     "es2021": true
@@ -22,6 +26,7 @@
     ]
   },
   "ignorePatterns": [
+    "lib/**/*.js",
     "vendor/**/*.js"
   ]
 }

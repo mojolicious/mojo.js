@@ -115,6 +115,7 @@ export async function loadModules (dirs) {
   for (const dir of dirs.map(path => new File(path))) {
     if (await dir.exists() === false) continue;
     for await (const file of dir.list({recursive: true})) {
+      if (/\.m?js$/.test(file) === false) continue;
       const imports = await import(file.toFileURL());
       const name = dir.relative(file).toArray().join('/').replace(/\.m?js$/, '');
       modules[name] = imports.default ?? null;
