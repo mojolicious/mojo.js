@@ -1,6 +1,6 @@
 {
   "name": "@mojojs/mojo",
-  "version": "0.0.1-alpha.40",
+  "version": "0.0.1",
   "description": "Real-time web framework",
   "keywords": [
     "web",
