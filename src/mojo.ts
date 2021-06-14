@@ -13,7 +13,12 @@ import Session from './session.js';
 import TestClient from './client/test.js';
 import * as util from './util.js';
 
-export default function mojo (options) {
+export default function mojo (options: {
+  config?: {},
+  exceptionFormat?: string,
+  mode?: string,
+  secrets?: string[]
+}) : App {
   const app = new App(options);
   app.mojo = mojo;
   const home = app.home = File.callerFile().dirname();
