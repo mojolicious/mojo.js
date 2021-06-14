@@ -1,4 +1,4 @@
-import EventEmitter, {captureRejectionSymbol} from 'events';
+import EventEmitter from 'events';
 import Params from './body/params.js';
 import ServerRequest from './server/request.js';
 
@@ -19,7 +19,7 @@ export default class Context extends EventEmitter {
     this._session = undefined;
   }
 
-  [captureRejectionSymbol] (error) {
+  [EventEmitter.captureRejectionSymbol] (error) {
     this.exception(error);
   }
 
