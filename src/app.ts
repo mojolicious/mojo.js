@@ -20,9 +20,14 @@ import TestClient from './client/test.js';
 import viewHelpersPlugin from './plugins/view-helpers.js';
 import WebSocketContext from './context/websocket.js';
 
-export type AnyArguments = (string | string[] | Function | {})[];
+// Route arguments
+export type AnyArguments = (string | string[] | Function | {[name: string]: string[] | RegExp})[];
+export type RouteArguments = (string | Function | {[name: string]: string[] | RegExp})[];
 
-export type RouteArguments = (string | Function | {})[];
+// Context variants
+export interface HTTPContextWithHelpers extends HTTPContext { [key: string]: any }
+export interface WebSocketContextWithHelpers extends WebSocketContext { [key: string]: any }
+export type MojoContext = HTTPContextWithHelpers | WebSocketContextWithHelpers;
 
 export interface AppOptions {
   config?: object,
@@ -72,7 +77,7 @@ export default class App {
     this.plugin(viewHelpersPlugin);
   }
 
-  addHelper (name: string, fn: Function) {
+  addHelper (name: string, fn: (ctx: MojoContext, ...args: any) => any) {
     return this.decorateContext(name, function (...args) {
       return fn(this, ...args);
     });
@@ -111,7 +116,7 @@ export default class App {
     return this.router.get(...args);
   }
 
-  async handleRequest (ctx) {
+  async handleRequest (ctx: MojoContext) {
     try {
       if (ctx.isWebSocket === true) {
         if (await this.hooks.runHook('websocket', ctx) === true) return;
