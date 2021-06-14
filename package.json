@@ -23,7 +23,7 @@
     "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
     "coverage-html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js",
     "lint": "eslint \"src/**/*.js\" \"src/*.js\" \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "test": "tap --no-coverage test/*.js"
   },
   "exports": "./lib/mojo.js",
