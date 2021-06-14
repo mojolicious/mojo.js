@@ -61,7 +61,7 @@ export default class App {
     this.plugin(viewHelpersPlugin);
   }
 
-  addHelper (name: string, fn: (ctx: MojoContext, ...args: any) => any) {
+  addHelper (name: string, fn: (ctx: MojoContext, ...args: any[]) => any) {
     return this.decorateContext(name, function (...args) {
       return fn(this, ...args);
     });
@@ -137,12 +137,12 @@ export default class App {
     return new this._websocketContextClass(this, req, options);
   }
 
-  options (pattern, constraints, fn) {
-    return this.router.options(pattern, constraints, fn);
+  options (...args: RouteArguments) {
+    return this.router.options(...args);
   }
 
-  patch (pattern, constraints, fn) {
-    return this.router.patch(pattern, constraints, fn);
+  patch (...args: RouteArguments) {
+    return this.router.patch(...args);
   }
 
   plugin (plugin: Function, options: object = {}) {
@@ -161,11 +161,11 @@ export default class App {
     return this._server?.deref() ?? null;
   }
 
-  set server (server) {
+  set server (server: Server) {
     this._server = new WeakRef(server);
   }
 
-  start (command, ...args) {
+  start (command: string, ...args: string[]) {
     if (this.detectImport === true && process.argv[1] !== File.callerFile().toString()) return;
     return this.cli.start(command, ...args);
   }

@@ -6,8 +6,8 @@ export type AnyArguments = (string | string[] | Function | {[name: string]: stri
 export type RouteArguments = (string | Function | {[name: string]: string[] | RegExp})[];
 
 // Context variants
-export interface HTTPContextWithHelpers extends HTTPContext { [key: string]: any }
-export interface WebSocketContextWithHelpers extends WebSocketContext { [key: string]: any }
+interface HTTPContextWithHelpers extends HTTPContext { [key: string]: any }
+interface WebSocketContextWithHelpers extends WebSocketContext { [key: string]: any }
 export type MojoContext = HTTPContextWithHelpers | WebSocketContextWithHelpers;
 
 export interface AppOptions {
