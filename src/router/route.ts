@@ -1,33 +1,32 @@
+import {AnyArguments, RouteArguments} from '../types.js';
 import assert from 'assert';
 import Pattern from './pattern.js';
+import Router from '../router.js';
 
 export default class Route {
-  constructor () {
-    this.children = [];
-    this.customName = undefined;
-    this.defaultName = undefined;
-    this.underRoute = false;
-    this.methods = [];
-    this.pattern = new Pattern();
-    this.requirements = undefined;
-    this.websocketRoute = false;
+  children: Route[] = [];
+  customName: string = undefined;
+  defaultName: string = undefined;
+  underRoute: boolean = false;
+  methods: string[] = [];
+  pattern: Pattern = new Pattern();
+  requirements: {[name: string]: any}[] = [];
+  websocketRoute: boolean = false;
+  _parent: WeakRef<Route> = undefined;
+  _root: WeakRef<Router> = undefined;
 
-    this._parent = undefined;
-    this._root = undefined;
-  }
-
-  addChild (child) {
+  addChild (child: Route) {
     this.children.push(child);
     child.parent = this;
     child.root = this.root;
     return child;
   }
 
-  any (methods, pattern, constraints, fn) {
+  any (...args: AnyArguments) {
     const child = new Route();
 
     const childPattern = child.pattern;
-    for (const arg of [methods, pattern, constraints, fn]) {
+    for (const arg of args) {
       if (typeof arg === 'string') {
         child.defaultName = arg.replace(/[^0-9a-z]+/gi, '_').replace(/^_|_$/g, '');
         childPattern.parse(arg);
@@ -44,12 +43,12 @@ export default class Route {
     return this.addChild(child);
   }
 
-  delete (pattern, constraints, fn) {
-    return this.any(['DELETE'], pattern, constraints, fn);
+  delete (...args: RouteArguments) {
+    return this.any(['DELETE'], ...args);
   }
 
-  get (pattern, constraints, fn) {
-    return this.any(['GET'], pattern, constraints, fn);
+  get (...args: RouteArguments) {
+    return this.any(['GET'], ...args);
   }
 
   hasWebSocket () {
@@ -60,33 +59,33 @@ export default class Route {
     return this.children.length === 0;
   }
 
-  name (name) {
+  name (name: string) {
     this.customName = name;
     return this;
   }
 
-  options (pattern, constraints, fn) {
-    return this.any(['OPTIONS'], pattern, constraints, fn);
+  options (...args: RouteArguments) {
+    return this.any(['OPTIONS'], ...args);
   }
 
   get parent () {
     return this._parent?.deref();
   }
 
-  set parent (parent) {
+  set parent (parent: Route) {
     this._parent = new WeakRef(parent);
   }
 
-  patch (pattern, constraints, fn) {
-    return this.any(['PATCH'], pattern, constraints, fn);
+  patch (...args: RouteArguments) {
+    return this.any(['PATCH'], ...args);
   }
 
-  post (pattern, constraints, fn) {
-    return this.any(['POST'], pattern, constraints, fn);
+  post (...args: RouteArguments) {
+    return this.any(['POST'], ...args);
   }
 
-  put (pattern, constraints, fn) {
-    return this.any(['PUT'], pattern, constraints, fn);
+  put (...args: RouteArguments) {
+    return this.any(['PUT'], ...args);
   }
 
   render (values = {}) {
@@ -114,14 +113,14 @@ export default class Route {
     return this._root?.deref();
   }
 
-  set root (root) {
+  set root (root: Router) {
     this._root = new WeakRef(root);
   }
 
-  to (...args) {
+  to (...targets: (string | Function | {})[]) {
     const defaults = this.pattern.defaults;
 
-    for (const target of args) {
+    for (const target of targets) {
       if (typeof target === 'string') {
         const parts = target.split('#');
         if (parts[0] !== '') defaults.controller = parts[0];
@@ -136,20 +135,20 @@ export default class Route {
     return this;
   }
 
-  under (methods, pattern, constraints, fn) {
-    const child = this.any(methods, pattern, constraints, fn);
+  under (...args: AnyArguments) {
+    const child = this.any(...args);
     child.underRoute = true;
     return child;
   }
 
-  websocket (pattern, constraints, fn) {
-    const child = this.any(pattern, constraints, fn);
+  websocket (...args: RouteArguments) {
+    const child = this.any(...args);
     child.websocketRoute = true;
     return child;
   }
 
   _branch () {
-    let current = this;
+    let current: Route | Router = this;
     const branch = [current];
     while ((current = current.parent) !== undefined) {
       branch.push(current);

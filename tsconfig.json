@@ -8,7 +8,8 @@
     "target": "es2020",
     "declaration": true,
     "incremental": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*"

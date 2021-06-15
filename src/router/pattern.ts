@@ -8,27 +8,38 @@ const OP = Object.freeze({
   wildcard: Symbol('wildcard')
 });
 
+type MatchOptions = {isEndpoint: boolean};
+type PlaceholderType = RegExp | string | string[];
+type PlaceholderTypes = {[name: string]: PlaceholderType};
+
 export default class Pattern {
-  constructor (path, options = {}) {
+  constraints: PlaceholderTypes = undefined;
+  defaults: {[name: string]: any} = undefined;
+  placeholders: string[] = [];
+  regex: RegExp = undefined;
+  types: PlaceholderTypes = undefined;
+  unparsed: string = undefined;
+  _ast: any[] = [];
+
+  constructor (path?: string, options: {
+    constraints?: PlaceholderTypes,
+    defaults?: {[name: string]: any},
+    types?: PlaceholderTypes
+  } = {}) {
     this.constraints = options.constraints || {};
     this.defaults = options.defaults || {};
-    this.placeholders = [];
-    this.regex = undefined;
     this.types = options.types || {};
-    this.unparsed = undefined;
-
-    this._ast = [];
 
     if (path !== undefined) this.parse(path);
   }
 
-  match (path, options) {
+  match (path: string, options: MatchOptions) {
     const result = this.matchPartial(path, options);
     if (result === null || (result.remainder.length && result.remainder !== '/')) return null;
     return result.captures;
   }
 
-  matchPartial (path, options) {
+  matchPartial (path: string, options: MatchOptions) {
     if (this.regex === undefined) this._compile(options.isEndpoint);
     const match = path.match(this.regex);
     if (match === null) return null;
@@ -44,13 +55,13 @@ export default class Pattern {
     return {remainder: path.replace(prefix, ''), captures};
   }
 
-  parse (path = '') {
+  parse (path: string = '') {
     this.unparsed = path.replace(/^\/*|\/+/g, '/').replace(/\/$/, '');
     this._tokenize();
     return this;
   }
 
-  render (values, options) {
+  render (values: {[key: string]: string}, options: MatchOptions) {
     let optional = values.ext == null;
 
     const parts = [];
@@ -72,7 +83,7 @@ export default class Pattern {
     return options.isEndpoint && values.ext ? `${path}.${values.ext}` : path;
   }
 
-  _compile (withExtension) {
+  _compile (withExtension: boolean) {
     const parts = [];
     let block = '';
     let optional = true;
@@ -112,13 +123,13 @@ export default class Pattern {
     this.regex = new RegExp('^' + parts.join(''), 's');
   }
 
-  _compileExtension (ext, withDefault) {
+  _compileExtension (ext: PlaceholderType, withDefault: boolean) {
     if (ext === undefined) return '';
     const regex = '\\.' + this._compileType(ext);
     return withDefault ? `/?(?:${regex})?$` : `/?${regex}$`;
   }
 
-  _compileType (type) {
+  _compileType (type: PlaceholderType) {
     if ((type instanceof RegExp)) return `(${type.source})`;
     if (!(type instanceof Array)) return `(${type})`;
     return '(' + type.slice().sort().reverse().map(val => escapeStringRegexp(val)).join('|') + ')';
