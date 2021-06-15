@@ -1,5 +1,5 @@
 import {AnyArguments, RouteArguments} from '../types.js';
-import assert from 'assert';
+import {strict as assert} from 'assert';
 import Pattern from './pattern.js';
 import Router from '../router.js';
 
