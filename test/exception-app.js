@@ -10,7 +10,7 @@ t.test('Exception app', async t => {
 
     app.get('/', ctx => ctx.render({text: 'Hello World!'}));
 
-    app.any('/exception', ctx => {
+    app.any('/exception', () => {
       throw new Error('Test exception');
     });
 
@@ -22,7 +22,7 @@ t.test('Exception app', async t => {
       (await client.getOk('/')).statusIs(200).bodyIs('Hello World!');
     });
 
-    await t.test('Not found', async t => {
+    await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
       (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
         .bodyLike(/This application is in.*development.*mode/).bodyUnlike(/no-raptor\.png/);
@@ -73,13 +73,13 @@ t.test('Exception app', async t => {
     app.log.level = 'debug';
     app.renderer.viewPaths.push(File.currentFile().sibling('support', 'exception-app', 'views').toString());
 
-    app.any('/exception', ctx => {
+    app.any('/exception', () => {
       throw new Error('Another test exception');
     });
 
     const client = await app.newTestClient({tap: t});
 
-    await t.test('Not found', async t => {
+    await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
       (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
         .bodyLike(/Custom not found/);
@@ -119,7 +119,7 @@ t.test('Exception app', async t => {
 
     app.get('/', ctx => ctx.render({text: 'Hello World!'}));
 
-    app.any('/exception', ctx => {
+    app.any('/exception', () => {
       throw new Error('Test exception');
     });
 
@@ -131,7 +131,7 @@ t.test('Exception app', async t => {
       (await client.getOk('/')).statusIs(200).bodyIs('Hello World!');
     });
 
-    await t.test('Not found', async t => {
+    await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
       (await client.getOk('/does_not_exist')).statusIs(404).bodyUnlike(/This application is in.*development.*mode/)
         .bodyLike(/no-raptor\.png/);
@@ -175,13 +175,13 @@ t.test('Exception app', async t => {
     const app = mojo();
     app.renderer.viewPaths.push(File.currentFile().sibling('support', 'exception-app', 'views').toString());
 
-    app.any('/exception', ctx => {
+    app.any('/exception', () => {
       throw new Error('Another test exception');
     });
 
     const client = await app.newTestClient({tap: t});
 
-    await t.test('Not found', async t => {
+    await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
       (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
         .bodyLike(/Production not found/);
@@ -215,29 +215,29 @@ t.test('Exception app', async t => {
 
     app.log.level = 'debug';
 
-    app.websocket('/ws/exception/before/sync').to(ctx => {
+    app.websocket('/ws/exception/before/sync').to(() => {
       throw new Error('Sync WebSocket test exception before');
     });
 
-    app.websocket('/ws/exception/before/async').to(async ctx => {
+    app.websocket('/ws/exception/before/async').to(async () => {
       throw new Error('Async WebSocket test exception before');
     });
 
     app.websocket('/ws/exception/after/async').to(ctx => {
-      ctx.plain(async ws => {
+      ctx.plain(async () => {
         throw new Error('Async WebSocket test exception after');
       });
     });
 
     app.websocket('/ws/exception/after/sync').to(ctx => {
-      ctx.on('connection', ws => {
+      ctx.on('connection', () => {
         throw new Error('Sync WebSocket test exception after');
       });
     });
 
     app.websocket('/ws/exception/iterator').to(ctx => {
       ctx.plain(async ws => {
-        // eslint-disable-next-line no-unreachable-loop, no-unused-vars
+        // eslint-disable-next-line no-unreachable-loop, @typescript-eslint/no-unused-vars
         for await (const message of ws) {
           throw new Error('WebSocket iterator test exception');
         }
@@ -246,7 +246,7 @@ t.test('Exception app', async t => {
 
     app.websocket('/ws/exception/event').to(ctx => {
       ctx.on('connection', ws => {
-        ws.on('message', message => {
+        ws.on('message', () => {
           throw new Error('WebSocket event test exception');
         });
       });
@@ -254,7 +254,7 @@ t.test('Exception app', async t => {
 
     app.websocket('/ws/exception/ping').to(ctx => {
       ctx.on('connection', ws => {
-        ws.on('ping', message => {
+        ws.on('ping', () => {
           throw new Error('WebSocket ping test exception');
         });
       });
@@ -262,7 +262,7 @@ t.test('Exception app', async t => {
 
     app.websocket('/ws/exception/pong').to(ctx => {
       ctx.on('connection', ws => {
-        ws.on('pong', message => {
+        ws.on('pong', () => {
           throw new Error('WebSocket pong test exception');
         });
         ws.ping('test');
@@ -271,7 +271,7 @@ t.test('Exception app', async t => {
 
     app.websocket('/ws/exception/close').to(ctx => {
       ctx.on('connection', ws => {
-        ws.on('close', message => {
+        ws.on('close', () => {
           throw new Error('WebSocket close test exception');
         });
       });

@@ -18,7 +18,8 @@
   "homepage": "https://mojojs.org",
   "scripts": {
     "build": "npx tsc",
-    "build:test": "npm run build; npm test",
+    "build:lint": "npm run build && eslint \"src/**/*.js\" \"src/*.js\" \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
+    "build:test": "npm run build && npm test",
     "build:watch": "npx tsc --watch",
     "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
     "coverage-html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js",
@@ -38,12 +39,13 @@
   },
   "devDependencies": {
     "@istanbuljs/esm-loader-hook": "^=0.1.2",
-    "@types/node": "^=15.0.3",
+    "@types/node": "^15.12.2",
+    "@types/stack-utils": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^=4.23.0",
     "@typescript-eslint/parser": "^=4.23.0",
     "eslint": "^=7.22.0",
     "eslint-config-semistandard": "^=16.0.0",
-    "typescript": "^=4.2.4"
+    "typescript": "^=4.3.2"
   },
   "engines": {
     "node": ">= 16"

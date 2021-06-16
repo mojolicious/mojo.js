@@ -5,10 +5,11 @@
     "lib": [
       "ESNext"
     ],
-    "target": "es2020",
+    "target": "esnext",
     "declaration": true,
     "incremental": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*"

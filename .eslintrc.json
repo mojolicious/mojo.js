@@ -8,7 +8,9 @@
     "es2021": true
   },
   "extends": [
-    "semistandard"
+    "semistandard",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "parserOptions": {
     "ecmaVersion": 12

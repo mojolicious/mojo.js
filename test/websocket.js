@@ -44,7 +44,7 @@ t.test('WebSocket', async t => {
 
   const client = await app.newTestClient({tap: t});
 
-  await t.test('Hello World', async t => {
+  await t.test('Hello World', async () => {
     (await client.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
   });
 

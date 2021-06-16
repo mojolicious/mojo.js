@@ -12,7 +12,7 @@ export default class TestClient extends MockClient {
     this.res = undefined;
     this.ws = undefined;
 
-    this._assert = assert;
+    this._assert = undefined;
     this._dom = undefined;
     this._finished = undefined;
     this._messages = undefined;
@@ -22,7 +22,8 @@ export default class TestClient extends MockClient {
   }
 
   assert (name, args, msg, skip) {
-    this._assert[name](...args, msg, {stack: this._stack.captureString(10, skip)});
+    const test = this._assert ?? assert;
+    test[name](...args, msg, {stack: this._stack.captureString(10, skip)});
   }
 
   bodyIs (body) {

@@ -1,4 +1,4 @@
-import {AnyArguments, RouteArguments} from '../types.js';
+import {AnyArguments, MojoAction, MojoStash, RouteArguments} from '../types.js';
 import {strict as assert} from 'assert';
 import Pattern from './pattern.js';
 import Router from '../router.js';
@@ -7,15 +7,15 @@ export default class Route {
   children: Route[] = [];
   customName: string = undefined;
   defaultName: string = undefined;
-  underRoute: boolean = false;
+  underRoute = false;
   methods: string[] = [];
   pattern: Pattern = new Pattern();
   requirements: {[name: string]: any}[] = [];
-  websocketRoute: boolean = false;
+  websocketRoute = false;
   _parent: WeakRef<Route> = undefined;
   _root: WeakRef<Router> = undefined;
 
-  addChild (child: Route) {
+  addChild (child: Route) : Route {
     this.children.push(child);
     child.parent = this;
     child.root = this.root;
@@ -117,7 +117,7 @@ export default class Route {
     this._root = new WeakRef(root);
   }
 
-  to (...targets: (string | Function | {})[]) {
+  to (...targets: (string | MojoAction | MojoStash)[]) : this {
     const defaults = this.pattern.defaults;
 
     for (const target of targets) {
@@ -147,9 +147,9 @@ export default class Route {
     return child;
   }
 
-  _branch () {
-    let current: Route | Router = this;
-    const branch = [current];
+  _branch () : (Router | Route)[] {
+    const branch: (Router | Route)[] = [this];
+    let current = branch[0];
     while ((current = current.parent) !== undefined) {
       branch.push(current);
     }

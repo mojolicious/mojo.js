@@ -267,7 +267,7 @@ t.test('App', async t => {
     t.end();
   });
 
-  await t.test('Hello World', async t => {
+  await t.test('Hello World', async () => {
     t.equal(app.router.cache.itemCount, 0);
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
     t.equal(app.router.cache.itemCount, 1);
@@ -275,7 +275,7 @@ t.test('App', async t => {
     t.equal(app.router.cache.itemCount, 1);
   });
 
-  await t.test('Methods', async t => {
+  await t.test('Methods', async () => {
     (await client.deleteOk('/methods')).statusIs(200).bodyIs('DELETE');
     (await client.getOk('/methods')).statusIs(200).bodyIs('GET');
     (await client.headOk('/methods')).statusIs(200).bodyIs('');
@@ -290,19 +290,19 @@ t.test('App', async t => {
     (await client.postOk('/')).statusIs(200).bodyIs('Post');
   });
 
-  await t.test('JSON', async t => {
+  await t.test('JSON', async () => {
     (await client.putOk('/json', {json: {hello: 'world'}})).statusIs(200).jsonIs({hello: 'world'});
   });
 
-  await t.test('Not found', async t => {
+  await t.test('Not found', async () => {
     (await client.putOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8');
   });
 
-  await t.test('Exception', async t => {
+  await t.test('Exception', async () => {
     (await client.getOk('/exception/works')).statusIs(500).bodyLike(/Error: Something went wrong: works/);
   });
 
-  await t.test('Nested routes', async t => {
+  await t.test('Nested routes', async () => {
     (await client.getOk('/nested?auth=1')).statusIs(200).bodyIs('Authenticated');
     (await client.getOk('/nested?auth=0')).statusIs(200).bodyIs('Permission denied');
     (await client.getOk('/nested/test/methods?auth=1')).statusIs(200).bodyIs('X:GET');
@@ -313,26 +313,26 @@ t.test('App', async t => {
     (await client.getOk('/nested/test/foo?auth=1')).statusIs(404);
   });
 
-  await t.test('Config and models', async t => {
+  await t.test('Config and models', async () => {
     (await client.getOk('/config')).statusIs(200).bodyIs('Test works');
   });
 
-  await t.test('Request ID', async t => {
+  await t.test('Request ID', async () => {
     (await client.getOk('/request_id')).statusIs(200).bodyLike(/^[0-9]+-[0-9a-z]{6}$/);
     (await client.getOk('/custom/request_id')).statusIs(200).bodyIs('123');
   });
 
-  await t.test('Cookie', async t => {
+  await t.test('Cookie', async () => {
     (await client.getOk('/cookie')).statusIs(200).bodyIs('Cookie: not present');
     (await client.getOk('/cookie')).statusIs(200).bodyIs('Cookie: present');
     (await client.getOk('/cookie')).statusIs(200).bodyIs('Cookie: present');
   });
 
-  await t.test('Client', async t => {
+  await t.test('Client', async () => {
     (await client.getOk('/client')).statusIs(200).bodyIs('Test works');
   });
 
-  await t.test('urlFor', async t => {
+  await t.test('urlFor', async () => {
     const baseURL = client.server.urls[0];
     (await client.postOk('/url_for', {form: {target: '/foo'}})).statusIs(200).bodyIs(`${baseURL}foo`);
     (await client.postOk('/url_for', {form: {target: '/foo/bar.txt'}})).statusIs(200).bodyIs(`${baseURL}foo/bar.txt`);
@@ -347,7 +347,7 @@ t.test('App', async t => {
       .bodyIs(`${baseURL}exception/test`);
   });
 
-  await t.test('redirectTo', async t => {
+  await t.test('redirectTo', async () => {
     const baseURL = client.server.urls[0];
     (await client.postOk('/redirect', {form: {target: '/foo'}})).statusIs(302)
       .headerIs('Location', `${baseURL}foo`).bodyIs('');
@@ -359,7 +359,7 @@ t.test('App', async t => {
       .headerIs('Location', 'https://mojolicious.org').bodyIs('');
   });
 
-  await t.test('Maybe render', async t => {
+  await t.test('Maybe render', async () => {
     (await client.putOk('/maybe', {json: {text: 'Works', maybe: true}})).statusIs(200).bodyIs('Works');
     (await client.putOk('/maybe', {json: {text: 'Works', maybe: false}})).statusIs(200).bodyIs('Works');
     (await client.putOk('/maybe', {json: {template: 'missing', maybe: true}})).statusIs(200).bodyIs('Fallback');
@@ -367,7 +367,7 @@ t.test('App', async t => {
     (await client.putOk('/maybe', {json: {template: 'missing'}})).statusIs(500);
   });
 
-  await t.test('Response API', async t => {
+  await t.test('Response API', async () => {
     (await client.getOk('/res')).statusIs(200).headerExists('Content-Length').headerExistsNot('Content-Type')
       .bodyIs('Hello World!');
   });
@@ -445,7 +445,7 @@ t.test('App', async t => {
     (await client.getOk('/session/members')).statusIs(200).bodyIs('Member: not logged in, with extra cookie');
   });
 
-  await t.test('Content negotiation', async t => {
+  await t.test('Content negotiation', async () => {
     (await client.getOk('/content/negotiation', {headers: {Accept: 'application/json'}})).statusIs(200)
       .typeIs('application/json; charset=utf-8').jsonIs({some: 'JSON'});
     (await client.getOk('/content/negotiation', {headers: {Accept: 'text/html'}})).statusIs(200)
@@ -485,7 +485,7 @@ t.test('App', async t => {
       .bodyIs('Fallback');
   });
 
-  await t.test('Content negotiation (accepts)', async t => {
+  await t.test('Content negotiation (accepts)', async () => {
     (await client.getOk('/accepts', {headers: {Accept: 'application/json'}, json: null})).statusIs(200)
       .jsonIs({accepts: ['json']});
     (await client.getOk('/accepts', {headers: {Accept: 'application/json, text/html;Q=1.5'}, json: null})).statusIs(200)
@@ -508,7 +508,7 @@ t.test('App', async t => {
       .statusIs(200).jsonIs({accepts: null});
   });
 
-  await t.test('Reverse proxy (X-Forwarded-For)', async t => {
+  await t.test('Reverse proxy (X-Forwarded-For)', async () => {
     (await client.getOk('/ip')).statusIs(200).bodyUnlike(/104\.24\.31\.8/);
     (await client.getOk('/ip', {headers: {'X-Forwarded-For': '104.24.31.8'}})).statusIs(200)
       .bodyUnlike(/104\.24\.31\.8/);
@@ -524,7 +524,7 @@ t.test('App', async t => {
     client.server.reverseProxy = false;
   });
 
-  await t.test('Reverse proxy (X-Forwarded-Proto)', async t => {
+  await t.test('Reverse proxy (X-Forwarded-Proto)', async () => {
     (await client.getOk('/protocol')).statusIs(200).bodyIs('Protocol: http');
     (await client.getOk('/protocol', {headers: {'X-Forwarded-Proto': 'https'}})).statusIs(200).bodyIs('Protocol: http');
 
@@ -535,7 +535,7 @@ t.test('App', async t => {
     client.server.reverseProxy = false;
   });
 
-  await t.test('multipart/form-data', async t => {
+  await t.test('multipart/form-data', async () => {
     (await client.postOk('/form/data', {formData: {first: 'works'}})).statusIs(200)
       .jsonIs({first: 'works', second: 'missing'});
 
@@ -543,7 +543,7 @@ t.test('App', async t => {
       .jsonIs({first: 'One', second: 'Two'});
   });
 
-  await t.test('Mixed forms', async t => {
+  await t.test('Mixed forms', async () => {
     (await client.postOk('/form/mixed?one=works')).statusIs(200)
       .jsonIs({one: 'works', two: 'missing', three: 'missing'});
 
@@ -622,14 +622,18 @@ t.test('App', async t => {
   t.test('Forbidden helpers', t => {
     let result;
     try {
-      app.addHelper('render', function () {});
+      app.addHelper('render', function () {
+        throw new Error('Fail!');
+      });
     } catch (error) {
       result = error;
     }
     t.match(result, /The name "render" is already used in the prototype chain/);
 
     try {
-      app.addHelper('isWebSocket', function () {});
+      app.addHelper('isWebSocket', function () {
+        throw new Error('Fail!');
+      });
     } catch (error) {
       result = error;
     }

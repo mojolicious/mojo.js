@@ -1,5 +1,15 @@
 import Ajv from 'ajv';
-import {AnyArguments, AppOptions, RouteArguments, MojoContext} from './types.js';
+import {
+  AnyArguments,
+  AppOptions,
+  MojoAction,
+  MojoContext,
+  MojoDecoration,
+  MojoHook,
+  MojoPlugin,
+  MojoStash,
+  RouteArguments
+} from './types.js';
 import CLI from './cli.js';
 import Client from './client.js';
 import {ClientRequest, ServerResponse} from 'http';
@@ -13,6 +23,7 @@ import Logger from './logger.js';
 import Mime from './mime.js';
 import MockClient from './client/mock.js';
 import Renderer from './renderer.js';
+import Route from './router/route.js';
 import Router from './router.js';
 import Server from './server.js';
 import Session from './session.js';
@@ -24,15 +35,15 @@ import WebSocketContext from './context/websocket.js';
 export default class App {
   cli: CLI = new CLI(this);
   client: Client = new Client();
-  config: object;
+  config: MojoStash;
   detectImport: boolean;
   exceptionFormat: string;
   hooks: Hooks = new Hooks();
   home: File = undefined;
   log: Logger;
   mime: Mime = new Mime();
-  models: object = {};
-  mojo: Function = undefined;
+  models: MojoStash = {};
+  mojo: (options?: AppOptions) => App = undefined;
   renderer: Renderer = new Renderer();
   router: Router = new Router();
   secrets: string[];
@@ -61,22 +72,22 @@ export default class App {
     this.plugin(viewHelpersPlugin);
   }
 
-  addHelper (name: string, fn: (ctx: MojoContext, ...args: any[]) => any) {
+  addHelper (name: string, fn: MojoAction) : this {
     return this.decorateContext(name, function (...args) {
       return fn(this, ...args);
     });
   }
 
-  addHook (name:string, fn: Function) {
+  addHook (name:string, fn: MojoHook) : this {
     this.hooks.addHook(name, fn);
     return this;
   }
 
-  any (...args: AnyArguments) {
+  any (...args: AnyArguments) : Route {
     return this.router.any(...args);
   }
 
-  decorateContext (name: string, fn: PropertyDescriptor & ThisType<any>) {
+  decorateContext (name: string, fn: MojoDecoration) : this {
     if (HTTPContext.prototype[name] !== undefined || WebSocketContext[name] !== undefined) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
     }
@@ -92,15 +103,15 @@ export default class App {
     return this;
   }
 
-  delete (...args: RouteArguments) {
+  delete (...args: RouteArguments) : Route {
     return this.router.delete(...args);
   }
 
-  get (...args: RouteArguments) {
+  get (...args: RouteArguments) : Route {
     return this.router.get(...args);
   }
 
-  async handleRequest (ctx: MojoContext) {
+  async handleRequest (ctx: MojoContext) : Promise<void> {
     try {
       if (ctx.isWebSocket === true) {
         if (await this.hooks.runHook('websocket', ctx) === true) return;
@@ -117,19 +128,19 @@ export default class App {
     }
   }
 
-  get mode () {
+  get mode () : string {
     return this._mode;
   }
 
-  newHTTPContext (req: ClientRequest, res: ServerResponse, options) {
+  newHTTPContext (req: ClientRequest, res: ServerResponse, options) : HTTPContext {
     return new this._httpContextClass(this, req, res, options);
   }
 
-  newMockClient (options) {
+  newMockClient (options) : Promise<MockClient> {
     return MockClient.newMockClient(this, options);
   }
 
-  newTestClient (options) {
+  newTestClient (options) : Promise<TestClient> {
     return TestClient.newTestClient(this, options);
   }
 
@@ -137,15 +148,15 @@ export default class App {
     return new this._websocketContextClass(this, req, options);
   }
 
-  options (...args: RouteArguments) {
+  options (...args: RouteArguments) : Route {
     return this.router.options(...args);
   }
 
-  patch (...args: RouteArguments) {
+  patch (...args: RouteArguments) : Route {
     return this.router.patch(...args);
   }
 
-  plugin (plugin: Function, options: object = {}) {
+  plugin (plugin: MojoPlugin, options: MojoStash = {}) : any {
     return plugin(this, options);
   }
 

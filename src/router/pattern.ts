@@ -55,7 +55,7 @@ export default class Pattern {
     return {remainder: path.replace(prefix, ''), captures};
   }
 
-  parse (path: string = '') {
+  parse (path = '') : this {
     this.unparsed = path.replace(/^\/*|\/+/g, '/').replace(/\/$/, '');
     this._tokenize();
     return this;
