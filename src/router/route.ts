@@ -1,4 +1,4 @@
-import {AnyArguments, MojoAction, MojoStash, RouteArguments} from '../types.js';
+import type {AnyArguments, MojoAction, MojoStash, RouteArguments} from '../types.js';
 import {strict as assert} from 'assert';
 import Pattern from './pattern.js';
 import Router from '../router.js';

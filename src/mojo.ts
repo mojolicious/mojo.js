@@ -3,8 +3,8 @@
  * Copyright (C) 2021 Sebastian Riedel
  * MIT Licensed
  */
+import type {AppOptions} from './types.js';
 import App from './app.js';
-import {AppOptions} from './types.js';
 import Client from './client.js';
 import File from './file.js';
 import jsonConfigPlugin from './plugins/json-config.js';

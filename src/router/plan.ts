@@ -1,4 +1,4 @@
-import {MojoStash} from '../types.js';
+import type {MojoStash} from '../types.js';
 import Route from './route.js';
 
 export default class Plan {

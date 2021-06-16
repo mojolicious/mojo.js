@@ -1,5 +1,4 @@
-import Ajv from 'ajv';
-import {
+import type {
   AnyArguments,
   AppOptions,
   MojoAction,
@@ -10,6 +9,7 @@ import {
   MojoStash,
   RouteArguments
 } from './types.js';
+import Ajv from 'ajv';
 import CLI from './cli.js';
 import Client from './client.js';
 import {ClientRequest, ServerResponse} from 'http';
