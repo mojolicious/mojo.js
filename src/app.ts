@@ -11,12 +11,13 @@ import type {
   RouteArguments,
   TestClientOptions
 } from './types.js';
+import type {ClientRequest, ServerResponse} from 'http';
 import type Route from './router/route.js';
 import type Server from './server.js';
+
 import Ajv from 'ajv';
 import CLI from './cli.js';
 import Client from './client.js';
-import type {ClientRequest, ServerResponse} from 'http';
 import ejsEnginePlugin from './plugins/ejs-engine.js';
 import exceptionHelpersPlugin from './plugins/exception-helpers.js';
 import File from './file.js';

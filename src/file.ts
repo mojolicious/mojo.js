@@ -1,5 +1,7 @@
 import type EventEmitter from 'events';
+import type {ReadStreamOptions, StreamOptions} from './types.js';
 import type stream from 'stream';
+
 import fs from 'fs';
 import fsPromises from 'fs/promises';
 import os from 'os';
@@ -35,11 +37,11 @@ export default class File {
     return await fsPromises.copyFile(this._path, destFile.toString(), flags);
   }
 
-  createReadStream (options?: string | stream.ReadableOptions): fs.ReadStream {
+  createReadStream (options?: string | ReadStreamOptions): fs.ReadStream {
     return fs.createReadStream(this._path, options);
   }
 
-  createWriteStream (options?: string | stream.WritableOptions): fs.WriteStream {
+  createWriteStream (options?: string | StreamOptions): fs.WriteStream {
     return fs.createWriteStream(this._path, options);
   }
 

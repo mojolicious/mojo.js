@@ -73,7 +73,7 @@ t.test('Static app', async t => {
       .headerLike('Content-Range', /^bytes 4-4\/\d+/).bodyIs('o');
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=0-0'}})).statusIs(200)
       .headerExists('Content-Type').headerExists('Content-Length').headerIs('Accept-Ranges', 'bytes')
-      .headerLike('Content-Range', /^bytes 0-\d+\/\d+/).bodyLike(/^Hello World!/);
+      .headerLike('Content-Range', /^bytes 0-\d+\/\d+/).bodyIs('H');
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=-'}})).statusIs(200)
       .headerExists('Content-Type').headerExists('Content-Length').headerIs('Accept-Ranges', 'bytes')
       .headerLike('Content-Range', /^bytes 0-\d+\/\d+/).bodyLike(/^Hello World!/);

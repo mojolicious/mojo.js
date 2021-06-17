@@ -1,17 +1,17 @@
+import type {MojoContext} from './types.js';
+
 import crypto from 'crypto';
 import File from './file.js';
 import path from 'path';
 
 export default class Static {
-  constructor () {
-    this.prefix = '/public/';
-    this.publicPaths = [File.currentFile().sibling('..', 'vendor', 'public').toString()];
-  }
+  prefix = '/public';
+  publicPaths = [File.currentFile().sibling('..', 'vendor', 'public').toString()];
 
-  async dispatch (ctx) {
+  async dispatch (ctx: MojoContext): Promise<boolean> {
     const req = ctx.req;
     const unsafePath = req.path;
-    if (unsafePath === null || unsafePath.startsWith(this.prefix) !== true) return false;
+    if (unsafePath === null || !unsafePath.startsWith(this.prefix)) return false;
 
     const method = req.method;
     if (method !== 'GET' && method !== 'HEAD') return false;
@@ -29,23 +29,26 @@ export default class Static {
     return false;
   }
 
-  filePath (path) {
+  filePath (path: string): string {
     if (path.startsWith('/')) path = path.replace('/', '');
     return this.prefix + path;
   }
 
-  isFresh (ctx, options = {}) {
+  isFresh (ctx: MojoContext, options: {etag?: string, lastModified?: Date} = {}): boolean {
+    const etag = options.etag;
+    const lastModified = options.lastModified;
+
     const res = ctx.res;
-    if (options.etag !== undefined) res.set('Etag', `"${options.etag}"`);
-    if (options.lastModified !== undefined) res.set('Last-Modified', options.lastModified.toUTCString());
+    if (etag !== undefined) res.set('Etag', `"${etag}"`);
+    if (lastModified !== undefined) res.set('Last-Modified', lastModified.toUTCString());
 
     // If-None-Match
     const req = ctx.req;
-    const ifNoneMatch = req.get('If-None-Match');
-    if (options.etag !== undefined && ifNoneMatch !== undefined) {
+    const ifNoneMatch: string = req.get('If-None-Match');
+    if (etag !== undefined && ifNoneMatch !== undefined) {
       const etags = ifNoneMatch.split(/,\s+/).map(value => value.replaceAll('"', ''));
-      for (const etag of etags) {
-        if (etag === options.etag) return true;
+      for (const match of etags) {
+        if (match === etag) return true;
       }
     }
 
@@ -60,12 +63,13 @@ export default class Static {
     return false;
   }
 
-  async serveFile (ctx, file) {
+  async serveFile (ctx: MojoContext, file: File): Promise<void> {
     const app = ctx.app;
     if (await app.hooks.runHook('static', ctx, file) === true) return;
 
     const stat = await file.stat();
     const length = stat.size;
+    if (typeof length !== 'number') return this._rangeNotSatisfiable(ctx);
     const type = app.mime.extType(file.extname().replace('.', '')) ?? 'application/octet-stream';
     const range = ctx.req.get('Range');
 
@@ -91,8 +95,10 @@ export default class Static {
     // Invalid range
     const bytes = range.match(/^bytes=(\d+)?-(\d+)?/);
     if (bytes === null) return this._rangeNotSatisfiable(ctx);
-    const start = parseInt(bytes[1]) || 0;
-    const end = parseInt(bytes[2]) || (length - 1);
+    let start = parseInt(bytes[1]);
+    if (isNaN(start)) start = 0;
+    let end = parseInt(bytes[2]);
+    if (isNaN(end)) end = length - 1;
     if (start > end) return this._rangeNotSatisfiable(ctx);
 
     // Range
@@ -100,7 +106,7 @@ export default class Static {
       .send(file.createReadStream({start: start, end: end}));
   }
 
-  _rangeNotSatisfiable (ctx) {
+  _rangeNotSatisfiable (ctx: MojoContext): void {
     ctx.res.status(416).send();
   }
 }

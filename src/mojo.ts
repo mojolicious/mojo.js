@@ -4,6 +4,7 @@
  * MIT Licensed
  */
 import type {AppOptions} from './types.js';
+
 import App from './app.js';
 import Client from './client.js';
 import File from './file.js';

@@ -1,7 +1,23 @@
 import type App from './app.js';
 import type {CookieJar} from 'tough-cookie';
+import type {FileHandle} from 'fs/promises';
 import type HTTPContext from './context/http.js';
 import type WebSocketContext from './context/websocket.js';
+
+export interface StreamOptions {
+  flags?: string,
+  encoding?: BufferEncoding,
+  fd?: number | FileHandle,
+  mode?: number,
+  autoClose?: boolean,
+  emitClose?: boolean,
+  start?: number,
+  highWaterMark?: number
+}
+
+export interface ReadStreamOptions extends StreamOptions {
+  end?: number
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface HTTPContextWithHelpers extends HTTPContext { [key: string]: any }
