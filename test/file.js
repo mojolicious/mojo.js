@@ -68,7 +68,7 @@ t.test('File', async t => {
     await new Promise(resolve => write.write('Hello World!', resolve));
     const read = dir.child('test.txt').createReadStream({encoding: 'utf8'});
     let str = '';
-    read.on('data', chunk => { str = str + chunk; });
+    read.on('data', chunk => { str = str + chunk });
     await new Promise(resolve => read.once('end', resolve));
     t.equal(str, 'Hello World!');
   });

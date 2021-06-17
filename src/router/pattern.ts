@@ -1,3 +1,4 @@
+import type {MojoStash} from '../types.js';
 import escapeStringRegexp from 'escape-string-regexp';
 
 const OP = Object.freeze({
@@ -8,17 +9,17 @@ const OP = Object.freeze({
   wildcard: Symbol('wildcard')
 });
 
-type MatchOptions = {isEndpoint: boolean};
+interface MatchOptions {isEndpoint: boolean}
 type PlaceholderType = RegExp | string | string[];
-type PlaceholderTypes = {[name: string]: PlaceholderType};
+interface PlaceholderTypes {[name: string]: PlaceholderType}
 
 export default class Pattern {
-  constraints: PlaceholderTypes = undefined;
-  defaults: {[name: string]: any} = undefined;
+  constraints: PlaceholderTypes;
+  defaults: MojoStash;
   placeholders: string[] = [];
-  regex: RegExp = undefined;
-  types: PlaceholderTypes = undefined;
-  unparsed: string = undefined;
+  regex: RegExp | undefined;
+  types: PlaceholderTypes;
+  unparsed = '';
   _ast: any[] = [];
 
   constructor (path?: string, options: {
@@ -26,24 +27,24 @@ export default class Pattern {
     defaults?: {[name: string]: any},
     types?: PlaceholderTypes
   } = {}) {
-    this.constraints = options.constraints || {};
-    this.defaults = options.defaults || {};
-    this.types = options.types || {};
+    this.constraints = options.constraints ?? {};
+    this.defaults = options.defaults ?? {};
+    this.types = options.types ?? {};
 
     if (path !== undefined) this.parse(path);
   }
 
-  match (path: string, options: MatchOptions) {
+  match (path: string, options: MatchOptions): MojoStash | null {
     const result = this.matchPartial(path, options);
-    if (result === null || (result.remainder.length && result.remainder !== '/')) return null;
+    if (result === null || (result.remainder.length > 0 && result.remainder !== '/')) return null;
     return result.captures;
   }
 
-  matchPartial (path: string, options: MatchOptions) {
-    if (this.regex === undefined) this._compile(options.isEndpoint);
+  matchPartial (path: string, options: MatchOptions): MojoStash & {remainder: string} | null {
+    if (this.regex === undefined) this.regex = this._compile(options.isEndpoint);
     const match = path.match(this.regex);
     if (match === null) return null;
-    const prefix = match.shift();
+    const prefix = match.shift() ?? '';
 
     const captures = {...this.defaults};
     for (const name of [...this.placeholders, 'ext']) {
@@ -55,35 +56,38 @@ export default class Pattern {
     return {remainder: path.replace(prefix, ''), captures};
   }
 
-  parse (path = '') : this {
+  parse (path = ''): this {
     this.unparsed = path.replace(/^\/*|\/+/g, '/').replace(/\/$/, '');
     this._tokenize();
     return this;
   }
 
-  render (values: {[key: string]: string}, options: MatchOptions) {
+  render (values: {[key: string]: string}, options: MatchOptions): string {
     let optional = values.ext == null;
 
-    const parts = [];
+    const parts: string[] = [];
     for (const token of this._ast) {
       if (token[0] === OP.slash) {
-        if (optional === false) parts.unshift('/');
+        if (!optional) parts.unshift('/');
       } else if (token[0] === OP.text) {
         parts.unshift(token[1]);
         optional = false;
       } else {
-        const value = this.defaults[token[1]] !== undefined ? this.defaults[token[1]] : '';
+        const defaults = this.defaults;
+        const hasDefault = defaults[token[1]] !== undefined;
+        const value = hasDefault ? defaults[token[1]] : null;
         const part = values[token[1]] !== undefined ? values[token[1]] : value;
-        if (!value || value !== part) optional = false;
-        if (optional === false) parts.unshift(part);
+
+        if (!hasDefault || value !== part) optional = false;
+        if (!optional) parts.unshift(part);
       }
     }
 
     const path = parts.join('');
-    return options.isEndpoint && values.ext ? `${path}.${values.ext}` : path;
+    return options.isEndpoint && values.ext != null ? `${path}.${values.ext}` : path;
   }
 
-  _compile (withExtension: boolean) {
+  _compile (withExtension: boolean): RegExp {
     const parts = [];
     let block = '';
     let optional = true;
@@ -101,7 +105,7 @@ export default class Pattern {
       } else {
         if (token.length > 2) {
           part = this._compileType(this.types[token[2]] ?? '?!');
-        } else if (this.constraints[token[1]]) {
+        } else if (this.constraints[token[1]] != null) {
           part = this._compileType(this.constraints[token[1]]);
         } else {
           part = token[0] === OP.wildcard ? '(.*)' : token[0] === OP.relaxed ? '([^/]+)' : '([^/.]+)';
@@ -117,25 +121,26 @@ export default class Pattern {
       block = part + block;
     }
 
-    if (withExtension === true) {
+    if (withExtension) {
       parts.push(this._compileExtension(this.constraints.ext, this.defaults.ext !== undefined));
     }
-    this.regex = new RegExp('^' + parts.join(''), 's');
+
+    return new RegExp('^' + parts.join(''), 's');
   }
 
-  _compileExtension (ext: PlaceholderType, withDefault: boolean) {
+  _compileExtension (ext: PlaceholderType, withDefault: boolean): string {
     if (ext === undefined) return '';
     const regex = '\\.' + this._compileType(ext);
     return withDefault ? `/?(?:${regex})?$` : `/?${regex}$`;
   }
 
-  _compileType (type: PlaceholderType) {
+  _compileType (type: PlaceholderType): string {
     if ((type instanceof RegExp)) return `(${type.source})`;
     if (!(type instanceof Array)) return `(${type})`;
     return '(' + type.slice().sort().reverse().map(val => escapeStringRegexp(val)).join('|') + ')';
   }
 
-  _tokenize () {
+  _tokenize (): void {
     let name = false;
     const ast = this._ast;
 
@@ -145,11 +150,11 @@ export default class Pattern {
         name = true;
       } else if (char === '>') {
         name = false;
-      } else if (name === false && char === ':') {
-        if (name === false) ast.push([OP.placeholder, '']);
+      } else if (!name && char === ':') {
+        if (!name) ast.push([OP.placeholder, '']);
         name = true;
-      } else if (name === false && (char === '#' || char === '*')) {
-        if (name === false) ast.push([char === '#' ? OP.relaxed : OP.wildcard, '']);
+      } else if (!name && (char === '#' || char === '*')) {
+        if (!name) ast.push([char === '#' ? OP.relaxed : OP.wildcard, '']);
         name = true;
       } else if (char === '/') {
         ast.push([OP.slash]);
@@ -165,7 +170,7 @@ export default class Pattern {
 
     for (const token of ast) {
       if (token[0] === OP.slash || token[0] === OP.text) continue;
-      token[0] = token[1].match(/^#/) ? OP.relaxed : token[1].match(/^\*/) ? OP.wildcard : token[0];
+      token[0] = /^#/.test(token[1]) ? OP.relaxed : /^\*/.test(token[1]) ? OP.wildcard : token[0];
       token.push(...token.pop().replace(/^[:#*]/, '').split(':'));
       this.placeholders.push(token[1]);
     }

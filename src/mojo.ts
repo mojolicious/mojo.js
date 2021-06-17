@@ -14,7 +14,7 @@ import Session from './session.js';
 import TestClient from './client/test.js';
 import * as util from './util.js';
 
-export default function mojo (options: AppOptions) : App {
+export default function mojo (options?: AppOptions): App {
   const app = new App(options);
   app.mojo = mojo;
 
@@ -25,7 +25,7 @@ export default function mojo (options: AppOptions) : App {
   const dirName = caller.basename();
 
   // App in dist/lib/src and "package.json" in parent directory (but not in app directory)
-  if (callerExists === false && uplevelExists === true && ['dist', 'lib', 'src'].includes(dirName)) app.home = uplevel;
+  if (!callerExists && uplevelExists && ['dist', 'lib', 'src'].includes(dirName)) app.home = uplevel;
 
   app.cli.commandPaths.push(caller.child('cli').toString());
   app.router.controllerPaths.push(caller.child('controllers').toString());

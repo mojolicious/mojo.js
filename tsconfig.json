@@ -9,7 +9,8 @@
     "declaration": true,
     "incremental": true,
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strict": true
   },
   "include": [
     "src/**/*"

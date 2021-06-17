@@ -34,7 +34,7 @@ export default class Body {
 
   async form (options) {
     if (this._form === undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars, no-empty
       for await (const upload of this.files(options)) {
         // We only care about the side effects
       }

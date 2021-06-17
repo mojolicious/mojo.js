@@ -1,13 +1,15 @@
 import type {
   AnyArguments,
   AppOptions,
+  ClientOptions,
   MojoAction,
   MojoContext,
   MojoDecoration,
   MojoHook,
   MojoPlugin,
   MojoStash,
-  RouteArguments
+  RouteArguments,
+  TestClientOptions
 } from './types.js';
 import type Route from './router/route.js';
 import type Server from './server.js';
@@ -39,11 +41,11 @@ export default class App {
   detectImport: boolean;
   exceptionFormat: string;
   hooks: Hooks = new Hooks();
-  home: File = undefined;
+  home: File = new File();
   log: Logger;
   mime: Mime = new Mime();
   models: MojoStash = {};
-  mojo: (options?: AppOptions) => App = undefined;
+  mojo: (options?: AppOptions) => App = () => new App();
   renderer: Renderer = new Renderer();
   router: Router = new Router();
   secrets: string[];
@@ -52,7 +54,7 @@ export default class App {
   validator: Ajv = new Ajv();
   _httpContextClass: any = class extends HTTPContext {};
   _mode: string;
-  _server: WeakRef<Server> = null;
+  _server: WeakRef<Server> | null = null;
   _websocketContextClass: any = class extends WebSocketContext {};
 
   constructor (options: AppOptions = {}) {
@@ -72,23 +74,25 @@ export default class App {
     this.plugin(viewHelpersPlugin);
   }
 
-  addHelper (name: string, fn: MojoAction) : this {
-    return this.decorateContext(name, function (...args) {
+  addHelper (name: string, fn: MojoAction): this {
+    return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
       return fn(this, ...args);
     });
   }
 
-  addHook (name:string, fn: MojoHook) : this {
+  addHook (name: string, fn: MojoHook): this {
     this.hooks.addHook(name, fn);
     return this;
   }
 
-  any (...args: AnyArguments) : Route {
+  any (...args: AnyArguments): Route {
     return this.router.any(...args);
   }
 
-  decorateContext (name: string, fn: MojoDecoration) : this {
-    if (HTTPContext.prototype[name] !== undefined || WebSocketContext[name] !== undefined) {
+  decorateContext (name: string, fn: MojoDecoration): this {
+    const httpProto: MojoContext = HTTPContext.prototype;
+    const websocketProto: MojoContext = WebSocketContext.prototype;
+    if (httpProto[name] !== undefined || websocketProto[name] !== undefined) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
     }
 
@@ -103,94 +107,94 @@ export default class App {
     return this;
   }
 
-  delete (...args: RouteArguments) : Route {
+  delete (...args: RouteArguments): Route {
     return this.router.delete(...args);
   }
 
-  get (...args: RouteArguments) : Route {
+  get (...args: RouteArguments): Route {
     return this.router.get(...args);
   }
 
-  async handleRequest (ctx: MojoContext) : Promise<void> {
+  async handleRequest (ctx: MojoContext): Promise<void> {
     try {
-      if (ctx.isWebSocket === true) {
+      if (ctx.isWebSocket) {
         if (await this.hooks.runHook('websocket', ctx) === true) return;
         await this.router.dispatch(ctx);
         return;
       }
 
       if (await this.hooks.runHook('request', ctx) === true) return;
-      if (await this.static.dispatch(ctx) === true) return;
-      if (await this.router.dispatch(ctx) === true) return;
+      if (await this.static.dispatch(ctx)) return;
+      if (await this.router.dispatch(ctx)) return;
       await ctx.notFound();
     } catch (error) {
       await ctx.exception(error);
     }
   }
 
-  get mode () : string {
+  get mode (): string {
     return this._mode;
   }
 
-  newHTTPContext (req: ClientRequest, res: ServerResponse, options) : HTTPContext {
+  newHTTPContext (req: ClientRequest, res: ServerResponse, options: {reverseProxy?: boolean}): HTTPContext {
     return new this._httpContextClass(this, req, res, options);
   }
 
-  newMockClient (options) : Promise<MockClient> {
-    return MockClient.newMockClient(this, options);
+  async newMockClient (options?: ClientOptions): Promise<MockClient> {
+    return await MockClient.newMockClient(this, options);
   }
 
-  newTestClient (options) : Promise<TestClient> {
-    return TestClient.newTestClient(this, options);
+  async newTestClient (options?: TestClientOptions): Promise<TestClient> {
+    return await TestClient.newTestClient(this, options);
   }
 
-  newWebSocketContext (req: ClientRequest, options) {
+  newWebSocketContext (req: ClientRequest, options: {reverseProxy?: boolean}): WebSocketContext {
     return new this._websocketContextClass(this, req, options);
   }
 
-  options (...args: RouteArguments) : Route {
+  options (...args: RouteArguments): Route {
     return this.router.options(...args);
   }
 
-  patch (...args: RouteArguments) : Route {
+  patch (...args: RouteArguments): Route {
     return this.router.patch(...args);
   }
 
-  plugin (plugin: MojoPlugin, options: MojoStash = {}) : any {
+  plugin (plugin: MojoPlugin, options: MojoStash = {}): any {
     return plugin(this, options);
   }
 
-  post (...args: RouteArguments) {
+  post (...args: RouteArguments): Route {
     return this.router.post(...args);
   }
 
-  put (...args: RouteArguments) {
+  put (...args: RouteArguments): Route {
     return this.router.put(...args);
   }
 
-  get server () {
+  get server (): Server | null {
     return this._server?.deref() ?? null;
   }
 
-  set server (server: Server) {
-    this._server = new WeakRef(server);
+  set server (server: Server | null) {
+    this._server = server === null ? null : new WeakRef(server);
   }
 
-  start (command: string, ...args: string[]) {
-    if (this.detectImport === true && process.argv[1] !== File.callerFile().toString()) return;
+  start (command: string, ...args: string[]): any {
+    if (this.detectImport && process.argv[1] !== File.callerFile().toString()) return;
     return this.cli.start(command, ...args);
   }
 
-  under (...args: AnyArguments) {
+  under (...args: AnyArguments): Route {
     return this.router.under(...args);
   }
 
-  async warmup () {
+  async warmup (): Promise<void> {
     await this.renderer.warmup();
     await this.router.warmup();
   }
 
-  websocket (...args: RouteArguments) {
+  websocket (...args: RouteArguments): Route {
     return this.router.websocket(...args);
   }
 }

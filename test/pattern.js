@@ -111,11 +111,13 @@ t.test('Wildcard', t => {
   t.end();
 });
 
-t.test('False value', t => {
+t.test('Zero', t => {
   const pattern = new Pattern('/:id');
   t.equal(pattern.render({id: 0}, {isEndpoint: false}), '/0');
   pattern.defaults = {id: 0};
-  t.equal(pattern.render({}, {isEndpoint: false}), '/0');
+  t.equal(pattern.render({}, {isEndpoint: false}), '');
+  t.equal(pattern.render({id: 0}, {isEndpoint: false}), '');
+  t.equal(pattern.render({id: 1}, {isEndpoint: false}), '/1');
   t.same(pattern.match('/0', {isEndpoint: false}), {id: '0'});
   t.end();
 });

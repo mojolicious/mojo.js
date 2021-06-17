@@ -9,53 +9,53 @@ import StackUtils from 'stack-utils';
 import url from 'url';
 
 export default class File {
-  _path: string = undefined;
+  _path = '';
 
   constructor (...parts: string[]) {
     this._path = parts.length === 0 ? process.cwd() : parts.length === 1 ? parts[0] : path.join(...parts);
   }
 
-  basename (ext?: string) : string {
+  basename (ext?: string): string {
     return path.basename(this._path, ext);
   }
 
-  static callerFile () : File {
-    return new File(url.fileURLToPath(new StackUtils().capture(3)[2].getFileName()));
+  static callerFile (): File {
+    return new File(url.fileURLToPath(new StackUtils().capture(3)[2].getFileName() ?? ''));
   }
 
-  child (...parts: string[]) : File {
+  child (...parts: string[]): File {
     return new File(this._path, ...parts);
   }
 
-  chmod (mode: fs.Mode) : Promise<void> {
-    return fsPromises.chmod(this._path, mode);
+  async chmod (mode: fs.Mode): Promise<void> {
+    return await fsPromises.chmod(this._path, mode);
   }
 
-  copyFile (destFile: File, flags?: number) : Promise<void> {
-    return fsPromises.copyFile(this._path, destFile.toString(), flags);
+  async copyFile (destFile: File, flags?: number): Promise<void> {
+    return await fsPromises.copyFile(this._path, destFile.toString(), flags);
   }
 
-  createReadStream (options?: string | stream.ReadableOptions) : fs.ReadStream {
+  createReadStream (options?: string | stream.ReadableOptions): fs.ReadStream {
     return fs.createReadStream(this._path, options);
   }
 
-  createWriteStream (options?: string | stream.WritableOptions) : fs.WriteStream {
+  createWriteStream (options?: string | stream.WritableOptions): fs.WriteStream {
     return fs.createWriteStream(this._path, options);
   }
 
-  static currentFile () : File {
-    return new File(url.fileURLToPath(new StackUtils().capture(2)[1].getFileName()));
+  static currentFile (): File {
+    return new File(url.fileURLToPath(new StackUtils().capture(2)[1].getFileName() ?? ''));
   }
 
-  dirname () : File {
+  dirname (): File {
     return new File(path.dirname(this._path));
   }
 
-  exists () : Promise<boolean> {
-    return fsPromises.access(this._path, fs.constants.F_OK).then(() => true, () => false);
+  async exists (): Promise<boolean> {
+    return await fsPromises.access(this._path, fs.constants.F_OK).then(() => true, () => false);
   }
 
-  existsSync () : boolean {
+  existsSync (): boolean {
     try {
       fs.accessSync(this._path, fs.constants.F_OK);
       return true;
@@ -64,19 +64,19 @@ export default class File {
     }
   }
 
-  extname () : string {
+  extname (): string {
     return path.extname(this._path);
   }
 
-  isAbsolute () : boolean {
+  isAbsolute (): boolean {
     return path.isAbsolute(this._path);
   }
 
-  isReadable () : Promise<boolean> {
-    return fsPromises.access(this._path, fs.constants.R_OK).then(() => true, () => false);
+  async isReadable (): Promise<boolean> {
+    return await fsPromises.access(this._path, fs.constants.R_OK).then(() => true, () => false);
   }
 
-  async * list (options: {dir?: boolean, hidden?: boolean, recursive?: boolean} = {}) : AsyncIterable<File> {
+  async * list (options: {dir?: boolean, hidden?: boolean, recursive?: boolean} = {}): AsyncIterable<File> {
     const files = await fsPromises.readdir(this._path, {withFileTypes: true});
 
     for (const file of files) {
@@ -92,95 +92,95 @@ export default class File {
     }
   }
 
-  lines (options?: stream.ReadableOptions) : readline.Interface {
+  lines (options?: stream.ReadableOptions): readline.Interface {
     return readline.createInterface({input: this.createReadStream(options), crlfDelay: Infinity});
   }
 
-  mkdir (options?: fs.MakeDirectoryOptions & {recursive: true}) : Promise<string> {
-    return fsPromises.mkdir(this._path, options);
+  async mkdir (options?: fs.MakeDirectoryOptions & {recursive: true}): Promise<string | undefined> {
+    return await fsPromises.mkdir(this._path, options);
   }
 
-  readFile (
+  async readFile (
     options?: BufferEncoding | (fs.BaseEncodingOptions & EventEmitter.Abortable & {flag?: fs.OpenMode})
-  ) : Promise<string | Buffer> {
-    return fsPromises.readFile(this._path, options);
+  ): Promise<string | Buffer> {
+    return await fsPromises.readFile(this._path, options);
   }
 
-  readFileSync (options?: BufferEncoding | (fs.BaseEncodingOptions & {flag?: string})) : string | Buffer {
+  readFileSync (options?: BufferEncoding | (fs.BaseEncodingOptions & {flag?: string})): string | Buffer {
     return fs.readFileSync(this._path, options);
   }
 
-  relative (to: string | File) : File {
-    return new File(path.relative(this._path, '' + to));
+  relative (to: File): File {
+    return new File(path.relative(this._path, to.toString()));
   }
 
-  rename (newFile: File) : Promise<void> {
-    return fsPromises.rename(this._path, newFile.toString());
+  async rename (newFile: File): Promise<void> {
+    return await fsPromises.rename(this._path, newFile.toString());
   }
 
-  realpath (options?: fs.BaseEncodingOptions) : Promise<File> {
-    return fsPromises.realpath(this._path, options).then(path => new File(path));
+  async realpath (options?: fs.BaseEncodingOptions): Promise<File> {
+    return await fsPromises.realpath(this._path, options).then(path => new File(path));
   }
 
-  rm (options?: fs.RmOptions) : Promise<void> {
-    return fsPromises.rm(this._path, options);
+  async rm (options?: fs.RmOptions): Promise<void> {
+    return await fsPromises.rm(this._path, options);
   }
 
-  sibling (...parts: string[]) : File {
+  sibling (...parts: string[]): File {
     return this.dirname().child(...parts);
   }
 
-  stat (options?: fs.StatOptions) : Promise<fs.Stats | fs.BigIntStats> {
-    return fsPromises.stat(this._path, options);
+  async stat (options?: fs.StatOptions): Promise<fs.Stats | fs.BigIntStats> {
+    return await fsPromises.stat(this._path, options);
   }
 
-  static tempDir (options?: fs.BaseEncodingOptions) : Promise<TempDir> {
-    return fsPromises.mkdtemp(path.join(os.tmpdir(), 'mojo-'), options).then(path => {
+  static async tempDir (options?: fs.BaseEncodingOptions): Promise<TempDir> {
+    return await fsPromises.mkdtemp(path.join(os.tmpdir(), 'mojo-'), options).then(path => {
       tempDirCleanup.push(path);
       return new TempDir(path);
     });
   }
 
-  async touch () : Promise<this> {
+  async touch (): Promise<this> {
     const now = new Date();
     try {
       await fsPromises.utimes(this._path, now, now);
     } catch (error) {
-      await fsPromises.open(this._path, 'w').then(value => value.close());
+      await fsPromises.open(this._path, 'w').then(async value => await value.close());
     }
 
     return this;
   }
 
-  toArray () : string[] {
+  toArray (): string[] {
     return this._path.split(path.sep);
   }
 
-  toFileURL () : url.URL {
+  toFileURL (): url.URL {
     return url.pathToFileURL(this._path);
   }
 
-  toString () : string {
+  toString (): string {
     return `${this._path}`;
   }
 
-  writeFile (
+  async writeFile (
     data: string | Uint8Array,
     options?: BufferEncoding | (
       fs.BaseEncodingOptions & {mode?: fs.Mode, flag?: fs.OpenMode} & EventEmitter.Abortable
     )
-  ) : Promise<void> {
-    return fsPromises.writeFile(this._path, data, options);
+  ): Promise<void> {
+    return await fsPromises.writeFile(this._path, data, options);
   }
 }
 
 class TempDir extends File {
-  destroy () {
-    return fsPromises.rm(this._path, {recursive: true});
+  async destroy (): Promise<void> {
+    return await fsPromises.rm(this._path, {recursive: true});
   }
 }
 
-const tempDirCleanup = [];
+const tempDirCleanup: string[] = [];
 process.on('exit', () => {
   tempDirCleanup.forEach(path => {
     try {

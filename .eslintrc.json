@@ -1,21 +1,26 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
   "env": {
     "node": true,
     "es2021": true
   },
   "extends": [
-    "semistandard",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "standard-with-typescript"
   ],
   "parserOptions": {
-    "ecmaVersion": 12
+    "project": "./tsconfig.eslint.json"
   },
   "rules": {
+    "semi": "off",
+    "@typescript-eslint/semi": [
+      "error",
+      "always",
+      {
+        "omitLastInOneLineBlock": true
+      }
+    ],
+    "no-extra-semi": "error",
     "max-len": [
       "error",
       {

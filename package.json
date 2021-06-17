@@ -23,7 +23,7 @@
     "build:watch": "npx tsc --watch",
     "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
     "coverage-html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js",
-    "lint": "eslint \"src/**/*.js\" \"src/*.js\" \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
+    "lint": "eslint",
     "prepublishOnly": "npm run build",
     "test": "tap --no-coverage test/*.js"
   },
@@ -41,10 +41,14 @@
     "@istanbuljs/esm-loader-hook": "^=0.1.2",
     "@types/node": "^15.12.2",
     "@types/stack-utils": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "^=4.23.0",
-    "@typescript-eslint/parser": "^=4.23.0",
-    "eslint": "^=7.22.0",
-    "eslint-config-semistandard": "^=16.0.0",
+    "@types/tap": "^15.0.3",
+    "@types/tough-cookie": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "eslint": "^7.28.0",
+    "eslint-config-standard-with-typescript": "^20.0.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
     "typescript": "^=4.3.2"
   },
   "engines": {

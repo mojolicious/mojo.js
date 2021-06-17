@@ -1,4 +1,5 @@
 import type App from './app.js';
+import type {CookieJar} from 'tough-cookie';
 import type HTTPContext from './context/http.js';
 import type WebSocketContext from './context/websocket.js';
 
@@ -20,14 +21,14 @@ export type MojoDecoration = ((...args: any[]) => any) & {get?: () => any, set?:
 export type MojoHook = ((app: App, ...args: any[]) => any) | MojoAction;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MojoStash = {[key: string]: any};
+export interface MojoStash {[key: string]: any}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoPlugin = (app: App, options: MojoStash) => any;
 
 // Route arguments
-export type AnyArguments = (string | string[] | MojoAction | {[key: string]: string[] | RegExp})[];
-export type RouteArguments = (string | MojoAction | {[key: string]: string[] | RegExp})[];
+export type AnyArguments = Array<string | string[] | MojoAction | {[key: string]: string[] | RegExp}>;
+export type RouteArguments = Array<string | MojoAction | {[key: string]: string[] | RegExp}>;
 
 export interface AppOptions {
   config?: MojoStash,
@@ -36,3 +37,12 @@ export interface AppOptions {
   mode?: string,
   secrets?: string[]
 }
+
+export interface ClientOptions {
+  baseURL?: string,
+  cookieJar?: CookieJar,
+  maxRedirects?: number,
+  name?: string
+}
+
+export type TestClientOptions = ClientOptions & {tap?: Tap.Tap};

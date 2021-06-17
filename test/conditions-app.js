@@ -26,10 +26,6 @@ t.test('Condition app', async t => {
     .to(ctx => ctx.render({text: 'Mixed conditions'}));
   t.same(app.router.cache, null);
 
-  t.throws(() => {
-    app.any('/broken').requires('missing', {});
-  }, {code: 'ERR_ASSERTION'});
-
   const client = await app.newTestClient({tap: t});
 
   await t.test('Hello World', async t => {
