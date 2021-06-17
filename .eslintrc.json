@@ -22,9 +22,20 @@
         "code": 120
       }
     ],
-    "object-curly-spacing": [
+    "object-curly-spacing": "off",
+    "@typescript-eslint/object-curly-spacing": ["error"],
+    "@typescript-eslint/member-delimiter-style": [
       "error",
-      "never"
+      {
+        "multiline": {
+          "delimiter": "comma",
+          "requireLast": false
+        },
+        "singleline": {
+          "delimiter": "comma",
+          "requireLast": false
+        }
+      }
     ]
   },
   "ignorePatterns": [
