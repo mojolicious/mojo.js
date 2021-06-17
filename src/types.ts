@@ -1,6 +1,6 @@
-import App from './app.js';
-import HTTPContext from './context/http.js';
-import WebSocketContext from './context/websocket.js';
+import type App from './app.js';
+import type HTTPContext from './context/http.js';
+import type WebSocketContext from './context/websocket.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface HTTPContextWithHelpers extends HTTPContext { [key: string]: any }

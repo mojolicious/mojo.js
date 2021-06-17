@@ -9,10 +9,12 @@ import type {
   MojoStash,
   RouteArguments
 } from './types.js';
+import type Route from './router/route.js';
+import type Server from './server.js';
 import Ajv from 'ajv';
 import CLI from './cli.js';
 import Client from './client.js';
-import {ClientRequest, ServerResponse} from 'http';
+import type {ClientRequest, ServerResponse} from 'http';
 import ejsEnginePlugin from './plugins/ejs-engine.js';
 import exceptionHelpersPlugin from './plugins/exception-helpers.js';
 import File from './file.js';
@@ -23,9 +25,7 @@ import Logger from './logger.js';
 import Mime from './mime.js';
 import MockClient from './client/mock.js';
 import Renderer from './renderer.js';
-import Route from './router/route.js';
 import Router from './router.js';
-import Server from './server.js';
 import Session from './session.js';
 import Static from './static.js';
 import TestClient from './client/test.js';

@@ -1,5 +1,5 @@
 import type {MojoStash} from '../types.js';
-import Route from './route.js';
+import type Route from './route.js';
 
 export default class Plan {
   endpoint: Route = undefined;

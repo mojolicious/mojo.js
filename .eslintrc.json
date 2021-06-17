@@ -23,7 +23,15 @@
       }
     ],
     "object-curly-spacing": "off",
-    "@typescript-eslint/object-curly-spacing": ["error"],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports"
+      }
+    ],
+    "@typescript-eslint/object-curly-spacing": [
+      "error"
+    ],
     "@typescript-eslint/member-delimiter-style": [
       "error",
       {
