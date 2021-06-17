@@ -6,7 +6,7 @@ t.test('Full app', async t => {
 
   t.equal(app.log.level, 'debug');
 
-  await t.test('Hello World', async t => {
+  await t.test('Hello World', async () => {
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
   });
 
@@ -22,7 +22,7 @@ t.test('Full app', async t => {
     t.ok(await app.home.child('..', 'full-app', 'index.js').exists());
   });
 
-  await t.test('Controller', async t => {
+  await t.test('Controller', async () => {
     (await client.getOk('/foo')).statusIs(200).bodyIs('Action works!');
     (await client.getOk('/FOO')).statusIs(200).bodyIs('Action works!');
     (await client.getOk('/Foo')).statusIs(404);
@@ -36,7 +36,7 @@ t.test('Full app', async t => {
     (await client.postOk('/foo/baz')).statusIs(404);
   });
 
-  await t.test('View', async t => {
+  await t.test('View', async () => {
     (await client.getOk('/renderer/inline/foo')).statusIs(200).bodyIs('Hello foo');
     (await client.getOk('/renderer/inline/bar')).statusIs(200).bodyIs('Hello bar');
 
@@ -48,7 +48,7 @@ t.test('Full app', async t => {
     (await client.getOk('/default/view')).statusIs(200).bodyLike(/Header.*Default for foo and defaultView.*Footer/s);
   });
 
-  await t.test('Static files', async t => {
+  await t.test('Static files', async () => {
     (await client.getOk('/public/test.txt')).statusIs(200).headerExists('Content-Length').bodyLike(/Static file\r?\n/);
     (await client.getOk('/static')).statusIs(200).headerExists('Content-Length').bodyLike(/Static file\r?\n/);
     (await client.getOk('/public/does_not_exist.txt')).headerExistsNot('Etag').statusIs(404);

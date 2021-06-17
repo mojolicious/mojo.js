@@ -1,8 +1,4 @@
 {
-  "env": {
-    "node": true,
-    "es2021": true
-  },
   "extends": [
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
@@ -50,9 +46,5 @@
         }
       }
     ]
-  },
-  "ignorePatterns": [
-    "lib/**/*.js",
-    "vendor/**/*.js"
-  ]
+  }
 }
