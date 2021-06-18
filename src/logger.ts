@@ -1,7 +1,12 @@
+import type {WriteStream} from 'fs';
 import assert from 'assert';
 import chalk from 'chalk';
 
-const LEVEL = Object.freeze({
+type LogFormatter = (data: LogEvent) => string;
+interface LogContext { [key: string]: any }
+interface LogEvent { level: string, time: string, requestId?: string, msg: string }
+
+const LEVEL: Record<string, number> = Object.freeze({
   fatal: 2,
   error: 3,
   warn: 4,
@@ -11,75 +16,86 @@ const LEVEL = Object.freeze({
 });
 
 export default class Logger {
-  constructor (options = {}) {
-    this.formatter = options.formatter || Logger.colorFormatter;
-    this.destination = options.destination || process.stderr;
+  destination: NodeJS.WritableStream;
+  formatter: LogFormatter;
+  history: LogEvent[];
+  _historySize: number;
+  _level: number;
+
+  constructor (options: {
+    formatter?: LogFormatter,
+    destination?: WriteStream,
+    historySize?: number,
+    level?: string
+  } = {}) {
+    this.formatter = options.formatter ?? Logger.colorFormatter;
+    this.destination = options.destination ?? process.stderr;
     this.history = [];
 
     this._historySize = options.historySize ?? 0;
-    this._level = LEVEL[process.env.MOJO_LOG_LEVEL || options.level || 'debug'];
+    this._level = LEVEL[process.env.MOJO_LOG_LEVEL ?? options.level ?? 'debug'];
   }
 
-  child (context) {
+  child (context: LogContext): ChildLogger {
     return new ChildLogger(this, context);
   }
 
-  static colorFormatter (data) {
+  static colorFormatter (data: LogEvent): string {
     const formatted = Logger.stringFormatter(data);
     if (data.level === 'error' || data.level === 'fatal') return chalk.red(formatted);
     if (data.level === 'warn') return chalk.yellow(formatted);
     return formatted;
   }
 
-  debug (msg, context) {
+  debug (msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.debug) this._log('debug', msg, context);
   }
 
-  static stringFormatter (data) {
+  static stringFormatter (data: LogEvent): string {
     if (data.requestId !== undefined) return `[${data.time}] [${data.level}] [${data.requestId}] ${data.msg}\n`;
     return `[${data.time}] [${data.level}] ${data.msg}\n`;
   }
 
-  static systemdFormatter (data) {
+  static systemdFormatter (data: LogEvent): string {
     if (data.requestId === undefined) return `<${LEVEL[data.level]}>[${data.level.substring(0, 1)}] ${data.msg}\n`;
     return `<${LEVEL[data.level]}>[${data.level.substring(0, 1)}] [${data.requestId}] ${data.msg}\n`;
   }
 
-  error (msg, context) {
+  error (msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.error) this._log('error', msg, context);
   }
 
-  fatal (msg, context) {
+  fatal (msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.fatal) this._log('fatal', msg, context);
   }
 
-  info (msg, context) {
+  info (msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.info) this._log('info', msg, context);
   }
 
-  static jsonFormatter (data) {
+  static jsonFormatter (data: LogEvent): string {
     return JSON.stringify(data);
   }
 
-  get level () {
-    return Object.keys(LEVEL).find(key => LEVEL[key] === this._level);
+  get level (): string {
+    return Object.keys(LEVEL).find(key => LEVEL[key] === this._level) as string;
   }
 
-  set level (level) {
+  set level (level: string) {
     assert(LEVEL[level] !== undefined, `Unsupported log level "${level}"`);
     this._level = LEVEL[level];
   }
 
-  trace (msg, context) {
+  trace (msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.trace) this._log('trace', msg, context);
   }
 
-  warn (msg, context) {
+  warn (msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.warn) this._log('warn', msg, context);
   }
 
-  _log (level, msg, context) {
-    const data = {...context, time: new Date().toISOString(), msg, level};
+  _log (level: string, msg: string, context?: LogContext): void {
+    const data: LogEvent = {...context, time: new Date().toISOString(), msg, level};
     if (this._historySize === 0) {
       this.destination.write(this.formatter(data));
     } else {
@@ -97,32 +113,35 @@ export default class Logger {
 }
 
 export class ChildLogger {
-  constructor (parent, context) {
+  parent: Logger;
+  context: LogContext;
+
+  constructor (parent: Logger, context: LogContext) {
     this.parent = parent;
     this.context = context;
   }
 
-  debug (msg) {
+  debug (msg: string): void {
     this.parent.debug(msg, this.context);
   }
 
-  error (msg) {
+  error (msg: string): void {
     this.parent.error(msg, this.context);
   }
 
-  fatal (msg) {
+  fatal (msg: string): void {
     this.parent.fatal(msg, this.context);
   }
 
-  info (msg) {
+  info (msg: string): void {
     this.parent.info(msg, this.context);
   }
 
-  trace (msg) {
+  trace (msg: string): void {
     this.parent.trace(msg, this.context);
   }
 
-  warn (msg) {
+  warn (msg: string): void {
     this.parent.warn(msg, this.context);
   }
 }
