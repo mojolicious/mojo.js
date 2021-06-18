@@ -28,6 +28,7 @@
     "test": "tap --no-coverage test/*.js"
   },
   "exports": "./lib/mojo.js",
+  "types": "./lib/mojo.d.ts",
   "type": "module",
   "files": [
     "bin/",
