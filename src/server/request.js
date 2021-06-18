@@ -1,8 +1,8 @@
-import Body from '../body.js';
-import cookie from 'cookie';
-import {decodeURIComponentSafe} from '../util.js';
-import Params from '../body/params.js';
 import url from 'url';
+import Body from '../body.js';
+import Params from '../body/params.js';
+import {decodeURIComponentSafe} from '../util.js';
+import cookie from 'cookie';
 
 let requestId = 0;
 

@@ -4,15 +4,14 @@
  * MIT Licensed
  */
 import type {AppOptions} from './types.js';
-
 import App from './app.js';
 import Client from './client.js';
+import TestClient from './client/test.js';
 import File from './file.js';
-import jsonConfigPlugin from './plugins/json-config.js';
 import Logger from './logger.js';
+import jsonConfigPlugin from './plugins/json-config.js';
 import Server from './server.js';
 import Session from './session.js';
-import TestClient from './client/test.js';
 import * as util from './util.js';
 
 export default function mojo (options?: AppOptions): App {

@@ -1,7 +1,7 @@
-import LRU from 'lru-cache';
 import Plan from './router/plan.js';
 import Route from './router/route.js';
 import * as util from './util.js';
+import LRU from 'lru-cache';
 
 export default class Router extends Route {
   constructor () {

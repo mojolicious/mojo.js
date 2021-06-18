@@ -4,6 +4,9 @@
     "plugin:@typescript-eslint/recommended",
     "standard-with-typescript"
   ],
+  "plugins": [
+    "import"
+  ],
   "parserOptions": {
     "project": "./tsconfig.eslint.json"
   },
@@ -24,6 +27,26 @@
       }
     ],
     "object-curly-spacing": "off",
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "type",
+          "builtin",
+          [
+            "sibling",
+            "parent"
+          ],
+          "index",
+          "object"
+        ],
+        "newlines-between": "never",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
     "@typescript-eslint/consistent-type-imports": [
       "error",
       {

@@ -1,8 +1,8 @@
-import File from '../lib/file.js';
 import fs from 'fs/promises';
 import path from 'path';
-import t from 'tap';
 import url from 'url';
+import File from '../lib/file.js';
+import t from 'tap';
 
 t.test('File', async t => {
   t.test('Constructor', t => {

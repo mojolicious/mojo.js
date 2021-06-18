@@ -1,8 +1,8 @@
-import {app} from './support/lib-app/index.js';
+import File from '../lib/file.js';
 import {app as distApp} from './support/lib-app/dist/index.js';
+import {app} from './support/lib-app/index.js';
 import {app as libApp} from './support/lib-app/lib/index.js';
 import {app as srcApp} from './support/lib-app/src/index.js';
-import File from '../lib/file.js';
 import t from 'tap';
 
 t.test('Lib app', async t => {

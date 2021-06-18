@@ -1,7 +1,7 @@
 import assert from 'assert/strict';
-import cheerio from 'cheerio';
-import MockClient from './mock.js';
 import {on} from 'events';
+import MockClient from './mock.js';
+import cheerio from 'cheerio';
 import StackUtils from 'stack-utils';
 
 export default class TestClient extends MockClient {

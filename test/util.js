@@ -1,6 +1,6 @@
 import File from '../lib/file.js';
-import t from 'tap';
 import * as util from '../lib/util.js';
+import t from 'tap';
 
 t.test('Util', async t => {
   await t.test('captureOutput', async t => {

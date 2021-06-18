@@ -1,5 +1,5 @@
-import nopt from 'nopt';
 import Server from '../server.js';
+import nopt from 'nopt';
 
 export default async function serverCommand (app, args) {
   const parsed = nopt({

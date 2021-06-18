@@ -1,13 +1,12 @@
 import type EventEmitter from 'events';
 import type stream from 'stream';
-
 import fs from 'fs';
 import fsPromises from 'fs/promises';
 import os from 'os';
 import path from 'path';
 import readline from 'readline';
-import StackUtils from 'stack-utils';
 import url from 'url';
+import StackUtils from 'stack-utils';
 
 interface StreamOptions {
   flags?: string,

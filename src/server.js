@@ -1,8 +1,8 @@
 import cluster from 'cluster';
-import File from './file.js';
 import http from 'http';
 import https from 'https';
 import os from 'os';
+import File from './file.js';
 import WebSocket from './websocket.js';
 import WS from 'ws';
 

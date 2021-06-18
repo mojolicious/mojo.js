@@ -1,7 +1,7 @@
-import {app} from './support/command-app/index.js';
-import {captureOutput} from '../lib/util.js';
 import File from '../lib/file.js';
 import mojo from '../lib/mojo.js';
+import {captureOutput} from '../lib/util.js';
+import {app} from './support/command-app/index.js';
 import t from 'tap';
 
 t.test('Command app', async t => {

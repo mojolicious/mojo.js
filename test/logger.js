@@ -1,7 +1,7 @@
-import {captureOutput, sleep} from '../lib/util.js';
-import chalk from 'chalk';
 import File from '../lib/file.js';
 import Logger from '../lib/logger.js';
+import {captureOutput, sleep} from '../lib/util.js';
+import chalk from 'chalk';
 import t from 'tap';
 
 t.test('Logger', async t => {

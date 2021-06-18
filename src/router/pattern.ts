@@ -1,5 +1,4 @@
 import type {MojoStash} from '../types.js';
-
 import escapeStringRegexp from 'escape-string-regexp';
 
 const OP = Object.freeze({

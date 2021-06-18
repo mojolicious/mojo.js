@@ -1,3 +1,5 @@
+import type Route from './router/route.js';
+import type Server from './server.js';
 import type {
   AnyArguments,
   AppOptions,
@@ -12,28 +14,25 @@ import type {
   TestClientOptions
 } from './types.js';
 import type {ClientRequest, ServerResponse} from 'http';
-import type Route from './router/route.js';
-import type Server from './server.js';
-
-import Ajv from 'ajv';
 import CLI from './cli.js';
 import Client from './client.js';
-import ejsEnginePlugin from './plugins/ejs-engine.js';
-import exceptionHelpersPlugin from './plugins/exception-helpers.js';
-import File from './file.js';
-import headerConditionsPlugin from './plugins/header-conditions.js';
-import Hooks from './hooks.js';
+import MockClient from './client/mock.js';
+import TestClient from './client/test.js';
 import HTTPContext from './context/http.js';
+import WebSocketContext from './context/websocket.js';
+import File from './file.js';
+import Hooks from './hooks.js';
 import Logger from './logger.js';
 import Mime from './mime.js';
-import MockClient from './client/mock.js';
+import ejsEnginePlugin from './plugins/ejs-engine.js';
+import exceptionHelpersPlugin from './plugins/exception-helpers.js';
+import headerConditionsPlugin from './plugins/header-conditions.js';
+import viewHelpersPlugin from './plugins/view-helpers.js';
 import Renderer from './renderer.js';
 import Router from './router.js';
 import Session from './session.js';
 import Static from './static.js';
-import TestClient from './client/test.js';
-import viewHelpersPlugin from './plugins/view-helpers.js';
-import WebSocketContext from './context/websocket.js';
+import Ajv from 'ajv';
 
 export default class App {
   cli: CLI = new CLI(this);

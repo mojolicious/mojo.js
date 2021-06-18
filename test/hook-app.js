@@ -1,7 +1,7 @@
-import mojo from '../lib/mojo.js';
 import Stream from 'stream';
-import t from 'tap';
+import mojo from '../lib/mojo.js';
 import * as util from '../lib/util.js';
+import t from 'tap';
 
 t.test('Hook app', async t => {
   const app = mojo();
