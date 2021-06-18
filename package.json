@@ -17,7 +17,9 @@
   },
   "homepage": "https://mojojs.org",
   "scripts": {
+    "bench": "npx concurrently -k -s first \"NODE_ENV=production node benchmarks/hello/hello-mojo.js server\" \"npx autocannon -c 100 -d 5 -p 10 localhost:3000\"",
     "build": "npx tsc",
+    "build:bench": "npm run build && npm run bench",
     "build:lint": "npm run build && npm run lint",
     "build:test": "npm run build && npm test",
     "build:watch": "npx tsc --watch",
@@ -49,6 +51,8 @@
     "@types/tough-cookie": "^4.0.0",
     "@types/ws": "^7.4.5",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "autocannon": "^7.3.0",
+    "concurrently": "^6.2.0",
     "eslint": "^7.28.0",
     "eslint-config-standard-with-typescript": "^20.0.0",
     "eslint-plugin-import": "^2.23.4",
