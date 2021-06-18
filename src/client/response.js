@@ -32,4 +32,8 @@ export default class ClientResponse extends Body {
   get statusMessage () {
     return this.raw.statusMessage;
   }
+
+  get type () {
+    return this.headers['content-type'];
+  }
 }

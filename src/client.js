@@ -144,7 +144,7 @@ export default class Client extends EventEmitter {
     const redirected = config.redirected ?? 0;
     if (redirected >= this.maxRedirects) return res;
 
-    const location = res.get('Location');
+    const location = res.headers.location;
     if (location === undefined) return res;
     const url = new URL(location, config.url);
 

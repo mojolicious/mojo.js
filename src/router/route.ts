@@ -4,15 +4,15 @@ import Pattern from './pattern.js';
 
 export default class Route {
   children: Route[] = [];
-  customName: string | undefined;
-  defaultName: string | undefined;
+  customName: string | undefined = undefined;
+  defaultName: string | undefined = undefined;
   underRoute = false;
   methods: string[] = [];
   pattern: Pattern = new Pattern();
   requirements: Array<{[name: string]: any}> = [];
   websocketRoute = false;
-  _parent: WeakRef<Route> | undefined;
-  _root: WeakRef<Router> | undefined;
+  _parent: WeakRef<Route> | undefined = undefined;
+  _root: WeakRef<Router> | undefined = undefined;
 
   addChild (child: Route): Route {
     this.children.push(child);

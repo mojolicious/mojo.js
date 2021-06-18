@@ -17,7 +17,7 @@ export default class Pattern {
   constraints: PlaceholderTypes;
   defaults: MojoStash;
   placeholders: string[] = [];
-  regex: RegExp | undefined;
+  regex: RegExp | undefined = undefined;
   types: PlaceholderTypes;
   unparsed = '';
   _ast: any[] = [];

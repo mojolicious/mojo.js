@@ -139,12 +139,12 @@ export default class TestClient extends MockClient {
   }
 
   typeIs (value) {
-    this.assert('equal', [this.res.get('Content-Type'), value], `Content-Type: ${value}`, this.typeIs);
+    this.assert('equal', [this.res.type, value], `Content-Type: ${value}`, this.typeIs);
     return this;
   }
 
   typeLike (regex) {
-    this.assert('match', [this.res.get('Content-Type'), regex], 'Content-Type is similar', this.typeLike);
+    this.assert('match', [this.res.type, regex], 'Content-Type is similar', this.typeLike);
     return this;
   }
 

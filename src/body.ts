@@ -22,7 +22,7 @@ interface FileUpload {
 
 export default class Body {
   raw: IncomingMessage;
-  _form: Params | undefined;
+  _form: Params | undefined = undefined;
 
   constructor (stream: IncomingMessage) {
     this.raw = stream;
