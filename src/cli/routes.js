@@ -1,6 +1,8 @@
+
+import {tablify} from '../util.js';
+
 import chalk from 'chalk';
 import nopt from 'nopt';
-import {tablify} from '../util.js';
 
 export default function routesCommand (app, args) {
   const parsed = nopt({verbose: Boolean}, {v: '--verbose'}, args, 1);

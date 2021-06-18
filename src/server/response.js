@@ -1,5 +1,6 @@
-import cookie from 'cookie';
 import Stream from 'stream';
+
+import cookie from 'cookie';
 
 export default class ServerResponse {
   constructor (res, ctx) {

@@ -1,5 +1,5 @@
-import type {AnyArguments, MojoAction, MojoStash, RouteArguments} from '../types.js';
 import type Router from '../router.js';
+import type {AnyArguments, MojoAction, MojoStash, RouteArguments} from '../types.js';
 
 import Pattern from './pattern.js';
 

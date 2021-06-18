@@ -1,7 +1,10 @@
+
+import {on} from 'events';
+
+import Params from './body/params.js';
+
 import Busboy from 'busboy';
 import cheerio from 'cheerio';
-import {on} from 'events';
-import Params from './body/params.js';
 
 export default class Body {
   constructor (stream) {

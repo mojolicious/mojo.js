@@ -1,4 +1,5 @@
 import assert from 'assert';
+
 import chalk from 'chalk';
 
 const LEVEL = Object.freeze({

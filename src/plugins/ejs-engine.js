@@ -1,6 +1,9 @@
+
 import crypto from 'crypto';
-import ejs from 'ejs';
+
 import File from '../file.js';
+
+import ejs from 'ejs';
 
 export default function ejsEnginePlugin (app) {
   app.renderer.addEngine('ejs', ejsEngine);

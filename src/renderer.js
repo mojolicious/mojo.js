@@ -1,4 +1,5 @@
 import File from './file.js';
+
 import LRU from 'lru-cache';
 
 export default class Renderer {

@@ -1,5 +1,7 @@
+
 import File from '../lib/file.js';
 import mojo from '../lib/mojo.js';
+
 import t from 'tap';
 
 t.test('Exception app', async t => {

@@ -1,6 +1,8 @@
+
 import File from './file.js';
-import nopt from 'nopt';
 import * as util from './util.js';
+
+import nopt from 'nopt';
 
 export default class CLI {
   constructor (app) {

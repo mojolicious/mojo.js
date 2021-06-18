@@ -1,8 +1,11 @@
-import chalk from 'chalk';
-import ejs from 'ejs';
-import File from './file.js';
+
 import {setTimeout} from 'timers/promises';
 import url from 'url';
+
+import File from './file.js';
+
+import chalk from 'chalk';
+import ejs from 'ejs';
 
 export async function captureOutput (options, fn) {
   if (typeof options === 'function') fn = options;

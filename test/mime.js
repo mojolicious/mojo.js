@@ -1,4 +1,5 @@
 import Mime from '../lib/mime.js';
+
 import t from 'tap';
 
 t.test('Types', t => {

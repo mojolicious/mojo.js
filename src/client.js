@@ -1,12 +1,15 @@
-import ClientResponse from './client/response.js';
+
 import EventEmitter from 'events';
-import FormData from 'form-data';
 import http from 'http';
 import https from 'https';
 import Stream from 'stream';
-import tough from 'tough-cookie';
 import url from 'url';
+
+import ClientResponse from './client/response.js';
 import WebSocket from './websocket.js';
+
+import FormData from 'form-data';
+import tough from 'tough-cookie';
 import WS from 'ws';
 
 export default class Client extends EventEmitter {

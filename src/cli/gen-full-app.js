@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+
 import * as util from './../util.js';
 
 export default async function genLiteAppCommand (app, args) {

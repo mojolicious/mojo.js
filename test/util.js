@@ -1,6 +1,8 @@
+
 import File from '../lib/file.js';
-import t from 'tap';
 import * as util from '../lib/util.js';
+
+import t from 'tap';
 
 t.test('Util', async t => {
   await t.test('captureOutput', async t => {
@@ -77,27 +79,27 @@ t.test('Util', async t => {
     }
     t.same(await exceptionContext(result, {lines: 2}), {
       file: File.currentFile().toString(),
-      line: 74,
+      line: 76,
       column: 13,
       source: [
         {
-          num: 72,
+          num: 74,
           code: '    let result;'
         },
         {
-          num: 73,
+          num: 75,
           code: '    try {'
         },
         {
-          num: 74,
+          num: 76,
           code: "      throw new Error('Test');"
         },
         {
-          num: 75,
+          num: 77,
           code: '    } catch (error) {'
         },
         {
-          num: 76,
+          num: 78,
           code: '      result = error;'
         }
       ]
