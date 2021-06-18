@@ -4,6 +4,7 @@ import type {
   AnyArguments,
   AppOptions,
   ClientOptions,
+  HTTPContextWithHelpers,
   MojoAction,
   MojoContext,
   MojoDecoration,
@@ -11,9 +12,10 @@ import type {
   MojoPlugin,
   MojoStash,
   RouteArguments,
-  TestClientOptions
+  TestClientOptions,
+  WebSocketContextWithHelpers
 } from './types.js';
-import type {ClientRequest, ServerResponse} from 'http';
+import type {IncomingMessage, ServerResponse} from 'http';
 import CLI from './cli.js';
 import Client from './client.js';
 import MockClient from './client/mock.js';
@@ -116,27 +118,25 @@ export default class App {
   }
 
   async handleRequest (ctx: MojoContext): Promise<void> {
-    try {
-      if (ctx.isWebSocket) {
-        if (await this.hooks.runHook('websocket', ctx) === true) return;
-        await this.router.dispatch(ctx);
-        return;
-      }
-
-      if (await this.hooks.runHook('request', ctx) === true) return;
-      if (await this.static.dispatch(ctx)) return;
-      if (await this.router.dispatch(ctx)) return;
-      await ctx.notFound();
-    } catch (error) {
-      await ctx.exception(error);
+    if (ctx.isWebSocket) {
+      if (await this.hooks.runHook('websocket', ctx) === true) return;
+      await this.router.dispatch(ctx);
+      return;
     }
+
+    if (await this.hooks.runHook('request', ctx) === true) return;
+    if (await this.static.dispatch(ctx)) return;
+    if (await this.router.dispatch(ctx)) return;
+    await ctx.notFound();
   }
 
   get mode (): string {
     return this._mode;
   }
 
-  newHTTPContext (req: ClientRequest, res: ServerResponse, options: {reverseProxy?: boolean}): HTTPContext {
+  newHTTPContext (
+    req: IncomingMessage, res: ServerResponse, options: {reverseProxy?: boolean}
+  ): HTTPContextWithHelpers {
     return new this._httpContextClass(this, req, res, options);
   }
 
@@ -148,7 +148,7 @@ export default class App {
     return await TestClient.newTestClient(this, options);
   }
 
-  newWebSocketContext (req: ClientRequest, options: {reverseProxy?: boolean}): WebSocketContext {
+  newWebSocketContext (req: IncomingMessage, options: {reverseProxy?: boolean}): WebSocketContextWithHelpers {
     return new this._websocketContextClass(this, req, options);
   }
 

@@ -3,7 +3,8 @@
     "outDir": "lib",
     "allowJs": true,
     "lib": [
-      "ESNext"
+      "ESNext",
+      "DOM"
     ],
     "target": "esnext",
     "declaration": true,

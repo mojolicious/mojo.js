@@ -3,7 +3,7 @@ import mojo from '../lib/mojo.js';
 import t from 'tap';
 
 t.test('Exception app', async t => {
-  t.test('Development', async t => {
+  await t.test('Development', async t => {
     const app = mojo();
 
     app.log.level = 'debug';
@@ -67,7 +67,7 @@ t.test('Exception app', async t => {
     await client.stop();
   });
 
-  t.test('Development (custom views)', async t => {
+  await t.test('Development (custom views)', async t => {
     const app = mojo();
 
     app.log.level = 'debug';
@@ -113,7 +113,7 @@ t.test('Exception app', async t => {
     await client.stop();
   });
 
-  t.test('Production', async t => {
+  await t.test('Production', async t => {
     process.env.NODE_ENV = 'production';
     const app = mojo();
 
@@ -170,7 +170,7 @@ t.test('Exception app', async t => {
     await client.stop();
   });
 
-  t.test('Production (custom views)', async t => {
+  await t.test('Production (custom views)', async t => {
     process.env.NODE_ENV = 'production';
     const app = mojo();
     app.renderer.viewPaths.push(File.currentFile().sibling('support', 'exception-app', 'views').toString());
@@ -210,7 +210,7 @@ t.test('Exception app', async t => {
     await client.stop();
   });
 
-  t.test('WebSocket', async t => {
+  await t.test('WebSocket', async t => {
     const app = mojo();
 
     app.log.level = 'debug';

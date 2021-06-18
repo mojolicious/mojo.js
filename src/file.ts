@@ -171,7 +171,7 @@ export default class File {
     return this._path.split(path.sep);
   }
 
-  toFileURL (): url.URL {
+  toFileURL (): URL {
     return url.pathToFileURL(this._path);
   }
 
