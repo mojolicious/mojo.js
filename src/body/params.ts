@@ -1,5 +1,7 @@
+import {URLSearchParams} from 'url';
+
 export default class Params extends URLSearchParams {
-  toObject () {
+  toObject (): {[key: string]: string} {
     return Object.fromEntries(this);
   }
 }
