@@ -8,7 +8,7 @@ export default class HTTPContext extends Context {
   }
 
   accepts (allowed) {
-    const formats = this.app.mime.detect(this.req.get('Accept') ?? '');
+    const formats = this.app.mime.detect(this.req.headers.accept ?? '');
     const stash = this.stash;
     if (typeof stash.ext === 'string') formats.unshift(stash.ext);
 

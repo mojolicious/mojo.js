@@ -41,6 +41,8 @@
   },
   "devDependencies": {
     "@istanbuljs/esm-loader-hook": "^=0.1.2",
+    "@types/busboy": "^0.2.3",
+    "@types/cheerio": "^0.22.29",
     "@types/node": "^15.12.2",
     "@types/stack-utils": "^2.0.0",
     "@types/tap": "^15.0.3",

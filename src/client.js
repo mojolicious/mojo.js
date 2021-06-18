@@ -201,7 +201,7 @@ export default class Client extends EventEmitter {
   async _storeCookies (url, res) {
     if (this.cookieJar === null) return;
 
-    const header = res.get('Set-Cookie');
+    const header = res.headers['set-cookie'];
     if (header === undefined) return;
 
     const cookieURL = this._cookieURL(url);
