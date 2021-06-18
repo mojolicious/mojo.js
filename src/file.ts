@@ -1,5 +1,4 @@
 import type EventEmitter from 'events';
-import type {ReadStreamOptions, StreamOptions} from './types.js';
 import type stream from 'stream';
 
 import fs from 'fs';
@@ -9,6 +8,21 @@ import path from 'path';
 import readline from 'readline';
 import StackUtils from 'stack-utils';
 import url from 'url';
+
+interface StreamOptions {
+  flags?: string,
+  encoding?: BufferEncoding,
+  fd?: number | fsPromises.FileHandle,
+  mode?: number,
+  autoClose?: boolean,
+  emitClose?: boolean,
+  start?: number,
+  highWaterMark?: number
+}
+
+interface ReadStreamOptions extends StreamOptions {
+  end?: number
+}
 
 export default class File {
   _path = '';
