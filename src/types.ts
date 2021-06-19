@@ -59,7 +59,7 @@ export interface MojoRenderOptions {
   format?: string,
   inline?: string,
   inlineLayout?: string,
-  json?: string,
+  json?: any,
   maybe?: boolean,
   pretty?: boolean,
   status?: number,
