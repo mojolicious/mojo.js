@@ -23,7 +23,7 @@ export default class Pattern {
 
   constructor (path?: string, options: {
     constraints?: PlaceholderTypes,
-    defaults?: {[name: string]: any},
+    defaults?: Record<string, any>,
     types?: PlaceholderTypes
   } = {}) {
     this.constraints = options.constraints ?? {};

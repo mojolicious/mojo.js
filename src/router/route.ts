@@ -9,7 +9,7 @@ export default class Route {
   underRoute = false;
   methods: string[] = [];
   pattern: Pattern = new Pattern();
-  requirements: Array<{[name: string]: any}> = [];
+  requirements: Array<Record<string, any>> = [];
   websocketRoute = false;
   _parent: WeakRef<Route> | undefined = undefined;
   _root: WeakRef<Router> | undefined = undefined;
