@@ -1,7 +1,6 @@
 import type App from './app.js';
 import type Context from './context.js';
-import type HTTPContext from './context/http.js';
-import type {MojoStash} from './types.js';
+import type {MojoHTTPContext, MojoStash} from './types.js';
 import crypto from 'crypto';
 import {promisify} from 'util';
 
@@ -71,7 +70,7 @@ export default class Session {
     return data;
   }
 
-  async store (ctx: HTTPContext, data: MojoStash): Promise<void> {
+  async store (ctx: MojoHTTPContext, data: MojoStash): Promise<void> {
     if (typeof data.expires !== 'number') data.expires = Math.round(Date.now() / 1000) + this.expiration;
 
     const app = this._app.deref();

@@ -5,12 +5,12 @@ import type WebSocket from './websocket.js';
 import type {CookieJar} from 'tough-cookie';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface HTTPContextWithHelpers extends HTTPContext { [key: string]: any }
+export interface MojoHTTPContext extends HTTPContext { [key: string]: any }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface WebSocketContextWithHelpers extends WebSocketContext { [key: string]: any }
+export interface MojoWebSocketContext extends WebSocketContext { [key: string]: any }
 
-export type MojoContext = HTTPContextWithHelpers | WebSocketContextWithHelpers;
+export type MojoContext = MojoHTTPContext | MojoWebSocketContext;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;

@@ -4,17 +4,17 @@ import type {
   AnyArguments,
   AppOptions,
   ClientOptions,
-  HTTPContextWithHelpers,
   MojoAction,
   MojoContext,
   MojoDecoration,
   MojoHook,
+  MojoHTTPContext,
   MojoPlugin,
   MojoStash,
+  MojoWebSocketContext,
   RouteArguments,
   ServerRequestOptions,
-  TestClientOptions,
-  WebSocketContextWithHelpers
+  TestClientOptions
 } from './types.js';
 import type {IncomingMessage, ServerResponse} from 'http';
 import CLI from './cli.js';
@@ -135,7 +135,7 @@ export default class App {
     return this._mode;
   }
 
-  newHTTPContext (req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): HTTPContextWithHelpers {
+  newHTTPContext (req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): MojoHTTPContext {
     return new this._httpContextClass(this, req, res, options);
   }
 
@@ -147,7 +147,7 @@ export default class App {
     return await TestClient.newTestClient(this, options);
   }
 
-  newWebSocketContext (req: IncomingMessage, options: ServerRequestOptions): WebSocketContextWithHelpers {
+  newWebSocketContext (req: IncomingMessage, options: ServerRequestOptions): MojoWebSocketContext {
     return new this._websocketContextClass(this, req, options);
   }
 
