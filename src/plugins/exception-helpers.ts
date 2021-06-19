@@ -1,7 +1,10 @@
+import type App from '../app.js';
+import type WebSocketContext from '../context/websocket.js';
+import type {MojoDualContext} from '../types.js';
 import Logger from '../logger.js';
 import {exceptionContext} from '../util.js';
 
-export default function exceptionHelpersPlugin (app) {
+export default function exceptionHelpersPlugin (app: App): void {
   app.addHelper('exception', exception);
   app.addHelper('htmlException', htmlException);
   app.addHelper('htmlNotFound', htmlNotFound);
@@ -14,32 +17,32 @@ export default function exceptionHelpersPlugin (app) {
   app.addHelper('websocketException', websocketException);
 }
 
-function exception (ctx, error) {
+async function exception (ctx: MojoDualContext, error: Error): Promise<boolean> {
   if (ctx.isWebSocket) return ctx.websocketException(error);
   return ctx.httpException(error);
 }
 
-async function htmlException (ctx, error) {
+async function htmlException (ctx: MojoDualContext, error: Error): Promise<boolean> {
   ctx.stash.exception = error;
 
   const mode = ctx.app.mode;
-  if (await ctx.render({view: `exception.${mode}`, maybe: true, status: 500}) === true) return;
-  if (await ctx.render({view: 'exception', maybe: true, status: 500}) === true) return;
+  if (await ctx.render({view: `exception.${mode}`, maybe: true, status: 500}) === true) return true;
+  if (await ctx.render({view: 'exception', maybe: true, status: 500}) === true) return true;
 
   const view = mode === 'development' ? 'mojo/debug' : 'mojo/exception';
   return ctx.render({view, status: 500, stringFormatter: Logger.stringFormatter, exceptionContext});
 }
 
-async function htmlNotFound (ctx) {
-  const mode = ctx.app.mode;
-  if (await ctx.render({view: `not-found.${mode}`, maybe: true, status: 404}) === true) return;
-  if (await ctx.render({view: 'not-found', maybe: true, status: 404}) === true) return;
+async function htmlNotFound (ctx: MojoDualContext): Promise<boolean> {
+  const mode: string = ctx.app.mode;
+  if (await ctx.render({view: `not-found.${mode}`, maybe: true, status: 404}) === true) return true;
+  if (await ctx.render({view: 'not-found', maybe: true, status: 404}) === true) return true;
 
   const view = mode === 'development' ? 'mojo/debug' : 'mojo/not-found';
   return ctx.render({view, status: 404, stringFormatter: Logger.stringFormatter});
 }
 
-function httpException (ctx, error) {
+async function httpException (ctx: MojoDualContext, error: Error): Promise<boolean> {
   ctx.log.error(error.stack);
 
   const exceptionFormat = ctx.exceptionFormat;
@@ -48,7 +51,7 @@ function httpException (ctx, error) {
   return ctx.htmlException(error);
 }
 
-function jsonException (ctx, error) {
+async function jsonException (ctx: MojoDualContext, error: Error): Promise<boolean> {
   if (ctx.app.mode === 'development') {
     return ctx.render({
       json: {
@@ -66,27 +69,28 @@ function jsonException (ctx, error) {
   return ctx.render({json: {error: {message: 'Internal Server Error'}}, pretty: true, status: 500});
 }
 
-function jsonNotFound (ctx) {
+async function jsonNotFound (ctx: MojoDualContext): Promise<boolean> {
   return ctx.render({json: {error: {message: 'Not Found'}}, pretty: true, status: 404});
 }
 
-function notFound (ctx) {
+async function notFound (ctx: MojoDualContext): Promise<boolean> {
   const exceptionFormat = ctx.exceptionFormat;
   if (exceptionFormat === 'txt') return ctx.txtNotFound();
   if (exceptionFormat === 'json') return ctx.jsonNotFound();
   return ctx.htmlNotFound();
 }
 
-function txtException (ctx, error) {
+async function txtException (ctx: MojoDualContext, error: Error): Promise<boolean> {
   if (ctx.app.mode === 'development') return ctx.render({text: error.stack, status: 500});
   return ctx.render({text: 'Internal Server Error', status: 500});
 }
 
-function txtNotFound (ctx) {
+async function txtNotFound (ctx: MojoDualContext): Promise<boolean> {
   return ctx.render({text: 'Not Found', status: 404});
 }
 
-function websocketException (ctx, error) {
+async function websocketException (ctx: MojoDualContext, error: Error): Promise<boolean> {
   ctx.log.error(error.stack);
-  if (ctx.isEstablished) ctx.ws.close(1011);
+  if ((ctx as WebSocketContext).isEstablished) ctx.ws.close(1011);
+  return true;
 }
