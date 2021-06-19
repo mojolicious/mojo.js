@@ -1,6 +1,7 @@
 import type App from './app.js';
 import type HTTPContext from './context/http.js';
 import type WebSocketContext from './context/websocket.js';
+import type WebSocket from './websocket.js';
 import type {CookieJar} from 'tough-cookie';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,6 +66,8 @@ export interface MojoRenderOptions {
   view?: string,
   viewPath?: string
 }
+
+export type MojoWebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
 export interface ServerOptions {
   cluster?: boolean,

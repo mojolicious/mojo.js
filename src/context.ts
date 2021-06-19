@@ -32,7 +32,7 @@ export default class Context extends EventEmitter {
   }
 
   [EventEmitter.captureRejectionSymbol] (error: Error): void {
-    handleException(this, error);
+    Context._handleException(this, error);
   }
 
   get client (): Client {
@@ -111,8 +111,8 @@ export default class Context extends EventEmitter {
     const url = this.req.baseURL + path;
     return isWebSocket ? url.replace(/^http/, 'ws') : url;
   }
-}
 
-function handleException (ctx: any, error: Error): void {
-  ctx.exception(error);
+  static _handleException (ctx: any, error: Error): void {
+    ctx.exception(error);
+  }
 }
