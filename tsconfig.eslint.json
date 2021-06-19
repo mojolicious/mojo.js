@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "include": [
+    "benchmarks/**/*",
     "bin/**/*",
     "examples/**/*",
     "src/**/*",
