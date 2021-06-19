@@ -1,7 +1,13 @@
+import type {ServerResponse} from 'http';
+import type WS from 'ws';
 import EventEmitter, {on} from 'events';
 
 export default class WebSocket extends EventEmitter {
-  constructor (ws, handshake, options) {
+  handshake: ServerResponse | null;
+  jsonMode: boolean;
+  _raw: WS;
+
+  constructor (ws: WS, handshake: ServerResponse | null, options: {jsonMode: boolean}) {
     super({captureRejections: true});
 
     this.handshake = handshake;
@@ -18,7 +24,7 @@ export default class WebSocket extends EventEmitter {
     ws.on('pong', safeHandler.bind(this, 'pong'));
   }
 
-  async * [Symbol.asyncIterator] () {
+  async * [Symbol.asyncIterator] (): AsyncIterableIterator<any> {
     try {
       for await (const [message] of this._messageIterator()) {
         yield message;
@@ -28,20 +34,20 @@ export default class WebSocket extends EventEmitter {
     }
   }
 
-  close (code, reason) {
+  close (code?: number, reason?: string): void {
     this._raw.close(code, reason);
   }
 
-  ping (data) {
-    return new Promise(resolve => this._raw.ping(data, resolve));
+  async ping (data: any): Promise<void> {
+    return await new Promise(resolve => this._raw.ping(data, undefined, () => resolve()));
   }
 
-  send (message) {
-    if (this.jsonMode !== true) return new Promise(resolve => this._raw.send(message, resolve));
-    return new Promise(resolve => this._raw.send(JSON.stringify(message), resolve));
+  async send (message: any): Promise<void> {
+    if (!this.jsonMode) return await new Promise(resolve => this._raw.send(message, () => resolve()));
+    return new Promise(resolve => this._raw.send(JSON.stringify(message), () => resolve()));
   }
 
-  _messageIterator () {
+  _messageIterator (): AsyncIterableIterator<any> {
     // eslint-disable-next-line no-undef
     const ac = new AbortController();
 
@@ -49,7 +55,7 @@ export default class WebSocket extends EventEmitter {
     return on(this, 'message', {signal: ac.signal});
   }
 
-  _safeHandler (event, ...args) {
+  _safeHandler (event: string, ...args: any[]): void {
     try {
       this.emit(event, ...args);
     } catch (error) {
@@ -57,9 +63,9 @@ export default class WebSocket extends EventEmitter {
     }
   }
 
-  _safeMessageHandler (message) {
+  _safeMessageHandler (message: any): void {
     try {
-      if (this.jsonMode !== true) {
+      if (!this.jsonMode) {
         this.emit('message', message);
       } else {
         this.emit('message', JSON.parse(message));
