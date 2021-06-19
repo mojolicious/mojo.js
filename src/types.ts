@@ -59,3 +59,5 @@ export interface ServerOptions {
   reverseProxy?: boolean,
   workers?: number
 }
+
+export interface ServerRequestOptions { reverseProxy: boolean }

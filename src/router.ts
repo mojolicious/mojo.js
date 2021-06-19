@@ -110,7 +110,7 @@ export default class Router extends Route {
 
   _getPlan (ctx: MojoContext): Plan | null {
     const req = ctx.req;
-    const realMethod: string | undefined = req.method;
+    const realMethod = req.method;
     if (realMethod === undefined) return null;
     const method = realMethod === 'HEAD' ? 'GET' : realMethod;
     const path = req.path;

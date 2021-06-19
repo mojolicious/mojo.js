@@ -1,3 +1,5 @@
+import type {ServerRequestOptions} from '../types.js';
+import type {IncomingMessage} from 'http';
 import url from 'url';
 import Body from '../body.js';
 import Params from '../body/params.js';
@@ -7,30 +9,31 @@ import cookie from 'cookie';
 let requestId = 0;
 
 export default class ServerRequest extends Body {
-  constructor (stream, options) {
-    super(stream);
+  requestId: string;
+  _baseURL: string | undefined = undefined;
+  _cookies: Record<string, string> | undefined = undefined;
+  _ip: string | undefined = undefined;
+  _path: string | null | undefined = undefined;
+  _protocol: string | undefined = undefined;
+  _reverseProxy: boolean;
+  _url: URL | undefined = undefined;
+  _userinfo: string | null | undefined = undefined;
 
-    this._baseURL = undefined;
-    this._cookies = undefined;
-    this._ip = undefined;
-    this._isPathSafe = undefined;
-    this._path = undefined;
-    this._protocol = undefined;
-    this._requestId = undefined;
-    this._reverseProxy = options.reverseProxy;
-    this._url = undefined;
-    this._userinfo = undefined;
+  constructor (stream: IncomingMessage, options: ServerRequestOptions) {
+    super(stream);
 
     requestId = (requestId + 1) & 2147483647;
     this.requestId = `${process.pid}-${requestId.toString(36).padStart(6, '0')}`;
+
+    this._reverseProxy = options.reverseProxy;
   }
 
-  get baseURL () {
-    if (this._baseURL === undefined) this._baseURL = `${this.protocol}://${this.raw.headers.host}`;
+  get baseURL (): string {
+    if (this._baseURL === undefined) this._baseURL = `${this.protocol}://${this.raw.headers.host ?? ''}`;
     return this._baseURL;
   }
 
-  getCookie (name) {
+  getCookie (name: string): string | null {
     if (this._cookies === undefined) {
       const header = this.headers.cookie;
       this._cookies = header === undefined ? {} : cookie.parse(header);
@@ -38,10 +41,10 @@ export default class ServerRequest extends Body {
     return this._cookies[name] ?? null;
   }
 
-  get ip () {
+  get ip (): string | null {
     if (this._ip === undefined) {
       this._ip = this.raw.socket.remoteAddress;
-      if (this._reverseProxy === true) {
+      if (this._reverseProxy) {
         const forwarded = this.get('X-Forwarded-For');
         if (forwarded !== undefined) {
           const match = forwarded.match(/([^,\s]+)$/);
@@ -50,23 +53,23 @@ export default class ServerRequest extends Body {
       }
     }
 
-    return this._ip;
+    return this._ip ?? null;
   }
 
-  get method () {
+  get method (): string | undefined {
     return this.raw.method;
   }
 
-  get path () {
+  get path (): string | null {
     // eslint-disable-next-line node/no-deprecated-api
-    if (this._path === undefined) this._path = decodeURIComponentSafe(url.parse(this.raw.url).pathname);
+    if (this._path === undefined) this._path = decodeURIComponentSafe(url.parse(this.raw.url as string).pathname);
     return this._path;
   }
 
-  get protocol () {
+  get protocol (): string {
     if (this._protocol === undefined) {
       this._protocol = this.isSecure ? 'https' : 'http';
-      if (this._reverseProxy === true) {
+      if (this._reverseProxy) {
         const forwarded = this.get('X-Forwarded-Proto');
         if (forwarded !== undefined) this._protocol = forwarded;
       }
@@ -75,22 +78,22 @@ export default class ServerRequest extends Body {
     return this._protocol;
   }
 
-  get query () {
-    return new Params(this.url.searchParams);
+  get query (): Params {
+    return new Params(this.url.searchParams as url.URLSearchParams);
   }
 
-  get url () {
-    if (this._url === undefined) this._url = new URL(this.raw.url, this.baseURL);
+  get url (): URL {
+    if (this._url === undefined) this._url = new URL(this.raw.url ?? '', this.baseURL);
     return this._url;
   }
 
-  get userinfo () {
+  get userinfo (): string | null {
     if (this._userinfo === undefined) {
       this._userinfo = null;
       const auth = this.headers.authorization;
       if (auth !== undefined) {
         const match = auth.match(/Basic (.+)$/);
-        if (match !== null) this._userinfo = Buffer.from(match[1], 'base64');
+        if (match !== null) this._userinfo = Buffer.from(match[1], 'base64').toString();
       }
     }
 

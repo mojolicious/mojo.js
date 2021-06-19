@@ -4,7 +4,7 @@ import Stream from 'stream';
 import cookie from 'cookie';
 
 export default class ServerResponse {
-  headers: Record<string, string | string[]> = { };
+  headers: Record<string, string | string[]> = {};
   isSent = false;
   raw: http.ServerResponse;
   statusCode = 200;

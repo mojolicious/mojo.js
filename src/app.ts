@@ -12,6 +12,7 @@ import type {
   MojoPlugin,
   MojoStash,
   RouteArguments,
+  ServerRequestOptions,
   TestClientOptions,
   WebSocketContextWithHelpers
 } from './types.js';
@@ -134,9 +135,7 @@ export default class App {
     return this._mode;
   }
 
-  newHTTPContext (
-    req: IncomingMessage, res: ServerResponse, options: {reverseProxy?: boolean}
-  ): HTTPContextWithHelpers {
+  newHTTPContext (req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): HTTPContextWithHelpers {
     return new this._httpContextClass(this, req, res, options);
   }
 
@@ -148,7 +147,7 @@ export default class App {
     return await TestClient.newTestClient(this, options);
   }
 
-  newWebSocketContext (req: IncomingMessage, options: {reverseProxy?: boolean}): WebSocketContextWithHelpers {
+  newWebSocketContext (req: IncomingMessage, options: ServerRequestOptions): WebSocketContextWithHelpers {
     return new this._websocketContextClass(this, req, options);
   }
 
