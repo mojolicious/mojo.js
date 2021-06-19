@@ -52,6 +52,20 @@ export interface ClientOptions {
 
 export type TestClientOptions = ClientOptions & {tap?: Tap.Tap};
 
+export interface MojoRenderOptions {
+  engine?: string,
+  format?: string,
+  inline?: string,
+  inlineLayout?: string,
+  json?: string,
+  maybe?: boolean,
+  pretty?: boolean,
+  status?: number,
+  text?: string,
+  view?: string,
+  viewPath?: string
+}
+
 export interface ServerOptions {
   cluster?: boolean,
   listen?: string[],

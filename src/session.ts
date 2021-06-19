@@ -13,7 +13,7 @@ export default class Session {
   cookiePath = '/';
   expiration = 3600;
   httpOnly = true;
-  sameSite = 'Lax';
+  sameSite: 'lax' | 'strict' | 'none' = 'lax';
   secure = false;
   _app: WeakRef<App>;
 

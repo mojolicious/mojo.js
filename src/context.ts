@@ -87,7 +87,7 @@ export default class Context extends EventEmitter {
     return this._session;
   }
 
-  urlFor (target: string | undefined, values: MojoStash): string | null {
+  urlFor (target: string | undefined, values?: MojoStash): string | null {
     if (target === undefined || target === 'current') {
       if (this.plan === null) return null;
       const result = this.plan.render(values);

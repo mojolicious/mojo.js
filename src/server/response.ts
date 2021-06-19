@@ -1,5 +1,4 @@
 import type HTTPContext from '../context/http.js';
-import type {MojoContext} from '../types.js';
 import type http from 'http';
 import Stream from 'stream';
 import cookie from 'cookie';
@@ -9,9 +8,9 @@ export default class ServerResponse {
   isSent = false;
   raw: http.ServerResponse;
   statusCode = 200;
-  _ctx: WeakRef<MojoContext>;
+  _ctx: WeakRef<HTTPContext> ;
 
-  constructor (res: http.ServerResponse, ctx: MojoContext) {
+  constructor (res: http.ServerResponse, ctx: HTTPContext) {
     this.raw = res;
 
     this._ctx = new WeakRef(ctx);
@@ -40,7 +39,7 @@ export default class ServerResponse {
     if (ctx === undefined) return;
 
     const app = ctx.app;
-    if (ctx.isSessionActive) await app.session.store(ctx as HTTPContext, await ctx.session());
+    if (ctx.isSessionActive) await app.session.store(ctx, await ctx.session());
 
     if (await app.hooks.runHook('send', ctx, body) === true) return;
 
