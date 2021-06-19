@@ -34,20 +34,20 @@ t.test('Plugin app', async t => {
 
   const client = await app.newTestClient({tap: t});
 
-  await t.test('Tag helpers', async t => {
+  await t.test('Tag helpers', async () => {
     const baseURL = client.server.urls[0] + app.static.prefix.substring(1);
     (await client.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL));
   });
 
-  await t.test('Helper', async t => {
+  await t.test('Helper', async () => {
     (await client.getOk('/helper')).statusIs(200).bodyIs('works');
   });
 
-  await t.test('Decorate with getter and setter', async t => {
+  await t.test('Decorate with getter and setter', async () => {
     (await client.getOk('/getter/setter')).statusIs(200).bodyIs('before: works, after: also works');
   });
 
-  await t.test('Decorate with method', async t => {
+  await t.test('Decorate with method', async () => {
     (await client.getOk('/method')).statusIs(200).bodyIs('also works');
   });
 

@@ -4,7 +4,7 @@ import t from 'tap';
 t.test('Static app', async t => {
   const client = await app.newTestClient({tap: t});
 
-  await t.test('Bundled files', async t => {
+  await t.test('Bundled files', async () => {
     (await client.getOk('/public/mojo/bootstrap/bootstrap.bundle.min.js')).statusIs(200)
       .typeIs('application/javascript').headerExists('Content-Length');
     (await client.getOk('/public/mojo/bootstrap/bootstrap.min.css')).statusIs(200).typeIs('text/css')
@@ -35,12 +35,12 @@ t.test('Static app', async t => {
       .headerExists('Content-Length');
   });
 
-  await t.test('0', async t => {
+  await t.test('0', async () => {
     (await client.getOk('/public/0')).statusIs(200).headerIs('Content-Length', '1').bodyIs('0');
     (await client.getOk('/0')).statusIs(200).headerIs('Content-Length', '4').bodyIs('Zero');
   });
 
-  await t.test('Directory traversal', async t => {
+  await t.test('Directory traversal', async () => {
     (await client.getOk('/public/../../lib/mojo.js')).statusIs(404);
     (await client.getOk('/public/..%2F..%2Flib/mojo.js')).statusIs(404);
     (await client.getOk('/public/missing/..%2F..%2F..%2Flib/mojo.js')).statusIs(404);
@@ -48,7 +48,7 @@ t.test('Static app', async t => {
     (await client.getOk('/public/missing/..%5C..%5C..%5Clib/mojo.js')).statusIs(404);
   });
 
-  await t.test('Range', async t => {
+  await t.test('Range', async () => {
     (await client.getOk('/public/empty.txt')).statusIs(200).typeIs('text/plain; charset=utf-8')
       .headerIs('Content-Length', '0').headerIs('Accept-Ranges', 'bytes').bodyIs('');
     (await client.getOk('/public/empty.txt', {headers: {Range: 'bytes=1-5'}})).statusIs(416).bodyIs('');
@@ -82,18 +82,18 @@ t.test('Static app', async t => {
     (await client.getOk('/public/hello.txt', {headers: {Range: 'bytes=4-1'}})).statusIs(416);
   });
 
-  await t.test('Etag', async t => {
+  await t.test('Etag', async () => {
     (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
       .headerExists('Accept-Ranges').headerLike('Etag', /"[a-f0-9]+"/).bodyLike(/Hello World!/);
   });
 
-  await t.test('Last-Modified', async t => {
+  await t.test('Last-Modified', async () => {
     (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
       .headerExists('Accept-Ranges').headerExists('Etag')
       .headerLike('Last-Modified', /\w+\W+(\d+)\W+(\w+)\W+(\d+)\W+(\d+):(\d+):(\d+)\W*\w+/).bodyLike(/Hello World!/);
   });
 
-  await t.test('If-None-Match', async t => {
+  await t.test('If-None-Match', async () => {
     (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
       .headerExists('Accept-Ranges').headerLike('Etag', /"[a-f0-9]+"/).bodyLike(/Hello World!/);
     const etag = client.res.get('Etag');
@@ -106,7 +106,7 @@ t.test('Static app', async t => {
       .headerExists('Etag').headerExists('Last-Modified').bodyLike(/Hello World!/);
   });
 
-  await t.test('If-Modified-Since', async t => {
+  await t.test('If-Modified-Since', async () => {
     (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
       .headerExists('Accept-Ranges').headerExists('Etag').headerExists('Last-Modified').bodyLike(/Hello World!/);
 
@@ -125,7 +125,7 @@ t.test('Static app', async t => {
       .headerExists('Last-Modified').bodyLike(/Hello World!/);
   });
 
-  await t.test('Methods', async t => {
+  await t.test('Methods', async () => {
     (await client.getOk('/public/hello.txt')).statusIs(200).headerExists('Content-Type').headerExists('Content-Length')
       .headerExists('Accept-Ranges').headerExists('Etag').headerExists('Last-Modified').bodyLike(/Hello World!/);
 

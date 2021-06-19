@@ -10,7 +10,7 @@ t.test('Minimal app', async t => {
     t.ok(await app.home.child('myapp.js').exists());
   });
 
-  await t.test('Hello World', async t => {
+  await t.test('Hello World', async () => {
     (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
   });
 

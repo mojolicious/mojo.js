@@ -16,7 +16,7 @@ t.test('HTTPS app', async t => {
   await server.start();
   const client = await app.newTestClient({tap: t});
 
-  await t.test('HTTP', async t => {
+  await t.test('HTTP', async () => {
     (await client.getOk('/')).statusIs(200).bodyIs('HTTPS: false');
   });
 
@@ -32,7 +32,7 @@ t.test('HTTPS app', async t => {
     t.equal(result.code, 'DEPTH_ZERO_SELF_SIGNED_CERT');
   });
 
-  await t.test('HTTPS (self signed cert is accepted in insecure mode)', async t => {
+  await t.test('HTTPS (self signed cert is accepted in insecure mode)', async () => {
     (await client.getOk('/', {insecure: true})).statusIs(200).bodyIs('HTTPS: true');
   });
 

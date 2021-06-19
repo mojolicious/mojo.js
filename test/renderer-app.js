@@ -26,19 +26,19 @@ t.test('Renderer app', async t => {
 
   const client = await app.newTestClient({tap: t});
 
-  await t.test('Custom engine', async t => {
+  await t.test('Custom engine', async () => {
     (await client.getOk('/custom')).statusIs(200).bodyLike(/Custom test/);
   });
 
-  await t.test('Broken engine', async t => {
+  await t.test('Broken engine', async () => {
     (await client.getOk('/broken')).statusIs(500).bodyLike(/Broken engine/);
   });
 
-  await t.test('Missing view', async t => {
+  await t.test('Missing view', async () => {
     (await client.getOk('/missing')).statusIs(500).bodyLike(/Nothing could be rendered/);
   });
 
-  await t.test('Inline layout', async t => {
+  await t.test('Inline layout', async () => {
     (await client.getOk('/inline/layout')).statusIs(200).bodyLike(/Header: Test.+this works.+Footer/s);
   });
 

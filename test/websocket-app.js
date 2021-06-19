@@ -123,7 +123,7 @@ t.test('WebSocket app', async t => {
     await client.closeOk();
   });
 
-  await t.test('Plain alternative', async t => {
+  await t.test('Plain alternative', async () => {
     (await client.getOk('/echo')).statusIs(200).bodyIs('plain echo!');
   });
 
@@ -141,7 +141,7 @@ t.test('WebSocket app', async t => {
     await client.closeOk();
   });
 
-  await t.test('WebSocket connection gets closed right away', async t => {
+  await t.test('WebSocket connection gets closed right away', async () => {
     await client.websocketOk('/close');
     await client.closedOk(1001);
   });

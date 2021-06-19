@@ -107,7 +107,7 @@ t.test('Hook app', async t => {
   const client = await app.newTestClient({tap: t});
   t.same(serverHooks, ['start: works']);
 
-  await t.test('Request hooks', async t => {
+  await t.test('Request hooks', async () => {
     (await client.getOk('/')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Hello Mojo!');
     (await client.getOk('/?first=1')).statusIs(200).headerExistsNot('X-Hook').bodyIs('First request hook');
     (await client.getOk('/?second=1')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Second request hook');
@@ -129,18 +129,18 @@ t.test('Hook app', async t => {
     await client.closedOk(1005);
   });
 
-  await t.test('Request hook exception', async t => {
+  await t.test('Request hook exception', async () => {
     (await client.getOk('/?exception=1')).statusIs(500).headerIs('X-Hook', 'works').bodyLike(/Error: Hook exception/);
   });
 
-  await t.test('Send hooks', async t => {
+  await t.test('Send hooks', async () => {
     (await client.getOk('/send?powered=1')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
       .headerIs('X-Powered-By', 'mojo.js').jsonIs({hello: 'world'});
     (await client.getOk('/send?powered=0')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
       .headerExistsNot('X-Powered-By').jsonIs({hello: 'world'});
   });
 
-  await t.test('Static hooks', async t => {
+  await t.test('Static hooks', async () => {
     (await client.getOk('/public/mojo/favicon.ico?cache=1')).statusIs(200).typeIs('image/vnd.microsoft.icon')
       .headerExists('Content-Length').headerIs('Cache-Control', 'public, max-age=604800, immutable');
     (await client.getOk('/public/mojo/favicon.ico?cache=0')).statusIs(200).typeIs('image/vnd.microsoft.icon')
