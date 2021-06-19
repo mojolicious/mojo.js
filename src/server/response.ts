@@ -1,3 +1,4 @@
+import type HTTPContext from '../context/http.js';
 import type {MojoContext} from '../types.js';
 import type http from 'http';
 import Stream from 'stream';
@@ -39,7 +40,7 @@ export default class ServerResponse {
     if (ctx === undefined) return;
 
     const app = ctx.app;
-    if (ctx.isSessionActive) await app.session.store(ctx, await ctx.session());
+    if (ctx.isSessionActive) await app.session.store(ctx as HTTPContext, await ctx.session());
 
     if (await app.hooks.runHook('send', ctx, body) === true) return;
 

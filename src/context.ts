@@ -83,7 +83,7 @@ export default class Context extends EventEmitter {
   }
 
   async session (): Promise<MojoStash> {
-    if (this._session === undefined) this._session = (await this.app.session.load(this) ?? {}) as MojoStash;
+    if (this._session === undefined) this._session = await this.app.session.load(this) ?? {};
     return this._session;
   }
 
