@@ -45,6 +45,7 @@
     "@istanbuljs/esm-loader-hook": "^=0.1.2",
     "@types/busboy": "^0.2.3",
     "@types/cheerio": "^0.22.29",
+    "@types/cookie": "^0.4.0",
     "@types/lru-cache": "^5.1.0",
     "@types/node": "^15.12.2",
     "@types/stack-utils": "^2.0.0",
