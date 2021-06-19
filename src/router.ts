@@ -1,70 +1,79 @@
+import type {MojoCondition, MojoContext, MojoStash, PlaceholderType} from './types.js';
 import Plan from './router/plan.js';
 import Route from './router/route.js';
 import * as util from './util.js';
 import LRU from 'lru-cache';
 
+type RouteIndex = Record<string, Route>;
+
+interface RouteSpec { ctx?: MojoContext, method: string, path: string, websocket: boolean }
+
+const PLACEHOLDER = {};
+
 export default class Router extends Route {
+  cache: LRU<string, Plan | undefined> | null = new LRU(500);
+  conditions: Record<string, MojoCondition> = {};
+  controllerPaths: string[] = [];
+  controllers: Record<string, any> = {};
+  types: Record<string, PlaceholderType> = {num: /[0-9]+/};
+  _lookupIndex: RouteIndex | undefined = undefined;
+
   constructor () {
     super();
-
-    this.cache = new LRU(500);
-    this.conditions = {};
-    this.controllerPaths = [];
-    this.controllers = {};
     this.root = this;
-    this.types = {num: /[0-9]+/};
-
-    this._lookupIndex = undefined;
   }
 
-  addCondition (name, fn) {
+  addCondition (name: string, fn: MojoCondition): this {
     this.conditions[name] = fn;
     return this;
   }
 
-  addType (name, value) {
+  addType (name: string, value: PlaceholderType): this {
     this.types[name] = value;
     return this;
   }
 
-  async dispatch (ctx) {
+  async dispatch (ctx: MojoContext): Promise<boolean> {
     const plan = this._getPlan(ctx);
     if (plan === null) return false;
     ctx.plan = plan;
 
-    const stash = ctx.stash;
+    const stash: MojoStash = ctx.stash;
     const log = ctx.log;
     const steps = plan.steps;
     const stops = plan.stops;
     for (let i = 0; i < steps.length; i++) {
       const step = steps[i];
       Object.assign(stash, step, {fn: undefined});
-      if (stops[i] === false) continue;
+      if (!stops[i]) continue;
 
       if (typeof step.fn === 'function') {
         log.trace('Routing to function');
         if (await step.fn(ctx) === false) break;
-      } else if (stash.controller !== undefined && stash.action !== undefined) {
-        const Controller = this.controllers[stash.controller];
+      } else if (typeof stash.controller === 'string' && typeof stash.action === 'string') {
+        const controller: string = stash.controller;
+        const action: string = stash.action;
+
+        const Controller = this.controllers[controller];
         if (Controller == null) {
-          if (Controller === null) throw new Error(`Controller "${stash.controller}" does not have a default export`);
-          throw new Error(`Controller "${stash.controller}" does not exist`);
+          if (Controller === null) throw new Error(`Controller "${controller}" does not have a default export`);
+          throw new Error(`Controller "${controller}" does not exist`);
         }
 
-        const controller = new Controller();
-        if (controller[stash.action] === undefined) throw new Error(`Action "${stash.action}" does not exist`);
-        log.trace(`Routing to "${stash.controller}#${stash.action}"`);
-        if (await controller[stash.action](ctx) === false) break;
+        const instance = new Controller();
+        if (instance[action] === undefined) throw new Error(`Action "${action}" does not exist`);
+        log.trace(`Routing to "${controller}#${action}"`);
+        if (await instance[action](ctx) === false) break;
       }
     }
 
     return true;
   }
 
-  lookup (name) {
+  lookup (name: string): Route | null {
     if (this._lookupIndex === undefined) {
-      const defaultNames = {};
-      const customNames = {};
+      const defaultNames: RouteIndex = {};
+      const customNames: RouteIndex = {};
       const children = [...this.children];
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
@@ -81,13 +90,13 @@ export default class Router extends Route {
     return this._lookupIndex[name] === undefined ? null : this._lookupIndex[name];
   }
 
-  plot (spec) {
+  plot (spec: RouteSpec): Plan | null {
     const plan = new Plan();
     const steps = plan.steps;
     const stops = plan.stops;
 
     for (const child of this.children) {
-      if (this._walk(plan, child, spec) === true) break;
+      if (this._walk(plan, child, spec)) break;
       steps.pop();
       stops.pop();
     }
@@ -95,13 +104,14 @@ export default class Router extends Route {
     return plan.endpoint === undefined ? null : plan;
   }
 
-  async warmup () {
+  async warmup (): Promise<void> {
     Object.assign(this.controllers, await util.loadModules(this.controllerPaths));
   }
 
-  _getPlan (ctx) {
+  _getPlan (ctx: MojoContext): Plan | null {
     const req = ctx.req;
-    const realMethod = req.method;
+    const realMethod: string | undefined = req.method;
+    if (realMethod === undefined) return null;
     const method = realMethod === 'HEAD' ? 'GET' : realMethod;
     const path = req.path;
     if (path === null) return null;
@@ -112,7 +122,7 @@ export default class Router extends Route {
     if (this.cache === null) return this.plot({ctx, method, path, websocket: isWebSocket});
 
     // Cached
-    const cacheKey = `${method}:${path}:${isWebSocket}`;
+    const cacheKey = `${method}:${path}:${isWebSocket.toString()}`;
     const cache = this.cache;
     const cachedPlan = cache.get(cacheKey);
     if (cachedPlan !== undefined) return cachedPlan;
@@ -124,7 +134,7 @@ export default class Router extends Route {
     return plan;
   }
 
-  _walk (plan, route, spec) {
+  _walk (plan: Plan, route: Route, spec: RouteSpec): boolean {
     // Path
     const isEndpoint = route.isEndpoint();
     const result = route.pattern.matchPartial(spec.path, {isEndpoint});
@@ -132,29 +142,31 @@ export default class Router extends Route {
     stops.push(isEndpoint || route.underRoute);
     const steps = plan.steps;
     if (result === null) {
-      steps.push(undefined);
+      steps.push(PLACEHOLDER);
       return false;
     }
     steps.push(result.captures);
-    if (isEndpoint === true && result.remainder.length > 0 && result.remainder !== '/') return false;
+    if (isEndpoint && result.remainder.length > 0 && result.remainder !== '/') return false;
 
     // Methods
     const methods = route.methods;
     if (methods.length > 0 && !methods.includes(spec.method)) return false;
 
     // WebSocket
-    if (route.websocketRoute === true && spec.websocket === false) return false;
+    if (route.websocketRoute && !spec.websocket) return false;
 
     // Conditions
     if (route.requirements !== undefined) {
-      const conditions = route.root.conditions;
+      const root = route.root;
+      if (root === undefined) return false;
+      const conditions = root.conditions;
       for (const value of route.requirements) {
-        if (conditions[value.condition](spec.ctx, value.requirement) !== true) return false;
+        if (spec.ctx === undefined || !conditions[value.condition](spec.ctx, value.requirement)) return false;
       }
     }
 
     // Endpoint
-    if (isEndpoint === true) {
+    if (isEndpoint) {
       plan.endpoint = route;
       return true;
     }
@@ -163,7 +175,7 @@ export default class Router extends Route {
     for (const child of route.children) {
       const old = spec.path;
       spec.path = result.remainder;
-      if (this._walk(plan, child, spec) === true) return true;
+      if (this._walk(plan, child, spec)) return true;
       spec.path = old;
       steps.pop();
       stops.pop();

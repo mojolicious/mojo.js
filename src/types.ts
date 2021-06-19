@@ -21,6 +21,9 @@ export type MojoDecoration = ((...args: any[]) => any) & {get?: () => any, set?:
 export type MojoHook = ((app: App, ...args: any[]) => any) | MojoAction;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type MojoCondition = (ctx: MojoContext, requirements: any) => boolean;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoStash = Record<string, any>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,6 +32,8 @@ export type MojoPlugin = (app: App, options: MojoStash) => any;
 // Route arguments
 export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
+
+export type PlaceholderType = RegExp | string | string[];
 
 export interface AppOptions {
   config?: MojoStash,

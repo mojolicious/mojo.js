@@ -1,4 +1,4 @@
-import type {MojoStash} from '../types.js';
+import type {MojoStash, PlaceholderType} from '../types.js';
 import escapeStringRegexp from 'escape-string-regexp';
 
 const OP = Object.freeze({
@@ -10,7 +10,6 @@ const OP = Object.freeze({
 });
 
 interface MatchOptions {isEndpoint: boolean}
-type PlaceholderType = RegExp | string | string[];
 interface PlaceholderTypes {[name: string]: PlaceholderType}
 
 export default class Pattern {
