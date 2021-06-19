@@ -20,6 +20,7 @@
     "bench": "npx concurrently -k -s first \"NODE_ENV=production node benchmarks/hello/hello-mojo.js server\" \"npx autocannon -c 100 -d 5 -p 10 localhost:3000\"",
     "build": "npx tsc",
     "build:bench": "npm run build && npm run bench",
+    "build:clean": "rm -rf lib; npm run build",
     "build:lint": "npm run build && npm run lint",
     "build:test": "npm run build && npm test",
     "build:watch": "npx tsc --watch",
