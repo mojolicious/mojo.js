@@ -96,7 +96,7 @@ export default class Logger {
   }
 }
 
-class ChildLogger {
+export class ChildLogger {
   constructor (parent, context) {
     this.parent = parent;
     this.context = context;
