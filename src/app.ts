@@ -5,8 +5,8 @@ import type {
   AppOptions,
   ClientOptions,
   MojoAction,
-  MojoContext,
   MojoDecoration,
+  MojoDualContext,
   MojoHook,
   MojoHTTPContext,
   MojoPlugin,
@@ -78,7 +78,7 @@ export default class App {
   }
 
   addHelper (name: string, fn: MojoAction): this {
-    return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
+    return this.decorateContext(name, function (this: MojoDualContext, ...args: any[]) {
       return fn(this, ...args);
     });
   }
@@ -93,8 +93,8 @@ export default class App {
   }
 
   decorateContext (name: string, fn: MojoDecoration): this {
-    const httpProto: MojoContext = HTTPContext.prototype;
-    const websocketProto: MojoContext = WebSocketContext.prototype;
+    const httpProto: MojoDualContext = HTTPContext.prototype;
+    const websocketProto: MojoDualContext = WebSocketContext.prototype;
     if (httpProto[name] !== undefined || websocketProto[name] !== undefined) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
     }
@@ -118,7 +118,7 @@ export default class App {
     return this.router.get(...args);
   }
 
-  async handleRequest (ctx: MojoContext): Promise<void> {
+  async handleRequest (ctx: MojoDualContext): Promise<void> {
     if (ctx.isWebSocket) {
       if (await this.hooks.runHook('websocket', ctx) === true) return;
       await this.router.dispatch(ctx);

@@ -10,10 +10,11 @@ export interface MojoHTTPContext extends HTTPContext { [key: string]: any }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface MojoWebSocketContext extends WebSocketContext { [key: string]: any }
 
-export type MojoContext = MojoHTTPContext | MojoWebSocketContext;
+export type MojoDualContext = MojoHTTPContext | MojoWebSocketContext;
+export type MojoContext = MojoHTTPContext;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
+export type MojoAction = (ctx: MojoDualContext, ...args: any[]) => any;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoDecoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
@@ -22,7 +23,7 @@ export type MojoDecoration = ((...args: any[]) => any) & {get?: () => any, set?:
 export type MojoHook = ((app: App, ...args: any[]) => any) | MojoAction;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MojoCondition = (ctx: MojoContext, requirements: any) => boolean;
+export type MojoCondition = (ctx: MojoDualContext, requirements: any) => boolean;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoStash = Record<string, any>;

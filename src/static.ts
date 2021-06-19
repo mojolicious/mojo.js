@@ -1,4 +1,4 @@
-import type {MojoContext} from './types.js';
+import type {MojoDualContext} from './types.js';
 import crypto from 'crypto';
 import path from 'path';
 import File from './file.js';
@@ -7,7 +7,7 @@ export default class Static {
   prefix = '/public';
   publicPaths = [File.currentFile().sibling('..', 'vendor', 'public').toString()];
 
-  async dispatch (ctx: MojoContext): Promise<boolean> {
+  async dispatch (ctx: MojoDualContext): Promise<boolean> {
     const req = ctx.req;
     const unsafePath = req.path;
     if (unsafePath === null || !unsafePath.startsWith(this.prefix)) return false;
@@ -33,7 +33,7 @@ export default class Static {
     return this.prefix + path;
   }
 
-  isFresh (ctx: MojoContext, options: {etag?: string, lastModified?: Date} = {}): boolean {
+  isFresh (ctx: MojoDualContext, options: {etag?: string, lastModified?: Date} = {}): boolean {
     const etag = options.etag;
     const lastModified = options.lastModified;
 
@@ -62,7 +62,7 @@ export default class Static {
     return false;
   }
 
-  async serveFile (ctx: MojoContext, file: File): Promise<void> {
+  async serveFile (ctx: MojoDualContext, file: File): Promise<void> {
     const app = ctx.app;
     if (await app.hooks.runHook('static', ctx, file) === true) return;
 
@@ -105,7 +105,7 @@ export default class Static {
       .send(file.createReadStream({start: start, end: end}));
   }
 
-  _rangeNotSatisfiable (ctx: MojoContext): void {
+  _rangeNotSatisfiable (ctx: MojoDualContext): void {
     ctx.res.status(416).send();
   }
 }
