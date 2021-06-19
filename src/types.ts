@@ -65,7 +65,7 @@ export interface MojoRenderOptions {
   status?: number,
   text?: string,
   view?: string,
-  viewPath?: string
+  [key: string]: any
 }
 
 export type MojoWebSocketHandler = (ws: WebSocket) => void | Promise<void>;

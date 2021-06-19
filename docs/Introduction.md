@@ -385,12 +385,12 @@ Plugins are application extensions that help with code sharing and organization.
 as part of your application. You can register plugins with `app.plugin()`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo, {jsonConfigPlugin} from '@mojojs/mojo';
 
 // Create application with default configuration
 const app = mojo({config: {foo = 'default value'}});
 
-app.plugin(mojo.jsonConfigPlugin, {file: 'myapp.conf'});
+app.plugin(jsonConfigPlugin, {file: 'myapp.conf'});
 
 // Return configured foo value
 app.get('/foo', async ctx => {
@@ -409,8 +409,8 @@ Now if you create a `myapp.conf` file in the same directory as your application,
 }
 ```
 
-`mojo.jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config
-file (`config.json` by default). For multiple config files you can register it more than once. Plugins can also set up
+`jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config file
+(`config.json` by default). For multiple config files you can register it more than once. Plugins can also set up
 routes, hooks, helpers, template engines and many many other things we will later explore in the plugin guide.
 
 ## Placeholders
@@ -819,8 +819,7 @@ $ mkdir cache
 $ echo 'Hello World!' > cache/hello.txt
 ```
 
-The `mojo.File` object provides many useful `fs.*` and `path.*` functions from Node.js, as well as some custom
-additions.
+The `File` object provides many useful `fs.*` and `path.*` functions from Node.js, as well as some custom additions.
 
 ```js
 import mojo from '@mojojs/mojo';

@@ -1,4 +1,4 @@
-import mojo from '../lib/mojo.js';
+import mojo, {Client, File, jsonConfigPlugin, Logger, Server, Session, TestClient, util} from '../lib/mojo.js';
 import t from 'tap';
 
 t.test('Public API', async t => {
@@ -9,41 +9,53 @@ t.test('Public API', async t => {
     t.end();
   });
 
-  t.test('mojo.jsonConfigPlugin', t => {
-    t.ok(mojo.jsonConfigPlugin instanceof Function);
+  t.test('jsonConfigPlugin', t => {
+    t.ok(jsonConfigPlugin instanceof Function);
     t.end();
   });
 
-  t.test('mojo.util', t => {
-    t.ok(mojo.util !== undefined);
-    t.ok(mojo.util.tablify instanceof Function);
+  t.test('util', t => {
+    t.ok(util !== undefined);
+    t.ok(util.tablify instanceof Function);
     t.end();
   });
 
-  t.test('mojo.Client', t => {
-    t.ok(mojo.Client !== undefined);
-    const client = new mojo.Client();
+  t.test('Client', t => {
+    t.ok(Client !== undefined);
+    const client = new Client();
     t.ok(client.request instanceof Function);
     t.end();
   });
 
-  t.test('mojo.File', t => {
-    t.ok(mojo.File !== undefined);
-    const file = new mojo.File();
+  t.test('File', t => {
+    t.ok(File !== undefined);
+    const file = new File();
     t.ok(file.sibling instanceof Function);
     t.end();
   });
 
-  t.test('mojo.Logger', t => {
-    t.ok(mojo.Logger !== undefined);
-    const log = new mojo.Logger();
+  t.test('Logger', t => {
+    t.ok(Logger !== undefined);
+    const log = new Logger();
     t.ok(log.debug instanceof Function);
     t.end();
   });
 
-  t.test('mojo.TestClient', t => {
-    t.ok(mojo.TestClient !== undefined);
-    const client = new mojo.TestClient();
+  t.test('Server', t => {
+    t.ok(Server !== undefined);
+    t.ok(Server.listenArgsForURL instanceof Function);
+    t.end();
+  });
+
+  t.test('Session', t => {
+    t.ok(Session !== undefined);
+    t.ok(Session.encrypt instanceof Function);
+    t.end();
+  });
+
+  t.test('TestClient', t => {
+    t.ok(TestClient !== undefined);
+    const client = new TestClient();
     t.ok(client.getOk instanceof Function);
     t.end();
   });

@@ -69,7 +69,7 @@
               </div>
               <div id="showcase" class="mojo-box mojo-code mojo-no-bottom-border mojo-no-top-border mojo-border-radius-top">
                 <pre id="error" class="mojo-error"><%= exception %></pre>
-                <% const context = await ctx.app.mojo.util.exceptionContext(exception) %>
+                <% const context = await view.exceptionContext(exception) %>
                 <% if (context !== null) { %>
                   <div>
                     <table class="mojo-wide">
@@ -171,8 +171,7 @@
           </div>
           <div class="row">
             <% if (ctx.app.log.history.length > 0) { %>
-              <% const formatter = ctx.app.mojo.Logger.stringFormatter %>
-              <% const log = ctx.app.log.history.map(formatter).join('') %>
+              <% const log = ctx.app.log.history.map(view.stringFormatter).join('') %>
               <pre class="mojo-terminal"><code class="nohighlight"><%= log %></code></pre>
             <% } else { %>
               <div class="alert alert-warning mojo-wide" role="alert">

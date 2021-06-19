@@ -1,5 +1,5 @@
 import File from '../lib/file.js';
-import mojo from '../lib/mojo.js';
+import mojo, {TestClient} from '../lib/mojo.js';
 import {captureOutput} from '../lib/util.js';
 import {app} from './support/command-app/index.js';
 import t from 'tap';
@@ -132,7 +132,7 @@ t.test('Command app', async t => {
       await app2.cli.start('server', '-L', 'error', '-l', 'http://*');
     });
     t.match(output2.toString(), /Web application available at http:/);
-    const client = new mojo.TestClient({tap: t});
+    const client = new TestClient({tap: t});
     const match = output2.match(/(http:\/\/.+)$/s);
     t.notSame(match, null);
     (await client.getOk(match[1])).statusIs(200).bodyIs('Stopping server');

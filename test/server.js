@@ -1,4 +1,5 @@
-import mojo from '../lib/mojo.js';
+import mojo, {Server} from '../lib/mojo.js';
+import {captureOutput} from '../lib/util.js';
 import t from 'tap';
 
 t.test('Server', async t => {
@@ -7,14 +8,14 @@ t.test('Server', async t => {
   app.get('/', ctx => ctx.render({text: 'Hello World!'}));
 
   t.test('listenArgsforURL', t => {
-    t.same(mojo.Server.listenArgsForURL(new URL('http://*')), [null, '0.0.0.0']);
-    t.same(mojo.Server.listenArgsForURL(new URL('http://*:3000')), [3000, '0.0.0.0']);
-    t.same(mojo.Server.listenArgsForURL(new URL('http://*:4000')), [4000, '0.0.0.0']);
-    t.same(mojo.Server.listenArgsForURL(new URL('http://0.0.0.0:8000')), [8000, '0.0.0.0']);
-    t.same(mojo.Server.listenArgsForURL(new URL('http://127.0.0.1:8080')), [8080, '127.0.0.1']);
+    t.same(Server.listenArgsForURL(new URL('http://*')), [null, '0.0.0.0']);
+    t.same(Server.listenArgsForURL(new URL('http://*:3000')), [3000, '0.0.0.0']);
+    t.same(Server.listenArgsForURL(new URL('http://*:4000')), [4000, '0.0.0.0']);
+    t.same(Server.listenArgsForURL(new URL('http://0.0.0.0:8000')), [8000, '0.0.0.0']);
+    t.same(Server.listenArgsForURL(new URL('http://127.0.0.1:8080')), [8080, '127.0.0.1']);
 
-    t.same(mojo.Server.listenArgsForURL(new URL('http://*?fd=3')), [{fd: 3}]);
-    t.same(mojo.Server.listenArgsForURL(new URL('http://[::1]:5000')), [5000, '::1']);
+    t.same(Server.listenArgsForURL(new URL('http://*?fd=3')), [{fd: 3}]);
+    t.same(Server.listenArgsForURL(new URL('http://[::1]:5000')), [5000, '::1']);
 
     t.end();
   });
@@ -24,7 +25,7 @@ t.test('Server', async t => {
     const client = await app.newTestClient({tap: t});
 
     let res;
-    const output = await mojo.util.captureOutput({stderr: true, stdout: false}, async () => {
+    const output = await captureOutput({stderr: true, stdout: false}, async () => {
       res = await client.get('/');
     });
     t.equal(res.status, 200);

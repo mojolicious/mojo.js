@@ -1,3 +1,6 @@
+import Logger from '../logger.js';
+import {exceptionContext} from '../util.js';
+
 export default function exceptionHelpersPlugin (app) {
   app.addHelper('exception', exception);
   app.addHelper('htmlException', htmlException);
@@ -24,7 +27,7 @@ async function htmlException (ctx, error) {
   if (await ctx.render({view: 'exception', maybe: true, status: 500}) === true) return;
 
   const view = mode === 'development' ? 'mojo/debug' : 'mojo/exception';
-  return ctx.render({view, status: 500});
+  return ctx.render({view, status: 500, stringFormatter: Logger.stringFormatter, exceptionContext});
 }
 
 async function htmlNotFound (ctx) {
@@ -33,7 +36,7 @@ async function htmlNotFound (ctx) {
   if (await ctx.render({view: 'not-found', maybe: true, status: 404}) === true) return;
 
   const view = mode === 'development' ? 'mojo/debug' : 'mojo/not-found';
-  return ctx.render({view, status: 404});
+  return ctx.render({view, status: 404, stringFormatter: Logger.stringFormatter});
 }
 
 function httpException (ctx, error) {

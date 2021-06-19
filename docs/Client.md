@@ -5,9 +5,9 @@ The [mojo.js](https://mojojs.org) toolkit contains a full featured HTTP and WebS
 purpose is integration testing of web applications, it can also be used for many other things.
 
 ```js
-import mojo from '@mojojs/mojo';
+import {Client} from '@mojojs/mojo';
 
-const client = new mojo.Client();
+const client = new Client();
 const res = await client.get('https://mojolicious.org');
 const content = await res.text();
 ```
@@ -20,7 +20,7 @@ used `fetch` before.
 The client can be initialized with a few options, but none of them are required.
 
 ```js
-const client = new mojo.Client({
+const client = new Client({
 
   // Base URL to be used to resolve all relative request URLs with
   baseURL: 'http://127.0.0.1:3000',
@@ -225,7 +225,7 @@ For web application testing there is also a more specialised subclass available 
 [assert](https://nodejs.org/api/assert.html) to integrate seamlessly into most testing frameworks.
 
 ```js
-const client = mojo.TestClient({baseURL: 'https://mojolicious.org'});
+const client = TestClient({baseURL: 'https://mojolicious.org'});
 (await client.getOk('/')).statusIs(200).headerLike('Content-Type', /html/).bodyLike(/Mojolicious/);
 ```
 
@@ -233,11 +233,11 @@ const client = mojo.TestClient({baseURL: 'https://mojolicious.org'});
 with the `tap` option.
 
 ```js
-import mojo from '@mojojs/mojo';
+import {TestClient} from '@mojojs/mojo';
 import t from 'tap';
 
 t.test('Mojolicious', async t => {
-  const client = new mojo.TestClient({baseURL: 'https://mojolicious.org', tap: t});
+  const client = new TestClient({baseURL: 'https://mojolicious.org', tap: t});
 
   await t.test('Index', async t => {
     (await client.getOk('/')).statusIs(200).bodyLike(/Mojolicious/);

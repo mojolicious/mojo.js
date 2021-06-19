@@ -1,4 +1,4 @@
-import mojo from '../lib/mojo.js';
+import mojo, {Session} from '../lib/mojo.js';
 import t from 'tap';
 
 t.test('App', async t => {
@@ -426,9 +426,9 @@ t.test('App', async t => {
     (await client.getOk('/session/members', {headers: {Cookie: ''}})).statusIs(200)
       .bodyIs('Member: not logged in, no extra cookie');
 
-    const encrypted = await mojo.Session.encrypt(app.secrets[0], '{"user":"test"}');
-    t.same(await mojo.Session.decrypt(app.secrets, encrypted), '{"user":"test"}');
-    t.same(await mojo.Session.decrypt(app.secrets, `fails${encrypted}`), null);
+    const encrypted = await Session.encrypt(app.secrets[0], '{"user":"test"}');
+    t.same(await Session.decrypt(app.secrets, encrypted), '{"user":"test"}');
+    t.same(await Session.decrypt(app.secrets, `fails${encrypted}`), null);
     (await client.getOk('/session/members', {headers: {Cookie: `mojo=${encrypted}`}})).statusIs(200)
       .bodyIs('Member: test, no extra cookie');
 

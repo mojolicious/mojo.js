@@ -44,11 +44,11 @@ const jsonConfig = `{
 }
 `;
 
-const jsIndex = `import mojo from '@mojojs/mojo';
+const jsIndex = `import mojo, {jsonConfigPlugin} from '@mojojs/mojo';
 
 export const app = mojo();
 
-app.plugin(mojo.jsonConfigPlugin);
+app.plugin(jsonConfigPlugin);
 app.secrets = [app.config.secrets];
 
 app.get('/').to('example#welcome');

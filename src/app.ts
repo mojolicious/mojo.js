@@ -48,7 +48,6 @@ export default class App {
   log: Logger;
   mime: Mime = new Mime();
   models: MojoStash = {};
-  mojo: (options?: AppOptions) => App = () => new App();
   renderer: Renderer = new Renderer();
   router: Router = new Router();
   secrets: string[];

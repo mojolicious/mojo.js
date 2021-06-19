@@ -5,18 +5,10 @@
  */
 import type {AppOptions} from './types.js';
 import App from './app.js';
-import Client from './client.js';
-import TestClient from './client/test.js';
 import File from './file.js';
-import Logger from './logger.js';
-import jsonConfigPlugin from './plugins/json-config.js';
-import Server from './server.js';
-import Session from './session.js';
-import * as util from './util.js';
 
 export default function mojo (options?: AppOptions): App {
   const app = new App(options);
-  app.mojo = mojo;
 
   const caller = app.home = File.callerFile().dirname();
   const uplevel = caller.dirname();
@@ -36,11 +28,13 @@ export default function mojo (options?: AppOptions): App {
 }
 
 // "Professor: These old Doomsday devices are dangerously unstable. I'll rest easier not knowing where they are."
-mojo.Client = Client;
-mojo.File = File;
-mojo.jsonConfigPlugin = jsonConfigPlugin;
-mojo.Logger = Logger;
-mojo.Server = Server;
-mojo.Session = Session;
-mojo.TestClient = TestClient;
-mojo.util = util;
+export {default as Client} from './client.js';
+export {default as File} from './file.js';
+export {default as jsonConfigPlugin} from './plugins/json-config.js';
+export {default as Logger} from './logger.js';
+export {default as Server} from './server.js';
+export {default as Session} from './session.js';
+export {default as TestClient} from './client/test.js';
+export * as util from './util.js';
+
+export {MojoContext, MojoDualContext, MojoHTTPContext, MojoWebSocketContext} from './types.js';
