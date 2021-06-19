@@ -62,7 +62,7 @@ export default class Pattern {
     return this;
   }
 
-  render (values: {[key: string]: string}, options: MatchOptions): string {
+  render (values: Record<string, string>, options: MatchOptions): string {
     let optional = values.ext == null;
 
     const parts: string[] = [];
