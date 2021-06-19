@@ -178,7 +178,7 @@ export default class App {
     this._server = server === null ? null : new WeakRef(server);
   }
 
-  start (command: string, ...args: string[]): any {
+  start (command?: string, ...args: string[]): any {
     if (this.detectImport && process.argv[1] !== File.callerFile().toString()) return;
     return this.cli.start(command, ...args);
   }
