@@ -3,7 +3,14 @@ import type Client from './client.js';
 import type File from './file.js';
 import type {ChildLogger} from './logger.js';
 import type Plan from './router/plan.js';
-import type {MojoAction, MojoRenderOptions, MojoStash, ServerRequestOptions, WebSocketHandler} from './types.js';
+import type {
+  MojoAction,
+  MojoContext,
+  MojoRenderOptions,
+  MojoStash,
+  ServerRequestOptions,
+  WebSocketHandler
+} from './types.js';
 import type WebSocket from './websocket.js';
 import type {ValidateFunction} from 'ajv';
 import type http from 'http';
@@ -38,7 +45,7 @@ export default class Context extends EventEmitter {
   }
 
   [EventEmitter.captureRejectionSymbol] (error: Error): void {
-    Context._handleException(this, error);
+    (this as MojoContext).exception(error);
   }
 
   accepts (allowed?: string[]): string[] | null {
@@ -63,7 +70,7 @@ export default class Context extends EventEmitter {
   handleUpgrade (ws: WebSocket): void {
     this._ws = new WeakRef(ws);
     this.emit('connection', ws);
-    ws.on('error', error => Context._handleException(this, error));
+    ws.on('error', error => (this as MojoContext).exception(error));
   }
 
   get home (): File {
@@ -206,9 +213,5 @@ export default class Context extends EventEmitter {
   _urlForPath (path: string, isWebSocket: boolean): string {
     const url = this.req.baseURL + path;
     return isWebSocket ? url.replace(/^http/, 'ws') : url;
-  }
-
-  static _handleException (ctx: any, error: Error): void {
-    ctx.exception(error);
   }
 }
