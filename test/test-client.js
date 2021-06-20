@@ -127,5 +127,21 @@ t.test('Test client', async t => {
     ]);
   });
 
+  await t.test('Test without active connection', async t => {
+    const badClient = await app.newTestClient();
+
+    t.throws(() => { badClient.statusIs(200) }, {message: /No active HTTP response/});
+
+    let result;
+    try {
+      await badClient.sendOk('fail');
+    } catch (error) {
+      result = error;
+    }
+    t.match(result, {message: /No active WebSocket connection/});
+
+    await badClient.stop();
+  });
+
   await client.stop();
 });
