@@ -56,7 +56,7 @@ export default class TestClient extends MockClient {
     this.assert('equal', [finished, code], `WebSocket closed with status ${code}`, this.closedOk);
   }
 
-  async deleteOk (url: string | URL, options: MojoClientRequestOptions): Promise<this> {
+  async deleteOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
     return await this._requestOk(this.deleteOk, 'delete', url, options);
   }
 
@@ -76,7 +76,7 @@ export default class TestClient extends MockClient {
     return await this._requestOk(this.getOk, 'get', url, options);
   }
 
-  async headOk (url: string | URL, options: MojoClientRequestOptions): Promise<this> {
+  async headOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
     return await this._requestOk(this.headOk, 'head', url, options);
   }
 
@@ -117,19 +117,19 @@ export default class TestClient extends MockClient {
     return await new TestClient(options).start(app);
   }
 
-  async optionsOk (url: string | URL, options: MojoClientRequestOptions): Promise<this> {
+  async optionsOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
     return await this._requestOk(this.optionsOk, 'options', url, options);
   }
 
-  async patchOk (url: string | URL, options: MojoClientRequestOptions): Promise<this> {
+  async patchOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
     return await this._requestOk(this.patchOk, 'patch', url, options);
   }
 
-  async postOk (url: string | URL, options: MojoClientRequestOptions): Promise<this> {
+  async postOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
     return await this._requestOk(this.postOk, 'post', url, options);
   }
 
-  async putOk (url: string | URL, options: MojoClientRequestOptions): Promise<this> {
+  async putOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
     return await this._requestOk(this.putOk, 'put', url, options);
   }
 
@@ -159,7 +159,7 @@ export default class TestClient extends MockClient {
     return this;
   }
 
-  async websocketOk (url: string | URL, options: MojoClientWebSocketOptions): Promise<void> {
+  async websocketOk (url: string | URL, options?: MojoClientWebSocketOptions): Promise<void> {
     const ws = this._ws = await this.websocket(url, options);
 
     this._res = ws.handshake ?? undefined;
