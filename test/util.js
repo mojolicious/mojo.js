@@ -20,10 +20,10 @@ t.test('Util', async t => {
     t.same(output2, undefined);
     t.match(error, /Capture error/);
 
-    const output3 = await util.captureOutput({stderr: true}, async () => {
+    const output3 = await util.captureOutput(async () => {
       process.stdout.write('works');
       process.stderr.write('too');
-    });
+    }, {stderr: true});
     t.match(output3, /workstoo/);
   });
 

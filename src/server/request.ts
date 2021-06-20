@@ -64,7 +64,7 @@ export default class ServerRequest extends Body {
 
   get path (): string | null {
     // eslint-disable-next-line node/no-deprecated-api
-    if (this._path === undefined) this._path = decodeURIComponentSafe(url.parse(this.raw.url as string).pathname);
+    if (this._path === undefined) this._path = decodeURIComponentSafe(url.parse(this.raw.url as string).pathname ?? '');
     return this._path;
   }
 
