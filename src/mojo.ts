@@ -7,6 +7,9 @@ import type {AppOptions} from './types.js';
 import App from './app.js';
 import File from './file.js';
 
+export const version =
+  JSON.parse(File.currentFile().dirname().sibling('package.json').readFileSync().toString()).version;
+
 export default function mojo (options?: AppOptions): App {
   const app = new App(options);
 

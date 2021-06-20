@@ -1,9 +1,8 @@
-import File from '../file.js';
+import {version} from '../mojo.js';
 import {tablify} from '../util.js';
 
 export default async function versionCommand () {
-  const data = JSON.parse(File.currentFile().child('..', '..', '..', 'package.json').readFileSync());
-  const table = [['node', `(${process.version}, ${process.platform})`], ['mojo.js', `(${data.version})`]];
+  const table = [['node', `(${process.version}, ${process.platform})`], ['mojo.js', `(${version})`]];
   process.stdout.write(tablify(table));
 }
 
