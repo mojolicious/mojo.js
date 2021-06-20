@@ -4,12 +4,12 @@ import type {
   AnyArguments,
   AppOptions,
   ClientOptions,
+  Decoration,
+  Hook,
   MojoAction,
   MojoContext,
-  MojoDecoration,
-  MojoHook,
-  MojoPlugin,
   MojoStash,
+  Plugin,
   RouteArguments,
   ServerRequestOptions,
   TestClientOptions
@@ -80,7 +80,7 @@ export default class App {
     });
   }
 
-  addHook (name: string, fn: MojoHook): this {
+  addHook (name: string, fn: Hook): this {
     this.hooks.addHook(name, fn);
     return this;
   }
@@ -89,7 +89,7 @@ export default class App {
     return this.router.any(...args);
   }
 
-  decorateContext (name: string, fn: MojoDecoration): this {
+  decorateContext (name: string, fn: Decoration): this {
     const proto: MojoContext = Context.prototype;
     if (Object.getOwnPropertyDescriptor(proto, name) != null) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
@@ -149,7 +149,7 @@ export default class App {
     return this.router.patch(...args);
   }
 
-  plugin (plugin: MojoPlugin, options: MojoStash = {}): any {
+  plugin (plugin: Plugin, options: MojoStash = {}): any {
     return plugin(this, options);
   }
 

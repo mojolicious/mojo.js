@@ -10,19 +10,19 @@ export interface MojoContext extends Context { [key: string]: any }
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MojoDecoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MojoHook = ((app: App, ...args: any[]) => any) | MojoAction;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MojoCondition = (ctx: MojoContext, requirements: any) => boolean;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoStash = Record<string, any>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MojoPlugin = (app: App, options: MojoStash) => any;
+export type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Hook = ((app: App, ...args: any[]) => any) | MojoAction;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Condition = (ctx: MojoContext, requirements: any) => boolean;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Plugin = (app: App, options: MojoStash) => any;
 
 // Route arguments
 export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
