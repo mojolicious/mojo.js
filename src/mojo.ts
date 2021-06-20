@@ -37,4 +37,4 @@ export {default as Session} from './session.js';
 export {default as TestClient} from './client/test.js';
 export * as util from './util.js';
 
-export {MojoAction, MojoContext, MojoStash} from './types.js';
+export {MojoAction, MojoApp, MojoContext, MojoRenderOptions, MojoStash} from './types.js';

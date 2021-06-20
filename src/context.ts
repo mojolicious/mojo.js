@@ -3,7 +3,7 @@ import type Client from './client.js';
 import type File from './file.js';
 import type {ChildLogger} from './logger.js';
 import type Plan from './router/plan.js';
-import type {MojoAction, MojoRenderOptions, MojoStash, MojoWebSocketHandler, ServerRequestOptions} from './types.js';
+import type {MojoAction, MojoRenderOptions, MojoStash, ServerRequestOptions, WebSocketHandler} from './types.js';
 import type WebSocket from './websocket.js';
 import type {ValidateFunction} from 'ajv';
 import type http from 'http';
@@ -86,7 +86,7 @@ export default class Context extends EventEmitter {
     return this.req.isWebSocket;
   }
 
-  json (fn: MojoWebSocketHandler): this {
+  json (fn: WebSocketHandler): this {
     this.jsonMode = true;
     return this.on('connection', fn as () => void);
   }
@@ -107,7 +107,7 @@ export default class Context extends EventEmitter {
     return this._params;
   }
 
-  plain (fn: MojoWebSocketHandler): this {
+  plain (fn: WebSocketHandler): this {
     return this.on('connection', fn as () => void);
   }
 

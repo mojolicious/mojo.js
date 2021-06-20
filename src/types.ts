@@ -3,6 +3,8 @@ import type Context from './context.js';
 import type WebSocket from './websocket.js';
 import type {CookieJar} from 'tough-cookie';
 
+export type MojoApp = App;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface MojoContext extends Context { [key: string]: any }
 
@@ -30,6 +32,20 @@ export type RouteArguments = Array<string | MojoAction | Record<string, string[]
 
 export type PlaceholderType = RegExp | string | string[];
 
+export interface MojoRenderOptions {
+  engine?: string,
+  format?: string,
+  inline?: string,
+  inlineLayout?: string,
+  json?: any,
+  maybe?: boolean,
+  pretty?: boolean,
+  status?: number,
+  text?: string,
+  view?: string,
+  [key: string]: any
+}
+
 export interface AppOptions {
   config?: MojoStash,
   exceptionFormat?: string,
@@ -47,21 +63,7 @@ export interface ClientOptions {
 
 export type TestClientOptions = ClientOptions & {tap?: Tap.Tap};
 
-export interface MojoRenderOptions {
-  engine?: string,
-  format?: string,
-  inline?: string,
-  inlineLayout?: string,
-  json?: any,
-  maybe?: boolean,
-  pretty?: boolean,
-  status?: number,
-  text?: string,
-  view?: string,
-  [key: string]: any
-}
-
-export type MojoWebSocketHandler = (ws: WebSocket) => void | Promise<void>;
+export type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
 export interface ServerOptions {
   cluster?: boolean,

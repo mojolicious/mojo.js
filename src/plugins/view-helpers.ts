@@ -1,9 +1,8 @@
-import type App from '../app.js';
-import type {MojoContext, MojoRenderOptions, MojoStash} from '../types.js';
+import type {MojoApp, MojoContext, MojoRenderOptions, MojoStash} from '../types.js';
 import type {InspectOptions} from 'util';
 import {inspect} from 'util';
 
-export default function viewHelpersPlugin (app: App): void {
+export default function viewHelpersPlugin (app: MojoApp): void {
   app.decorateContext('inspect', (object: MojoStash, options: InspectOptions) => inspect(object, options));
 
   app.addHelper('include',

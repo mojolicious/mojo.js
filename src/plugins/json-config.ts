@@ -1,7 +1,7 @@
-import type App from '../app.js';
+import type {MojoApp} from '../types.js';
 import File from '../file.js';
 
-export default function jsonConfigPlugin (app: App, options: {file?: string}): void {
+export default function jsonConfigPlugin (app: MojoApp, options: {file?: string}): void {
   const filename = new File(options.file ?? 'config.json');
   const filePath = filename.isAbsolute() ? filename : app.home.child(filename.toString());
 
