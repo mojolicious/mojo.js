@@ -10,6 +10,8 @@ import FormData from 'form-data';
 import tough from 'tough-cookie';
 import WS from 'ws';
 
+interface Upload { content: string, filename: string, type: string }
+
 export default class Client extends EventEmitter {
   baseURL: string | URL | undefined;
   cookieJar: tough.CookieJar | null = new tough.CookieJar();
@@ -158,7 +160,7 @@ export default class Client extends EventEmitter {
     return config;
   }
 
-  _formData (values: Record<string, string | {content: string, filename: string, type: string}> = {}): FormData {
+  _formData (values: Record<string, string | Upload> = {}): FormData {
     const form = new FormData();
     for (const [name, value] of Object.entries(values)) {
       if (typeof value === 'string') {
@@ -221,7 +223,7 @@ export default class Client extends EventEmitter {
   }
 
   async _requestConfig (
-    method: string, url: string | URL = '/', options: MojoClientRequestOptions = {}
+    method: string, url: string | URL = '/', options?: MojoClientRequestOptions
   ): Promise<ClientResponse> {
     return await this.request({url, method, ...options});
   }
