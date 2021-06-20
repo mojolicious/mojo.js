@@ -1,4 +1,4 @@
-import type {MojoHTTPContext} from '../types.js';
+import type Context from '../context.js';
 import type http from 'http';
 import Stream from 'stream';
 import cookie from 'cookie';
@@ -8,9 +8,9 @@ export default class ServerResponse {
   isSent = false;
   raw: http.ServerResponse;
   statusCode = 200;
-  _ctx: WeakRef<MojoHTTPContext> ;
+  _ctx: WeakRef<Context> ;
 
-  constructor (res: http.ServerResponse, ctx: MojoHTTPContext) {
+  constructor (res: http.ServerResponse, ctx: Context) {
     this.raw = res;
 
     this._ctx = new WeakRef(ctx);

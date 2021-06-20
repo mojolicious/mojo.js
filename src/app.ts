@@ -5,13 +5,11 @@ import type {
   AppOptions,
   ClientOptions,
   MojoAction,
+  MojoContext,
   MojoDecoration,
-  MojoDualContext,
   MojoHook,
-  MojoHTTPContext,
   MojoPlugin,
   MojoStash,
-  MojoWebSocketContext,
   RouteArguments,
   ServerRequestOptions,
   TestClientOptions
@@ -21,8 +19,7 @@ import CLI from './cli.js';
 import Client from './client.js';
 import MockClient from './client/mock.js';
 import TestClient from './client/test.js';
-import HTTPContext from './context/http.js';
-import WebSocketContext from './context/websocket.js';
+import Context from './context.js';
 import File from './file.js';
 import Hooks from './hooks.js';
 import Logger from './logger.js';
@@ -36,6 +33,8 @@ import Router from './router.js';
 import Session from './session.js';
 import Static from './static.js';
 import Ajv from 'ajv';
+
+const ContextWrapper = class extends Context {};
 
 export default class App {
   cli: CLI = new CLI(this);
@@ -54,10 +53,9 @@ export default class App {
   session: Session = new Session(this);
   static: Static = new Static();
   validator: Ajv = new Ajv();
-  _httpContextClass: any = class extends HTTPContext {};
+  _contextClass: any = class extends ContextWrapper {};
   _mode: string;
   _server: WeakRef<Server> | null = null;
-  _websocketContextClass: any = class extends WebSocketContext {};
 
   constructor (options: AppOptions = {}) {
     this.config = options.config ?? {};
@@ -77,7 +75,7 @@ export default class App {
   }
 
   addHelper (name: string, fn: MojoAction): this {
-    return this.decorateContext(name, function (this: MojoDualContext, ...args: any[]) {
+    return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
       return fn(this, ...args);
     });
   }
@@ -92,18 +90,15 @@ export default class App {
   }
 
   decorateContext (name: string, fn: MojoDecoration): this {
-    const httpProto: MojoDualContext = HTTPContext.prototype;
-    const websocketProto: MojoDualContext = WebSocketContext.prototype;
-    if (httpProto[name] !== undefined || websocketProto[name] !== undefined) {
+    const proto: MojoContext = Context.prototype;
+    if (Object.getOwnPropertyDescriptor(proto, name) != null) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
     }
 
     if (typeof fn.get === 'function' || typeof fn.set === 'function') {
-      Object.defineProperty(this._httpContextClass.prototype, name, fn);
-      Object.defineProperty(this._websocketContextClass.prototype, name, fn);
+      Object.defineProperty(this._contextClass.prototype, name, fn);
     } else {
-      this._httpContextClass.prototype[name] = fn;
-      this._websocketContextClass.prototype[name] = fn;
+      this._contextClass.prototype[name] = fn;
     }
 
     return this;
@@ -117,7 +112,7 @@ export default class App {
     return this.router.get(...args);
   }
 
-  async handleRequest (ctx: MojoDualContext): Promise<void> {
+  async handleRequest (ctx: MojoContext): Promise<void> {
     if (ctx.isWebSocket) {
       if (await this.hooks.runHook('websocket', ctx) === true) return;
       await this.router.dispatch(ctx);
@@ -134,8 +129,8 @@ export default class App {
     return this._mode;
   }
 
-  newHTTPContext (req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): MojoHTTPContext {
-    return new this._httpContextClass(this, req, res, options);
+  newContext (req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): MojoContext {
+    return new this._contextClass(this, req, res, options);
   }
 
   async newMockClient (options?: ClientOptions): Promise<MockClient> {
@@ -144,10 +139,6 @@ export default class App {
 
   async newTestClient (options?: TestClientOptions): Promise<TestClient> {
     return await TestClient.newTestClient(this, options);
-  }
-
-  newWebSocketContext (req: IncomingMessage, options: ServerRequestOptions): MojoWebSocketContext {
-    return new this._websocketContextClass(this, req, options);
   }
 
   options (...args: RouteArguments): Route {

@@ -117,13 +117,13 @@ export default class Server {
 
   _handleRequest (req: http.IncomingMessage, res: http.ServerResponse): void {
     const app = this.app;
-    const ctx = app.newHTTPContext(req, res, {reverseProxy: this.reverseProxy});
+    const ctx = app.newContext(req, res, {isWebSocket: false, reverseProxy: this.reverseProxy});
     app.handleRequest(ctx).catch(error => ctx.exception(error));
   }
 
   _handleUpgrade (wss: WS.Server, req: http.IncomingMessage, socket: Socket, head: Buffer): void {
     const app = this.app;
-    const ctx = app.newWebSocketContext(req, {reverseProxy: this.reverseProxy});
+    const ctx = app.newContext(req, new http.ServerResponse(req), {isWebSocket: true, reverseProxy: this.reverseProxy});
 
     app.handleRequest(ctx).then(() => {
       if (ctx.isAccepted) {

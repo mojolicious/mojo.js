@@ -1,4 +1,4 @@
-import type {MojoCondition, MojoDualContext, MojoStash, PlaceholderType} from './types.js';
+import type {MojoCondition, MojoContext, MojoStash, PlaceholderType} from './types.js';
 import Plan from './router/plan.js';
 import Route from './router/route.js';
 import * as util from './util.js';
@@ -6,7 +6,7 @@ import LRU from 'lru-cache';
 
 type RouteIndex = Record<string, Route>;
 
-interface RouteSpec { ctx?: MojoDualContext, method: string, path: string, websocket: boolean }
+interface RouteSpec { ctx?: MojoContext, method: string, path: string, websocket: boolean }
 
 const PLACEHOLDER = {};
 
@@ -33,7 +33,7 @@ export default class Router extends Route {
     return this;
   }
 
-  async dispatch (ctx: MojoDualContext): Promise<boolean> {
+  async dispatch (ctx: MojoContext): Promise<boolean> {
     const plan = this._getPlan(ctx);
     if (plan === null) return false;
     ctx.plan = plan;
@@ -108,7 +108,7 @@ export default class Router extends Route {
     Object.assign(this.controllers, await util.loadModules(this.controllerPaths));
   }
 
-  _getPlan (ctx: MojoDualContext): Plan | null {
+  _getPlan (ctx: MojoContext): Plan | null {
     const req = ctx.req;
     const realMethod = req.method;
     if (realMethod === undefined) return null;

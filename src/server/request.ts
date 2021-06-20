@@ -9,6 +9,7 @@ import cookie from 'cookie';
 let requestId = 0;
 
 export default class ServerRequest extends Body {
+  isWebSocket: boolean;
   requestId: string;
   _baseURL: string | undefined = undefined;
   _cookies: Record<string, string> | undefined = undefined;
@@ -22,6 +23,7 @@ export default class ServerRequest extends Body {
   constructor (stream: IncomingMessage, options: ServerRequestOptions) {
     super(stream);
 
+    this.isWebSocket = options.isWebSocket;
     requestId = (requestId + 1) & 2147483647;
     this.requestId = `${process.pid}-${requestId.toString(36).padStart(6, '0')}`;
 

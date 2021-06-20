@@ -1,4 +1,4 @@
-import type {MojoDualContext} from './types.js';
+import type {MojoContext} from './types.js';
 import crypto from 'crypto';
 import path from 'path';
 import File from './file.js';
@@ -7,7 +7,7 @@ export default class Static {
   prefix = '/public';
   publicPaths = [File.currentFile().sibling('..', 'vendor', 'public').toString()];
 
-  async dispatch (ctx: MojoDualContext): Promise<boolean> {
+  async dispatch (ctx: MojoContext): Promise<boolean> {
     const req = ctx.req;
     const unsafePath = req.path;
     if (unsafePath === null || !unsafePath.startsWith(this.prefix)) return false;
@@ -33,7 +33,7 @@ export default class Static {
     return this.prefix + path;
   }
 
-  isFresh (ctx: MojoDualContext, options: {etag?: string, lastModified?: Date} = {}): boolean {
+  isFresh (ctx: MojoContext, options: {etag?: string, lastModified?: Date} = {}): boolean {
     const etag = options.etag;
     const lastModified = options.lastModified;
 
@@ -62,13 +62,13 @@ export default class Static {
     return false;
   }
 
-  async serveFile (ctx: MojoDualContext, file: File): Promise<void> {
+  async serveFile (ctx: MojoContext, file: File): Promise<void> {
     const app = ctx.app;
     if (await app.hooks.runHook('static', ctx, file) === true) return;
 
     const stat = await file.stat();
     const length = stat.size;
-    if (typeof length !== 'number') return this._rangeNotSatisfiable(ctx);
+    if (typeof length !== 'number') return await this._rangeNotSatisfiable(ctx);
     const type = app.mime.extType(file.extname().replace('.', '')) ?? 'application/octet-stream';
     const range = ctx.req.headers.range;
 
@@ -89,23 +89,23 @@ export default class Static {
     }
 
     // Empty file
-    if (length === 0) return this._rangeNotSatisfiable(ctx);
+    if (length === 0) return await this._rangeNotSatisfiable(ctx);
 
     // Invalid range
     const bytes = range.match(/^bytes=(\d+)?-(\d+)?/);
-    if (bytes === null) return this._rangeNotSatisfiable(ctx);
+    if (bytes === null) return await this._rangeNotSatisfiable(ctx);
     let start = parseInt(bytes[1]);
     if (isNaN(start)) start = 0;
     let end = parseInt(bytes[2]);
     if (isNaN(end)) end = length - 1;
-    if (start > end) return this._rangeNotSatisfiable(ctx);
+    if (start > end) return await this._rangeNotSatisfiable(ctx);
 
     // Range
     await res.status(200).length((end - start) + 1).type(type).set('Content-Range', `bytes ${start}-${end}/${length}`)
       .send(file.createReadStream({start: start, end: end}));
   }
 
-  _rangeNotSatisfiable (ctx: MojoDualContext): void {
-    ctx.res.status(416).send();
+  async _rangeNotSatisfiable (ctx: MojoContext): Promise<void> {
+    await ctx.res.status(416).send();
   }
 }
