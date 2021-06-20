@@ -1,28 +1,30 @@
+import type {MojoContext, MojoRenderOptions, MojoViewEngine} from './types.js';
 import File from './file.js';
 import LRU from 'lru-cache';
 
+interface EngineResult { output: string | Buffer, format: string }
+interface ViewSuggestion { format: string, engine: string, path: string }
+type ViewIndex = Record<string, ViewSuggestion[]>;
+
 export default class Renderer {
-  constructor () {
-    this.cache = new LRU(100);
-    this.defaultEngine = 'ejs';
-    this.defaultFormat = 'html';
-    this.engines = {};
-    this.viewPaths = [File.currentFile().sibling('..', 'vendor', 'views').toString()];
+  cache: LRU<string, any> = new LRU(100);
+  defaultEngine = 'ejs';
+  defaultFormat = 'html';
+  engines: Record<string, MojoViewEngine> = {};
+  viewPaths: string[] = [File.currentFile().sibling('..', 'vendor', 'views').toString()];
+  _viewIndex: ViewIndex | undefined = undefined;
 
-    this._viewIndex = undefined;
-  }
-
-  addEngine (name, engine) {
+  addEngine (name: string, engine: MojoViewEngine): this {
     this.engines[name] = engine;
     return this;
   }
 
-  findView (name) {
-    if (this._viewIndex[name] === undefined) return null;
+  findView (name: string): ViewSuggestion | null {
+    if (this._viewIndex === undefined || this._viewIndex[name] === undefined) return null;
     return this._viewIndex[name][0];
   }
 
-  async render (ctx, options) {
+  async render (ctx: MojoContext, options: MojoRenderOptions): Promise<EngineResult | null> {
     const log = ctx.log;
     if (options.text !== undefined) {
       log.trace('Rendering text response');
@@ -60,8 +62,10 @@ export default class Renderer {
     }
 
     const stash = ctx.stash;
-    if (options.view === undefined && stash.controller !== undefined && stash.action !== undefined) {
-      options.view = `${stash.controller}/${stash.action}`;
+    const controller: string = stash.controller;
+    const action: string = stash.action;
+    if (options.view === undefined && controller !== undefined && action !== undefined) {
+      options.view = `${controller}/${action}`;
     }
     if (options.view !== undefined) {
       log.trace(`Rendering view "${options.view}"`);
@@ -81,8 +85,8 @@ export default class Renderer {
     return null;
   }
 
-  async warmup () {
-    const viewIndex = this._viewIndex = {};
+  async warmup (): Promise<void> {
+    const viewIndex: ViewIndex = this._viewIndex = {};
     for (const dir of this.viewPaths.map(path => new File(path))) {
       if (!(await dir.exists())) continue;
 
@@ -98,14 +102,14 @@ export default class Renderer {
     }
   }
 
-  async _renderInline (ctx, options) {
+  async _renderInline (ctx: MojoContext, options: MojoRenderOptions): Promise<EngineResult | null> {
     const engine = this.engines[options.engine ?? this.defaultEngine];
     if (engine === undefined) return null;
     return {output: await engine(ctx, options), format: options.format ?? this.defaultFormat};
   }
 
-  async _renderView (ctx, options) {
-    const view = this.findView(options.view);
+  async _renderView (ctx: MojoContext, options: MojoRenderOptions): Promise<EngineResult | null> {
+    const view = this.findView(options.view ?? '');
     if (view === null) return null;
 
     const engine = this.engines[view.engine];

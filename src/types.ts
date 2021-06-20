@@ -25,12 +25,15 @@ export type RouteArguments = Array<string | MojoAction | Record<string, string[]
 
 export type PlaceholderType = RegExp | string | string[];
 
+export type MojoViewEngine = (ctx: MojoContext, options: MojoRenderOptions) => Promise<Buffer>;
+
 export interface MojoRenderOptions {
   engine?: string,
   format?: string,
   inline?: string,
   inlineLayout?: string,
   json?: any,
+  layout?: string,
   maybe?: boolean,
   pretty?: boolean,
   status?: number,
