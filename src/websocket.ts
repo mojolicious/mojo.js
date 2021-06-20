@@ -1,13 +1,13 @@
-import type {ServerResponse} from 'http';
+import type ClientResponse from './client/response.js';
 import type WS from 'ws';
 import EventEmitter, {on} from 'events';
 
 export default class WebSocket extends EventEmitter {
-  handshake: ServerResponse | null;
+  handshake: ClientResponse | null;
   jsonMode: boolean;
   _raw: WS;
 
-  constructor (ws: WS, handshake: ServerResponse | null, options: {jsonMode: boolean}) {
+  constructor (ws: WS, handshake: ClientResponse | null, options: {jsonMode: boolean}) {
     super({captureRejections: true});
 
     this.handshake = handshake;

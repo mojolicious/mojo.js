@@ -46,7 +46,7 @@ client.cookieJar.allowSpecialUseDomain = true;
 ## Request Config
 
 Every request is represented by a config object that contains various properties to describe every part of the HTTP
-request or WebSocket handshake.
+request.
 
 ```js
 const res = await client.request({
@@ -75,17 +75,14 @@ const res = await client.request({
   // Object with key/value pairs to be sent in `multipart/form-data` format
   formData: {fieldA: 'first value', fieldB: 'second value'},
 
+  // Disable TLS certificate validation
+  insecure: true,
+
   // Basic authentication
   auth: 'user:password',
 
   // Alternative `http.Agent` object to use, for keep-alive or SOCKS proxy support with `proxy-agent`
-  agent: new http.Agent({keepAlive: true}),
-
-  // Request is WebSocket handshake
-  websocket: false,
-
-  // WebSocket subprotocols
-  protocols: ['foo', 'bar']
+  agent: new http.Agent({keepAlive: true})
 });
 ```
 
@@ -188,7 +185,29 @@ information from documents with just a CSS selector and almost no code at all.
 
 ## WebSockets
 
-And for WebSockets there is of course also a convenient shortcut available.
+For WebSocket handshakes there are also quite a few options available.
+
+```js
+const ws = await client.websocket('wss://mojolicious.org', {
+
+  // Headers to include in handshake
+  headers: {Accept: '*/*', Authorization: 'token 123456789abcdef'},
+
+  // Object with key/value pairs to be sent with the query string
+  query: {fieldA: 'first value', fieldB: 'second value'},
+
+  // Enable JSON mode (encoding and decoding all messages automatically)
+  json: true,
+
+  // Basic authentication
+  auth: 'user:password',
+
+  // WebSocket subprotocols
+  protocols: ['foo', 'bar']
+});
+```
+
+You can choose between multiple API styles.
 
 ```js
 // Events
