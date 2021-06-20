@@ -51,6 +51,7 @@
     "@types/ejs": "^3.0.6",
     "@types/lru-cache": "^5.1.0",
     "@types/node": "^15.12.2",
+    "@types/nopt": "^3.0.29",
     "@types/stack-utils": "^2.0.0",
     "@types/tap": "^15.0.3",
     "@types/tough-cookie": "^4.0.0",

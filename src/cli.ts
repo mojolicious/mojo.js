@@ -1,45 +1,51 @@
+import type App from './app.js';
 import File from './file.js';
 import * as util from './util.js';
 import nopt from 'nopt';
 
-export default class CLI {
-  constructor (app) {
-    this.commandPaths = [File.currentFile().sibling('cli').toString()];
-    this.commands = {};
+interface Command { (app: App, ...args: any[]): any, description: string, usage: string }
 
+export default class CLI {
+  commandPaths: string[] = [File.currentFile().sibling('cli').toString()];
+  commands: Record<string, Command> = {};
+  _app: WeakRef<App>;
+  _loaded: boolean | undefined = undefined;
+
+  constructor (app: App) {
     this._app = new WeakRef(app);
-    this._loaded = undefined;
   }
 
-  addCommand (name, command) {
+  addCommand (name: string, command: Command): void {
     this.commands[name] = command;
   }
 
-  async start (command, ...args) {
+  async start (command?: string, ...args: any[]): Promise<any> {
     if (this._loaded === undefined) await this._loadCommands();
 
     const commandArgs = command === undefined ? process.argv : [null, null, command, ...args];
     const parsed = nopt({help: Boolean}, {h: '--help'}, commandArgs);
     const argv = parsed.argv;
     if (argv.remain.length > 0) {
-      const name = argv.original[0];
+      const name: string = argv.original[0];
       const command = this.commands[name];
       if (command === undefined) {
         process.stdout.write(`Unknown command "${name}", maybe you need to install it?\n`);
         return;
       }
-      if (parsed.help) return process.stdout.write(command.usage);
-      return await command(this._app.deref(), argv.original);
+      if (parsed.help === true) return process.stdout.write(command.usage);
+      const app = this._app.deref();
+      if (app === undefined) return;
+      return command(app, argv.original);
     }
-    this._listCommands();
+    await this._listCommands();
   }
 
-  async _listCommands () {
+  async _listCommands (): Promise<void> {
     const commands = Object.keys(this.commands).sort().map(name => [` ${name}`, this.commands[name].description]);
     process.stdout.write(header + util.tablify(commands) + footer);
   }
 
-  async _loadCommands () {
+  async _loadCommands (): Promise<void> {
     this._loaded = true;
     for (const [name, command] of Object.entries(await util.loadModules(this.commandPaths))) {
       this.addCommand(name, command);
