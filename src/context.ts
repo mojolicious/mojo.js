@@ -8,8 +8,7 @@ import type {
   MojoContext,
   MojoRenderOptions,
   MojoStash,
-  ServerRequestOptions,
-  WebSocketHandler
+  ServerRequestOptions
 } from './types.js';
 import type WebSocket from './websocket.js';
 import type {ValidateFunction} from 'ajv';
@@ -18,6 +17,8 @@ import EventEmitter from 'events';
 import Params from './body/params.js';
 import ServerRequest from './server/request.js';
 import ServerResponse from './server/response.js';
+
+type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
 const ABSOLUTE = /^[a-zA-Z][a-zA-Z0-9]*:\/\//;
 

@@ -1,6 +1,5 @@
 import type App from './app.js';
 import type Context from './context.js';
-import type WebSocket from './websocket.js';
 import type {Agent} from 'http';
 import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';
@@ -12,10 +11,6 @@ export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 export type MojoStash = Record<string, any>;
 
 // Plugins
-export type Plugin = (app: App, options: MojoStash) => any;
-export type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
-export type Hook = ((app: App, ...args: any[]) => any) | MojoAction;
-export type Condition = (ctx: MojoContext, requirements: any) => boolean;
 export type MojoViewEngine = (ctx: MojoContext, options: MojoRenderOptions) => Promise<Buffer>;
 
 // Router
@@ -52,17 +47,7 @@ export interface MojoClientWebSocketOptions extends SharedClientRequestOptions {
 
 export type TestClientOptions = ClientOptions & {tap?: Tap.Tap};
 
-// Server
-export interface ServerOptions {
-  cluster?: boolean,
-  listen?: string[],
-  quiet?: boolean,
-  reverseProxy?: boolean,
-  workers?: number
-}
 export interface ServerRequestOptions { isWebSocket: boolean, reverseProxy: boolean }
-
-export type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
 export interface MojoRenderOptions {
   engine?: string,

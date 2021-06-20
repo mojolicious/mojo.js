@@ -4,12 +4,9 @@ import type {
   AnyArguments,
   AppOptions,
   ClientOptions,
-  Decoration,
-  Hook,
   MojoAction,
   MojoContext,
   MojoStash,
-  Plugin,
   RouteArguments,
   ServerRequestOptions,
   TestClientOptions
@@ -33,6 +30,10 @@ import Router from './router.js';
 import Session from './session.js';
 import Static from './static.js';
 import Ajv from 'ajv';
+
+type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
+type Hook = ((app: App, ...args: any[]) => any) | MojoAction;
+export type Plugin = (app: App, options: MojoStash) => any;
 
 const ContextWrapper = class extends Context {};
 

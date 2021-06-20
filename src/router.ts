@@ -1,4 +1,4 @@
-import type {Condition, MojoContext, MojoStash, PlaceholderType} from './types.js';
+import type {MojoContext, MojoStash, PlaceholderType} from './types.js';
 import Plan from './router/plan.js';
 import Route from './router/route.js';
 import * as util from './util.js';
@@ -8,11 +8,13 @@ type RouteIndex = Record<string, Route>;
 
 interface RouteSpec { ctx?: MojoContext, method: string, path: string, websocket: boolean }
 
+type RouteCondition = (ctx: MojoContext, requirements: any) => boolean;
+
 const PLACEHOLDER = {};
 
 export default class Router extends Route {
   cache: LRU<string, Plan | undefined> | null = new LRU(500);
-  conditions: Record<string, Condition> = {};
+  conditions: Record<string, RouteCondition> = {};
   controllerPaths: string[] = [];
   controllers: Record<string, any> = {};
   types: Record<string, PlaceholderType> = {num: /[0-9]+/};
@@ -23,7 +25,7 @@ export default class Router extends Route {
     this.root = this;
   }
 
-  addCondition (name: string, fn: Condition): this {
+  addCondition (name: string, fn: RouteCondition): this {
     this.conditions[name] = fn;
     return this;
   }
