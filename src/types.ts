@@ -5,25 +5,18 @@ import type {CookieJar} from 'tough-cookie';
 
 export type MojoApp = App;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface MojoContext extends Context { [key: string]: any }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoStash = Record<string, any>;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Hook = ((app: App, ...args: any[]) => any) | MojoAction;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Condition = (ctx: MojoContext, requirements: any) => boolean;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Plugin = (app: App, options: MojoStash) => any;
 
 // Route arguments
