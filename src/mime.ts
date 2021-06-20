@@ -1,14 +1,14 @@
 import mime from 'mime-types';
 
-const COMMON = Object.freeze({
+const COMMON: Record<string, string> = Object.freeze({
   html: 'text/html; charset=utf-8',
   json: 'application/json; charset=utf-8',
   txt: 'text/plain; charset=utf-8'
 });
 
 export default class Mime {
-  detect (accepts) {
-    const types = {};
+  detect (accepts: string): string[] {
+    const types: Record<string, number> = {};
     for (const accept of accepts.split(/\s*,\s*/)) {
       const match = accept.match(/^\s*([^,; ]+)(?:\s*;\s*q\s*=\s*(\d+(?:\.\d+)?))?\s*$/i);
       if (match === null) continue;
@@ -16,10 +16,10 @@ export default class Mime {
     }
 
     const detected = Object.keys(types).sort((a, b) => types[b] - types[a]);
-    return detected.map(type => mime.extension(type)).filter(ext => ext !== false);
+    return detected.map(type => mime.extension(type)).filter(ext => ext !== false) as string[];
   }
 
-  extType (ext) {
+  extType (ext: string): string | null {
     return COMMON[ext] ?? mime.types[ext] ?? null;
   }
 }
