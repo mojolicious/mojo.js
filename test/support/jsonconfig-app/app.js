@@ -1,5 +1,5 @@
+import mojo from '../../../lib/core.js';
 import jsonConfigPlugin from '../../../lib/plugins/json-config.js';
-import mojo from '../../../lib/mojo.js';
 
 export const app = mojo();
 

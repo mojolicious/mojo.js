@@ -1,4 +1,4 @@
-import mojo, {Session} from '../lib/mojo.js';
+import mojo, {Session} from '../lib/core.js';
 import t from 'tap';
 
 t.test('App', async t => {

@@ -5,7 +5,7 @@ The [mojo.js](https://mojojs.org) toolkit contains a full featured HTTP and WebS
 purpose is integration testing of web applications, it can also be used for many other things.
 
 ```js
-import {Client} from '@mojojs/mojo';
+import {Client} from '@mojojs/core';
 
 const client = new Client();
 const res = await client.get('https://mojolicious.org');
@@ -233,7 +233,7 @@ const client = TestClient({baseURL: 'https://mojolicious.org'});
 with the `tap` option.
 
 ```js
-import {TestClient} from '@mojojs/mojo';
+import {TestClient} from '@mojojs/core';
 import t from 'tap';
 
 t.test('Mojolicious', async t => {

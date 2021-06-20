@@ -1,7 +1,7 @@
 import http from 'http';
 import Client from '../lib/client.js';
+import mojo from '../lib/core.js';
 import File from '../lib/file.js';
-import mojo from '../lib/mojo.js';
 import Server from '../lib/server.js';
 import t from 'tap';
 

@@ -44,7 +44,7 @@ const jsonConfig = `{
 }
 `;
 
-const jsIndex = `import mojo, {jsonConfigPlugin} from '@mojojs/mojo';
+const jsIndex = `import mojo, {jsonConfigPlugin} from '@mojojs/core';
 
 export const app = mojo();
 

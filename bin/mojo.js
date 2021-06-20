@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import mojo from '../lib/mojo.js';
+import mojo from '../lib/core.js';
 
 const app = mojo({detectImport: false});
 

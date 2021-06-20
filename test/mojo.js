@@ -1,4 +1,4 @@
-import mojo, {Client, File, jsonConfigPlugin, Logger, Server, Session, TestClient, util} from '../lib/mojo.js';
+import mojo, {Client, File, jsonConfigPlugin, Logger, Server, Session, TestClient, util} from '../lib/core.js';
 import t from 'tap';
 
 t.test('Public API', async t => {

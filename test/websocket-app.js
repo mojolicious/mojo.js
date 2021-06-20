@@ -1,4 +1,4 @@
-import mojo from '../lib/mojo.js';
+import mojo from '../lib/core.js';
 import t from 'tap';
 
 t.test('WebSocket app', async t => {

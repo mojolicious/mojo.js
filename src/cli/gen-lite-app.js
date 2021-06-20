@@ -24,7 +24,7 @@ Tip: Single file applications are best used for prototyping, for anything more
 `;
 
 const liteApp = `#!/usr/bin/env node
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 

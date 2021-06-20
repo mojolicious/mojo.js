@@ -1,5 +1,5 @@
 {
-  "name": "@mojojs/mojo",
+  "name": "@mojojs/core",
   "version": "0.0.5",
   "description": "Real-time web framework",
   "keywords": [
@@ -31,8 +31,8 @@
     "prepublishOnly": "npm run build",
     "test": "tap --no-coverage test/*.js"
   },
-  "exports": "./lib/mojo.js",
-  "types": "./lib/mojo.d.ts",
+  "exports": "./lib/core.js",
+  "types": "./lib/core.d.ts",
   "type": "module",
   "files": [
     "bin/",

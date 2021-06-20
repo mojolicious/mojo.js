@@ -1,4 +1,4 @@
-import {version} from '../mojo.js';
+import {version} from '../core.js';
 import {tablify} from '../util.js';
 
 export default async function versionCommand () {

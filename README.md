@@ -31,7 +31,7 @@ developments join us on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on L
 All you need is Node.js 16.0.0 (or newer).
 
 ```
-$ npm install @mojojs/mojo
+$ npm install @mojojs/core
 ```
 
 ## Getting Started
@@ -39,7 +39,7 @@ $ npm install @mojojs/mojo
   These four lines are a whole web application.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -68,7 +68,7 @@ I ♥ Mojo!
   into well-structured **Model-View-Controller** web applications.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 

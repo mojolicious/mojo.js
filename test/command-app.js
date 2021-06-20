@@ -1,5 +1,5 @@
+import mojo, {TestClient} from '../lib/core.js';
 import File from '../lib/file.js';
-import mojo, {TestClient} from '../lib/mojo.js';
 import {captureOutput} from '../lib/util.js';
 import {app} from './support/command-app/index.js';
 import t from 'tap';
@@ -165,7 +165,7 @@ t.test('Command app', async t => {
     });
     t.match(output2.toString(), /\[write\].+myapp\.js/);
     t.same(await file.exists(), true);
-    t.match(await file.readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+    t.match(await file.readFile('utf8'), /import mojo from '@mojojs\/core'/);
     t.match(output2.toString(), /\[write\].+package\.json/);
     t.same(await dir.child('package.json').exists(), true);
     t.match(await dir.child('package.json').readFile('utf8'), /module/);
@@ -181,7 +181,7 @@ t.test('Command app', async t => {
     });
     t.match(output4.toString(), /\[write\].+index\.js/);
     t.same(await file2.exists(), true);
-    t.match(await file2.readFile('utf8'), /import mojo from '@mojojs\/mojo'/);
+    t.match(await file2.readFile('utf8'), /import mojo from '@mojojs\/core'/);
     process.chdir(cwd);
   });
 
@@ -205,7 +205,7 @@ t.test('Command app', async t => {
     t.match(await dir.child('config.json').readFile('utf8'), /"secrets"/);
     t.match(output2.toString(), /\[write\].+index\.js/);
     t.same(await dir.child('index.js').exists(), true);
-    t.match(await dir.child('index.js').readFile('utf8'), /import mojo.+from '@mojojs\/mojo'/);
+    t.match(await dir.child('index.js').readFile('utf8'), /import mojo.+from '@mojojs\/core'/);
     t.match(output2.toString(), /\[write\].+controllers.+example\.js/);
     t.same(await dir.child('controllers', 'example.js').exists(), true);
     t.match(await dir.child('controllers', 'example.js').readFile('utf8'), /export default class Controller/);
@@ -240,7 +240,7 @@ t.test('Command app', async t => {
     });
     t.match(output4.toString(), /\[write\].+test-app.+myapp\.js/);
     t.same(await dir2.child('myapp.js').exists(), true);
-    t.match(await dir2.child('myapp.js').readFile('utf8'), /import mojo.+from '@mojojs\/mojo'/);
+    t.match(await dir2.child('myapp.js').readFile('utf8'), /import mojo.+from '@mojojs\/core'/);
     process.chdir(cwd);
   });
 });

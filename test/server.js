@@ -1,4 +1,4 @@
-import mojo, {Server} from '../lib/mojo.js';
+import mojo, {Server} from '../lib/core.js';
 import {captureOutput} from '../lib/util.js';
 import t from 'tap';
 

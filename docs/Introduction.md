@@ -50,7 +50,7 @@ an [nvm](https://nvm.sh) environment though.
 ```
 $ mkdir myapp
 $ cd myapp
-$ npm install @mojojs/mojo
+$ npm install @mojojs/core
 ...
 ```
 
@@ -61,7 +61,7 @@ Be aware that mojo.js uses [ES modules](https://nodejs.org/api/esm.html), so you
 {
   "type": "module",
   "dependencies": {
-    "@mojojs/mojo": ">=0.0.1-alpha.35"
+    "@mojojs/core": ">=0.0.6"
   }
 }
 ```
@@ -73,7 +73,7 @@ web application. The whole framework was specifically designed with `async`/`awa
 returns a `Promise`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -133,7 +133,7 @@ they match the path part of the request URL. The first argument passed to all ac
 containing both the HTTP request and response.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -153,7 +153,7 @@ All `GET` and `POST` parameters sent with the request are accessible via `ctx.pa
 resolves with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) object.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -184,7 +184,7 @@ included in the output of views. And while views can be inlined for single file 
 separate files in a `views` directory.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -209,7 +209,7 @@ integrated, and will work just as well.
 The `ctx.req` and `ctx.res` properties of the context object give you full access to all HTTP features and information.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -238,7 +238,7 @@ available.
 Of course there is first class support for JSON as well.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -264,7 +264,7 @@ During development you will encounter these pages whenever you make a mistake, t
 valuable information that will aid you in debugging your application.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -294,7 +294,7 @@ All routes can have a name associated with them, this allows backreferencing wit
 routes get an automatically generated name assigned, based on the route pattern.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -319,7 +319,7 @@ layout. Here we use the inline variant again for out single file app, but layout
 a `views/layouts` directory.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -351,7 +351,7 @@ Helpers are little functions you can create with `app.addHelper()` and reuse thr
 context (`ctx`), from actions to views.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -385,7 +385,7 @@ Plugins are application extensions that help with code sharing and organization.
 as part of your application. You can register plugins with `app.plugin()`.
 
 ```js
-import mojo, {jsonConfigPlugin} from '@mojojs/mojo';
+import mojo, {jsonConfigPlugin} from '@mojojs/core';
 
 // Create application with default configuration
 const app = mojo({config: {foo = 'default value'}});
@@ -419,7 +419,7 @@ Route placeholders allow capturing parts of a request path until a `/` or `.` se
 expression `([^/.]+)`. Results are accessible via `ctx.stash`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -447,7 +447,7 @@ colon prefix optional.
 Relaxed placeholders allow matching of everything until a `/` occurs, similar to the regular expression `([^/]+)`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -467,7 +467,7 @@ Wildcard placeholders allow matching absolutely everything, including `/` and `.
 `(.+)`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -488,7 +488,7 @@ Routes can be restricted to specific request methods with different methods like
 `app.any()`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -523,7 +523,7 @@ All placeholders require a value, but by assigning them default values you can m
 `app.get()` return a route object, which has a `route.to()` method that can be used to manually assign default values.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -545,7 +545,7 @@ Default values that don't belong to a placeholder simply get merged into `ctx.st
 A very easy way to make placeholders more restrictive are alternatives, you just make a list of possible values.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -563,7 +563,7 @@ All placeholders get compiled to a regular expression internally, this process c
 not to use `^` and `$`, or capturing groups `(...)`, non-capturing groups `(?:...)` are fine though.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -589,7 +589,7 @@ Routes can be nested in tree structures to organize them more efficiently and to
 All methods for creating new routes, like `app.get()`, are therefore also available as `route.get()`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -619,7 +619,7 @@ Authentication and code shared between multiple routes can be realized easily wi
 nested routes are only evaluated if the action returns a value other than `false`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -649,7 +649,7 @@ File extensions can be captured as well with the special `ext` route placeholder
 declare possible values.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -666,7 +666,7 @@ app.start();
 And just like with placeholders you can use a default value to make the extension optional.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -694,7 +694,7 @@ $ echo 'Hello World!' > public/test.txt
 Since the prefix is configurable, `ctx.urlForFile()` can be used to generate the URL.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -742,7 +742,7 @@ All views are expected to be in the format `name.format.engine`, such as `list.h
 values are used to select the correct MIME type and template engine.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -760,7 +760,7 @@ Instead of form validation we use [JSON Schema](https://json-schema.org) data st
 [ajv](https://www.npmjs.com/package/ajv) for everything.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -822,7 +822,7 @@ $ echo 'Hello World!' > cache/hello.txt
 The `File` object provides many useful `fs.*` and `path.*` functions from Node.js, as well as some custom additions.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -842,7 +842,7 @@ app.start();
 Conditions such as `headers` and `host` are router extensions and allow for even more powerful route constructs.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -867,7 +867,7 @@ Encrypted cookie based sessions just work out of the box, as soon as you start u
 be aware that all session data gets serialized as JSON.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -901,7 +901,7 @@ Files uploaded with `multipart/form-data` requests are available via `ctx.req.fi
 instead streamed as data arrives.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -949,7 +949,7 @@ While its primary purpose is testing, there is also a full featured HTTP and Web
 `ctx.client`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -976,7 +976,7 @@ WebSocket applications have never been this simple before. You can accept incomi
 decoded.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -1024,7 +1024,7 @@ The default operating mode is `development`, which sets the log level of `app.lo
 (`trace`). All other modes raise the level to `info`.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 const app = mojo();
 
@@ -1049,7 +1049,7 @@ Testing you mojo.js application is as easy as creating a `test` directory and fi
 like `test/basic.js`. Especially if you use [tap](https://www.npmjs.com/package/tap) and the built-in test client.
 
 ```js
-import mojo from '@mojojs/mojo';
+import mojo from '@mojojs/core';
 
 export const app = mojo();
 

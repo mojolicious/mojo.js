@@ -1,4 +1,4 @@
-import mojo from '../../../lib/mojo.js';
+import mojo from '../../../lib/core.js';
 import Users from './models/users.js';
 
 export const app = mojo();
