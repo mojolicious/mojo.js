@@ -42,7 +42,7 @@ async function htmlNotFound (ctx: MojoContext): Promise<boolean> {
 }
 
 async function httpException (ctx: MojoContext, error: Error): Promise<boolean> {
-  ctx.log.error(error.stack);
+  ctx.log.error(error.stack as string);
 
   const exceptionFormat = ctx.exceptionFormat;
   if (exceptionFormat === 'txt') return ctx.txtException(error);
@@ -80,7 +80,9 @@ async function notFound (ctx: MojoContext): Promise<boolean> {
 }
 
 async function txtException (ctx: MojoContext, error: Error): Promise<boolean> {
-  if (ctx.app.mode === 'development') return await ctx.render({text: error.stack, status: 500});
+  if (ctx.app.mode === 'development') {
+    return await ctx.render({text: error.stack as string, status: 500});
+  }
   return await ctx.render({text: 'Internal Server Error', status: 500});
 }
 
@@ -89,7 +91,7 @@ async function txtNotFound (ctx: MojoContext): Promise<boolean> {
 }
 
 async function websocketException (ctx: MojoContext, error: Error): Promise<boolean> {
-  ctx.log.error(error.stack);
+  ctx.log.error(error.stack as string);
   const ws = ctx.ws;
   if (ws !== null && ctx.isEstablished) ws.close(1011);
   return true;
