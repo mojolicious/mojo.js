@@ -2,9 +2,9 @@ import type {WriteStream} from 'fs';
 import assert from 'assert';
 import chalk from 'chalk';
 
+interface LogContext { requestId?: string, [key: string]: any }
+interface LogEvent extends LogContext { level: string, time: string, msg: string }
 type LogFormatter = (data: LogEvent) => string;
-interface LogContext { [key: string]: any }
-interface LogEvent { level: string, time: string, requestId?: string, msg: string }
 
 const LEVEL: Record<string, number> = Object.freeze({
   fatal: 2,
@@ -18,19 +18,15 @@ const LEVEL: Record<string, number> = Object.freeze({
 export default class Logger {
   destination: NodeJS.WritableStream;
   formatter: LogFormatter;
-  history: LogEvent[];
+  history: LogEvent[] = [];
   _historySize: number;
   _level: number;
 
-  constructor (options: {
-    formatter?: LogFormatter,
-    destination?: WriteStream,
-    historySize?: number,
-    level?: string
-  } = {}) {
-    this.formatter = options.formatter ?? Logger.colorFormatter;
+  constructor (
+    options: {destination?: WriteStream, formatter?: LogFormatter, historySize?: number, level?: string} = {}
+  ) {
     this.destination = options.destination ?? process.stderr;
-    this.history = [];
+    this.formatter = options.formatter ?? Logger.colorFormatter;
 
     this._historySize = options.historySize ?? 0;
     this._level = LEVEL[process.env.MOJO_LOG_LEVEL ?? options.level ?? 'debug'];
