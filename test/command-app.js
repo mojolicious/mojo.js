@@ -30,7 +30,12 @@ t.test('Command app', async t => {
   });
 
   await t.test('Custom command', async t => {
-    t.equal(await app.cli.start('test', 'works'), 'Test works!');
+    let result;
+    const output = await captureOutput(async () => {
+      result = await app.cli.start('test', 'works');
+    });
+    t.match(output, /Test works!/s);
+    t.same(result, null);
     t.equal(app.cli.commands.test.description, 'Test description');
     t.equal(app.cli.commands.test.usage, 'Test usage');
   });

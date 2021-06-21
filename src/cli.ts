@@ -19,24 +19,28 @@ export default class CLI {
     this.commands[name] = command;
   }
 
-  async start (command?: string, ...args: any[]): Promise<any> {
+  async start (command?: string, ...args: string[]): Promise<void> {
     if (this._loaded === undefined) await this._loadCommands();
 
-    const commandArgs = command === undefined ? process.argv : [null, null, command, ...args];
+    const commandArgs = command === undefined ? process.argv : ['', '', command, ...args];
     const parsed = nopt({help: Boolean}, {h: '--help'}, commandArgs);
     const argv = parsed.argv;
+
     if (argv.remain.length > 0) {
       const name: string = argv.original[0];
       const command = this.commands[name];
       if (command === undefined) {
         process.stdout.write(`Unknown command "${name}", maybe you need to install it?\n`);
-        return;
+      } else if (parsed.help === true) {
+        process.stdout.write(command.usage);
+      } else {
+        const app = this._app.deref();
+        if (app === undefined) return;
+        await command(app, argv.original);
       }
-      if (parsed.help === true) return process.stdout.write(command.usage);
-      const app = this._app.deref();
-      if (app === undefined) return;
-      return command(app, argv.original);
+      return;
     }
+
     await this._listCommands();
   }
 
