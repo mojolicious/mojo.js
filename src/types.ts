@@ -71,3 +71,5 @@ export interface AppOptions {
   mode?: string,
   secrets?: string[]
 }
+
+export interface Command { (app: App, ...args: any[]): any, description: string, usage: string }
