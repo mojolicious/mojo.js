@@ -134,15 +134,24 @@ t.test('Command app', async t => {
       await ctx.render({text: 'Stopping server'});
     });
     const hookPromise = new Promise(resolve => app2.addHook('stop', () => resolve(true)));
+    const intBefore = process.listenerCount('SIGINT');
+    const termBefore = process.listenerCount('SIGTERM');
+    const usr2Before = process.listenerCount('SIGUSR2');
     const output2 = await captureOutput(async () => {
       await app2.cli.start('server', '-L', 'error', '-l', 'http://*');
     });
+    t.equal(process.listenerCount('SIGINT'), intBefore + 1);
+    t.equal(process.listenerCount('SIGTERM'), termBefore + 1);
+    t.equal(process.listenerCount('SIGUSR2'), usr2Before + 1);
     t.match(output2.toString(), /Web application available at http:/);
     const client = new TestClient({tap: t});
     const match = output2.match(/(http:\/\/.+)$/s);
     t.notSame(match, null);
     (await client.getOk(match[1])).statusIs(200).bodyIs('Stopping server');
     t.same(await hookPromise, true);
+    t.equal(process.listenerCount('SIGINT'), intBefore);
+    t.equal(process.listenerCount('SIGTERM'), termBefore);
+    t.equal(process.listenerCount('SIGUSR2'), usr2Before);
   });
 
   await t.test('version', async t => {
