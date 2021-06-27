@@ -130,9 +130,10 @@ t.test('Command app', async t => {
 
     const app2 = mojo({mode: 'production'});
     app2.get('/', async ctx => {
-      ctx.res.raw.on('finish', () => ctx.app.server.stop());
+      ctx.res.raw.on('finish', () => process.emit('SIGUSR2', 'SIGUSR2'));
       await ctx.render({text: 'Stopping server'});
     });
+    const hookPromise = new Promise(resolve => app2.addHook('stop', () => resolve(true)));
     const output2 = await captureOutput(async () => {
       await app2.cli.start('server', '-L', 'error', '-l', 'http://*');
     });
@@ -141,6 +142,7 @@ t.test('Command app', async t => {
     const match = output2.match(/(http:\/\/.+)$/s);
     t.notSame(match, null);
     (await client.getOk(match[1])).statusIs(200).bodyIs('Stopping server');
+    t.same(await hookPromise, true);
   });
 
   await t.test('version', async t => {

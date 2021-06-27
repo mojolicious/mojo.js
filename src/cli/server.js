@@ -1,6 +1,8 @@
 import Server from '../server.js';
 import nopt from 'nopt';
 
+const EVENTS = ['SIGINT', 'SIGTERM', 'SIGUSR2'];
+
 export default async function serverCommand (app, args) {
   const parsed = nopt({
     cluster: Boolean,
@@ -18,6 +20,13 @@ export default async function serverCommand (app, args) {
     reverseProxy: parsed.proxy,
     workers: parsed.workers
   });
+
+  const listener = async () => {
+    EVENTS.forEach(signal => process.removeListener(signal, listener));
+    await server.stop();
+  };
+  EVENTS.forEach(signal => process.on(signal, listener));
+
   await server.start();
 }
 
