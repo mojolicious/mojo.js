@@ -23,7 +23,7 @@ Options:
   -v, --verbose   Print additional details about routes
 `;
 
-function _walk (route: Route | Router, depth: number, rows: any[], verbose: boolean): void {
+function _walk (route: Route | Router, depth: number, rows: string[][], verbose: boolean): void {
   const prefix = ' '.repeat(depth * 2) + (depth === 0 ? '' : '+');
   const unparsed = route.pattern.unparsed;
   const row = [prefix + (unparsed === '' ? '/' : unparsed)];
