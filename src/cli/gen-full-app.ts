@@ -1,7 +1,8 @@
+import type App from '../app.js';
 import crypto from 'crypto';
 import * as util from './../util.js';
 
-export default async function genLiteAppCommand (app, args) {
+export default async function genLiteAppCommand (app: App, args: string[]): Promise<void> {
   const name = args[1] ?? 'index.js';
 
   process.stdout.write('Generating application directory struture:\n');
