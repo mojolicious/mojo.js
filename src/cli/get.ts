@@ -1,7 +1,12 @@
+import type {MojoApp} from '../types.js';
+import type {ClientRequest, IncomingMessage} from 'http';
 import chalk from 'chalk';
 import nopt from 'nopt';
 
-export default async function getCommand (app, args) {
+type IntrospectedRequest = ClientRequest & {getRawHeaderNames: () => string[], getHeader: (name: string) => string};
+type IntrospectedResponse = IncomingMessage & {req: IntrospectedRequest};
+
+export default async function getCommand (app: MojoApp, args: string[]): Promise<void> {
   const parsed = nopt(
     {body: String, header: [String, Array], insecure: Boolean, method: String, redirect: Boolean, verbose: Boolean},
     {b: '--body', H: '--header', k: '--insecure', X: '--method', r: '--redirect', v: '--verbose'}, args, 1);
@@ -18,9 +23,9 @@ export default async function getCommand (app, args) {
   const client = await app.newMockClient({maxRedirects: parsed.redirect === true ? 10 : 0});
   const res = await client.request(request);
 
-  if (parsed.verbose) {
+  if (parsed.verbose === true) {
     const stderr = process.stderr;
-    const raw = res.raw;
+    const raw = res.raw as IntrospectedResponse;
     const req = raw.req;
     const method = chalk.blue(req.method);
     const reqVersion = chalk.blue('HTTP') + '/' + chalk.blue('1.1');
@@ -64,16 +69,25 @@ Options:
   -v, --verbose               Print response headers to STDERR
 `;
 
-function getHeaders (req) {
+function getHeaders (req: IntrospectedRequest): string[] {
   const headers = [];
+
   for (const name of req.getRawHeaderNames()) {
-    headers.push(name, req.getHeader(name));
+    const header = req.getHeader(name);
+    if (typeof header === 'string') {
+      headers.push(name, header);
+    } else if (typeof header === 'number') {
+      headers.push(name, header.toString());
+    } else if (header instanceof Array) {
+      header.forEach(value => headers.push(name, value));
+    }
   }
+
   return headers;
 }
 
-function parseHeaders (list = []) {
-  const headers = {};
+function parseHeaders (list: string[] = []): Record<string, string> {
+  const headers: Record<string, string> = {};
   for (const pair of list) {
     const header = pair.split(/:\s+/);
     headers[header[0]] = header[1];
@@ -81,7 +95,7 @@ function parseHeaders (list = []) {
   return headers;
 }
 
-function writeHeaders (headers) {
+function writeHeaders (headers: string[]): void {
   const stderr = process.stderr;
   for (let i = 0; i < headers.length; i += 2) {
     stderr.write(chalk.cyan(headers[i]) + `: ${headers[i + 1]}\n`);
