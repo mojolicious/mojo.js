@@ -1,5 +1,5 @@
 import type App from '../app.js';
-import type {TestClientOptions, MojoClientRequestOptions, MojoClientWebSocketOptions} from '../types.js';
+import type {JSONValue, TestClientOptions, MojoClientRequestOptions, MojoClientWebSocketOptions} from '../types.js';
 import type WebSocket from '../websocket.js';
 import type ClientResponse from './response.js';
 import type {URL} from 'url';
@@ -100,7 +100,7 @@ export default class TestClient extends MockClient {
     return this;
   }
 
-  jsonIs (value: any): this {
+  jsonIs (value: JSONValue): this {
     this.assert('same', [JSON.parse(this.body.toString()), value], 'JSON body is equal', this.jsonIs);
     return this;
   }
@@ -139,7 +139,7 @@ export default class TestClient extends MockClient {
     return res;
   }
 
-  async sendOk (message: any): Promise<void> {
+  async sendOk (message: JSONValue | Buffer): Promise<void> {
     await this.ws.send(message);
     this.assert('ok', [true], 'send message', this.sendOk);
   }

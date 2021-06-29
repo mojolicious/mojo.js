@@ -1,4 +1,5 @@
 import type ClientResponse from './client/response.js';
+import type {JSONValue} from './types.js';
 import type WS from 'ws';
 import EventEmitter, {on} from 'events';
 
@@ -24,7 +25,7 @@ export default class WebSocket extends EventEmitter {
     ws.on('pong', safeHandler.bind(this, 'pong'));
   }
 
-  async * [Symbol.asyncIterator] (): AsyncIterableIterator<any> {
+  async * [Symbol.asyncIterator] (): AsyncIterableIterator<JSONValue | Buffer> {
     try {
       for await (const [message] of this._messageIterator()) {
         yield message;
@@ -38,16 +39,16 @@ export default class WebSocket extends EventEmitter {
     this._raw.close(code, reason);
   }
 
-  async ping (data: any): Promise<void> {
+  async ping (data: Buffer): Promise<void> {
     return await new Promise(resolve => this._raw.ping(data, undefined, () => resolve()));
   }
 
-  async send (message: any): Promise<void> {
+  async send (message: JSONValue | Buffer): Promise<void> {
     if (!this.jsonMode) return await new Promise(resolve => this._raw.send(message, () => resolve()));
     return new Promise(resolve => this._raw.send(JSON.stringify(message), () => resolve()));
   }
 
-  _messageIterator (): AsyncIterableIterator<any> {
+  _messageIterator (): AsyncIterableIterator<Array<JSONValue | Buffer>> {
     // eslint-disable-next-line no-undef
     const ac = new AbortController();
 
@@ -63,12 +64,12 @@ export default class WebSocket extends EventEmitter {
     }
   }
 
-  _safeMessageHandler (message: any): void {
+  _safeMessageHandler (message: string | Buffer): void {
     try {
       if (!this.jsonMode) {
         this.emit('message', message);
       } else {
-        this.emit('message', JSON.parse(message));
+        this.emit('message', JSON.parse(message.toString()));
       }
     } catch (error) {
       this.emit('error', error);

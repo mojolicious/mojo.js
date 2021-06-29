@@ -4,6 +4,9 @@ import type {Agent} from 'http';
 import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';
 
+// JSON
+export type JSONValue = string | number | boolean | null | JSONValue[] | {[key: string]: JSONValue};
+
 // Common user types
 export type MojoApp = App;
 export interface MojoContext extends Context { [key: string]: any }
