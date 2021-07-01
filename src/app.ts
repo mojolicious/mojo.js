@@ -32,8 +32,10 @@ import Static from './static.js';
 import Ajv from 'ajv';
 
 type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
-type Hook = ((app: App, ...args: any[]) => any) | MojoAction;
 export type Plugin = (app: App, options: MojoStash) => any;
+
+type AppHook = ((app: App, ...args: any[]) => any) | MojoAction;
+type ContextHook = ((app: MojoContext, ...args: any[]) => any) | MojoAction;
 
 const ContextWrapper = class extends Context {};
 
@@ -75,15 +77,20 @@ export default class App {
     this.plugin(viewHelpersPlugin);
   }
 
+  addAppHook (name: string, fn: AppHook): this {
+    this.hooks.addHook(name, fn);
+    return this;
+  }
+
+  addContextHook (name: string, fn: ContextHook): this {
+    this.hooks.addHook(name, fn);
+    return this;
+  }
+
   addHelper (name: string, fn: MojoAction): this {
     return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
       return fn(this, ...args);
     });
-  }
-
-  addHook (name: string, fn: Hook): this {
-    this.hooks.addHook(name, fn);
-    return this;
   }
 
   any (...args: AnyArguments): Route {

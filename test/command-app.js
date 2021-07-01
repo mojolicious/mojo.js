@@ -133,7 +133,7 @@ t.test('Command app', async t => {
       ctx.res.raw.on('finish', () => process.emit('SIGUSR2', 'SIGUSR2'));
       await ctx.render({text: 'Stopping server'});
     });
-    const hookPromise = new Promise(resolve => app2.addHook('stop', () => resolve(true)));
+    const hookPromise = new Promise(resolve => app2.addAppHook('stop', () => resolve(true)));
     const intBefore = process.listenerCount('SIGINT');
     const termBefore = process.listenerCount('SIGTERM');
     const usr2Before = process.listenerCount('SIGUSR2');
