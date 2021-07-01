@@ -4,13 +4,7 @@ import Params from './body/params.js';
 import Busboy from 'busboy';
 import cheerio from 'cheerio';
 
-type BusboyFile = [
-  fieldname: string,
-  file: NodeJS.ReadableStream,
-  filename: string,
-  encoding: string,
-  mimetype: string
-];
+type BusboyFile = [string, NodeJS.ReadableStream, string, string, string];
 
 interface FileUpload {
   fieldname: string,

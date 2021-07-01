@@ -3,7 +3,23 @@ import type {JSONValue} from './types.js';
 import type WS from 'ws';
 import EventEmitter, {on} from 'events';
 
-export default class WebSocket extends EventEmitter {
+interface WebSocketControlEvents {
+  close: (...args: any[]) => void,
+  ping: (...args: any[]) => void,
+  pong: (...args: any[]) => void
+}
+
+interface WebSocketEvents extends WebSocketControlEvents {
+  error: (this: WebSocket, error: Error) => void,
+  message: (this: WebSocket, message: JSONValue | Buffer) => void
+}
+
+declare interface WebSocket {
+  on: <T extends keyof WebSocketEvents>(event: T, listener: WebSocketEvents[T]) => this,
+  emit: <T extends keyof WebSocketEvents>(event: T, ...args: Parameters<WebSocketEvents[T]>) => boolean
+}
+
+class WebSocket extends EventEmitter {
   handshake: ClientResponse | null;
   jsonMode: boolean;
   _raw: WS;
@@ -56,7 +72,9 @@ export default class WebSocket extends EventEmitter {
     return on(this, 'message', {signal: ac.signal});
   }
 
-  _safeHandler (event: string, ...args: any[]): void {
+  _safeHandler <T extends keyof WebSocketControlEvents>(
+    event: T, ...args: Parameters<WebSocketControlEvents[T]>
+  ): void {
     try {
       this.emit(event, ...args);
     } catch (error) {
@@ -76,3 +94,5 @@ export default class WebSocket extends EventEmitter {
     }
   }
 }
+
+export default WebSocket;
