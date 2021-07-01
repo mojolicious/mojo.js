@@ -28,7 +28,7 @@
     "clean": "rm -r lib",
     "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
     "coverage:html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js",
-    "lint": "eslint \"src/**/*.js\" \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
+    "lint": "eslint \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "publish:patch": "npm version patch; npm publish",

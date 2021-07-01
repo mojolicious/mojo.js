@@ -18,8 +18,8 @@ interface ClientEvents {
 }
 
 declare interface Client {
-  on: <U extends keyof ClientEvents>(event: U, listener: ClientEvents[U]) => this,
-  emit: <U extends keyof ClientEvents>(event: U, ...args: Parameters<ClientEvents[U]>) => boolean
+  on: <T extends keyof ClientEvents>(event: T, listener: ClientEvents[T]) => this,
+  emit: <T extends keyof ClientEvents>(event: T, ...args: Parameters<ClientEvents[T]>) => boolean
 }
 
 class Client extends EventEmitter {

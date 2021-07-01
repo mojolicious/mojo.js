@@ -1,8 +1,8 @@
 import {version} from '../core.js';
 import {tablify} from '../util.js';
 
-export default async function versionCommand () {
-  const table = [['node', `(${process.version}, ${process.platform})`], ['mojo.js', `(${version})`]];
+export default async function versionCommand (): Promise<void> {
+  const table = [['node', `(${process.version}, ${process.platform})`], ['mojo.js', `(${version as string})`]];
   process.stdout.write(tablify(table));
 }
 

@@ -1,9 +1,10 @@
+import type {MojoApp} from '../types.js';
 import Server from '../server.js';
 import nopt from 'nopt';
 
 const EVENTS = ['SIGINT', 'SIGTERM', 'SIGUSR2'];
 
-export default async function serverCommand (app, args) {
+export default async function serverCommand (app: MojoApp, args: string[]): Promise<void> {
   const parsed = nopt({
     cluster: Boolean,
     level: String,
@@ -21,9 +22,9 @@ export default async function serverCommand (app, args) {
     workers: parsed.workers
   });
 
-  const listener = async () => {
+  const listener = (): void => {
     EVENTS.forEach(signal => process.removeListener(signal, listener));
-    await server.stop();
+    server.stop().catch(error => app.log.error(error));
   };
   EVENTS.forEach(signal => process.on(signal, listener));
 

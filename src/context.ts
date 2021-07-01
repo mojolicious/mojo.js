@@ -20,13 +20,11 @@ import ServerResponse from './server/response.js';
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
-interface ContextEvents {
-  connection: (ws: WebSocket) => void
-}
+interface ContextEvents { connection: (ws: WebSocket) => void }
 
 declare interface Context {
-  on: <U extends keyof ContextEvents>(event: U, listener: ContextEvents[U]) => this,
-  emit: <U extends keyof ContextEvents>(event: U, ...args: Parameters<ContextEvents[U]>) => boolean
+  on: <T extends keyof ContextEvents>(event: T, listener: ContextEvents[T]) => this,
+  emit: <T extends keyof ContextEvents>(event: T, ...args: Parameters<ContextEvents[T]>) => boolean
 }
 
 const ABSOLUTE = /^[a-zA-Z][a-zA-Z0-9]*:\/\//;
