@@ -34,8 +34,8 @@ import Ajv from 'ajv';
 type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
 export type Plugin = (app: App, options: MojoStash) => any;
 
-type AppHook = ((app: App, ...args: any[]) => any) | MojoAction;
-type ContextHook = ((app: MojoContext, ...args: any[]) => any) | MojoAction;
+type AppHook = (app: App, ...args: any[]) => any;
+type ContextHook = (app: MojoContext, ...args: any[]) => any;
 
 const ContextWrapper = class extends Context {};
 
