@@ -20,9 +20,18 @@ import ServerResponse from './server/response.js';
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
+interface ContextEvents {
+  connection: (ws: WebSocket) => void
+}
+
+declare interface Context {
+  on: <U extends keyof ContextEvents>(event: U, listener: ContextEvents[U]) => this,
+  emit: <U extends keyof ContextEvents>(event: U, ...args: Parameters<ContextEvents[U]>) => boolean
+}
+
 const ABSOLUTE = /^[a-zA-Z][a-zA-Z0-9]*:\/\//;
 
-export default class Context extends EventEmitter {
+class Context extends EventEmitter {
   app: App;
   exceptionFormat: string;
   jsonMode = false;
@@ -216,3 +225,5 @@ export default class Context extends EventEmitter {
     return isWebSocket ? url.replace(/^http/, 'ws') : url;
   }
 }
+
+export default Context;

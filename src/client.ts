@@ -12,7 +12,17 @@ import WS from 'ws';
 
 interface Upload { content: string, filename: string, type: string }
 
-export default class Client extends EventEmitter {
+interface ClientEvents {
+  request: (config: MojoClientRequestOptions) => void,
+  websocket: (config: MojoClientWebSocketOptions) => void
+}
+
+declare interface Client {
+  on: <U extends keyof ClientEvents>(event: U, listener: ClientEvents[U]) => this,
+  emit: <U extends keyof ClientEvents>(event: U, ...args: Parameters<ClientEvents[U]>) => boolean
+}
+
+class Client extends EventEmitter {
   baseURL: string | URL | undefined;
   cookieJar: tough.CookieJar | null = new tough.CookieJar();
   maxRedirects: number;
@@ -241,3 +251,5 @@ export default class Client extends EventEmitter {
     }
   }
 }
+
+export default Client;
