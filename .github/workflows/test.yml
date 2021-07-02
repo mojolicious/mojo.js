@@ -21,6 +21,10 @@ jobs:
       run: npm run build
     - name: npm test
       run: npm test
+      if: matrix.os != 'ubuntu-latest'
+    - name: npm run coverage
+      run: npm run coverage
+      if: matrix.os == 'ubuntu-latest'
     - name: npm run lint
       run: npm run lint
       if: matrix.os == 'ubuntu-latest'
