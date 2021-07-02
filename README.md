@@ -5,6 +5,7 @@
 </p>
 
 [![](https://github.com/mojolicious/mojo.js/workflows/test/badge.svg)](https://github.com/mojolicious/mojo.js/actions)
+[![npm](https://img.shields.io/npm/v/@mojojs/core.svg)](https://www.npmjs.com/package/@mojojs/core)
 
 [Mojolicious](https://mojolicious.org) for [Node.js](https://nodejs.org/). If you want to stay up to date on the latest
 developments join us on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
