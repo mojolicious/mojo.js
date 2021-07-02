@@ -57,7 +57,7 @@ async function jsonException (ctx: MojoContext, error: Error): Promise<boolean> 
         error: {
           message: error.message,
           name: error.name,
-          stack: error.stack
+          stack: error.stack ?? ''
         }
       },
       pretty: true,

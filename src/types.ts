@@ -4,24 +4,25 @@ import type {Agent} from 'http';
 import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';
 
-// JSON
 export type JSONValue = string | number | boolean | null | JSONValue[] | {[key: string]: JSONValue};
 
-// Common user types
 export type MojoApp = App;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface MojoContext extends Context { [key: string]: any }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoStash = Record<string, any>;
 
-// Plugins
 export type MojoViewEngine = (ctx: MojoContext, options: MojoRenderOptions) => Promise<Buffer>;
 
-// Router
 export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
 
-// Client
 export interface ClientOptions {
   baseURL?: string | URL,
   cookieJar?: CookieJar,
@@ -41,7 +42,7 @@ export interface MojoClientRequestOptions extends SharedClientRequestOptions {
   formData?: Record<string, string> | FormData,
   indecure?: boolean,
   method?: string,
-  json?: any
+  json?: JSONValue
 }
 export interface MojoClientWebSocketOptions extends SharedClientRequestOptions {
   json?: boolean,
@@ -52,20 +53,22 @@ export type TestClientOptions = ClientOptions & {tap?: Tap.Tap};
 
 export interface ServerRequestOptions { isWebSocket: boolean, reverseProxy: boolean }
 
-export interface MojoRenderOptions {
+interface DefaultRenderOptions {
   engine?: string,
   format?: string,
   inline?: string,
   inlineLayout?: string,
-  json?: any,
+  json?: JSONValue,
   layout?: string,
   maybe?: boolean,
   pretty?: boolean,
   status?: number,
   text?: string,
-  view?: string,
-  [key: string]: any
+  view?: string
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface MojoRenderOptions extends DefaultRenderOptions { [key: string]: any }
 
 export interface AppOptions {
   config?: MojoStash,
