@@ -19,14 +19,14 @@ jobs:
       run: npm i
     - name: npm run build
       run: npm run build
+    - name: npm run lint
+      run: npm run lint
+      if: matrix.os == 'ubuntu-latest'
     - name: npm test
       run: npm test
       if: matrix.os != 'ubuntu-latest'
-    - name: npm run coverage:ci
+    - name: npm run coverage
       run: npm run coverage:ci
-      if: matrix.os == 'ubuntu-latest'
-    - name: npm run lint
-      run: npm run lint
       if: matrix.os == 'ubuntu-latest'
     - name: coveralls
       uses: coverallsapp/github-action@master
