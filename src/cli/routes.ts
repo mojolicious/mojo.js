@@ -1,5 +1,5 @@
-import type Router from '../router.js';
-import type Route from '../router/route.js';
+import type {Router} from '../router.js';
+import type {Route} from '../router/route.js';
 import type {MojoApp} from '../types.js';
 import {tablify} from '../util.js';
 import chalk from 'chalk';

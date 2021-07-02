@@ -1,4 +1,4 @@
-import File from '../lib/file.js';
+import {File} from '../lib/file.js';
 import * as util from '../lib/util.js';
 import t from 'tap';
 

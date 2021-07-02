@@ -1,5 +1,5 @@
 import mojo from '../lib/core.js';
-import File from '../lib/file.js';
+import {File} from '../lib/file.js';
 import jsonConfigPlugin from '../lib/plugins/json-config.js';
 import {app} from './support/jsonconfig-app/app.js';
 import t from 'tap';

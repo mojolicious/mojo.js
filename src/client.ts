@@ -4,8 +4,8 @@ import http from 'http';
 import https from 'https';
 import Stream from 'stream';
 import {format, URL} from 'url';
-import ClientResponse from './client/response.js';
-import WebSocket from './websocket.js';
+import {ClientResponse} from './client/response.js';
+import {WebSocket} from './websocket.js';
 import FormData from 'form-data';
 import tough from 'tough-cookie';
 import WS from 'ws';
@@ -252,4 +252,4 @@ class Client extends EventEmitter {
   }
 }
 
-export default Client;
+export {Client};

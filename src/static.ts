@@ -1,9 +1,9 @@
 import type {MojoContext} from './types.js';
 import crypto from 'crypto';
 import path from 'path';
-import File from './file.js';
+import {File} from './file.js';
 
-export default class Static {
+export class Static {
   prefix = '/public';
   publicPaths = [File.currentFile().sibling('..', 'vendor', 'public').toString()];
 

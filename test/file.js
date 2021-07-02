@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import url from 'url';
-import File from '../lib/file.js';
+import {File} from '../lib/file.js';
 import t from 'tap';
 
 t.test('File', async t => {

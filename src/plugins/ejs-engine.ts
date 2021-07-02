@@ -1,8 +1,8 @@
-import type App from '../app.js';
+import type {App} from '../app.js';
 import type {MojoContext, MojoRenderOptions} from '../types.js';
 import type {AsyncTemplateFunction} from 'ejs';
 import {createHash} from 'crypto';
-import File from '../file.js';
+import {File} from '../file.js';
 import {compile} from 'ejs';
 
 export default function ejsEnginePlugin (app: App): void {

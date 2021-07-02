@@ -1,4 +1,4 @@
-import type App from '../app.js';
+import type {App} from '../app.js';
 import * as util from './../util.js';
 
 export default async function genLiteAppCommand (app: App, args: string[]): Promise<void> {

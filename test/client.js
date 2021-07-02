@@ -1,8 +1,8 @@
 import http from 'http';
-import Client from '../lib/client.js';
+import {Client} from '../lib/client.js';
 import mojo from '../lib/core.js';
-import File from '../lib/file.js';
-import Server from '../lib/server.js';
+import {File} from '../lib/file.js';
+import {Server} from '../lib/server.js';
 import t from 'tap';
 
 t.test('Client', async t => {

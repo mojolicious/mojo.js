@@ -2,7 +2,7 @@ import type {JSONValue} from './types.js';
 import type {IncomingHttpHeaders, IncomingMessage} from 'http';
 import type {Socket} from 'net';
 import {on} from 'events';
-import Params from './body/params.js';
+import {Params} from './body/params.js';
 import Busboy from 'busboy';
 import cheerio from 'cheerio';
 
@@ -18,7 +18,7 @@ interface FileUpload {
 
 type TLSSocket = Socket & {encrypted: boolean | undefined};
 
-export default class Body {
+export class Body {
   raw: IncomingMessage;
   _form: Params | undefined = undefined;
 

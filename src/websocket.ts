@@ -1,4 +1,4 @@
-import type ClientResponse from './client/response.js';
+import type {ClientResponse} from './client/response.js';
 import type {JSONValue} from './types.js';
 import type WS from 'ws';
 import EventEmitter, {on} from 'events';
@@ -95,4 +95,4 @@ class WebSocket extends EventEmitter {
   }
 }
 
-export default WebSocket;
+export {WebSocket};

@@ -1,9 +1,9 @@
-import type App from '../app.js';
+import type {App} from '../app.js';
 import type {ClientOptions} from '../types.js';
-import Client from '../client.js';
-import Server from '../server.js';
+import {Client} from '../client.js';
+import {Server} from '../server.js';
 
-export default class MockClient extends Client {
+export class MockClient extends Client {
   server: Server | undefined;
 
   constructor (options?: ClientOptions) {

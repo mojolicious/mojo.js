@@ -1,6 +1,6 @@
 type Hook = (...args: any[]) => any;
 
-export default class Hooks {
+export class Hooks {
   _hooks: Record<string, Hook[]> = {};
 
   addHook (name: string, fn: Hook): void {

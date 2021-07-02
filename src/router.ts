@@ -1,6 +1,6 @@
 import type {MojoContext, MojoStash, PlaceholderType} from './types.js';
-import Plan from './router/plan.js';
-import Route from './router/route.js';
+import {Plan} from './router/plan.js';
+import {Route} from './router/route.js';
 import * as util from './util.js';
 import LRU from 'lru-cache';
 
@@ -12,7 +12,7 @@ type RouteCondition = (ctx: MojoContext, requirements: any) => boolean;
 
 const PLACEHOLDER = {};
 
-export default class Router extends Route {
+export class Router extends Route {
   cache: LRU<string, Plan | undefined> | null = new LRU(500);
   conditions: Record<string, RouteCondition> = {};
   controllerPaths: string[] = [];

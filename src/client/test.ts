@@ -1,17 +1,17 @@
-import type App from '../app.js';
+import type {App} from '../app.js';
 import type {JSONValue, TestClientOptions, MojoClientRequestOptions, MojoClientWebSocketOptions} from '../types.js';
-import type WebSocket from '../websocket.js';
-import type ClientResponse from './response.js';
+import type {WebSocket} from '../websocket.js';
+import type {ClientResponse} from './response.js';
 import type {URL} from 'url';
 import assert from 'assert/strict';
 import {on} from 'events';
-import MockClient from './mock.js';
+import {MockClient} from './mock.js';
 import cheerio from 'cheerio';
 import StackUtils from 'stack-utils';
 
 type SkipFunction = (...args: any[]) => any;
 
-export default class TestClient extends MockClient {
+export class TestClient extends MockClient {
   body: Buffer = Buffer.from('');
   _assert: typeof assert | Tap.Tap | undefined = undefined;
   _dom: cheerio.Root | undefined = undefined;

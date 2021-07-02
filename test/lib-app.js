@@ -1,4 +1,4 @@
-import File from '../lib/file.js';
+import {File} from '../lib/file.js';
 import {app as distApp} from './support/lib-app/dist/index.js';
 import {app} from './support/lib-app/index.js';
 import {app as libApp} from './support/lib-app/lib/index.js';

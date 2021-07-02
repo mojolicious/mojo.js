@@ -1,12 +1,12 @@
-import type App from './app.js';
+import type {App} from './app.js';
 import type {Socket} from 'net';
 import cluster from 'cluster';
 import http from 'http';
 import https from 'https';
 import os from 'os';
 import {URL} from 'url';
-import File from './file.js';
-import WebSocket from './websocket.js';
+import {File} from './file.js';
+import {WebSocket} from './websocket.js';
 import WS from 'ws';
 
 interface ServerOptions {
@@ -17,7 +17,7 @@ interface ServerOptions {
   workers?: number
 }
 
-export default class Server {
+export class Server {
   app: App;
   reverseProxy: boolean;
   urls: URL[] = [];

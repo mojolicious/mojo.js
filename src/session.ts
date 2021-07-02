@@ -1,5 +1,5 @@
-import type App from './app.js';
-import type Context from './context.js';
+import type {App} from './app.js';
+import type {Context} from './context.js';
 import type {MojoStash} from './types.js';
 import crypto from 'crypto';
 import {promisify} from 'util';
@@ -7,7 +7,7 @@ import {promisify} from 'util';
 const scrypt = promisify(crypto.scrypt);
 const randomBytes = promisify(crypto.randomBytes);
 
-export default class Session {
+export class Session {
   cookieName = 'mojo';
   cookiePath = '/';
   expiration = 3600;

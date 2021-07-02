@@ -1,6 +1,6 @@
-import type App from '../app.js';
+import type {App} from '../app.js';
 import type {MojoContext} from '../types.js';
-import Logger from '../logger.js';
+import {Logger} from '../logger.js';
 import {exceptionContext} from '../util.js';
 
 export default function exceptionHelpersPlugin (app: App): void {

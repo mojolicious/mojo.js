@@ -1,4 +1,4 @@
-import type App from '../app.js';
+import type {App} from '../app.js';
 import crypto from 'crypto';
 import * as util from './../util.js';
 

@@ -1,4 +1,4 @@
-import Router from '../lib/router.js';
+import {Router} from '../lib/router.js';
 import t from 'tap';
 
 // * /0

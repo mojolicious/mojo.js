@@ -1,14 +1,14 @@
 import type {ServerRequestOptions} from '../types.js';
 import type {IncomingMessage} from 'http';
 import url from 'url';
-import Body from '../body.js';
-import Params from '../body/params.js';
+import {Body} from '../body.js';
+import {Params} from '../body/params.js';
 import {decodeURIComponentSafe} from '../util.js';
 import cookie from 'cookie';
 
 let requestId = 0;
 
-export default class ServerRequest extends Body {
+export class ServerRequest extends Body {
   isWebSocket: boolean;
   requestId: string;
   _baseURL: string | undefined = undefined;

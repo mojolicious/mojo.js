@@ -16,7 +16,7 @@ const LEVEL: Record<string, number> = Object.freeze({
   trace: 7
 });
 
-export default class Logger {
+export class Logger {
   destination: NodeJS.WritableStream;
   formatter: LogFormatter;
   history: LogEvent[] = [];

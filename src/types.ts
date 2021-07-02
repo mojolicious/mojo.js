@@ -1,5 +1,5 @@
-import type App from './app.js';
-import type Context from './context.js';
+import type {App} from './app.js';
+import type {Context} from './context.js';
 import type {Agent} from 'http';
 import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';

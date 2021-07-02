@@ -1,5 +1,5 @@
-import type Route from './router/route.js';
-import type Server from './server.js';
+import type {Route} from './router/route.js';
+import type {Server} from './server.js';
 import type {
   AnyArguments,
   AppOptions,
@@ -12,23 +12,23 @@ import type {
   TestClientOptions
 } from './types.js';
 import type {IncomingMessage, ServerResponse} from 'http';
-import CLI from './cli.js';
-import Client from './client.js';
-import MockClient from './client/mock.js';
-import TestClient from './client/test.js';
-import Context from './context.js';
-import File from './file.js';
-import Hooks from './hooks.js';
-import Logger from './logger.js';
-import Mime from './mime.js';
+import {CLI} from './cli.js';
+import {Client} from './client.js';
+import {MockClient} from './client/mock.js';
+import {TestClient} from './client/test.js';
+import {Context} from './context.js';
+import {File} from './file.js';
+import {Hooks} from './hooks.js';
+import {Logger} from './logger.js';
+import {Mime} from './mime.js';
 import ejsEnginePlugin from './plugins/ejs-engine.js';
 import exceptionHelpersPlugin from './plugins/exception-helpers.js';
 import headerConditionsPlugin from './plugins/header-conditions.js';
 import viewHelpersPlugin from './plugins/view-helpers.js';
-import Renderer from './renderer.js';
-import Router from './router.js';
-import Session from './session.js';
-import Static from './static.js';
+import {Renderer} from './renderer.js';
+import {Router} from './router.js';
+import {Session} from './session.js';
+import {Static} from './static.js';
 import Ajv from 'ajv';
 
 type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
@@ -39,7 +39,7 @@ type ContextHook = (app: MojoContext, ...args: any[]) => any;
 
 const ContextWrapper = class extends Context {};
 
-export default class App {
+export class App {
   cli: CLI = new CLI(this);
   client: Client = new Client();
   config: MojoStash;

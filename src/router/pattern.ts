@@ -12,7 +12,7 @@ const OP = Object.freeze({
 interface MatchOptions {isEndpoint: boolean}
 interface PlaceholderTypes {[name: string]: PlaceholderType}
 
-export default class Pattern {
+export class Pattern {
   constraints: PlaceholderTypes;
   defaults: MojoStash;
   placeholders: string[] = [];

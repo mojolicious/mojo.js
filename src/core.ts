@@ -4,8 +4,8 @@
  * MIT Licensed
  */
 import type {AppOptions} from './types.js';
-import App from './app.js';
-import File from './file.js';
+import {App} from './app.js';
+import {File} from './file.js';
 
 export const version =
   JSON.parse(File.currentFile().dirname().sibling('package.json').readFileSync().toString()).version;
@@ -31,13 +31,13 @@ export default function mojo (options?: AppOptions): App {
 }
 
 // "Professor: These old Doomsday devices are dangerously unstable. I'll rest easier not knowing where they are."
-export {default as Client} from './client.js';
-export {default as File} from './file.js';
+export {Client} from './client.js';
+export {File} from './file.js';
 export {default as jsonConfigPlugin} from './plugins/json-config.js';
-export {default as Logger} from './logger.js';
-export {default as Server} from './server.js';
-export {default as Session} from './session.js';
-export {default as TestClient} from './client/test.js';
+export {Logger} from './logger.js';
+export {Server} from './server.js';
+export {Session} from './session.js';
+export {TestClient} from './client/test.js';
 export * as util from './util.js';
 
 export {

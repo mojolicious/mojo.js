@@ -1,6 +1,6 @@
 import mojo from '../lib/core.js';
-import File from '../lib/file.js';
-import Server from '../lib/server.js';
+import {File} from '../lib/file.js';
+import {Server} from '../lib/server.js';
 import t from 'tap';
 
 t.test('HTTPS app', async t => {

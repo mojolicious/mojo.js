@@ -1,11 +1,11 @@
-import type App from './app.js';
-import File from './file.js';
+import type {App} from './app.js';
+import {File} from './file.js';
 import * as util from './util.js';
 import nopt from 'nopt';
 
 interface Command { (app: App, args: string[]): Promise<void>, description: string, usage: string }
 
-export default class CLI {
+export class CLI {
   commandPaths: string[] = [File.currentFile().sibling('cli').toString()];
   commands: Record<string, Command> = {};
   _app: WeakRef<App>;

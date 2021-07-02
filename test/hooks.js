@@ -1,4 +1,4 @@
-import Hooks from '../lib/hooks.js';
+import {Hooks} from '../lib/hooks.js';
 import * as util from '../lib/util.js';
 import t from 'tap';
 

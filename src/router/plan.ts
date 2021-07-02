@@ -1,7 +1,7 @@
 import type {MojoStash} from '../types.js';
-import type Route from './route.js';
+import type {Route} from './route.js';
 
-export default class Plan {
+export class Plan {
   endpoint: Route | undefined = undefined;
   steps: MojoStash[] = [];
   stops: boolean[] = [];

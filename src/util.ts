@@ -2,7 +2,7 @@ import type {MojoStash} from './types.js';
 import type {Mode} from 'fs';
 import {setTimeout} from 'timers/promises';
 import url from 'url';
-import File from './file.js';
+import {File} from './file.js';
 import chalk from 'chalk';
 import ejs from 'ejs';
 

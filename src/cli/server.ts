@@ -1,5 +1,5 @@
 import type {MojoApp} from '../types.js';
-import Server from '../server.js';
+import {Server} from '../server.js';
 import nopt from 'nopt';
 
 const EVENTS = ['SIGINT', 'SIGTERM', 'SIGUSR2'];

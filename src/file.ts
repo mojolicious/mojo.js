@@ -23,7 +23,7 @@ interface ReadStreamOptions extends StreamOptions {
   end?: number
 }
 
-export default class File {
+export class File {
   _path = '';
 
   constructor (...parts: string[]) {

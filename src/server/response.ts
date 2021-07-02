@@ -1,9 +1,9 @@
-import type Context from '../context.js';
+import type {Context} from '../context.js';
 import type http from 'http';
-import Stream from 'stream';
+import {Stream} from 'stream';
 import cookie from 'cookie';
 
-export default class ServerResponse {
+export class ServerResponse {
   headers: Record<string, string | string[]> = {};
   isSent = false;
   raw: http.ServerResponse;

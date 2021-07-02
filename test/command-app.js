@@ -1,5 +1,5 @@
 import mojo, {TestClient} from '../lib/core.js';
-import File from '../lib/file.js';
+import {File} from '../lib/file.js';
 import {captureOutput} from '../lib/util.js';
 import {app} from './support/command-app/index.js';
 import t from 'tap';

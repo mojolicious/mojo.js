@@ -1,4 +1,4 @@
-import type App from '../app.js';
+import type {App} from '../app.js';
 import type {MojoContext} from '../types.js';
 
 export default function headerConditionsPlugin (app: App): void {

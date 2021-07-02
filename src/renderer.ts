@@ -1,12 +1,12 @@
 import type {MojoContext, MojoRenderOptions, MojoViewEngine} from './types.js';
-import File from './file.js';
+import {File} from './file.js';
 import LRU from 'lru-cache';
 
 interface EngineResult { output: string | Buffer, format: string }
 interface ViewSuggestion { format: string, engine: string, path: string }
 type ViewIndex = Record<string, ViewSuggestion[]>;
 
-export default class Renderer {
+export class Renderer {
   cache: LRU<string, any> = new LRU(100);
   defaultEngine = 'ejs';
   defaultFormat = 'html';

@@ -6,7 +6,7 @@ const COMMON: Record<string, string> = Object.freeze({
   txt: 'text/plain; charset=utf-8'
 });
 
-export default class Mime {
+export class Mime {
   detect (accepts: string): string[] {
     const types: Record<string, number> = {};
     for (const accept of accepts.split(/\s*,\s*/)) {
