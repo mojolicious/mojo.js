@@ -22,9 +22,15 @@ jobs:
     - name: npm test
       run: npm test
       if: matrix.os != 'ubuntu-latest'
-    - name: npm run coverage
-      run: npm run coverage
+    - name: npm run coverage:ci
+      run: npm run coverage:ci
       if: matrix.os == 'ubuntu-latest'
     - name: npm run lint
       run: npm run lint
+      if: matrix.os == 'ubuntu-latest'
+    - name: coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ./.lcov.info
       if: matrix.os == 'ubuntu-latest'

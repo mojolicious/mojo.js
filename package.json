@@ -27,7 +27,7 @@
     "build:watch": "npx tsc --watch",
     "clean": "rm -r lib",
     "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
-    "coverage:html": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' --coverage-report=html test/*.js",
+    "coverage:ci": "npm run coverage -- --no-check-coverage && tap --no-check-coverage --coverage-report=text-lcov > .lcov.info",
     "lint": "eslint \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
