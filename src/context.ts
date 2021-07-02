@@ -178,7 +178,7 @@ class Context extends EventEmitter {
     return await this.app.static.serveFile(this, file);
   }
 
-  schema (schema: Record<string, any> | string): ValidateFunction | undefined {
+  schema (schema: MojoStash | string): ValidateFunction | undefined {
     const validator = this.app.validator;
     if (typeof schema === 'string') return validator.getSchema(schema);
 

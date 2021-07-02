@@ -9,12 +9,14 @@ import MockClient from './mock.js';
 import cheerio from 'cheerio';
 import StackUtils from 'stack-utils';
 
+type SkipFunction = (...args: any[]) => any;
+
 export default class TestClient extends MockClient {
   body: Buffer = Buffer.from('');
   _assert: typeof assert | Tap.Tap | undefined = undefined;
   _dom: cheerio.Root | undefined = undefined;
   _finished: [number, string] | null | undefined = undefined;
-  _messages: AsyncIterableIterator<any> | undefined = undefined;
+  _messages: AsyncIterableIterator<JSONValue> | undefined = undefined;
   _res: ClientResponse | undefined = undefined;
   _stack: StackUtils = new StackUtils();
   _ws: WebSocket | undefined = undefined;
@@ -24,7 +26,7 @@ export default class TestClient extends MockClient {
     if (options.tap !== undefined) this._prepareTap(options.tap);
   }
 
-  assert (name: string, args: any[], msg: string, skip: (...args: any[]) => any): void {
+  assert (name: string, args: any[], msg: string, skip: SkipFunction): void {
     const test: any = this._assert ?? assert;
     test[name](...args, msg, {stack: this._stack.captureString(10, skip)});
   }
@@ -105,7 +107,7 @@ export default class TestClient extends MockClient {
     return this;
   }
 
-  async messageOk (): Promise<any> {
+  async messageOk (): Promise<JSONValue> {
     if (this._messages === undefined) throw new Error('No actitve WebSocket connection');
     const message = (await this._messages.next()).value[0];
     this.assert('ok', [true], 'message received', this.messageOk);
@@ -197,7 +199,7 @@ export default class TestClient extends MockClient {
   }
 
   async _requestOk (
-    skip: (...args: any[]) => any, method: string, url: string | URL, options?: MojoClientRequestOptions
+    skip: SkipFunction, method: string, url: string | URL, options?: MojoClientRequestOptions
   ): Promise<this> {
     this._res = await this.request({method, url, ...options});
     this.body = await this.res.buffer();

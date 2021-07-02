@@ -3,7 +3,7 @@ import File from './file.js';
 import * as util from './util.js';
 import nopt from 'nopt';
 
-interface Command { (app: App, ...args: any[]): any, description: string, usage: string }
+interface Command { (app: App, args: string[]): Promise<void>, description: string, usage: string }
 
 export default class CLI {
   commandPaths: string[] = [File.currentFile().sibling('cli').toString()];

@@ -1,3 +1,4 @@
+import type {MojoStash} from './types.js';
 import type {Mode} from 'fs';
 import {setTimeout} from 'timers/promises';
 import url from 'url';
@@ -52,7 +53,7 @@ export async function cliCreateDir (path: string): Promise<void> {
 }
 
 export async function cliCreateFile (
-  path: string, template: string, values: Record<string, any> = {}, options: {chmod?: Mode} = {}
+  path: string, template: string, values: MojoStash = {}, options: {chmod?: Mode} = {}
 ): Promise<void> {
   const file = new File(process.cwd(), ...path.split('/'));
   const stdout = process.stdout;
@@ -127,8 +128,8 @@ export async function exceptionContext (
   return context;
 }
 
-export async function loadModules (dirs: string[]): Promise<Record<string, any>> {
-  const modules: Record<string, any> = {};
+export async function loadModules (dirs: string[]): Promise<MojoStash> {
+  const modules: MojoStash = {};
 
   for (const dir of dirs.map(path => new File(path))) {
     if (!await dir.exists()) continue;

@@ -1,4 +1,6 @@
+import type {JSONValue} from './types.js';
 import type {IncomingHttpHeaders, IncomingMessage} from 'http';
+import type {Socket} from 'net';
 import {on} from 'events';
 import Params from './body/params.js';
 import Busboy from 'busboy';
@@ -13,6 +15,8 @@ interface FileUpload {
   encoding: string,
   mimetype: string
 }
+
+type TLSSocket = Socket & {encrypted: boolean | undefined};
 
 export default class Body {
   raw: IncomingMessage;
@@ -67,11 +71,11 @@ export default class Body {
   }
 
   get isSecure (): boolean {
-    const socket: any = this.raw.socket;
-    return socket.encrypted === true;
+    const socket = this.raw.socket as TLSSocket;
+    return socket.encrypted ?? false;
   }
 
-  async json (): Promise<any> {
+  async json (): Promise<JSONValue> {
     return JSON.parse((await this.buffer()).toString());
   }
 

@@ -16,7 +16,7 @@ export default class Router extends Route {
   cache: LRU<string, Plan | undefined> | null = new LRU(500);
   conditions: Record<string, RouteCondition> = {};
   controllerPaths: string[] = [];
-  controllers: Record<string, any> = {};
+  controllers: MojoStash = {};
   types: Record<string, PlaceholderType> = {num: /[0-9]+/};
   _lookupIndex: RouteIndex | undefined = undefined;
 

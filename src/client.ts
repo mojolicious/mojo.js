@@ -1,4 +1,4 @@
-import type {ClientOptions, MojoClientRequestOptions, MojoClientWebSocketOptions} from './types.js';
+import type {ClientOptions, MojoClientRequestOptions, MojoClientWebSocketOptions, MojoStash} from './types.js';
 import EventEmitter from 'events';
 import http from 'http';
 import https from 'https';
@@ -124,7 +124,7 @@ class Client extends EventEmitter {
     return format(currentURL, {auth: false, fragment: false, search: false});
   }
 
-  _filterConfig (config: Record<string, any>): Record<string, any> {
+  _filterConfig (config: MojoStash): MojoStash {
     const filtered = this._filterSharedConfig(config);
     if (filtered.method === undefined) filtered.method = 'GET';
 
@@ -146,7 +146,7 @@ class Client extends EventEmitter {
     return filtered;
   }
 
-  _filterSharedConfig (config: Record<string, any>): Record<string, any> {
+  _filterSharedConfig (config: MojoStash): MojoStash {
     if (!(config.url instanceof URL)) config.url = new URL(config.url, this.baseURL);
 
     // Auth
@@ -182,7 +182,7 @@ class Client extends EventEmitter {
     return form;
   }
 
-  async _handleRedirect (config: Record<string, any>, res: ClientResponse): Promise<ClientResponse> {
+  async _handleRedirect (config: MojoStash, res: ClientResponse): Promise<ClientResponse> {
     const redirected: number = config.redirected ?? 0;
     if (redirected >= this.maxRedirects) return res;
 
@@ -220,13 +220,13 @@ class Client extends EventEmitter {
     return res;
   }
 
-  async _handleResponse (config: Record<string, any>, raw: http.IncomingMessage): Promise<ClientResponse> {
+  async _handleResponse (config: MojoStash, raw: http.IncomingMessage): Promise<ClientResponse> {
     const res = new ClientResponse(raw);
     await this._storeCookies(config.url, res);
     return this.maxRedirects > 0 ? await this._handleRedirect(config, res) : res;
   }
 
-  async _loadCookies (url: URL, config: Record<string, any>): Promise<void> {
+  async _loadCookies (url: URL, config: MojoStash): Promise<void> {
     if (this.cookieJar === null) return;
     const cookies = await this.cookieJar.getCookies(this._cookieURL(url));
     if (cookies.length > 0) config.headers.Cookie = cookies.map(cookie => cookie.cookieString()).join('; ');

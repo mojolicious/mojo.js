@@ -9,7 +9,7 @@ export default class Route {
   underRoute = false;
   methods: string[] = [];
   pattern: Pattern = new Pattern();
-  requirements: Array<Record<string, any>> = [];
+  requirements: MojoStash[] = [];
   websocketRoute = false;
   _parent: WeakRef<Route> | undefined = undefined;
   _root: WeakRef<Router> | undefined = undefined;
