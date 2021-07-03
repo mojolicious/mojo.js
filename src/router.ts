@@ -13,7 +13,7 @@ type RouteCondition = (ctx: MojoContext, requirements: any) => boolean;
 const PLACEHOLDER = {};
 
 export class Router extends Route {
-  cache: LRU<string, Plan | undefined> | null = new LRU(500);
+  cache: LRU<string, Plan> | null = new LRU(500);
   conditions: Record<string, RouteCondition> = {};
   controllerPaths: string[] = [];
   controllers: MojoStash = {};
