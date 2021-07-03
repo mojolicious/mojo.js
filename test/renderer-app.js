@@ -7,12 +7,16 @@ t.test('Renderer app', async t => {
   t.equal(app.log.level, 'trace');
   app.log.level = 'fatal';
 
-  app.renderer.addEngine('custom', (ctx, options) => {
-    return Buffer.from(`Custom ${options.inline}`);
+  app.renderer.addEngine('custom', {
+    render: (ctx, options) => {
+      return Buffer.from(`Custom ${options.inline}`);
+    }
   });
 
-  app.renderer.addEngine('broken', () => {
-    throw new Error('Broken engine');
+  app.renderer.addEngine('broken', {
+    render: () => {
+      throw new Error('Broken engine');
+    }
   });
 
   app.get('/custom', ctx => ctx.render({inline: 'test', engine: 'custom'}));

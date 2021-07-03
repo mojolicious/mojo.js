@@ -17,7 +17,7 @@ export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoStash = Record<string, any>;
 
-export type MojoViewEngine = (ctx: MojoContext, options: MojoRenderOptions) => Promise<Buffer>;
+export interface MojoViewEngine { render: (ctx: MojoContext, options: MojoRenderOptions) => Promise<Buffer> }
 
 export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;

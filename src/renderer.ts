@@ -1,13 +1,11 @@
 import type {MojoContext, MojoRenderOptions, MojoViewEngine} from './types.js';
 import {File} from './file.js';
-import LRU from 'lru-cache';
 
 interface EngineResult { output: string | Buffer, format: string }
 interface ViewSuggestion { format: string, engine: string, path: string }
 type ViewIndex = Record<string, ViewSuggestion[]>;
 
 export class Renderer {
-  cache: LRU<string, any> = new LRU(100);
   defaultEngine = 'ejs';
   defaultFormat = 'html';
   engines: Record<string, MojoViewEngine> = {};
@@ -43,7 +41,7 @@ export class Renderer {
       const engine = this.engines[options.engine];
       if (engine === undefined) return null;
       log.trace(`Rendering response with "${options.engine}" engine`);
-      return {output: await engine(ctx, options), format: options.format ?? this.defaultFormat};
+      return {output: await engine.render(ctx, options), format: options.format ?? this.defaultFormat};
     }
 
     if (options.inline !== undefined) {
@@ -105,7 +103,7 @@ export class Renderer {
   async _renderInline (ctx: MojoContext, options: MojoRenderOptions): Promise<EngineResult | null> {
     const engine = this.engines[options.engine ?? this.defaultEngine];
     if (engine === undefined) return null;
-    return {output: await engine(ctx, options), format: options.format ?? this.defaultFormat};
+    return {output: await engine.render(ctx, options), format: options.format ?? this.defaultFormat};
   }
 
   async _renderView (ctx: MojoContext, options: MojoRenderOptions): Promise<EngineResult | null> {
@@ -116,6 +114,6 @@ export class Renderer {
     if (engine === undefined) return null;
 
     options.viewPath = view.path;
-    return {output: await engine(ctx, options), format: view.format};
+    return {output: await engine.render(ctx, options), format: view.format};
   }
 }
