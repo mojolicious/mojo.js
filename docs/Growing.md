@@ -116,3 +116,9 @@ TDD is a software development process where the developer starts writing failing
 functionality and then moves on to producing code that passes these tests. There are many advantages such as always
 having good test coverage and code being designed for testability, which will in turn often prevent future changes from
 breaking old code. Much of mojo.js was developed using TDD.
+
+## Support
+
+If you have any questions the documentation might not yet answer, don't hesitate to ask in the
+[Forum](https://github.com/mojolicious/mojo.js/discussions) or the official IRC channel `#mojo.js` on `irc.libera.chat`
+([chat now](https://web.libera.chat/#mojo.js)!).

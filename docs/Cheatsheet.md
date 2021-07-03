@@ -206,3 +206,9 @@ The `ctx.res.raw` property contains an
 // Check if a response has already been sent
 const isFinished = ctx.res.raw.writableFinished;
 ```
+
+## Support
+
+If you have any questions the documentation might not yet answer, don't hesitate to ask in the
+[Forum](https://github.com/mojolicious/mojo.js/discussions) or the official IRC channel `#mojo.js` on `irc.libera.chat`
+([chat now](https://web.libera.chat/#mojo.js)!).

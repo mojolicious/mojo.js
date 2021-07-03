@@ -29,3 +29,9 @@ How to use the full featured HTTP and WebSocket user agent that ships with the m
 * [Cheatsheet](Cheatsheet.md)  (Progress: 50%)
 
 An overview of the most commonly encountered mojo.js objects.
+
+## Support
+
+If you have any questions the documentation might not yet answer, don't hesitate to ask in the
+[Forum](https://github.com/mojolicious/mojo.js/discussions) or the official IRC channel `#mojo.js` on `irc.libera.chat`
+([chat now](https://web.libera.chat/#mojo.js)!).

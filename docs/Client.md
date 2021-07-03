@@ -341,3 +341,9 @@ await client.closedOk(4000);
 
 And while the test client is very efficient for testing backend services, for frontend testing we recommend combining it
 with [playwright](https://www.npmjs.com/package/playwright).
+
+## Support
+
+If you have any questions the documentation might not yet answer, don't hesitate to ask in the
+[Forum](https://github.com/mojolicious/mojo.js/discussions) or the official IRC channel `#mojo.js` on `irc.libera.chat`
+([chat now](https://web.libera.chat/#mojo.js)!).
