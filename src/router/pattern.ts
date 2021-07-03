@@ -12,6 +12,8 @@ const OP = Object.freeze({
 interface MatchOptions {isEndpoint: boolean}
 interface PlaceholderTypes {[name: string]: PlaceholderType}
 
+type ASTNode = [symbol, ...string[]];
+
 export class Pattern {
   constraints: PlaceholderTypes;
   defaults: MojoStash;
@@ -19,7 +21,7 @@ export class Pattern {
   regex: RegExp | undefined = undefined;
   types: PlaceholderTypes;
   unparsed = '';
-  _ast: any[] = [];
+  _ast: ASTNode[] = [];
 
   constructor (path?: string, options: {
     constraints?: PlaceholderTypes,
@@ -170,7 +172,8 @@ export class Pattern {
     for (const token of ast) {
       if (token[0] === OP.slash || token[0] === OP.text) continue;
       token[0] = /^#/.test(token[1]) ? OP.relaxed : /^\*/.test(token[1]) ? OP.wildcard : token[0];
-      token.push(...token.pop().replace(/^[:#*]/, '').split(':'));
+      const typed = token.pop() as string;
+      token.push(...typed.replace(/^[:#*]/, '').split(':'));
       this.placeholders.push(token[1]);
     }
     ast.reverse();
