@@ -21,16 +21,16 @@ export class Logger {
   formatter: LogFormatter;
   history: LogEvent[] = [];
   _historySize: number;
-  _level: number;
+  _level = 6;
 
   constructor (
     options: {destination?: WriteStream, formatter?: LogFormatter, historySize?: number, level?: string} = {}
   ) {
     this.destination = options.destination ?? process.stderr;
     this.formatter = options.formatter ?? Logger.colorFormatter;
+    this.level = process.env.MOJO_LOG_LEVEL ?? options.level ?? 'debug';
 
     this._historySize = options.historySize ?? 0;
-    this._level = LEVEL[process.env.MOJO_LOG_LEVEL ?? options.level ?? 'debug'];
   }
 
   child (context: LogContext): ChildLogger {
