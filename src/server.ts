@@ -9,6 +9,9 @@ import {File} from './file.js';
 import {WebSocket} from './websocket.js';
 import WS from 'ws';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ListenArgs = any[];
+
 interface ServerOptions {
   cluster?: boolean,
   listen?: string[],
@@ -40,7 +43,7 @@ export class Server {
     this._workers = options.workers ?? os.cpus().length;
   }
 
-  static listenArgsForURL (url: URL): any[] {
+  static listenArgsForURL (url: URL): ListenArgs {
     const listen = [];
 
     const hostname = url.hostname;
