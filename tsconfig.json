@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "outDir": "lib",
-    "allowJs": true,
     "lib": [
       "ESNext",
       "DOM"
