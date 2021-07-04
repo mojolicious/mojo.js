@@ -177,8 +177,9 @@ export class App {
     this._server = server === null ? null : new WeakRef(server);
   }
 
-  async start (command?: string, ...args: string[]): Promise<void> {
-    if (!this.detectImport || process.argv[1] === Path.callerFile().toString()) await this.cli.start(command, ...args);
+  start (command?: string, ...args: string[]): void {
+    if (this.detectImport && process.argv[1] !== Path.callerFile().toString()) return;
+    this.cli.start(command, ...args).catch(error => this.log.error(error.message));
   }
 
   under (...args: AnyArguments): Route {

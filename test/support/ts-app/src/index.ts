@@ -17,4 +17,4 @@ app.get('/', async ctx => {
 
 app.get('/hello').to('foo#hello');
 
-app.start().catch(null);
+app.start();
