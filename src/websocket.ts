@@ -47,7 +47,7 @@ class WebSocket extends EventEmitter {
         yield message;
       }
     } catch (error) {
-      if (error.name !== 'AbortError') throw error;
+      if (!(error instanceof Error) || error.name !== 'AbortError') throw error;
     }
   }
 
@@ -78,7 +78,7 @@ class WebSocket extends EventEmitter {
     try {
       this.emit(event, ...args);
     } catch (error) {
-      this.emit('error', error);
+      if (error instanceof Error) this.emit('error', error);
     }
   }
 
@@ -90,7 +90,7 @@ class WebSocket extends EventEmitter {
         this.emit('message', JSON.parse(message.toString()));
       }
     } catch (error) {
-      this.emit('error', error);
+      if (error instanceof Error) this.emit('error', error);
     }
   }
 }

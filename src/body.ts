@@ -42,7 +42,7 @@ export class Body {
         yield {fieldname, file, filename, encoding, mimetype};
       }
     } catch (error) {
-      if (error.name !== 'AbortError') throw error;
+      if (!(error instanceof Error) || error.name !== 'AbortError') throw error;
     }
   }
 

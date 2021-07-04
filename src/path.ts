@@ -200,7 +200,7 @@ process.on('exit', () => {
   tempDirCleanup.forEach(path => {
     try {
       fs.rmSync(path, {recursive: true});
-    } catch (error) {
+    } catch (error: any) {
       if (error.code !== 'ENOENT') throw error;
     }
   });
