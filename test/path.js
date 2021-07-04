@@ -40,7 +40,9 @@ t.test('Path', async t => {
   });
 
   await t.test('realpath', async t => {
-    t.equal((await new Path('.').realpath()).toString(), await fs.realpath('.'));
+    const realPath = await fs.realpath('.');
+    t.equal((await new Path('.').realpath()).toString(), realPath);
+    t.equal(new Path('.').realpathSync().toString(), realPath);
   });
 
   await t.test('I/O', async t => {
@@ -53,6 +55,7 @@ t.test('Path', async t => {
     t.same(await dir.child('test.txt').exists(), true);
     t.same(dir.child('test.txt').existsSync(), true);
     t.same(await dir.child('test.txt').isReadable(), true);
+    t.same(dir.child('test.txt').isReadableSync(), true);
     t.ok(await dir.child('test.txt').stat());
     t.equal((await dir.child('test.txt').readFile()).toString(), 'Hello Mojo!');
     t.equal(dir.child('test.txt').readFileSync().toString(), 'Hello Mojo!');
@@ -60,6 +63,7 @@ t.test('Path', async t => {
     await dir.child('test.txt').rm();
     t.same(await dir.child('test.txt').exists(), false);
     t.same(await dir.child('test.txt').isReadable(), false);
+    t.same(dir.child('test.txt').isReadableSync(), false);
   });
 
   await t.test('I/O (streams)', async t => {
@@ -86,6 +90,7 @@ t.test('Path', async t => {
 
   await t.test('copyFile and rename', async t => {
     const dir = await Path.tempDir();
+
     const oldFile = dir.child('test.txt');
     await oldFile.writeFile('Hello Mojo!');
     t.same(await oldFile.exists(), true);
@@ -101,6 +106,20 @@ t.test('Path', async t => {
     t.same(await oldFile.exists(), true);
     t.same(await newFile.exists(), false);
     t.equal(await oldFile.readFile('utf8'), 'Hello Mojo!');
+
+    oldFile.writeFileSync('Hello Mojo again!');
+    t.same(oldFile.existsSync(), true);
+    t.same(newFile.existsSync(), false);
+    oldFile.copyFileSync(newFile);
+    t.same(oldFile.existsSync(), true);
+    t.same(newFile.existsSync(), true);
+
+    oldFile.rmSync();
+    t.same(oldFile.existsSync(), false);
+    newFile.renameSync(oldFile);
+    t.same(oldFile.existsSync(), true);
+    t.same(newFile.existsSync(), false);
+    t.equal(oldFile.readFileSync('utf8'), 'Hello Mojo again!');
   });
 
   await t.test('touch', async t => {
@@ -110,12 +129,36 @@ t.test('Path', async t => {
     t.ok(await (await file.touch()).exists());
     const future = new Date();
     future.setDate(future.getDate() + 10);
-    await fs.utimes(file.toString(), future, future);
+    await file.utimes(future, future);
     t.not((await (await file.touch()).stat()).mtimeMs, future.getTime());
+
+    const dir2 = Path.tempDirSync();
+    const file2 = dir2.child('test.txt');
+    t.notOk(file2.existsSync());
+    t.ok(file2.touchSync().existsSync());
+    const future2 = new Date();
+    future2.setDate(future2.getDate() + 10);
+    t.not(file2.utimesSync(future2, future2).touchSync().statSync().mtimeMs, future2.getTime());
+  });
+
+  await t.test('mkdir', async t => {
+    const dir = await Path.tempDir();
+    const foo = dir.child('foo');
+    const bar = foo.child('bar');
+    await bar.mkdir({recursive: true});
+    t.ok(await bar.exists(), true);
+    t.ok(await foo.exists(), true);
+
+    const dir2 = Path.tempDirSync();
+    const foo2 = dir2.child('foo');
+    const bar2 = foo2.child('bar');
+    t.ok(bar2.mkdirSync({recursive: true}).existsSync(), true);
+    t.ok(foo.existsSync(), true);
   });
 
   await t.test('list', async t => {
     const dir = await Path.tempDir();
+
     const foo = dir.child('foo');
     const bar = foo.child('bar');
     await bar.mkdir({recursive: true});
@@ -123,6 +166,7 @@ t.test('Path', async t => {
     await foo.child('two.txt').writeFile('Second');
     await foo.child('.three.txt').writeFile('Third');
     t.ok((await dir.child('foo').stat()).isDirectory());
+    t.ok(dir.child('foo').statSync().isDirectory());
     t.ok((await dir.child('foo', 'bar').stat()).isDirectory());
     t.notOk((await dir.child('foo', 'bar', 'one.txt').stat()).isDirectory());
 
@@ -161,5 +205,16 @@ t.test('Path', async t => {
     await temp.destroy();
     t.same(await dir.exists(), false);
     t.same(await temp.exists(), false);
+
+    const temp2 = Path.tempDirSync();
+    const dir2 = new Path(temp2.toString());
+    t.same(dir2.existsSync(), true);
+    t.same(temp2.existsSync(), true);
+    dir2.child('test.txt').writeFileSync('Hello Mojo!');
+    t.same(dir2.child('test.txt').existsSync(), true);
+    t.equal(dir2.child('test.txt').readFileSync().toString(), 'Hello Mojo!');
+    temp2.destroySync();
+    t.same(dir2.existsSync(), false);
+    t.same(temp2.existsSync(), false);
   });
 });

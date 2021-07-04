@@ -52,6 +52,10 @@ export class Path {
     return await fsPromises.copyFile(this._path, destFile.toString(), flags);
   }
 
+  copyFileSync (destFile: Path, flags?: number): void {
+    fs.copyFileSync(this._path, destFile.toString(), flags);
+  }
+
   createReadStream (options?: string | ReadStreamOptions): fs.ReadStream {
     return fs.createReadStream(this._path, options);
   }
@@ -93,6 +97,15 @@ export class Path {
     return await fsPromises.access(this._path, fs.constants.R_OK).then(() => true, () => false);
   }
 
+  isReadableSync (): boolean {
+    try {
+      fs.accessSync(this._path, fs.constants.R_OK);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async * list (options: {dir?: boolean, hidden?: boolean, recursive?: boolean} = {}): AsyncIterable<Path> {
     const files = await fsPromises.readdir(this._path, {withFileTypes: true});
 
@@ -117,6 +130,11 @@ export class Path {
     return await fsPromises.mkdir(this._path, options);
   }
 
+  mkdirSync (options?: fs.MakeDirectoryOptions & {recursive: true}): this {
+    fs.mkdirSync(this._path, options);
+    return this;
+  }
+
   async readFile (
     options?: BufferEncoding | (fs.BaseEncodingOptions & EventEmitter.Abortable & {flag?: fs.OpenMode})
   ): Promise<string | Buffer> {
@@ -135,12 +153,24 @@ export class Path {
     return await fsPromises.rename(this._path, newFile.toString());
   }
 
+  renameSync (newFile: Path): void {
+    fs.renameSync(this._path, newFile.toString());
+  }
+
   async realpath (options?: fs.BaseEncodingOptions): Promise<Path> {
     return await fsPromises.realpath(this._path, options).then(path => new Path(path));
   }
 
+  realpathSync (options?: fs.BaseEncodingOptions): Path {
+    return new Path(fs.realpathSync(this._path, options));
+  }
+
   async rm (options?: fs.RmOptions): Promise<void> {
     return await fsPromises.rm(this._path, options);
+  }
+
+  rmSync (options?: fs.RmOptions): void {
+    fs.rmSync(this._path, options);
   }
 
   sibling (...parts: string[]): Path {
@@ -151,11 +181,21 @@ export class Path {
     return await fsPromises.stat(this._path, options);
   }
 
+  statSync (options?: fs.StatOptions): fs.Stats | fs.BigIntStats | undefined {
+    return fs.statSync(this._path, options);
+  }
+
   static async tempDir (options?: fs.BaseEncodingOptions): Promise<TempDir> {
-    return await fsPromises.mkdtemp(path.join(os.tmpdir(), 'mojo-'), options).then(path => {
+    return await fsPromises.mkdtemp(path.join(os.tmpdir(), 'node-'), options).then(path => {
       tempDirCleanup.push(path);
       return new TempDir(path);
     });
+  }
+
+  static tempDirSync (options?: fs.BaseEncodingOptions): TempDir {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'node-'), options);
+    tempDirCleanup.push(dir);
+    return new TempDir(dir);
   }
 
   async touch (): Promise<this> {
@@ -164,6 +204,17 @@ export class Path {
       await fsPromises.utimes(this._path, now, now);
     } catch (error) {
       await fsPromises.open(this._path, 'w').then(async value => await value.close());
+    }
+
+    return this;
+  }
+
+  touchSync (): this {
+    const now = new Date();
+    try {
+      fs.utimesSync(this._path, now, now);
+    } catch (error) {
+      fs.closeSync(fs.openSync(this._path, 'w'));
     }
 
     return this;
@@ -181,13 +232,25 @@ export class Path {
     return `${this._path}`;
   }
 
+  async utimes (atime: string | number | Date, mtime: string | number | Date): Promise<this> {
+    await fsPromises.utimes(this._path, atime, mtime);
+    return this;
+  }
+
+  utimesSync (atime: string | number | Date, mtime: string | number | Date): this {
+    fs.utimesSync(this._path, atime, mtime);
+    return this;
+  }
+
   async writeFile (
     data: string | Uint8Array,
-    options?: BufferEncoding | (
-      fs.BaseEncodingOptions & {mode?: fs.Mode, flag?: fs.OpenMode} & EventEmitter.Abortable
-    )
+    options?: BufferEncoding | (fs.BaseEncodingOptions & {mode?: fs.Mode, flag?: fs.OpenMode} & EventEmitter.Abortable)
   ): Promise<void> {
     return await fsPromises.writeFile(this._path, data, options);
+  }
+
+  writeFileSync (data: string | Uint8Array, options?: fs.WriteFileOptions): void {
+    fs.writeFileSync(this._path, data, options);
   }
 }
 
@@ -195,15 +258,19 @@ class TempDir extends Path {
   async destroy (): Promise<void> {
     return await fsPromises.rm(this._path, {recursive: true});
   }
+
+  destroySync (): void {
+    fs.rmSync(this._path, {recursive: true});
+  }
 }
 
 const tempDirCleanup: string[] = [];
 process.on('exit', () => {
-  tempDirCleanup.forEach(path => {
+  for (const path of tempDirCleanup) {
     try {
       fs.rmSync(path, {recursive: true});
     } catch (error) {
       if (!(error instanceof Error) || (error as NodeError).code !== 'ENOENT') throw error;
     }
-  });
+  }
 });
