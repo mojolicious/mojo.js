@@ -1,11 +1,11 @@
-import {File} from '../lib/file.js';
 import {Logger} from '../lib/logger.js';
+import {Path} from '../lib/path.js';
 import {captureOutput, sleep} from '../lib/util.js';
 import chalk from 'chalk';
 import t from 'tap';
 
 t.test('Logger', async t => {
-  const dir = await File.tempDir();
+  const dir = await Path.tempDir();
 
   t.test('Logging to file', async t => {
     const file = dir.child('file.log');

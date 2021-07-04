@@ -1,5 +1,5 @@
 import type {MojoContext, MojoRenderOptions, MojoViewEngine} from './types.js';
-import {File} from './file.js';
+import {Path} from './path.js';
 
 interface EngineResult { output: string | Buffer, format: string }
 interface ViewSuggestion { format: string, engine: string, path: string }
@@ -9,7 +9,7 @@ export class Renderer {
   defaultEngine = 'ejs';
   defaultFormat = 'html';
   engines: Record<string, MojoViewEngine> = {};
-  viewPaths: string[] = [File.currentFile().sibling('..', 'vendor', 'views').toString()];
+  viewPaths: string[] = [Path.currentFile().sibling('..', 'vendor', 'views').toString()];
   _viewIndex: ViewIndex | undefined = undefined;
 
   addEngine (name: string, engine: MojoViewEngine): this {
@@ -85,7 +85,7 @@ export class Renderer {
 
   async warmup (): Promise<void> {
     const viewIndex: ViewIndex = this._viewIndex = {};
-    for (const dir of this.viewPaths.map(path => new File(path))) {
+    for (const dir of this.viewPaths.map(path => new Path(path))) {
       if (!(await dir.exists())) continue;
 
       for await (const file of dir.list({recursive: true})) {

@@ -23,7 +23,7 @@ interface ReadStreamOptions extends StreamOptions {
   end?: number
 }
 
-export class File {
+export class Path {
   _path = '';
 
   constructor (...parts: string[]) {
@@ -34,19 +34,19 @@ export class File {
     return path.basename(this._path, ext);
   }
 
-  static callerFile (): File {
-    return new File(url.fileURLToPath(new StackUtils().capture(3)[2].getFileName() ?? ''));
+  static callerFile (): Path {
+    return new Path(url.fileURLToPath(new StackUtils().capture(3)[2].getFileName() ?? ''));
   }
 
-  child (...parts: string[]): File {
-    return new File(this._path, ...parts);
+  child (...parts: string[]): Path {
+    return new Path(this._path, ...parts);
   }
 
   async chmod (mode: fs.Mode): Promise<void> {
     return await fsPromises.chmod(this._path, mode);
   }
 
-  async copyFile (destFile: File, flags?: number): Promise<void> {
+  async copyFile (destFile: Path, flags?: number): Promise<void> {
     return await fsPromises.copyFile(this._path, destFile.toString(), flags);
   }
 
@@ -58,12 +58,12 @@ export class File {
     return fs.createWriteStream(this._path, options);
   }
 
-  static currentFile (): File {
-    return new File(url.fileURLToPath(new StackUtils().capture(2)[1].getFileName() ?? ''));
+  static currentFile (): Path {
+    return new Path(url.fileURLToPath(new StackUtils().capture(2)[1].getFileName() ?? ''));
   }
 
-  dirname (): File {
-    return new File(path.dirname(this._path));
+  dirname (): Path {
+    return new Path(path.dirname(this._path));
   }
 
   async exists (): Promise<boolean> {
@@ -91,7 +91,7 @@ export class File {
     return await fsPromises.access(this._path, fs.constants.R_OK).then(() => true, () => false);
   }
 
-  async * list (options: {dir?: boolean, hidden?: boolean, recursive?: boolean} = {}): AsyncIterable<File> {
+  async * list (options: {dir?: boolean, hidden?: boolean, recursive?: boolean} = {}): AsyncIterable<Path> {
     const files = await fsPromises.readdir(this._path, {withFileTypes: true});
 
     for (const file of files) {
@@ -99,10 +99,10 @@ export class File {
 
       const full = path.resolve(this._path, file.name);
       if (file.isDirectory()) {
-        if (options.dir === true) yield new File(full);
-        if (options.recursive === true) yield * new File(full).list(options);
+        if (options.dir === true) yield new Path(full);
+        if (options.recursive === true) yield * new Path(full).list(options);
       } else {
-        yield new File(full);
+        yield new Path(full);
       }
     }
   }
@@ -125,23 +125,23 @@ export class File {
     return fs.readFileSync(this._path, options);
   }
 
-  relative (to: File): File {
-    return new File(path.relative(this._path, to.toString()));
+  relative (to: Path): Path {
+    return new Path(path.relative(this._path, to.toString()));
   }
 
-  async rename (newFile: File): Promise<void> {
+  async rename (newFile: Path): Promise<void> {
     return await fsPromises.rename(this._path, newFile.toString());
   }
 
-  async realpath (options?: fs.BaseEncodingOptions): Promise<File> {
-    return await fsPromises.realpath(this._path, options).then(path => new File(path));
+  async realpath (options?: fs.BaseEncodingOptions): Promise<Path> {
+    return await fsPromises.realpath(this._path, options).then(path => new Path(path));
   }
 
   async rm (options?: fs.RmOptions): Promise<void> {
     return await fsPromises.rm(this._path, options);
   }
 
-  sibling (...parts: string[]): File {
+  sibling (...parts: string[]): Path {
     return this.dirname().child(...parts);
   }
 
@@ -189,7 +189,7 @@ export class File {
   }
 }
 
-class TempDir extends File {
+class TempDir extends Path {
   async destroy (): Promise<void> {
     return await fsPromises.rm(this._path, {recursive: true});
   }

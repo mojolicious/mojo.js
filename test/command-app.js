@@ -1,5 +1,5 @@
 import mojo, {TestClient} from '../lib/core.js';
-import {File} from '../lib/file.js';
+import {Path} from '../lib/path.js';
 import {captureOutput} from '../lib/util.js';
 import {app} from './support/command-app/index.js';
 import t from 'tap';
@@ -164,7 +164,7 @@ t.test('Command app', async t => {
   });
 
   await t.test('gen-lite-app', async t => {
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
 
     const output = await captureOutput(async () => {
       await app.cli.start('gen-lite-app', '-h');
@@ -202,7 +202,7 @@ t.test('Command app', async t => {
   });
 
   await t.test('gen-full-app', async t => {
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
 
     const output = await captureOutput(async () => {
       await app.cli.start('gen-full-app', '-h');

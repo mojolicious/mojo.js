@@ -1,4 +1,4 @@
-import mojo, {Client, File, jsonConfigPlugin, Logger, Server, Session, TestClient, util} from '../lib/core.js';
+import mojo, {Client, jsonConfigPlugin, Logger, Path, Server, Session, TestClient, util} from '../lib/core.js';
 import t from 'tap';
 
 t.test('Public API', async t => {
@@ -27,9 +27,9 @@ t.test('Public API', async t => {
     t.end();
   });
 
-  t.test('File', t => {
-    t.ok(File !== undefined);
-    const file = new File();
+  t.test('Path', t => {
+    t.ok(Path !== undefined);
+    const file = new Path();
     t.ok(file.sibling instanceof Function);
     t.end();
   });

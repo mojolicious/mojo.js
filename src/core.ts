@@ -5,15 +5,15 @@
  */
 import type {AppOptions} from './types.js';
 import {App} from './app.js';
-import {File} from './file.js';
+import {Path} from './path.js';
 
 export const version =
-  JSON.parse(File.currentFile().dirname().sibling('package.json').readFileSync().toString()).version;
+  JSON.parse(Path.currentFile().dirname().sibling('package.json').readFileSync().toString()).version;
 
 export default function mojo (options?: AppOptions): App {
   const app = new App(options);
 
-  const caller = app.home = File.callerFile().dirname();
+  const caller = app.home = Path.callerFile().dirname();
   const uplevel = caller.dirname();
   const callerExists = caller.child('package.json').existsSync();
   const uplevelExists = uplevel.child('package.json').existsSync();
@@ -32,9 +32,9 @@ export default function mojo (options?: AppOptions): App {
 
 // "Professor: These old Doomsday devices are dangerously unstable. I'll rest easier not knowing where they are."
 export {Client} from './client.js';
-export {File} from './file.js';
 export {default as jsonConfigPlugin} from './plugins/json-config.js';
 export {Logger} from './logger.js';
+export {Path} from './path.js';
 export {Server} from './server.js';
 export {Session} from './session.js';
 export {TestClient} from './client/test.js';

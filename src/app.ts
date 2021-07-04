@@ -17,10 +17,10 @@ import {Client} from './client.js';
 import {MockClient} from './client/mock.js';
 import {TestClient} from './client/test.js';
 import {Context} from './context.js';
-import {File} from './file.js';
 import {Hooks} from './hooks.js';
 import {Logger} from './logger.js';
 import {Mime} from './mime.js';
+import {Path} from './path.js';
 import ejsEnginePlugin from './plugins/ejs-engine.js';
 import exceptionHelpersPlugin from './plugins/exception-helpers.js';
 import headerConditionsPlugin from './plugins/header-conditions.js';
@@ -46,7 +46,7 @@ export class App {
   detectImport: boolean;
   exceptionFormat: string;
   hooks: Hooks = new Hooks();
-  home: File = new File();
+  home: Path = new Path();
   log: Logger;
   mime: Mime = new Mime();
   models: MojoStash = {};
@@ -178,7 +178,7 @@ export class App {
   }
 
   async start (command?: string, ...args: string[]): Promise<void> {
-    if (!this.detectImport || process.argv[1] === File.callerFile().toString()) await this.cli.start(command, ...args);
+    if (!this.detectImport || process.argv[1] === Path.callerFile().toString()) await this.cli.start(command, ...args);
   }
 
   under (...args: AnyArguments): Route {

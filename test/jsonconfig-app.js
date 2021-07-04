@@ -1,5 +1,5 @@
 import mojo from '../lib/core.js';
-import {File} from '../lib/file.js';
+import {Path} from '../lib/path.js';
 import jsonConfigPlugin from '../lib/plugins/json-config.js';
 import {app} from './support/jsonconfig-app/app.js';
 import t from 'tap';
@@ -18,7 +18,7 @@ t.test('JSONConfig app', async t => {
     const app = mojo();
     app.log.level = 'debug';
     app.config = {name: 'overridden', extra: 'option'};
-    const file = File.currentFile().dirname().child('support', 'jsonconfig-app', 'custom', 'named.json').toString();
+    const file = Path.currentFile().dirname().child('support', 'jsonconfig-app', 'custom', 'named.json').toString();
     app.plugin(jsonConfigPlugin, {file});
     t.same(app.config, {name: 'namedConfig', extra: 'option', deep: {option: ['deep']}});
     t.end();
@@ -27,7 +27,7 @@ t.test('JSONConfig app', async t => {
   t.test('Named config file with custom mode', t => {
     const app = mojo({mode: 'test'});
     app.config = {name: 'overridden', extra: 'option'};
-    const file = File.currentFile().dirname().child('support', 'jsonconfig-app', 'custom', 'named.json').toString();
+    const file = Path.currentFile().dirname().child('support', 'jsonconfig-app', 'custom', 'named.json').toString();
     app.plugin(jsonConfigPlugin, {file});
     t.same(app.config, {name: 'namedConfig', extra: 'required', deep: {option: ['deep']}});
     t.end();

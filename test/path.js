@@ -1,50 +1,50 @@
 import fs from 'fs/promises';
 import path from 'path';
 import url from 'url';
-import {File} from '../lib/file.js';
+import {Path} from '../lib/path.js';
 import t from 'tap';
 
-t.test('File', async t => {
+t.test('Path', async t => {
   t.test('Constructor', t => {
-    t.equal(new File().toString(), process.cwd());
-    t.equal(new File('foo', 'bar', 'baz').toString(), path.join('foo', 'bar', 'baz'));
-    t.equal(new File('foo', 'bar').sibling('baz').toString(), path.join('foo', 'baz'));
-    t.equal('' + new File('foo', 'bar', 'baz'), path.join('foo', 'bar', 'baz'));
-    t.same(new File('foo', 'bar', 'baz').toArray(), path.join('foo', 'bar', 'baz').split(path.sep));
-    t.same(new File('foo', 'bar.txt').toFileURL(), url.pathToFileURL(path.join('foo', 'bar', 'baz')));
+    t.equal(new Path().toString(), process.cwd());
+    t.equal(new Path('foo', 'bar', 'baz').toString(), path.join('foo', 'bar', 'baz'));
+    t.equal(new Path('foo', 'bar').sibling('baz').toString(), path.join('foo', 'baz'));
+    t.equal('' + new Path('foo', 'bar', 'baz'), path.join('foo', 'bar', 'baz'));
+    t.same(new Path('foo', 'bar', 'baz').toArray(), path.join('foo', 'bar', 'baz').split(path.sep));
+    t.same(new Path('foo', 'bar.txt').toFileURL(), url.pathToFileURL(path.join('foo', 'bar', 'baz')));
     t.end();
   });
 
   t.test('basename', t => {
-    t.equal(new File('foo', 'bar', 'file.t').basename(), 'file.t');
-    t.equal(new File('foo', 'bar', 'file.t').basename('.t'), 'file');
+    t.equal(new Path('foo', 'bar', 'file.t').basename(), 'file.t');
+    t.equal(new Path('foo', 'bar', 'file.t').basename('.t'), 'file');
     t.end();
   });
 
   t.test('dirname', t => {
     const dirname = path.dirname(path.join('foo', 'bar', 'file.t'));
-    t.equal(new File('foo', 'bar', 'file.t').dirname().toString(), dirname);
+    t.equal(new Path('foo', 'bar', 'file.t').dirname().toString(), dirname);
     t.end();
   });
 
   t.test('extname', t => {
-    t.equal(new File('foo', 'bar', 'file.t').extname(), '.t');
-    t.equal(new File('file.html.ejs').extname(), '.ejs');
+    t.equal(new Path('foo', 'bar', 'file.t').extname(), '.t');
+    t.equal(new Path('file.html.ejs').extname(), '.ejs');
     t.end();
   });
 
   t.test('isAbsolute', t => {
-    t.same(new File('file.t').isAbsolute(), false);
-    t.same(new File('/etc/passwd').isAbsolute(), true);
+    t.same(new Path('file.t').isAbsolute(), false);
+    t.same(new Path('/etc/passwd').isAbsolute(), true);
     t.end();
   });
 
   await t.test('realpath', async t => {
-    t.equal((await new File('.').realpath()).toString(), await fs.realpath('.'));
+    t.equal((await new Path('.').realpath()).toString(), await fs.realpath('.'));
   });
 
   await t.test('I/O', async t => {
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
     t.ok(dir);
     t.ok(await dir.stat());
     t.same(await dir.child('test.txt').exists(), false);
@@ -63,7 +63,7 @@ t.test('File', async t => {
   });
 
   await t.test('I/O (streams)', async t => {
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
     const write = dir.child('test.txt').createWriteStream({encoding: 'utf8'});
     await new Promise(resolve => write.write('Hello World!', resolve));
     const read = dir.child('test.txt').createReadStream({encoding: 'utf8'});
@@ -74,7 +74,7 @@ t.test('File', async t => {
   });
 
   await t.test('I/O (lines)', async t => {
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
     const file = dir.child('test.txt');
     await file.writeFile('foo\nbar\nI ♥ Mojolicious\n', {encoding: 'UTF-8'});
     const lines = [];
@@ -85,7 +85,7 @@ t.test('File', async t => {
   });
 
   await t.test('copyFile and rename', async t => {
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
     const oldFile = dir.child('test.txt');
     await oldFile.writeFile('Hello Mojo!');
     t.same(await oldFile.exists(), true);
@@ -104,7 +104,7 @@ t.test('File', async t => {
   });
 
   await t.test('touch', async t => {
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
     const file = dir.child('test.txt');
     t.notOk(await file.exists());
     t.ok(await (await file.touch()).exists());
@@ -115,7 +115,7 @@ t.test('File', async t => {
   });
 
   await t.test('list', async t => {
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
     const foo = dir.child('foo');
     const bar = foo.child('bar');
     await bar.mkdir({recursive: true});
@@ -151,8 +151,8 @@ t.test('File', async t => {
   });
 
   await t.test('tempDir', async t => {
-    const temp = await File.tempDir();
-    const dir = new File(temp.toString());
+    const temp = await Path.tempDir();
+    const dir = new Path(temp.toString());
     t.same(await dir.exists(), true);
     t.same(await temp.exists(), true);
     await dir.child('test.txt').writeFile('Hello Mojo!');

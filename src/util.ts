@@ -2,7 +2,7 @@ import type {MojoStash} from './types.js';
 import type {Mode} from 'fs';
 import {setTimeout} from 'timers/promises';
 import url from 'url';
-import {File} from './file.js';
+import {Path} from './path.js';
 import chalk from 'chalk';
 import ejs from 'ejs';
 
@@ -41,7 +41,7 @@ export async function captureOutput (
 }
 
 export async function cliCreateDir (path: string): Promise<void> {
-  const dir = new File(process.cwd(), ...path.split('/'));
+  const dir = new Path(process.cwd(), ...path.split('/'));
   const stdout = process.stdout;
   if (await dir.exists()) {
     stdout.write(chalk.green(' [exists]') + ` ${dir.toString()}\n`);
@@ -55,7 +55,7 @@ export async function cliCreateDir (path: string): Promise<void> {
 export async function cliCreateFile (
   path: string, template: string, values: MojoStash = {}, options: {chmod?: Mode} = {}
 ): Promise<void> {
-  const file = new File(process.cwd(), ...path.split('/'));
+  const file = new Path(process.cwd(), ...path.split('/'));
   const stdout = process.stdout;
   if (await file.exists()) {
     stdout.write(chalk.red(' [exists]') + ` ${file.toString()}\n`);
@@ -71,7 +71,7 @@ export async function cliCreateFile (
 }
 
 export async function cliFixPackage (): Promise<void> {
-  const file = new File(process.cwd(), 'package.json');
+  const file = new Path(process.cwd(), 'package.json');
 
   const stdout = process.stdout;
   if (!await file.exists()) {
@@ -107,7 +107,7 @@ export async function exceptionContext (
   if (match === null) return null;
 
   const lines = options.lines ?? 3;
-  const file = new File(match[1].startsWith('file://') ? url.fileURLToPath(match[1]) : match[1]);
+  const file = new Path(match[1].startsWith('file://') ? url.fileURLToPath(match[1]) : match[1]);
   const lineNumber = parseInt(match[2]);
   const column = parseInt(match[3]);
 
@@ -131,7 +131,7 @@ export async function exceptionContext (
 export async function loadModules (dirs: string[]): Promise<MojoStash> {
   const modules: MojoStash = {};
 
-  for (const dir of dirs.map(path => new File(path))) {
+  for (const dir of dirs.map(path => new Path(path))) {
     if (!await dir.exists()) continue;
     for await (const file of dir.list({recursive: true})) {
       if (!/\.m?js$/.test(file.toString())) continue;

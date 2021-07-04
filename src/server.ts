@@ -5,7 +5,7 @@ import http from 'http';
 import https from 'https';
 import os from 'os';
 import {URL} from 'url';
-import {File} from './file.js';
+import {Path} from './path.js';
 import {WebSocket} from './websocket.js';
 import WS from 'ws';
 
@@ -87,8 +87,8 @@ export class Server {
     const options: https.ServerOptions = {};
     if (url.protocol === 'https:') {
       const params = url.searchParams;
-      options.cert = await new File(params.get('cert') ?? '').readFile();
-      options.key = await new File(params.get('key') ?? '').readFile();
+      options.cert = await new Path(params.get('cert') ?? '').readFile();
+      options.key = await new Path(params.get('key') ?? '').readFile();
       isHttps = true;
     }
 

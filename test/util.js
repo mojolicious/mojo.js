@@ -1,4 +1,4 @@
-import {File} from '../lib/file.js';
+import {Path} from '../lib/path.js';
 import * as util from '../lib/util.js';
 import t from 'tap';
 
@@ -28,7 +28,7 @@ t.test('Util', async t => {
   });
 
   await t.test('cli*', async t => {
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
     const cwd = process.cwd();
     process.chdir(dir.toString());
 
@@ -46,7 +46,7 @@ t.test('Util', async t => {
     t.match(await dir.child('foo', 'bar', 'yada.txt').readFile('utf8'), /it works/);
     t.same(JSON.parse(await dir.child('package.json').readFile('utf8')), {name: 'test', type: 'module'});
 
-    const dir2 = await File.tempDir();
+    const dir2 = await Path.tempDir();
     process.chdir(dir2.toString());
     const output2 = await util.captureOutput(async () => {
       await util.cliFixPackage();
@@ -76,7 +76,7 @@ t.test('Util', async t => {
       result = error;
     }
     t.same(await exceptionContext(result, {lines: 2}), {
-      file: File.currentFile().toString(),
+      file: Path.currentFile().toString(),
       line: 74,
       column: 13,
       source: [
@@ -106,7 +106,7 @@ t.test('Util', async t => {
 
   await t.test('loadModules', async t => {
     const loadModules = util.loadModules;
-    const modules = await loadModules([File.currentFile().sibling('support', 'full-app', 'controllers').toString()]);
+    const modules = await loadModules([Path.currentFile().sibling('support', 'full-app', 'controllers').toString()]);
     t.ok(modules.foo != null);
     t.ok(modules.bar != null);
     t.ok(modules['foo/baz'] != null);

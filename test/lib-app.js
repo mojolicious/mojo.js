@@ -1,4 +1,4 @@
-import {File} from '../lib/file.js';
+import {Path} from '../lib/path.js';
 import {app as distApp} from './support/lib-app/dist/index.js';
 import {app} from './support/lib-app/index.js';
 import {app as libApp} from './support/lib-app/lib/index.js';
@@ -11,7 +11,7 @@ t.test('Lib app', async t => {
   const libClient = await libApp.newTestClient({tap: t});
   const srcClient = await srcApp.newTestClient({tap: t});
 
-  const home = File.currentFile().sibling('support', 'lib-app');
+  const home = Path.currentFile().sibling('support', 'lib-app');
 
   await t.test('none', async t => {
     t.equal(app.home.toString(), home.toString());

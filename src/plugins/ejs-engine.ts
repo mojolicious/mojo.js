@@ -2,7 +2,7 @@ import type {App} from '../app.js';
 import type {MojoContext, MojoRenderOptions} from '../types.js';
 import type {AsyncTemplateFunction} from 'ejs';
 import {createHash} from 'crypto';
-import {File} from '../file.js';
+import {Path} from '../path.js';
 import {compile} from 'ejs';
 import LRU from 'lru-cache';
 
@@ -29,7 +29,7 @@ class EJSEngine {
 
       if (template === undefined) {
         if (options.viewPath === undefined) throw new Error('viewPath is not defined for ejsEngine');
-        const source = await new File(options.viewPath).readFile('utf8');
+        const source = await new Path(options.viewPath).readFile('utf8');
         template = compile(source.toString(), {async: true, filename: options.viewPath});
         this.cache.set(options.viewPath, template);
       }

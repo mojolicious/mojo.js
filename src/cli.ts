@@ -1,12 +1,12 @@
 import type {App} from './app.js';
-import {File} from './file.js';
+import {Path} from './path.js';
 import * as util from './util.js';
 import nopt from 'nopt';
 
 interface Command { (app: App, args: string[]): Promise<void>, description: string, usage: string }
 
 export class CLI {
-  commandPaths: string[] = [File.currentFile().sibling('cli').toString()];
+  commandPaths: string[] = [Path.currentFile().sibling('cli').toString()];
   commands: Record<string, Command> = {};
   _app: WeakRef<App>;
   _loaded: boolean | undefined = undefined;

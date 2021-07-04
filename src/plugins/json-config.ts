@@ -1,8 +1,8 @@
 import type {MojoApp} from '../types.js';
-import {File} from '../file.js';
+import {Path} from '../path.js';
 
 export default function jsonConfigPlugin (app: MojoApp, options: {file?: string}): void {
-  const filename = new File(options.file ?? 'config.json');
+  const filename = new Path(options.file ?? 'config.json');
   const filePath = filename.isAbsolute() ? filename : app.home.child(filename.toString());
 
   const log = app.log;
@@ -15,7 +15,7 @@ export default function jsonConfigPlugin (app: MojoApp, options: {file?: string}
 
   const fileParts = filePath.toString().split('.');
   fileParts.splice(-1, 0, app.mode);
-  const modeFilePath = new File(fileParts.join('.'));
+  const modeFilePath = new Path(fileParts.join('.'));
   if (modeFilePath.existsSync()) {
     Object.assign(app.config, JSON.parse(modeFilePath.readFileSync().toString()));
     log.trace(`Mode specific config file "${filePath.toString()}" loaded`);

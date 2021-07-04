@@ -1,11 +1,11 @@
 import type {MojoContext} from './types.js';
 import crypto from 'crypto';
 import path from 'path';
-import {File} from './file.js';
+import {Path} from './path.js';
 
 export class Static {
   prefix = '/public';
-  publicPaths = [File.currentFile().sibling('..', 'vendor', 'public').toString()];
+  publicPaths = [Path.currentFile().sibling('..', 'vendor', 'public').toString()];
 
   async dispatch (ctx: MojoContext): Promise<boolean> {
     const req = ctx.req;
@@ -19,7 +19,7 @@ export class Static {
     if (relative !== path.normalize(relative) || relative.startsWith('..')) return false;
 
     for (const dir of this.publicPaths) {
-      const file = new File(dir, relative);
+      const file = new Path(dir, relative);
       if (!await file.isReadable()) continue;
       await this.serveFile(ctx, file);
       return true;
@@ -62,7 +62,7 @@ export class Static {
     return false;
   }
 
-  async serveFile (ctx: MojoContext, file: File): Promise<void> {
+  async serveFile (ctx: MojoContext, file: Path): Promise<void> {
     const app = ctx.app;
     if (await app.hooks.runHook('static', ctx, file) === true) return;
 

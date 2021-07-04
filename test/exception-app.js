@@ -1,5 +1,5 @@
 import mojo from '../lib/core.js';
-import {File} from '../lib/file.js';
+import {Path} from '../lib/path.js';
 import t from 'tap';
 
 t.test('Exception app', async t => {
@@ -37,7 +37,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('Exception', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('development.log');
       app.log.destination = file.createWriteStream();
 
@@ -71,7 +71,7 @@ t.test('Exception app', async t => {
     const app = mojo();
 
     app.log.level = 'debug';
-    app.renderer.viewPaths.push(File.currentFile().sibling('support', 'exception-app', 'views').toString());
+    app.renderer.viewPaths.push(Path.currentFile().sibling('support', 'exception-app', 'views').toString());
 
     app.any('/exception', () => {
       throw new Error('Another test exception');
@@ -90,7 +90,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('Exception', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('development.log');
       app.log.destination = file.createWriteStream();
 
@@ -146,7 +146,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('Exception', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('production.log');
       app.log.destination = file.createWriteStream();
 
@@ -173,7 +173,7 @@ t.test('Exception app', async t => {
   await t.test('Production (custom views)', async t => {
     process.env.NODE_ENV = 'production';
     const app = mojo();
-    app.renderer.viewPaths.push(File.currentFile().sibling('support', 'exception-app', 'views').toString());
+    app.renderer.viewPaths.push(Path.currentFile().sibling('support', 'exception-app', 'views').toString());
 
     app.any('/exception', () => {
       throw new Error('Another test exception');
@@ -191,7 +191,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('Exception', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('production.log');
       app.log.destination = file.createWriteStream();
 
@@ -280,7 +280,7 @@ t.test('Exception app', async t => {
     const client = await app.newTestClient({tap: t});
 
     await t.test('WebSocket exception (during handshake and sync)', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('websocket1a.log');
       app.log.destination = file.createWriteStream();
 
@@ -296,7 +296,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('WebSocket exception (during handshake and async)', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('websocket1b.log');
       app.log.destination = file.createWriteStream();
 
@@ -312,7 +312,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('WebSocket exception (after handshake and async)', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('websocket2a.log');
       app.log.destination = file.createWriteStream();
 
@@ -324,7 +324,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('WebSocket exception (after handshake and sync)', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('websocket2b.log');
       app.log.destination = file.createWriteStream();
 
@@ -336,7 +336,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('WebSocket exception (iterator)', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('websocket3a.log');
       app.log.destination = file.createWriteStream();
 
@@ -349,7 +349,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('WebSocket exception (events)', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('websocket3b.log');
       app.log.destination = file.createWriteStream();
 
@@ -362,7 +362,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('WebSocket exception (ping)', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('websocket3c.log');
       app.log.destination = file.createWriteStream();
 
@@ -375,7 +375,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('WebSocket exception (pong)', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('websocket3d.log');
       app.log.destination = file.createWriteStream();
 
@@ -387,7 +387,7 @@ t.test('Exception app', async t => {
     });
 
     await t.test('WebSocket exception (close)', async t => {
-      const dir = await File.tempDir();
+      const dir = await Path.tempDir();
       const file = dir.child('websocket3e.log');
       app.log.destination = file.createWriteStream();
 

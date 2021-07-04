@@ -1,7 +1,7 @@
 import type {App} from './app.js';
 import type {Client} from './client.js';
-import type {File} from './file.js';
 import type {ChildLogger} from './logger.js';
+import type {Path} from './path.js';
 import type {Plan} from './router/plan.js';
 import type {
   MojoAction,
@@ -81,7 +81,7 @@ class Context extends EventEmitter {
     ws.on('error', error => (this as MojoContext).exception(error));
   }
 
-  get home (): File {
+  get home (): Path {
     return this.app.home;
   }
 
@@ -174,7 +174,7 @@ class Context extends EventEmitter {
     await this.res.status(204).send();
   }
 
-  async sendFile (file: File): Promise<void> {
+  async sendFile (file: Path): Promise<void> {
     return await this.app.static.serveFile(this, file);
   }
 

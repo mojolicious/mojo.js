@@ -1,7 +1,7 @@
 import http from 'http';
 import {Client} from '../lib/client.js';
 import mojo from '../lib/core.js';
-import {File} from '../lib/file.js';
+import {Path} from '../lib/path.js';
 import {Server} from '../lib/server.js';
 import t from 'tap';
 
@@ -267,7 +267,7 @@ t.test('Client', async t => {
   await t.test('Streams', async t => {
     const res = await client.put('/body', {body: 'Hello Mojo!'});
     t.equal(res.status, 200);
-    const dir = await File.tempDir();
+    const dir = await Path.tempDir();
     const file = await dir.child('hello.txt').touch();
     await res.pipe(file.createWriteStream());
     t.equal(await file.readFile('utf8'), 'Hello Mojo!');
