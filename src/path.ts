@@ -201,12 +201,16 @@ export class Path {
     return new TempDir(dir);
   }
 
+  async open (flags: string | number, mode?: fs.Mode): Promise<fsPromises.FileHandle> {
+    return await fsPromises.open(this._path, flags, mode);
+  }
+
   async touch (): Promise<this> {
     const now = new Date();
     try {
       await fsPromises.utimes(this._path, now, now);
     } catch (error) {
-      await fsPromises.open(this._path, 'w').then(async value => await value.close());
+      await this.open('w').then(async value => await value.close());
     }
 
     return this;

@@ -73,6 +73,13 @@ t.test('Path', async t => {
     t.same(await dir.child('test.txt').access(fs.constants.R_OK), false);
     t.same(dir.child('test.txt').isReadableSync(), false);
     t.same(dir.child('test.txt').accessSync(fs.constants.R_OK), false);
+
+    const baz = dir.child('baz.txt');
+    const fh = await baz.open('w');
+    await fh.write('Hello ');
+    await fh.write('JavaScript!');
+    await fh.close();
+    t.equal((await baz.readFile('utf8')), 'Hello JavaScript!');
   });
 
   await t.test('I/O (streams)', async t => {
