@@ -48,8 +48,10 @@ t.test('Path', async t => {
 
   await t.test('I/O', async t => {
     const dir = await Path.tempDir();
+
     t.ok(dir);
     t.ok(await dir.stat());
+
     t.same(await dir.child('test.txt').exists(), false);
     t.same(dir.child('test.txt').existsSync(), false);
     await dir.child('test.txt').writeFile('Hello Mojo!');
@@ -60,13 +62,17 @@ t.test('Path', async t => {
     t.same(dir.child('test.txt').isReadableSync(), true);
     t.same(dir.child('test.txt').accessSync(fs.constants.R_OK), true);
     t.ok(await dir.child('test.txt').stat());
+
     t.equal((await dir.child('test.txt').readFile()).toString(), 'Hello Mojo!');
     t.equal(dir.child('test.txt').readFileSync().toString(), 'Hello Mojo!');
     t.equal((await dir.child('test.txt').readFile('utf8')), 'Hello Mojo!');
+
     await dir.child('test.txt').rm();
     t.same(await dir.child('test.txt').exists(), false);
     t.same(await dir.child('test.txt').isReadable(), false);
+    t.same(await dir.child('test.txt').access(fs.constants.R_OK), false);
     t.same(dir.child('test.txt').isReadableSync(), false);
+    t.same(dir.child('test.txt').accessSync(fs.constants.R_OK), false);
   });
 
   await t.test('I/O (streams)', async t => {
