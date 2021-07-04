@@ -24,7 +24,7 @@ developments join us on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on L
     * No default frontend framework. Pair it with [React](https://reactjs.org) or [Vue](https://vuejs.org) for a great
       development experience.
   * Batteries included, yet faster than Express and Koa.
-  * Designed for modern JavaScript with `async`/`await`, classes and ES modules.
+  * Designed for modern JavaScript and TypeScript, with `async`/`await`, classes and ES modules.
   * Actively maintained by a team with more than 20 years of experience developing mainstream web frameworks such as
     [Mojolicious](https://mojolicious.org) and [Catalyst](http://www.catalystframework.org).
 
