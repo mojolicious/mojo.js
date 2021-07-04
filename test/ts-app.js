@@ -9,7 +9,7 @@ t.test('TypeScript app', async t => {
   });
 
   await t.test('Controller', async () => {
-    (await client.getOk('/hello')).statusIs(200).bodyIs('Hello TypeScript controller!');
+    (await client.getOk('/hello')).statusIs(200).bodyLike(/Hello TypeScript controller!/);
   });
 
   await client.stop();
