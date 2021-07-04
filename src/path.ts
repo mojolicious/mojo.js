@@ -23,6 +23,8 @@ interface ReadStreamOptions extends StreamOptions {
   end?: number
 }
 
+type NodeError = Error & {code: string};
+
 export class Path {
   _path = '';
 
@@ -200,8 +202,8 @@ process.on('exit', () => {
   tempDirCleanup.forEach(path => {
     try {
       fs.rmSync(path, {recursive: true});
-    } catch (error: any) {
-      if (error.code !== 'ENOENT') throw error;
+    } catch (error) {
+      if (!(error instanceof Error) || (error as NodeError).code !== 'ENOENT') throw error;
     }
   });
 });

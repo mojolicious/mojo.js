@@ -78,7 +78,7 @@ class WebSocket extends EventEmitter {
     try {
       this.emit(event, ...args);
     } catch (error) {
-      if (error instanceof Error) this.emit('error', error);
+      this.emit('error', error as Error);
     }
   }
 
@@ -90,7 +90,7 @@ class WebSocket extends EventEmitter {
         this.emit('message', JSON.parse(message.toString()));
       }
     } catch (error) {
-      if (error instanceof Error) this.emit('error', error);
+      this.emit('error', error as Error);
     }
   }
 }
