@@ -73,16 +73,11 @@ export class Path {
   }
 
   async exists (): Promise<boolean> {
-    return await fsPromises.access(this._path, fs.constants.F_OK).then(() => true, () => false);
+    return await this._access(fs.constants.F_OK);
   }
 
   existsSync (): boolean {
-    try {
-      fs.accessSync(this._path, fs.constants.F_OK);
-      return true;
-    } catch (error) {
-      return false;
-    }
+    return this._accessSync(fs.constants.F_OK);
   }
 
   extname (): string {
@@ -94,16 +89,11 @@ export class Path {
   }
 
   async isReadable (): Promise<boolean> {
-    return await fsPromises.access(this._path, fs.constants.R_OK).then(() => true, () => false);
+    return await this._access(fs.constants.R_OK);
   }
 
   isReadableSync (): boolean {
-    try {
-      fs.accessSync(this._path, fs.constants.R_OK);
-      return true;
-    } catch (error) {
-      return false;
-    }
+    return this._accessSync(fs.constants.R_OK);
   }
 
   async * list (options: {dir?: boolean, hidden?: boolean, recursive?: boolean} = {}): AsyncIterable<Path> {
@@ -251,6 +241,19 @@ export class Path {
 
   writeFileSync (data: string | Uint8Array, options?: fs.WriteFileOptions): void {
     fs.writeFileSync(this._path, data, options);
+  }
+
+  async _access (mode: number): Promise<boolean> {
+    return await fsPromises.access(this._path, mode).then(() => true, () => false);
+  }
+
+  _accessSync (mode: number): boolean {
+    try {
+      fs.accessSync(this._path, mode);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
 
