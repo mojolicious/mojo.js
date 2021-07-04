@@ -1,4 +1,5 @@
-import fs from 'fs/promises';
+import fs from 'fs';
+import fsPromises from 'fs/promises';
 import path from 'path';
 import url from 'url';
 import {Path} from '../lib/path.js';
@@ -40,7 +41,7 @@ t.test('Path', async t => {
   });
 
   await t.test('realpath', async t => {
-    const realPath = await fs.realpath('.');
+    const realPath = await fsPromises.realpath('.');
     t.equal((await new Path('.').realpath()).toString(), realPath);
     t.equal(new Path('.').realpathSync().toString(), realPath);
   });
@@ -55,7 +56,9 @@ t.test('Path', async t => {
     t.same(await dir.child('test.txt').exists(), true);
     t.same(dir.child('test.txt').existsSync(), true);
     t.same(await dir.child('test.txt').isReadable(), true);
+    t.same(await dir.child('test.txt').access(fs.constants.R_OK), true);
     t.same(dir.child('test.txt').isReadableSync(), true);
+    t.same(dir.child('test.txt').accessSync(fs.constants.R_OK), true);
     t.ok(await dir.child('test.txt').stat());
     t.equal((await dir.child('test.txt').readFile()).toString(), 'Hello Mojo!');
     t.equal(dir.child('test.txt').readFileSync().toString(), 'Hello Mojo!');
