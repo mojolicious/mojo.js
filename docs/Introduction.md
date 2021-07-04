@@ -819,7 +819,7 @@ $ mkdir cache
 $ echo 'Hello World!' > cache/hello.txt
 ```
 
-The `File` object provides many useful `fs.*` and `path.*` functions from Node.js, as well as some custom additions.
+The `Path` object provides many useful `fs.*` and `path.*` functions from Node.js, as well as some custom additions.
 
 ```js
 import mojo from '@mojojs/core';

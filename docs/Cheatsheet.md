@@ -16,7 +16,7 @@ const title = document('title').text();
 app.config.foo = 'bar';
 const foo = app.config.foo;
 
-// home: a `File` object with the path of the application home directory
+// home: a `Path` object with the path of the application home directory
 const path = app.home.child('config.json').toString();
 const content = app.home.child('views', 'foo.html.ejs').readFile('utf8');
 
