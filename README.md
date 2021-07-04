@@ -8,13 +8,14 @@
 [![npm](https://img.shields.io/npm/v/@mojojs/core.svg)](https://www.npmjs.com/package/@mojojs/core)
 [![Coverage Status](https://coveralls.io/repos/github/mojolicious/mojo.js/badge.svg)](https://coveralls.io/github/mojolicious/mojo.js)
 
-[Mojolicious](https://mojolicious.org) for [Node.js](https://nodejs.org/). If you want to stay up to date on the latest
-developments join us on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on Libera.Chat).
+The [Mojolicious](https://mojolicious.org) real-time web framework for [Node.js](https://nodejs.org/). If you want to
+stay up to date on the latest developments join us on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on
+Libera.Chat).
 
 ## Features
 
-  * An amazing **real-time web framework**, allowing you to easily grow single file prototypes into well-structured MVC
-    web applications.
+  * An amazing **backend** framework, allowing you to easily grow single file prototypes into well-structured MVC web
+    applications.
     * Everything you need to build cloud-native microservices for state of the art container environments.
     * Powerful out of the box with RESTful routes, WebSockets, HTTP/HTTPS client, plugins, commands, templates, content
       negotiation, cookies, session management, multipart forms, form and JSON validation, testing framework, HTML/XML
