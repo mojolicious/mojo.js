@@ -10,7 +10,7 @@
     "incremental": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "noErrorTruncation": true,
     "strict": true,
-    "noErrorTruncation": true
   }
 }
