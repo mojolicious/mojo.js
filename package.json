@@ -24,7 +24,7 @@
     "build:coverage": "npm run build && npm run coverage",
     "build:lint": "npm run build && npm run lint",
     "build:test": "npm run build && npm test",
-    "build:watch": "npx tsc --watch",
+    "build:watch": "npm run build -- --watch",
     "clean": "rm -r tsconfig.tsbuildinfo test/support/ts-app/tsconfig.tsbuildinfo lib test/support/ts-app/lib",
     "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
     "coverage:ci": "npm run coverage -- --no-check-coverage && tap --no-check-coverage --coverage-report=text-lcov > .lcov.info",
