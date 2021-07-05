@@ -107,12 +107,11 @@ t.test('Path', async t => {
   await t.test('copyFile and rename', async t => {
     const dir = await Path.tempDir();
 
-    const oldFile = dir.child('test.txt');
-    await oldFile.writeFile('Hello Mojo!');
+    const oldFile = await dir.child('test.txt').writeFile('Hello Mojo!');
     t.same(await oldFile.exists(), true);
     const newFile = dir.child('test.new');
     t.same(await newFile.exists(), false);
-    await oldFile.copyFile(newFile);
+    t.same((await oldFile.copyFile(newFile)).basename(), 'test.txt');
     t.same(await oldFile.exists(), true);
     t.same(await newFile.exists(), true);
 
@@ -126,7 +125,7 @@ t.test('Path', async t => {
     oldFile.writeFileSync('Hello Mojo again!');
     t.same(oldFile.existsSync(), true);
     t.same(newFile.existsSync(), false);
-    oldFile.copyFileSync(newFile);
+    t.same(oldFile.copyFileSync(newFile).basename(), 'test.txt');
     t.same(oldFile.existsSync(), true);
     t.same(newFile.existsSync(), true);
 
@@ -208,6 +207,24 @@ t.test('Path', async t => {
 
     await bar.rm({recursive: true});
     t.same(await bar.exists(), false);
+  });
+
+  await t.test('symlink', async t => {
+    const dir = await Path.tempDir();
+
+    const link = dir.child('test-link');
+    const orig = await link.sibling('test').mkdir().then(orig => orig.symlink(link));
+    t.same((await link.stat()).isDirectory(), true);
+    t.same((await link.lstat()).isDirectory(), false);
+    t.same((await orig.stat()).isDirectory(), true);
+    t.same((await orig.lstat()).isDirectory(), true);
+
+    const link2 = dir.child('test-link2');
+    const orig2 = link2.sibling('test2').mkdirSync().symlinkSync(link2);
+    t.same(link2.statSync().isDirectory(), true);
+    t.same(link2.lstatSync().isDirectory(), false);
+    t.same(orig2.statSync().isDirectory(), true);
+    t.same(orig2.lstatSync().isDirectory(), true);
   });
 
   await t.test('tempDir', async t => {

@@ -61,12 +61,14 @@ export class Path {
     return await fsPromises.chmod(this._path, mode);
   }
 
-  async copyFile (destFile: Path, flags?: number): Promise<void> {
-    return await fsPromises.copyFile(this._path, destFile.toString(), flags);
+  async copyFile (destination: Path | string, flags?: number): Promise<this> {
+    await fsPromises.copyFile(this._path, destination.toString(), flags);
+    return this;
   }
 
-  copyFileSync (destFile: Path, flags?: number): void {
-    fs.copyFileSync(this._path, destFile.toString(), flags);
+  copyFileSync (destination: Path | string, flags?: number): this {
+    fs.copyFileSync(this._path, destination.toString(), flags);
+    return this;
   }
 
   createReadStream (options?: string | ReadStreamOptions): fs.ReadStream {
@@ -129,13 +131,26 @@ export class Path {
     return readline.createInterface({input: this.createReadStream(options), crlfDelay: Infinity});
   }
 
-  async mkdir (options?: fs.MakeDirectoryOptions & {recursive: true}): Promise<string | undefined> {
-    return await fsPromises.mkdir(this._path, options);
+  async lstat (options?: fs.StatOptions): Promise<fs.Stats | fs.BigIntStats> {
+    return await fsPromises.lstat(this._path, options);
+  }
+
+  lstatSync (options?: fs.StatOptions): fs.Stats | fs.BigIntStats | undefined {
+    return fs.lstatSync(this._path, options);
+  }
+
+  async mkdir (options?: fs.MakeDirectoryOptions & {recursive: true}): Promise<this> {
+    await fsPromises.mkdir(this._path, options);
+    return this;
   }
 
   mkdirSync (options?: fs.MakeDirectoryOptions & {recursive: true}): this {
     fs.mkdirSync(this._path, options);
     return this;
+  }
+
+  async open (flags: string | number, mode?: fs.Mode): Promise<fsPromises.FileHandle> {
+    return await fsPromises.open(this._path, flags, mode);
   }
 
   async readFile (
@@ -148,16 +163,16 @@ export class Path {
     return fs.readFileSync(this._path, options);
   }
 
-  relative (to: Path): Path {
+  relative (to: Path | string): Path {
     return new Path(path.relative(this._path, to.toString()));
   }
 
-  async rename (newFile: Path): Promise<void> {
-    return await fsPromises.rename(this._path, newFile.toString());
+  async rename (newPath: Path | string): Promise<void> {
+    return await fsPromises.rename(this._path, newPath.toString());
   }
 
-  renameSync (newFile: Path): void {
-    fs.renameSync(this._path, newFile.toString());
+  renameSync (newPath: Path | string): void {
+    fs.renameSync(this._path, newPath.toString());
   }
 
   async realpath (options?: fs.BaseEncodingOptions): Promise<Path> {
@@ -188,6 +203,16 @@ export class Path {
     return fs.statSync(this._path, options);
   }
 
+  async symlink (link: Path | string, type?: fs.symlink.Type): Promise<this> {
+    await fsPromises.symlink(this._path, link.toString(), type);
+    return this;
+  }
+
+  symlinkSync (link: Path | string, type?: fs.symlink.Type): this {
+    fs.symlinkSync(this._path, link.toString(), type);
+    return this;
+  }
+
   static async tempDir (options?: fs.BaseEncodingOptions): Promise<TempDir> {
     return await fsPromises.mkdtemp(path.join(os.tmpdir(), 'node-'), options).then(path => {
       tempDirCleanup.push(path);
@@ -199,10 +224,6 @@ export class Path {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'node-'), options);
     tempDirCleanup.push(dir);
     return new TempDir(dir);
-  }
-
-  async open (flags: string | number, mode?: fs.Mode): Promise<fsPromises.FileHandle> {
-    return await fsPromises.open(this._path, flags, mode);
   }
 
   async touch (): Promise<this> {
@@ -252,12 +273,14 @@ export class Path {
   async writeFile (
     data: string | Uint8Array,
     options?: BufferEncoding | (fs.BaseEncodingOptions & {mode?: fs.Mode, flag?: fs.OpenMode} & EventEmitter.Abortable)
-  ): Promise<void> {
-    return await fsPromises.writeFile(this._path, data, options);
+  ): Promise<this> {
+    await fsPromises.writeFile(this._path, data, options);
+    return this;
   }
 
-  writeFileSync (data: string | Uint8Array, options?: fs.WriteFileOptions): void {
+  writeFileSync (data: string | Uint8Array, options?: fs.WriteFileOptions): this {
     fs.writeFileSync(this._path, data, options);
+    return this;
   }
 }
 
