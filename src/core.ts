@@ -41,6 +41,9 @@ export {TestClient} from './client/test.js';
 export * as util from './util.js';
 
 export {
+  Expand,
+  ExpandRecursive,
+  JSONValue,
   MojoAction,
   MojoApp,
   MojoClientRequestOptions,
