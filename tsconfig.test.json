@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outDir": "test/support/ts-app/lib"
-  },
-  "include": [
-    "test/support/ts-app/src/**/*"
-  ]
-}
