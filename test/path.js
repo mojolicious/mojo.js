@@ -214,17 +214,19 @@ t.test('Path', async t => {
 
     const link = dir.child('test-link');
     const orig = await link.sibling('test').mkdir().then(orig => orig.symlink(link));
-    t.same((await link.stat()).isDirectory(), true);
+    await orig.child('test.txt').writeFile('Hello Mojo!');
     t.same((await link.lstat()).isDirectory(), false);
     t.same((await orig.stat()).isDirectory(), true);
     t.same((await orig.lstat()).isDirectory(), true);
+    t.same(await link.child('test.txt').readFile('utf8'), 'Hello Mojo!');
 
     const link2 = dir.child('test-link2');
     const orig2 = link2.sibling('test2').mkdirSync().symlinkSync(link2);
-    t.same(link2.statSync().isDirectory(), true);
+    orig2.child('test2.txt').writeFileSync('Hello Mojo!');
     t.same(link2.lstatSync().isDirectory(), false);
     t.same(orig2.statSync().isDirectory(), true);
     t.same(orig2.lstatSync().isDirectory(), true);
+    t.same(link2.child('test2.txt').readFileSync('utf8'), 'Hello Mojo!');
   });
 
   await t.test('tempDir', async t => {
