@@ -59,10 +59,10 @@ t.test('Path', async t => {
     t.same(dir.child('test.txt').existsSync(), true);
     t.same(await dir.child('test.txt').isReadable(), true);
     t.same(await dir.child('test.txt').isWritable(), true);
-    t.same(await dir.child('test.txt').access(fs.constants.R_OK), true);
+    t.same(await dir.child('test.txt').access(Path.constants.R_OK), true);
     t.same(dir.child('test.txt').isReadableSync(), true);
     t.same(dir.child('test.txt').isWritableSync(), true);
-    t.same(dir.child('test.txt').accessSync(fs.constants.R_OK), true);
+    t.same(dir.child('test.txt').accessSync(Path.constants.R_OK), true);
     t.ok(await dir.child('test.txt').stat());
 
     t.equal((await dir.child('test.txt').readFile()).toString(), 'Hello Mojo!');
@@ -72,9 +72,9 @@ t.test('Path', async t => {
     await dir.child('test.txt').rm();
     t.same(await dir.child('test.txt').exists(), false);
     t.same(await dir.child('test.txt').isReadable(), false);
-    t.same(await dir.child('test.txt').access(fs.constants.R_OK), false);
+    t.same(await dir.child('test.txt').access(Path.constants.R_OK), false);
     t.same(dir.child('test.txt').isReadableSync(), false);
-    t.same(dir.child('test.txt').accessSync(fs.constants.R_OK), false);
+    t.same(dir.child('test.txt').accessSync(Path.constants.R_OK), false);
 
     const baz = dir.child('baz.txt');
     const fh = await baz.open('w');
