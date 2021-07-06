@@ -58,8 +58,10 @@ t.test('Path', async t => {
     t.same(await dir.child('test.txt').exists(), true);
     t.same(dir.child('test.txt').existsSync(), true);
     t.same(await dir.child('test.txt').isReadable(), true);
+    t.same(await dir.child('test.txt').isWritable(), true);
     t.same(await dir.child('test.txt').access(fs.constants.R_OK), true);
     t.same(dir.child('test.txt').isReadableSync(), true);
+    t.same(dir.child('test.txt').isWritableSync(), true);
     t.same(dir.child('test.txt').accessSync(fs.constants.R_OK), true);
     t.ok(await dir.child('test.txt').stat());
 
@@ -227,6 +229,18 @@ t.test('Path', async t => {
     t.same(orig2.statSync().isDirectory(), true);
     t.same(orig2.lstatSync().isDirectory(), true);
     t.same(link2.child('test2.txt').readFileSync('utf8'), 'Hello Mojo!');
+  });
+
+  await t.test('chmod', async t => {
+    const dir = await Path.tempDir();
+
+    const file = await dir.child('test.txt').touch();
+    t.same(await file.isWritable(), true);
+    t.same(await (await file.chmod(Path.constants.O_RDONLY)).isWritable(), false);
+
+    const file2 = dir.child('test2.txt').touchSync();
+    t.same(file2.isWritableSync(), true);
+    t.same(file2.chmodSync(Path.constants.O_RDONLY).isWritableSync(), false);
   });
 
   await t.test('tempDir', async t => {

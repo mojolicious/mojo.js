@@ -57,8 +57,18 @@ export class Path {
     return new Path(this._path, ...parts);
   }
 
-  async chmod (mode: fs.Mode): Promise<void> {
-    return await fsPromises.chmod(this._path, mode);
+  async chmod (mode: fs.Mode): Promise<this> {
+    await fsPromises.chmod(this._path, mode);
+    return this;
+  }
+
+  chmodSync (mode: fs.Mode): this {
+    fs.chmodSync(this._path, mode);
+    return this;
+  }
+
+  static get constants (): typeof fs.constants {
+    return fs.constants;
   }
 
   async copyFile (destination: Path | string, flags?: number): Promise<this> {
@@ -109,6 +119,14 @@ export class Path {
 
   isReadableSync (): boolean {
     return this.accessSync(fs.constants.R_OK);
+  }
+
+  async isWritable (): Promise<boolean> {
+    return await this.access(fs.constants.W_OK);
+  }
+
+  isWritableSync (): boolean {
+    return this.accessSync(fs.constants.W_OK);
   }
 
   async * list (options: {dir?: boolean, hidden?: boolean, recursive?: boolean} = {}): AsyncIterable<Path> {

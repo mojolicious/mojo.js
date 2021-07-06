@@ -31,6 +31,7 @@
     "lint": "eslint \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
+    "publish:major": "npm version major && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:patch": "npm version patch && npm publish",
     "test": "tap --no-coverage test/*.js"
