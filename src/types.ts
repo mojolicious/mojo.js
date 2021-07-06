@@ -19,13 +19,28 @@ export interface MojoContext extends Context { [key: string]: any }
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type MojoDecoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoStash = Record<string, any>;
 
 export interface MojoViewEngine { render: (ctx: MojoContext, options: MojoRenderOptions) => Promise<Buffer> }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type MojoPlugin = (app: App, options: MojoStash) => any;
+
 export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AppHook = (app: App, ...args: any[]) => any;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ContextHook = (app: MojoContext, ...args: any[]) => any;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RouteCondition = (ctx: MojoContext, requirements: any) => boolean;
 
 export interface ClientOptions {
   baseURL?: string | URL,

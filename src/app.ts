@@ -2,10 +2,14 @@ import type {Route} from './router/route.js';
 import type {Server} from './server.js';
 import type {
   AnyArguments,
+  AppHook,
   AppOptions,
   ClientOptions,
+  ContextHook,
   MojoAction,
   MojoContext,
+  MojoDecoration,
+  MojoPlugin,
   MojoStash,
   RouteArguments,
   ServerRequestOptions,
@@ -30,12 +34,6 @@ import {Router} from './router.js';
 import {Session} from './session.js';
 import {Static} from './static.js';
 import Ajv from 'ajv';
-
-type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
-export type Plugin = (app: App, options: MojoStash) => any;
-
-type AppHook = (app: App, ...args: any[]) => any;
-type ContextHook = (app: MojoContext, ...args: any[]) => any;
 
 const ContextWrapper = class extends Context {};
 
@@ -88,6 +86,7 @@ export class App {
   }
 
   addHelper (name: string, fn: MojoAction): this {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
       return fn(this, ...args);
     });
@@ -97,7 +96,7 @@ export class App {
     return this.router.any(...args);
   }
 
-  decorateContext (name: string, fn: Decoration): this {
+  decorateContext (name: string, fn: MojoDecoration): this {
     const proto: MojoContext = Context.prototype;
     if (Object.getOwnPropertyDescriptor(proto, name) != null) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
@@ -157,7 +156,8 @@ export class App {
     return this.router.patch(...args);
   }
 
-  plugin (plugin: Plugin, options: MojoStash = {}): any {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  plugin (plugin: MojoPlugin, options: MojoStash = {}): any {
     return plugin(this, options);
   }
 
