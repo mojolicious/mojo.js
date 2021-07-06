@@ -1,5 +1,5 @@
 import type {MojoContext, MojoRenderOptions} from './types.js';
-import {Path} from './path.js';
+import Path from '@mojojs/path';
 
 interface EngineResult { output: string | Buffer, format: string }
 interface ViewSuggestion { format: string, engine: string, path: string }

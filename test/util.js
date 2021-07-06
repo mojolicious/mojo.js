@@ -1,5 +1,5 @@
-import {Path} from '../lib/path.js';
 import * as util from '../lib/util.js';
+import Path from '@mojojs/path';
 import t from 'tap';
 
 t.test('Util', async t => {

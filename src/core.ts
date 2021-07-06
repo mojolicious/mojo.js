@@ -5,7 +5,7 @@
  */
 import type {AppOptions} from './types.js';
 import {App} from './app.js';
-import {Path} from './path.js';
+import Path from '@mojojs/path';
 
 export const version =
   JSON.parse(Path.currentFile().dirname().sibling('package.json').readFileSync().toString()).version;
@@ -34,7 +34,6 @@ export default function mojo (options?: AppOptions): App {
 export {Client} from './client.js';
 export {default as jsonConfigPlugin} from './plugins/json-config.js';
 export {Logger} from './logger.js';
-export {Path} from './path.js';
 export {Server} from './server.js';
 export {Session} from './session.js';
 export {TestClient} from './client/test.js';

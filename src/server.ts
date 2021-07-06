@@ -5,8 +5,8 @@ import http from 'http';
 import https from 'https';
 import os from 'os';
 import {URL} from 'url';
-import {Path} from './path.js';
 import {WebSocket} from './websocket.js';
+import Path from '@mojojs/path';
 import WS from 'ws';
 
 type ListenArgs = any[];

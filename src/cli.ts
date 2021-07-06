@@ -1,6 +1,6 @@
 import type {App} from './app.js';
-import {Path} from './path.js';
 import * as util from './util.js';
+import Path from '@mojojs/path';
 import nopt from 'nopt';
 
 interface Command { (app: App, args: string[]): Promise<void>, description: string, usage: string }

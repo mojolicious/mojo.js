@@ -20,7 +20,6 @@ import {Context} from './context.js';
 import {Hooks} from './hooks.js';
 import {Logger} from './logger.js';
 import {Mime} from './mime.js';
-import {Path} from './path.js';
 import ejsEnginePlugin from './plugins/ejs-engine.js';
 import exceptionHelpersPlugin from './plugins/exception-helpers.js';
 import headerConditionsPlugin from './plugins/header-conditions.js';
@@ -29,6 +28,7 @@ import {Renderer} from './renderer.js';
 import {Router} from './router.js';
 import {Session} from './session.js';
 import {Static} from './static.js';
+import Path from '@mojojs/path';
 import Ajv from 'ajv';
 
 const ContextWrapper = class extends Context {};

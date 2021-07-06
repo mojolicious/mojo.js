@@ -1,7 +1,7 @@
 import mojo from '../lib/core.js';
-import {Path} from '../lib/path.js';
 import jsonConfigPlugin from '../lib/plugins/json-config.js';
 import {app} from './support/jsonconfig-app/app.js';
+import Path from '@mojojs/path';
 import t from 'tap';
 
 t.test('JSONConfig app', async t => {

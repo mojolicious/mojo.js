@@ -1,5 +1,5 @@
 import type {MojoApp} from '../types.js';
-import {Path} from '../path.js';
+import Path from '@mojojs/path';
 
 export default function jsonConfigPlugin (app: MojoApp, options: {file?: string}): void {
   const filename = new Path(options.file ?? 'config.json');

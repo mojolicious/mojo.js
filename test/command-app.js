@@ -1,7 +1,7 @@
 import mojo, {TestClient} from '../lib/core.js';
-import {Path} from '../lib/path.js';
 import {captureOutput} from '../lib/util.js';
 import {app} from './support/command-app/index.js';
+import Path from '@mojojs/path';
 import t from 'tap';
 
 t.test('Command app', async t => {

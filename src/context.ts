@@ -1,7 +1,6 @@
 import type {App} from './app.js';
 import type {Client} from './client.js';
 import type {ChildLogger} from './logger.js';
-import type {Path} from './path.js';
 import type {Plan} from './router/plan.js';
 import type {
   MojoAction,
@@ -11,6 +10,7 @@ import type {
   ServerRequestOptions
 } from './types.js';
 import type {WebSocket} from './websocket.js';
+import type Path from '@mojojs/path';
 import type {ValidateFunction} from 'ajv';
 import type http from 'http';
 import EventEmitter from 'events';

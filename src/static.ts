@@ -1,7 +1,7 @@
 import type {MojoContext} from './types.js';
 import crypto from 'crypto';
 import path from 'path';
-import {Path} from './path.js';
+import Path from '@mojojs/path';
 
 export class Static {
   prefix = '/public';

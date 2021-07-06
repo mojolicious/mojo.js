@@ -2,7 +2,7 @@ import type {App} from '../app.js';
 import type {MojoContext, MojoRenderOptions} from '../types.js';
 import type {AsyncTemplateFunction} from 'ejs';
 import {createHash} from 'crypto';
-import {Path} from '../path.js';
+import Path from '@mojojs/path';
 import {compile} from 'ejs';
 import LRU from 'lru-cache';
 
