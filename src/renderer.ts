@@ -1,18 +1,19 @@
-import type {MojoContext, MojoRenderOptions, MojoViewEngine} from './types.js';
+import type {MojoContext, MojoRenderOptions} from './types.js';
 import {Path} from './path.js';
 
 interface EngineResult { output: string | Buffer, format: string }
 interface ViewSuggestion { format: string, engine: string, path: string }
 type ViewIndex = Record<string, ViewSuggestion[]>;
+interface ViewEngine { render: (ctx: MojoContext, options: MojoRenderOptions) => Promise<Buffer> }
 
 export class Renderer {
   defaultEngine = 'ejs';
   defaultFormat = 'html';
-  engines: Record<string, MojoViewEngine> = {};
+  engines: Record<string, ViewEngine> = {};
   viewPaths: string[] = [Path.currentFile().sibling('..', 'vendor', 'views').toString()];
   _viewIndex: ViewIndex | undefined = undefined;
 
-  addEngine (name: string, engine: MojoViewEngine): this {
+  addEngine (name: string, engine: ViewEngine): this {
     this.engines[name] = engine;
     return this;
   }

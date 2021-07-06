@@ -50,6 +50,5 @@ export {
   MojoClientWebSocketOptions,
   MojoContext,
   MojoRenderOptions,
-  MojoStash,
-  MojoViewEngine
+  MojoStash
 } from './types.js';

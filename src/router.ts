@@ -1,4 +1,4 @@
-import type {MojoContext, MojoStash, PlaceholderType, RouteCondition} from './types.js';
+import type {MojoContext, MojoStash, PlaceholderType} from './types.js';
 import {Plan} from './router/plan.js';
 import {Route} from './router/route.js';
 import * as util from './util.js';
@@ -7,6 +7,8 @@ import LRU from 'lru-cache';
 type RouteIndex = Record<string, Route>;
 
 interface RouteSpec { ctx?: MojoContext, method: string, path: string, websocket: boolean }
+
+type RouteCondition = (ctx: MojoContext, requirements: any) => boolean;
 
 const PLACEHOLDER = {};
 

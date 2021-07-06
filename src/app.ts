@@ -2,14 +2,10 @@ import type {Route} from './router/route.js';
 import type {Server} from './server.js';
 import type {
   AnyArguments,
-  AppHook,
   AppOptions,
   ClientOptions,
-  ContextHook,
   MojoAction,
   MojoContext,
-  MojoDecoration,
-  MojoPlugin,
   MojoStash,
   RouteArguments,
   ServerRequestOptions,
@@ -36,6 +32,13 @@ import {Static} from './static.js';
 import Ajv from 'ajv';
 
 const ContextWrapper = class extends Context {};
+
+type AppHook = (app: App, ...args: any[]) => any;
+type ContextHook = (app: MojoContext, ...args: any[]) => any;
+
+export type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
+
+export type Plugin = (app: App, options: MojoStash) => any;
 
 export class App {
   cli: CLI = new CLI(this);
@@ -86,7 +89,6 @@ export class App {
   }
 
   addHelper (name: string, fn: MojoAction): this {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
       return fn(this, ...args);
     });
@@ -96,7 +98,7 @@ export class App {
     return this.router.any(...args);
   }
 
-  decorateContext (name: string, fn: MojoDecoration): this {
+  decorateContext (name: string, fn: Decoration): this {
     const proto: MojoContext = Context.prototype;
     if (Object.getOwnPropertyDescriptor(proto, name) != null) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
@@ -156,8 +158,7 @@ export class App {
     return this.router.patch(...args);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  plugin (plugin: MojoPlugin, options: MojoStash = {}): any {
+  plugin (plugin: Plugin, options: MojoStash = {}): any {
     return plugin(this, options);
   }
 

@@ -53,9 +53,7 @@
         "prefer": "type-imports"
       }
     ],
-    "@typescript-eslint/object-curly-spacing": [
-      "error"
-    ],
+    "@typescript-eslint/object-curly-spacing": "error",
     "@typescript-eslint/member-delimiter-style": [
       "error",
       {
@@ -68,6 +66,7 @@
           "requireLast": false
         }
       }
-    ]
+    ],
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

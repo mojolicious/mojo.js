@@ -8,39 +8,20 @@ import type {URL} from 'url';
 export type Expand<T> = T extends infer O ? {[K in keyof O]: O[K]} : never;
 export type ExpandRecursive<T> = T extends infer O ? {[K in keyof O]: ExpandRecursive<O[K]>} : never;
 
+// Plain JSON
 export type JSONValue = string | number | boolean | null | JSONValue[] | {[key: string]: JSONValue};
 
 export type MojoApp = App;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface MojoContext extends Context { [key: string]: any }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MojoDecoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MojoStash = Record<string, any>;
-
-export interface MojoViewEngine { render: (ctx: MojoContext, options: MojoRenderOptions) => Promise<Buffer> }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type MojoPlugin = (app: App, options: MojoStash) => any;
 
 export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AppHook = (app: App, ...args: any[]) => any;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ContextHook = (app: MojoContext, ...args: any[]) => any;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RouteCondition = (ctx: MojoContext, requirements: any) => boolean;
 
 export interface ClientOptions {
   baseURL?: string | URL,
@@ -86,7 +67,6 @@ interface DefaultRenderOptions {
   view?: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface MojoRenderOptions extends DefaultRenderOptions { [key: string]: any }
 
 export interface AppOptions {

@@ -9,7 +9,6 @@ import {Path} from './path.js';
 import {WebSocket} from './websocket.js';
 import WS from 'ws';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ListenArgs = any[];
 
 interface ServerOptions {
