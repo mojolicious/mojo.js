@@ -1,5 +1,5 @@
 import type {Router} from '../router.js';
-import type {AnyArguments, MojoAction, MojoStash, RouteArguments} from '../types.js';
+import type {AnyArguments, MojoAction, RouteArguments} from '../types.js';
 import {Pattern} from './pattern.js';
 
 export class Route {
@@ -9,7 +9,7 @@ export class Route {
   underRoute = false;
   methods: string[] = [];
   pattern: Pattern = new Pattern();
-  requirements: MojoStash[] = [];
+  requirements: Array<Record<string, any>> = [];
   websocketRoute = false;
   _parent: WeakRef<Route> | undefined = undefined;
   _root: WeakRef<Router> | undefined = undefined;
@@ -97,7 +97,7 @@ export class Route {
     return parts.reverse().join('');
   }
 
-  requires (condition: string, requirement: MojoStash): this {
+  requires (condition: string, requirement: Record<string, any>): this {
     const root = this.root;
     if (root === undefined) return this;
 
@@ -116,7 +116,7 @@ export class Route {
     this._root = root === undefined ? undefined : new WeakRef(root);
   }
 
-  to (...targets: Array<string | MojoAction | MojoStash>): this {
+  to (...targets: Array<string | MojoAction | Record<string, any>>): this {
     const defaults = this.pattern.defaults;
 
     for (const target of targets) {

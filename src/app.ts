@@ -6,7 +6,6 @@ import type {
   ClientOptions,
   MojoAction,
   MojoContext,
-  MojoStash,
   RouteArguments,
   ServerRequestOptions,
   TestClientOptions
@@ -38,19 +37,19 @@ type ContextHook = (app: MojoContext, ...args: any[]) => any;
 
 export type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
 
-export type Plugin = (app: App, options: MojoStash) => any;
+export type Plugin = (app: App, options: Record<string, any>) => any;
 
 export class App {
   cli: CLI = new CLI(this);
   client: Client = new Client();
-  config: MojoStash;
+  config: Record<string, any>;
   detectImport: boolean;
   exceptionFormat: string;
   hooks: Hooks = new Hooks();
   home: Path = new Path();
   log: Logger;
   mime: Mime = new Mime();
-  models: MojoStash = {};
+  models: Record<string, any> = {};
   renderer: Renderer = new Renderer();
   router: Router = new Router();
   secrets: string[];
@@ -158,7 +157,7 @@ export class App {
     return this.router.patch(...args);
   }
 
-  plugin (plugin: Plugin, options: MojoStash = {}): any {
+  plugin (plugin: Plugin, options: Record<string, any> = {}): any {
     return plugin(this, options);
   }
 

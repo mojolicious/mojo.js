@@ -17,8 +17,6 @@ export interface MojoContext extends Context { [key: string]: any }
 
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
-export type MojoStash = Record<string, any>;
-
 export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
@@ -70,7 +68,7 @@ interface DefaultRenderOptions {
 export interface MojoRenderOptions extends DefaultRenderOptions { [key: string]: any }
 
 export interface AppOptions {
-  config?: MojoStash,
+  config?: Record<string, any>,
   exceptionFormat?: string,
   detectImport?: boolean,
   mode?: string,

@@ -1,4 +1,4 @@
-import type {MojoContext, MojoStash, PlaceholderType} from './types.js';
+import type {MojoContext, PlaceholderType} from './types.js';
 import {Plan} from './router/plan.js';
 import {Route} from './router/route.js';
 import * as util from './util.js';
@@ -16,7 +16,7 @@ export class Router extends Route {
   cache: LRU<string, Plan> | null = new LRU(500);
   conditions: Record<string, RouteCondition> = {};
   controllerPaths: string[] = [];
-  controllers: MojoStash = {};
+  controllers: Record<string, any> = {};
   types: Record<string, PlaceholderType> = {num: /[0-9]+/};
   _lookupIndex: RouteIndex | undefined = undefined;
 
@@ -40,7 +40,7 @@ export class Router extends Route {
     if (plan === null) return false;
     ctx.plan = plan;
 
-    const stash: MojoStash = ctx.stash;
+    const stash: Record<string, any> = ctx.stash;
     const log = ctx.log;
     const steps = plan.steps;
     const stops = plan.stops;

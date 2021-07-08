@@ -1,4 +1,4 @@
-import type {MojoStash, PlaceholderType} from '../types.js';
+import type {PlaceholderType} from '../types.js';
 import escapeStringRegexp from 'escape-string-regexp';
 
 const OP = Object.freeze({
@@ -16,7 +16,7 @@ type ASTNode = [symbol, ...string[]];
 
 export class Pattern {
   constraints: PlaceholderTypes;
-  defaults: MojoStash;
+  defaults: Record<string, any>;
   placeholders: string[] = [];
   regex: RegExp | undefined = undefined;
   types: PlaceholderTypes;
@@ -25,7 +25,7 @@ export class Pattern {
 
   constructor (path?: string, options: {
     constraints?: PlaceholderTypes,
-    defaults?: MojoStash,
+    defaults?: Record<string, any>,
     types?: PlaceholderTypes
   } = {}) {
     this.constraints = options.constraints ?? {};
@@ -35,13 +35,13 @@ export class Pattern {
     if (path !== undefined) this.parse(path);
   }
 
-  match (path: string, options: MatchOptions): MojoStash | null {
+  match (path: string, options: MatchOptions): Record<string, any> | null {
     const result = this.matchPartial(path, options);
     if (result === null || (result.remainder.length > 0 && result.remainder !== '/')) return null;
     return result.captures;
   }
 
-  matchPartial (path: string, options: MatchOptions): MojoStash & {remainder: string} | null {
+  matchPartial (path: string, options: MatchOptions): Record<string, any> & {remainder: string} | null {
     if (this.regex === undefined) this.regex = this._compile(options.isEndpoint);
     const match = path.match(this.regex);
     if (match === null) return null;

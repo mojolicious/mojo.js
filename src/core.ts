@@ -48,6 +48,5 @@ export {
   MojoClientRequestOptions,
   MojoClientWebSocketOptions,
   MojoContext,
-  MojoRenderOptions,
-  MojoStash
+  MojoRenderOptions
 } from './types.js';

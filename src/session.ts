@@ -1,6 +1,5 @@
 import type {App} from './app.js';
 import type {Context} from './context.js';
-import type {MojoStash} from './types.js';
 import crypto from 'crypto';
 import {promisify} from 'util';
 
@@ -53,7 +52,7 @@ export class Session {
     return encrypted + '--' + iv.toString('base64') + '--' + cipher.getAuthTag().toString('base64');
   }
 
-  async load (ctx: Context): Promise<MojoStash | null> {
+  async load (ctx: Context): Promise<Record<string, any> | null> {
     const cookie = ctx.req.getCookie(this.cookieName);
     if (cookie === null) return null;
 
@@ -70,7 +69,7 @@ export class Session {
     return data;
   }
 
-  async store (ctx: Context, data: MojoStash): Promise<void> {
+  async store (ctx: Context, data: Record<string, any>): Promise<void> {
     if (typeof data.expires !== 'number') data.expires = Math.round(Date.now() / 1000) + this.expiration;
 
     const app = this._app.deref();

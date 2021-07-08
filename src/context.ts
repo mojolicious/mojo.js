@@ -2,13 +2,7 @@ import type {App} from './app.js';
 import type {Client} from './client.js';
 import type {ChildLogger} from './logger.js';
 import type {Plan} from './router/plan.js';
-import type {
-  MojoAction,
-  MojoContext,
-  MojoRenderOptions,
-  MojoStash,
-  ServerRequestOptions
-} from './types.js';
+import type {MojoAction, MojoContext, MojoRenderOptions, ServerRequestOptions} from './types.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
 import type {ValidateFunction} from 'ajv';
@@ -37,9 +31,9 @@ class Context extends EventEmitter {
   plan: Plan | null = null;
   req: ServerRequest;
   res: ServerResponse;
-  stash: MojoStash = {};
+  stash: Record<string, any> = {};
   _params: Params | undefined = undefined;
-  _session: MojoStash | undefined = undefined;
+  _session: Record<string, any> | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;
 
   constructor (app: App, req: http.IncomingMessage, res: http.ServerResponse, options: ServerRequestOptions) {
@@ -71,7 +65,7 @@ class Context extends EventEmitter {
     return this.app.client;
   }
 
-  get config (): MojoStash {
+  get config (): Record<string, any> {
     return this.app.config;
   }
 
@@ -106,7 +100,7 @@ class Context extends EventEmitter {
     return this.on('connection', fn as () => void);
   }
 
-  get models (): MojoStash {
+  get models (): Record<string, any> {
     return this.app.models;
   }
 
@@ -126,11 +120,11 @@ class Context extends EventEmitter {
     return this.on('connection', fn as () => void);
   }
 
-  async redirectTo (target: string, options: {status?: number, values?: MojoStash} = {}): Promise<void> {
+  async redirectTo (target: string, options: {status?: number, values?: Record<string, any>} = {}): Promise<void> {
     await this.res.status(options.status ?? 302).set('Location', this.urlFor(target, options.values) ?? '').send();
   }
 
-  async render (options: MojoRenderOptions = {}, stash?: MojoStash): Promise<boolean> {
+  async render (options: MojoRenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
     if (typeof options === 'string') options = {view: options};
     if (stash !== undefined) Object.assign(this.stash, stash);
 
@@ -150,7 +144,7 @@ class Context extends EventEmitter {
     return true;
   }
 
-  async renderToString (options: MojoRenderOptions, stash?: MojoStash): Promise<string | null> {
+  async renderToString (options: MojoRenderOptions, stash?: Record<string, any>): Promise<string | null> {
     if (typeof options === 'string') options = {view: options};
     Object.assign(this.stash, stash);
     const result = await this.app.renderer.render(this, options);
@@ -178,7 +172,7 @@ class Context extends EventEmitter {
     return await this.app.static.serveFile(this, file);
   }
 
-  schema (schema: MojoStash | string): ValidateFunction | undefined {
+  schema (schema: Record<string, any> | string): ValidateFunction | undefined {
     const validator = this.app.validator;
     if (typeof schema === 'string') return validator.getSchema(schema);
 
@@ -189,12 +183,12 @@ class Context extends EventEmitter {
     return validator.compile(schema);
   }
 
-  async session (): Promise<MojoStash> {
+  async session (): Promise<Record<string, any>> {
     if (this._session === undefined) this._session = await this.app.session.load(this) ?? {};
     return this._session;
   }
 
-  urlFor (target: string | undefined, values?: MojoStash): string | null {
+  urlFor (target: string | undefined, values?: Record<string, any>): string | null {
     if (target === undefined || target === 'current') {
       if (this.plan === null) return null;
       const result = this.plan.render(values);
