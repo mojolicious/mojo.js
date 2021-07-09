@@ -104,57 +104,57 @@ t.test('Hook app', async t => {
   });
 
   t.same(serverHooks, []);
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
   t.same(serverHooks, ['start: works']);
 
   await t.test('Request hooks', async () => {
-    (await client.getOk('/')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Hello Mojo!');
-    (await client.getOk('/?first=1')).statusIs(200).headerExistsNot('X-Hook').bodyIs('First request hook');
-    (await client.getOk('/?second=1')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Second request hook');
-    (await client.getOk('/whatever?second=1')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Second request hook');
-    (await client.getOk('/whatever')).statusIs(404);
+    (await ua.getOk('/')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Hello Mojo!');
+    (await ua.getOk('/?first=1')).statusIs(200).headerExistsNot('X-Hook').bodyIs('First request hook');
+    (await ua.getOk('/?second=1')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Second request hook');
+    (await ua.getOk('/whatever?second=1')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Second request hook');
+    (await ua.getOk('/whatever')).statusIs(404);
   });
 
   await t.test('WebSocket hooks', async t => {
-    await client.websocketOk('/hello');
-    t.equal(await client.messageOk(), 'Hello Mojo!');
-    await client.closedOk(1005);
+    await ua.websocketOk('/hello');
+    t.equal(await ua.messageOk(), 'Hello Mojo!');
+    await ua.closedOk(1005);
 
-    await client.websocketOk('/hello?third=1');
-    t.equal(await client.messageOk(), 'Hello World!');
-    await client.closedOk(1005);
+    await ua.websocketOk('/hello?third=1');
+    t.equal(await ua.messageOk(), 'Hello World!');
+    await ua.closedOk(1005);
 
-    await client.websocketOk('/whatever?third=1');
-    t.equal(await client.messageOk(), 'Hello World!');
-    await client.closedOk(1005);
+    await ua.websocketOk('/whatever?third=1');
+    t.equal(await ua.messageOk(), 'Hello World!');
+    await ua.closedOk(1005);
   });
 
   await t.test('Request hook exception', async () => {
-    (await client.getOk('/?exception=1')).statusIs(500).headerIs('X-Hook', 'works').bodyLike(/Error: Hook exception/);
+    (await ua.getOk('/?exception=1')).statusIs(500).headerIs('X-Hook', 'works').bodyLike(/Error: Hook exception/);
   });
 
   await t.test('Send hooks', async () => {
-    (await client.getOk('/send?powered=1')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
+    (await ua.getOk('/send?powered=1')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
       .headerIs('X-Powered-By', 'mojo.js').jsonIs({hello: 'world'});
-    (await client.getOk('/send?powered=0')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
+    (await ua.getOk('/send?powered=0')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
       .headerExistsNot('X-Powered-By').jsonIs({hello: 'world'});
   });
 
   await t.test('Static hooks', async () => {
-    (await client.getOk('/public/mojo/favicon.ico?cache=1')).statusIs(200).typeIs('image/vnd.microsoft.icon')
+    (await ua.getOk('/public/mojo/favicon.ico?cache=1')).statusIs(200).typeIs('image/vnd.microsoft.icon')
       .headerExists('Content-Length').headerIs('Cache-Control', 'public, max-age=604800, immutable');
-    (await client.getOk('/public/mojo/favicon.ico?cache=0')).statusIs(200).typeIs('image/vnd.microsoft.icon')
+    (await ua.getOk('/public/mojo/favicon.ico?cache=0')).statusIs(200).typeIs('image/vnd.microsoft.icon')
       .headerExists('Content-Length').headerExistsNot('Cache-Control');
 
-    (await client.getOk('/public/mojo/favicon.ico?cache=1&hijack=1')).statusIs(200).headerExists('Content-Length')
+    (await ua.getOk('/public/mojo/favicon.ico?cache=1&hijack=1')).statusIs(200).headerExists('Content-Length')
       .headerIs('Cache-Control', 'public, max-age=604800, immutable').bodyIs('Hijacked: favicon.ico');
 
-    (await client.getOk('/public/mojo/favicon.ico?cache=1&hijack=1&powered=1')).statusIs(200)
+    (await ua.getOk('/public/mojo/favicon.ico?cache=1&hijack=1&powered=1')).statusIs(200)
       .headerExists('Content-Length').headerIs('Cache-Control', 'public, max-age=604800, immutable')
       .headerIs('X-Powered-By', 'mojo.js').bodyIs('Hijacked: favicon.ico');
   });
 
   t.same(serverHooks, ['start: works']);
-  await client.stop();
+  await ua.stop();
   t.same(serverHooks, ['start: works', 'stop: works']);
 });

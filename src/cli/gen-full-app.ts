@@ -101,12 +101,12 @@ const jsTest = `import {app} from '../index.js';
 import t from 'tap';
 
 t.test('Example application', async t => {
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Index', async t => {
-    (await client.getOk('/')).statusIs(200).bodyLike(/mojo.js/);
+    (await ua.getOk('/')).statusIs(200).bodyLike(/mojo.js/);
   });
 
-  await client.stop();
+  await ua.stop();
 });
 `;

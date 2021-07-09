@@ -1,6 +1,6 @@
 import {Body} from '../body.js';
 
-export class ClientResponse extends Body {
+export class UserAgentResponse extends Body {
   get isClientError (): boolean {
     const statusCode = this.status;
     return statusCode >= 400 && statusCode <= 499;

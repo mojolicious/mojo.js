@@ -1,11 +1,11 @@
 import http from 'http';
-import {Client} from '../lib/client.js';
 import mojo from '../lib/core.js';
 import {Server} from '../lib/server.js';
+import {UserAgent} from '../lib/user-agent.js';
 import Path from '@mojojs/path';
 import t from 'tap';
 
-t.test('Client', async t => {
+t.test('UserAgent', async t => {
   const app = mojo();
 
   if (app.mode === 'development') app.log.level = 'debug';
@@ -85,17 +85,17 @@ t.test('Client', async t => {
 
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
-  const client = new Client({baseURL: server.urls[0], name: 'mojo 1.0'});
+  const ua = new UserAgent({baseURL: server.urls[0], name: 'mojo 1.0'});
 
   await t.test('Hello World', async t => {
-    const res = await client.get('/hello');
+    const res = await ua.get('/hello');
     t.equal(res.status, 200);
     t.equal(res.statusMessage, 'OK');
     t.equal(await res.text(), 'Hello World!');
   });
 
   await t.test('Status', async t => {
-    const res = await client.get('/status?status=200');
+    const res = await ua.get('/status?status=200');
     t.ok(res.isSuccess);
     t.not(res.isError);
     t.not(res.isClientError);
@@ -104,7 +104,7 @@ t.test('Client', async t => {
     t.equal(res.status, 200);
     t.equal(await res.text(), '');
 
-    const res2 = await client.get('/status?status=201');
+    const res2 = await ua.get('/status?status=201');
     t.ok(res2.isSuccess);
     t.not(res2.isError);
     t.not(res2.isClientError);
@@ -113,7 +113,7 @@ t.test('Client', async t => {
     t.equal(res2.status, 201);
     t.equal(await res2.text(), '');
 
-    const res3 = await client.get('/status?status=302');
+    const res3 = await ua.get('/status?status=302');
     t.not(res3.isSuccess);
     t.not(res3.isError);
     t.not(res3.isClientError);
@@ -122,7 +122,7 @@ t.test('Client', async t => {
     t.equal(res3.status, 302);
     t.equal(await res3.text(), '');
 
-    const res4 = await client.get('/status?status=404');
+    const res4 = await ua.get('/status?status=404');
     t.not(res4.isSuccess);
     t.ok(res4.isError);
     t.ok(res4.isClientError);
@@ -131,7 +131,7 @@ t.test('Client', async t => {
     t.equal(res4.status, 404);
     t.equal(await res4.text(), '');
 
-    const res5 = await client.get('/status?status=500');
+    const res5 = await ua.get('/status?status=500');
     t.not(res5.isSuccess);
     t.ok(res5.isError);
     t.not(res5.isClientError);
@@ -140,7 +140,7 @@ t.test('Client', async t => {
     t.equal(res5.status, 500);
     t.equal(await res5.text(), '');
 
-    const res6 = await client.get('/status?status=599');
+    const res6 = await ua.get('/status?status=599');
     t.not(res6.isSuccess);
     t.ok(res6.isError);
     t.not(res6.isClientError);
@@ -149,7 +149,7 @@ t.test('Client', async t => {
     t.equal(res6.status, 599);
     t.equal(await res6.text(), '');
 
-    const res7 = await client.get('/status?status=299');
+    const res7 = await ua.get('/status?status=299');
     t.ok(res7.isSuccess);
     t.not(res7.isError);
     t.not(res7.isClientError);
@@ -160,31 +160,31 @@ t.test('Client', async t => {
   });
 
   await t.test('Headers', async t => {
-    const res = await client.get('/headers?header=user-agent');
+    const res = await ua.get('/headers?header=user-agent');
     t.equal(res.status, 200);
     t.equal(res.get('X-Test'), 'works too');
     t.equal(await res.text(), 'mojo 1.0');
 
-    const res2 = await client.get('/headers?header=test', {headers: {test: 'works'}});
+    const res2 = await ua.get('/headers?header=test', {headers: {test: 'works'}});
     t.equal(res2.status, 200);
     t.equal(res2.get('X-Test'), 'works too');
     t.equal(await res2.text(), 'works');
   });
 
   await t.test('Body', async t => {
-    const res = await client.put('/body', {body: 'Body works!'});
+    const res = await ua.put('/body', {body: 'Body works!'});
     t.equal(res.status, 200);
     t.equal(await res.text(), 'Body works!');
 
-    const res2 = await client.put('/body', {body: 'I ♥ Mojolicious!'});
+    const res2 = await ua.put('/body', {body: 'I ♥ Mojolicious!'});
     t.equal(res2.status, 200);
     t.equal(await res2.text(), 'I ♥ Mojolicious!');
 
-    const res3 = await client.put('/body', {body: Buffer.from('I ♥ Mojolicious!')});
+    const res3 = await ua.put('/body', {body: Buffer.from('I ♥ Mojolicious!')});
     t.equal(res3.status, 200);
     t.equal((await res3.buffer()).toString(), 'I ♥ Mojolicious!');
 
-    const res4 = await client.put('/body', {body: 'I ♥ Mojolicious!'});
+    const res4 = await ua.put('/body', {body: 'I ♥ Mojolicious!'});
     t.equal(res4.status, 200);
     const parts = [];
     for await (const chunk of res4) {
@@ -194,113 +194,113 @@ t.test('Client', async t => {
   });
 
   await t.test('Query', async t => {
-    const res = await client.get('/headers', {query: {header: 'user-agent'}});
+    const res = await ua.get('/headers', {query: {header: 'user-agent'}});
     t.equal(res.status, 200);
     t.equal(res.get('X-Test'), 'works too');
     t.equal(await res.text(), 'mojo 1.0');
 
-    const res2 = await client.get('/status', {query: {status: 201, test: 'works'}});
+    const res2 = await ua.get('/status', {query: {status: 201, test: 'works'}});
     t.equal(res2.status, 201);
     t.equal(res2.get('X-Test'), 'works');
     t.equal(await res2.text(), '');
   });
 
   await t.test('JSON', async t => {
-    const res = await client.get('/hello.json');
+    const res = await ua.get('/hello.json');
     t.equal(res.status, 200);
     t.same(await res.json(), {hello: 'world'});
   });
 
   await t.test('Form', async t => {
-    const res = await client.post('/form', {form: {foo: 'works'}});
+    const res = await ua.post('/form', {form: {foo: 'works'}});
     t.equal(res.status, 200);
     t.equal(await res.text(), 'Form: works, missing');
 
-    const res2 = await client.post('/form', {form: {foo: 'works', bar: 'too'}});
+    const res2 = await ua.post('/form', {form: {foo: 'works', bar: 'too'}});
     t.equal(res2.status, 200);
     t.equal(await res2.text(), 'Form: works, too');
 
-    const res3 = await client.post('/form', {json: {foo: 'works', bar: 'too'}});
+    const res3 = await ua.post('/form', {json: {foo: 'works', bar: 'too'}});
     t.equal(res3.status, 200);
     t.equal(await res3.text(), 'Form: missing, missing');
 
-    const res4 = await client.post('/form', {form: {foo: 'w(o-&2F%2F)r k  s', bar: '%&!@#$%^&*&&%'}});
+    const res4 = await ua.post('/form', {form: {foo: 'w(o-&2F%2F)r k  s', bar: '%&!@#$%^&*&&%'}});
     t.equal(res4.status, 200);
     t.equal(await res4.text(), 'Form: w(o-&2F%2F)r k  s, %&!@#$%^&*&&%');
   });
 
   await t.test('Methods', async t => {
-    const res = await client.delete('/methods');
+    const res = await ua.delete('/methods');
     t.equal(res.status, 200);
     t.equal(await res.text(), 'DELETE');
 
-    const res2 = await client.get('/methods');
+    const res2 = await ua.get('/methods');
     t.equal(res2.status, 200);
     t.equal(await res2.text(), 'GET');
 
-    const res3 = await client.options('/methods');
+    const res3 = await ua.options('/methods');
     t.equal(res3.status, 200);
     t.equal(await res3.text(), 'OPTIONS');
 
-    const res4 = await client.patch('/methods');
+    const res4 = await ua.patch('/methods');
     t.equal(res4.status, 200);
     t.equal(await res4.text(), 'PATCH');
 
-    const res5 = await client.post('/methods');
+    const res5 = await ua.post('/methods');
     t.equal(res5.status, 200);
     t.equal(await res5.text(), 'POST');
 
-    const res6 = await client.put('/methods');
+    const res6 = await ua.put('/methods');
     t.equal(res6.status, 200);
     t.equal(await res6.text(), 'PUT');
 
-    const res7 = await client.head('/hello');
+    const res7 = await ua.head('/hello');
     t.equal(res7.status, 200);
     t.equal(res7.get('Content-Length'), '12');
     t.equal(await res7.text(), '');
 
-    const res8 = await client.request({method: 'PUT', url: '/methods'});
+    const res8 = await ua.request({method: 'PUT', url: '/methods'});
     t.equal(res8.status, 200);
     t.equal(await res8.text(), 'PUT');
   });
 
   await t.test('Streams', async t => {
-    const res = await client.put('/body', {body: 'Hello Mojo!'});
+    const res = await ua.put('/body', {body: 'Hello Mojo!'});
     t.equal(res.status, 200);
     const dir = await Path.tempDir();
     const file = await dir.child('hello.txt').touch();
     await res.pipe(file.createWriteStream());
     t.equal(await file.readFile('utf8'), 'Hello Mojo!');
 
-    const res2 = await client.put('/body', {body: file.createReadStream()});
+    const res2 = await ua.put('/body', {body: file.createReadStream()});
     t.equal(res2.status, 200);
     t.equal(await res2.text(), 'Hello Mojo!');
   });
 
   await t.test('Basic authentication', async t => {
-    const res = await client.get('/auth/basic', {auth: 'foo:bar'});
+    const res = await ua.get('/auth/basic', {auth: 'foo:bar'});
     t.equal(res.status, 200);
     t.equal(await res.text(), 'basic: foo:bar, body: nothing');
 
-    const res2 = await client.get('/auth/basic');
+    const res2 = await ua.get('/auth/basic');
     t.equal(res2.status, 200);
     t.equal(await res2.text(), 'basic: nothing, body: nothing');
 
-    const res3 = await client.get('/auth/basic', {auth: 'foo:bar:baz', body: 'test'});
+    const res3 = await ua.get('/auth/basic', {auth: 'foo:bar:baz', body: 'test'});
     t.equal(res3.status, 200);
     t.equal(await res3.text(), 'basic: foo:bar:baz, body: test');
 
-    const url = new URL('/auth/basic', client.baseURL);
+    const url = new URL('/auth/basic', ua.baseURL);
     url.username = 'foo@example.com';
     url.password = 'bar';
-    const res4 = await client.get(url);
+    const res4 = await ua.get(url);
     t.equal(res4.status, 200);
     t.equal(await res4.text(), 'basic: foo@example.com:bar, body: nothing');
   });
 
   await t.test('Events', async t => {
-    client.once('request', config => config.url.searchParams.append('status', 201));
-    const res = await client.get('/status');
+    ua.once('request', config => config.url.searchParams.append('status', 201));
+    const res = await ua.get('/status');
     t.equal(res.status, 201);
     t.equal(await res.text(), '');
   });
@@ -309,12 +309,12 @@ t.test('Client', async t => {
     const keepAlive = new http.Agent({keepAlive: true});
     const noKeepAlive = new http.Agent({keepAlive: false});
 
-    const res = await client.get('/hello', {agent: noKeepAlive});
+    const res = await ua.get('/hello', {agent: noKeepAlive});
     t.equal(res.status, 200);
     t.equal(res.get('Connection'), 'close');
     t.equal(await res.text(), 'Hello World!');
 
-    const res2 = await client.get('/hello', {agent: keepAlive});
+    const res2 = await ua.get('/hello', {agent: keepAlive});
     t.equal(res2.status, 200);
     t.equal(res2.get('Connection'), 'keep-alive');
     t.equal(await res2.text(), 'Hello World!');
@@ -322,56 +322,56 @@ t.test('Client', async t => {
   });
 
   await t.test('Redirect', async t => {
-    const hello = new URL('/hello', client.baseURL);
-    const res = await client.post('/redirect/301', {query: {location: hello.toString()}});
+    const hello = new URL('/hello', ua.baseURL);
+    const res = await ua.post('/redirect/301', {query: {location: hello.toString()}});
     t.equal(res.status, 301);
     t.equal(res.get('Location'), hello.toString());
     t.equal(await res.text(), '');
 
-    client.maxRedirects = 1;
-    const res2 = await client.post('/redirect/301', {query: {location: hello.toString()}});
+    ua.maxRedirects = 1;
+    const res2 = await ua.post('/redirect/301', {query: {location: hello.toString()}});
     t.equal(res2.status, 200);
     t.same(res2.get('Location'), undefined);
     t.equal(await res2.text(), 'Hello World!');
 
-    const res3 = await client.post('/redirect/302', {query: {location: hello.toString()}});
+    const res3 = await ua.post('/redirect/302', {query: {location: hello.toString()}});
     t.equal(res3.status, 200);
     t.same(res3.get('Location'), undefined);
     t.equal(await res3.text(), 'Hello World!');
 
-    const res4 = await client.post('/redirect/303', {query: {location: hello.toString()}});
+    const res4 = await ua.post('/redirect/303', {query: {location: hello.toString()}});
     t.equal(res4.status, 200);
     t.same(res4.get('Location'), undefined);
     t.equal(await res4.text(), 'Hello World!');
 
-    const res5 = await client.post('/redirect/333', {query: {location: hello.toString()}});
+    const res5 = await ua.post('/redirect/333', {query: {location: hello.toString()}});
     t.equal(res5.status, 333);
     t.equal(res5.get('Location'), hello.toString());
     t.equal(await res5.text(), '');
 
-    const again = new URL('/redirect/again', client.baseURL);
-    const res6 = await client.post('/redirect/301', {query: {location: again.toString()}});
+    const again = new URL('/redirect/again', ua.baseURL);
+    const res6 = await ua.post('/redirect/301', {query: {location: again.toString()}});
     t.equal(res6.status, 302);
     t.equal(res6.get('Location'), hello.toString());
     t.equal(await res6.text(), '');
 
-    client.maxRedirects = 2;
-    const res7 = await client.post('/redirect/301', {query: {location: again.toString()}});
+    ua.maxRedirects = 2;
+    const res7 = await ua.post('/redirect/301', {query: {location: again.toString()}});
     t.equal(res7.status, 200);
     t.same(res7.get('Location'), undefined);
     t.equal(await res7.text(), 'Hello World!');
 
-    client.maxRedirects = 5;
-    const res8 = await client.get('/redirect/infinite/0/302');
+    ua.maxRedirects = 5;
+    const res8 = await ua.get('/redirect/infinite/0/302');
     t.equal(res8.status, 302);
     t.match(res8.get('Location'), /\/infinite\/6/);
     t.equal(await res8.text(), '');
 
-    const res9 = await client.get('/redirect/infinite/0/307');
+    const res9 = await ua.get('/redirect/infinite/0/307');
     t.equal(res9.status, 307);
     t.match(res9.get('Location'), /\/infinite\/6/);
     t.equal(await res9.text(), '');
-    client.maxRedirects = 0;
+    ua.maxRedirects = 0;
   });
 
   await t.test('Redirect (header removal)', async t => {
@@ -388,8 +388,8 @@ t.test('Client', async t => {
       };
     }
 
-    client.maxRedirects = 3;
-    const res = await client.put('/redirect/introspect', defaultOptions());
+    ua.maxRedirects = 3;
+    const res = await ua.put('/redirect/introspect', defaultOptions());
     t.equal(res.status, 200);
     t.same(await res.json(), {
       method: 'PUT',
@@ -403,42 +403,42 @@ t.test('Client', async t => {
       body: 'works'
     });
 
-    const res2 = await client.put('/redirect/introspect/301', defaultOptions());
+    const res2 = await ua.put('/redirect/introspect/301', defaultOptions());
     t.equal(res2.status, 200);
     t.same(await res2.json(), {method: 'PUT', headers: {test: 'five'}, body: ''});
 
-    const res3 = await client.put('/redirect/introspect/302', defaultOptions());
+    const res3 = await ua.put('/redirect/introspect/302', defaultOptions());
     t.equal(res3.status, 200);
     t.same(await res3.json(), {method: 'PUT', headers: {test: 'five'}, body: ''});
 
-    const res4 = await client.put('/redirect/introspect/303', defaultOptions());
+    const res4 = await ua.put('/redirect/introspect/303', defaultOptions());
     t.equal(res4.status, 200);
     t.same(await res4.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
 
-    const res5 = await client.put('/redirect/introspect/307', defaultOptions());
+    const res5 = await ua.put('/redirect/introspect/307', defaultOptions());
     t.equal(res5.status, 200);
     t.same(await res5.json(), {method: 'PUT', headers: {content: 'four', test: 'five'}, body: 'works'});
 
-    const res6 = await client.put('/redirect/introspect/308', defaultOptions());
+    const res6 = await ua.put('/redirect/introspect/308', defaultOptions());
     t.equal(res6.status, 200);
     t.same(await res6.json(), {method: 'PUT', headers: {content: 'four', test: 'five'}, body: 'works'});
 
-    const res7 = await client.post('/redirect/introspect/302', defaultOptions());
+    const res7 = await ua.post('/redirect/introspect/302', defaultOptions());
     t.equal(res7.status, 200);
     t.same(await res7.json(), {method: 'GET', headers: {test: 'five'}, body: ''});
   });
 
   await t.test('HTML/XML', async t => {
-    const res = await client.get('/test.html');
+    const res = await ua.get('/test.html');
     const html = await res.html();
     t.equal(html('div').text(), 'Test123');
 
-    const res2 = await client.get('/test.xml');
+    const res2 = await ua.get('/test.xml');
     const xml = await res2.xml();
     t.equal(xml('script p').length, 1);
     t.equal(xml('script p').text(), 'Hello');
 
-    const res3 = await client.get('/test.xml');
+    const res3 = await ua.get('/test.xml');
     const html2 = await res3.html();
     t.equal(html2('script p').length, 0);
   });

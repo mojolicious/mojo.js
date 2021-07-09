@@ -943,10 +943,10 @@ const inlineForm = `
 Just be aware that if you are also using `ctx.params()` or `ctx.req.form()`, they have to be called after
 `ctx.req.files()`.
 
-## Client
+## User-Agent
 
-While its primary purpose is testing, there is also a full featured HTTP and WebSocket  client available via
-`ctx.client`.
+While its primary purpose is testing, there is also a full featured HTTP and WebSocket user agent available via
+`ctx.ua`.
 
 ```js
 import mojo from '@mojojs/core';
@@ -957,7 +957,7 @@ app.get('/', async ctx => {
   const params = await ctx.params();
   const url = params.get('url') ?? 'https://mojolicious.org';
 
-  const res   = await ctx.client.get(url);
+  const res   = await ctx.ua.get(url);
   const html  = await res.html();
   const title = html('title').text();
 
@@ -967,7 +967,7 @@ app.get('/', async ctx => {
 app.start();
 ```
 
-For more information take a look at the [Client](Cheatsheet.md) guide.
+For more information take a look at the [User-Agent](User-Agent.md) guide.
 
 ## WebSockets
 
@@ -1046,7 +1046,7 @@ you switch modes from `development` to `production`, no sensitive information wi
 ## Testing
 
 Testing you mojo.js application is as easy as creating a `test` directory and filling it with normal JavaScript tests
-like `test/basic.js`. Especially if you use [tap](https://www.npmjs.com/package/tap) and the built-in test client.
+like `test/basic.js`. Especially if you use [tap](https://www.npmjs.com/package/tap) and the built-in test user agent.
 
 ```js
 import mojo from '@mojojs/core';
@@ -1067,13 +1067,13 @@ import {app} from '../myapp.js';
 import t from 'tap';
 
 t.test('Basics', async t => {
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Index', async t => {
-    (await client.getOk('/')).statusIs(200).bodyLike(/mojo.js/);
+    (await ua.getOk('/')).statusIs(200).bodyLike(/mojo.js/);
   });
 
-  await client.stop();
+  await ua.stop();
 });
 ```
 
@@ -1084,7 +1084,7 @@ $ node test/basic.js
 $ tap --no-coverage test/*.js
 ```
 
-For more information take a look at the [Client](Cheatsheet.md) guide.
+For more information take a look at the [User-Agent](User-Agent.md) guide.
 
 ## Support
 

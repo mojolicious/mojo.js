@@ -1,5 +1,5 @@
 import type {App} from '../app.js';
-import type {MojoContext, MojoRenderOptions} from '../types.js';
+import type {MojoContext, RenderOptions} from '../types.js';
 import type {AsyncTemplateFunction} from 'ejs';
 import {createHash} from 'crypto';
 import Path from '@mojojs/path';
@@ -13,7 +13,7 @@ export default function ejsEnginePlugin (app: App): void {
 class EJSEngine {
   cache: LRU<string, AsyncTemplateFunction> = new LRU(100);
 
-  async render (ctx: MojoContext, options: MojoRenderOptions): Promise<Buffer> {
+  async render (ctx: MojoContext, options: RenderOptions): Promise<Buffer> {
     let template;
 
     if (options.inline !== undefined) {

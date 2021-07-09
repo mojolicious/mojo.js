@@ -20,8 +20,8 @@ export default async function getCommand (app: MojoApp, args: string[]): Promise
     url: argv.remain[0] ?? '/'
   };
 
-  const client = await app.newMockClient({maxRedirects: parsed.redirect === true ? 10 : 0});
-  const res = await client.request(request);
+  const ua = await app.newMockUserAgent({maxRedirects: parsed.redirect === true ? 10 : 0});
+  const res = await ua.request(request);
 
   if (parsed.verbose === true) {
     const stderr = process.stderr;
@@ -46,7 +46,7 @@ export default async function getCommand (app: MojoApp, args: string[]): Promise
     await res.pipe(process.stdout);
   }
 
-  await client.stop();
+  await ua.stop();
 }
 
 getCommand.description = 'Perform HTTP request';

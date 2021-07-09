@@ -21,19 +21,19 @@ export type AnyArguments = Array<string | string[] | MojoAction | Record<string,
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
 
-export interface ClientOptions {
+export interface UserAgentOptions {
   baseURL?: string | URL,
   cookieJar?: CookieJar,
   maxRedirects?: number,
   name?: string
 }
-interface SharedClientRequestOptions {
+interface SharedUserAgentRequestOptions {
   auth?: string,
   headers?: Record<string, string>,
   query?: Record<string, string>,
   url?: string | URL
 }
-export interface MojoClientRequestOptions extends SharedClientRequestOptions {
+export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
   agent?: Agent,
   body?: string | Buffer | NodeJS.ReadableStream,
   form?: Record<string, string>,
@@ -42,12 +42,12 @@ export interface MojoClientRequestOptions extends SharedClientRequestOptions {
   method?: string,
   json?: JSONValue
 }
-export interface MojoClientWebSocketOptions extends SharedClientRequestOptions {
+export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions {
   json?: boolean,
   protocols?: string[]
 }
 
-export type TestClientOptions = ClientOptions & {tap?: Tap.Tap};
+export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Tap};
 
 export interface ServerRequestOptions { isWebSocket: boolean, reverseProxy: boolean }
 
@@ -65,7 +65,7 @@ interface DefaultRenderOptions {
   view?: string
 }
 
-export interface MojoRenderOptions extends DefaultRenderOptions { [key: string]: any }
+export interface RenderOptions extends DefaultRenderOptions { [key: string]: any }
 
 export interface AppOptions {
   config?: Record<string, any>,

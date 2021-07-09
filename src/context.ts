@@ -1,8 +1,8 @@
 import type {App} from './app.js';
-import type {Client} from './client.js';
 import type {ChildLogger} from './logger.js';
 import type {Plan} from './router/plan.js';
-import type {MojoAction, MojoContext, MojoRenderOptions, ServerRequestOptions} from './types.js';
+import type {MojoAction, MojoContext, RenderOptions, ServerRequestOptions} from './types.js';
+import type {UserAgent} from './user-agent.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
 import type {ValidateFunction} from 'ajv';
@@ -59,10 +59,6 @@ class Context extends EventEmitter {
 
     const results = formats.filter(format => allowed.includes(format));
     return results.length > 0 ? results : null;
-  }
-
-  get client (): Client {
-    return this.app.client;
   }
 
   get config (): Record<string, any> {
@@ -124,7 +120,7 @@ class Context extends EventEmitter {
     await this.res.status(options.status ?? 302).set('Location', this.urlFor(target, options.values) ?? '').send();
   }
 
-  async render (options: MojoRenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
+  async render (options: RenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
     if (typeof options === 'string') options = {view: options};
     if (stash !== undefined) Object.assign(this.stash, stash);
 
@@ -144,7 +140,7 @@ class Context extends EventEmitter {
     return true;
   }
 
-  async renderToString (options: MojoRenderOptions, stash?: Record<string, any>): Promise<string | null> {
+  async renderToString (options: RenderOptions, stash?: Record<string, any>): Promise<string | null> {
     if (typeof options === 'string') options = {view: options};
     Object.assign(this.stash, stash);
     const result = await this.app.renderer.render(this, options);
@@ -186,6 +182,10 @@ class Context extends EventEmitter {
   async session (): Promise<Record<string, any>> {
     if (this._session === undefined) this._session = await this.app.session.load(this) ?? {};
     return this._session;
+  }
+
+  get ua (): UserAgent {
+    return this.app.ua;
   }
 
   urlFor (target: string | undefined, values?: Record<string, any>): string | null {

@@ -1,10 +1,10 @@
-import type {ClientOptions, MojoClientRequestOptions, MojoClientWebSocketOptions} from './types.js';
+import type {UserAgentOptions, UserAgentRequestOptions, UserAgentWebSocketOptions} from './types.js';
 import EventEmitter from 'events';
 import http from 'http';
 import https from 'https';
 import Stream from 'stream';
 import {format, URL} from 'url';
-import {ClientResponse} from './client/response.js';
+import {UserAgentResponse} from './user-agent/response.js';
 import {WebSocket} from './websocket.js';
 import FormData from 'form-data';
 import tough from 'tough-cookie';
@@ -12,23 +12,23 @@ import WS from 'ws';
 
 interface Upload { content: string, filename: string, type: string }
 
-interface ClientEvents {
-  request: (config: MojoClientRequestOptions) => void,
-  websocket: (config: MojoClientWebSocketOptions) => void
+interface UserAgentEvents {
+  request: (config: UserAgentRequestOptions) => void,
+  websocket: (config: UserAgentWebSocketOptions) => void
 }
 
-declare interface Client {
-  on: <T extends keyof ClientEvents>(event: T, listener: ClientEvents[T]) => this,
-  emit: <T extends keyof ClientEvents>(event: T, ...args: Parameters<ClientEvents[T]>) => boolean
+declare interface UserAgent {
+  on: <T extends keyof UserAgentEvents>(event: T, listener: UserAgentEvents[T]) => this,
+  emit: <T extends keyof UserAgentEvents>(event: T, ...args: Parameters<UserAgentEvents[T]>) => boolean
 }
 
-class Client extends EventEmitter {
+class UserAgent extends EventEmitter {
   baseURL: string | URL | undefined;
   cookieJar: tough.CookieJar | null = new tough.CookieJar();
   maxRedirects: number;
   name: string | undefined;
 
-  constructor (options: ClientOptions = {}) {
+  constructor (options: UserAgentOptions = {}) {
     super();
 
     this.baseURL = options.baseURL;
@@ -36,35 +36,35 @@ class Client extends EventEmitter {
     this.name = options.name;
   }
 
-  async delete (url: string | URL, options: MojoClientRequestOptions): Promise<ClientResponse> {
+  async delete (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('DELETE', url, options);
   }
 
-  async get (url: string | URL, options: MojoClientRequestOptions): Promise<ClientResponse> {
+  async get (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('GET', url, options);
   }
 
-  async head (url: string | URL, options: MojoClientRequestOptions): Promise<ClientResponse> {
+  async head (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('HEAD', url, options);
   }
 
-  async options (url: string | URL, options: MojoClientRequestOptions): Promise<ClientResponse> {
+  async options (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('OPTIONS', url, options);
   }
 
-  async patch (url: string | URL, options: MojoClientRequestOptions): Promise<ClientResponse> {
+  async patch (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('PATCH', url, options);
   }
 
-  async post (url: string | URL, options: MojoClientRequestOptions): Promise<ClientResponse> {
+  async post (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('POST', url, options);
   }
 
-  async put (url: string | URL, options: MojoClientRequestOptions): Promise<ClientResponse> {
+  async put (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('PUT', url, options);
   }
 
-  async request (config: MojoClientRequestOptions): Promise<ClientResponse> {
+  async request (config: UserAgentRequestOptions): Promise<UserAgentResponse> {
     const filtered = this._filterConfig(config);
     await this._loadCookies(filtered.url, filtered);
 
@@ -97,7 +97,7 @@ class Client extends EventEmitter {
     });
   }
 
-  async websocket (url: string | URL, options: MojoClientWebSocketOptions = {}): Promise<WebSocket> {
+  async websocket (url: string | URL, options: UserAgentWebSocketOptions = {}): Promise<WebSocket> {
     options.url = url;
     const filtered = this._filterSharedConfig(options);
     await this._loadCookies(filtered.url, filtered);
@@ -106,8 +106,8 @@ class Client extends EventEmitter {
 
     const ws = new WS(filtered.url, filtered.protocols, {headers: filtered.headers});
     return await new Promise((resolve, reject) => {
-      let handshake: ClientResponse;
-      ws.on('upgrade', res => (handshake = new ClientResponse(res)));
+      let handshake: UserAgentResponse;
+      ws.on('upgrade', res => (handshake = new UserAgentResponse(res)));
       ws.on('error', reject);
 
       ws.on('open', () => {
@@ -182,7 +182,7 @@ class Client extends EventEmitter {
     return form;
   }
 
-  async _handleRedirect (config: Record<string, any>, res: ClientResponse): Promise<ClientResponse> {
+  async _handleRedirect (config: Record<string, any>, res: UserAgentResponse): Promise<UserAgentResponse> {
     const redirected: number = config.redirected ?? 0;
     if (redirected >= this.maxRedirects) return res;
 
@@ -220,8 +220,8 @@ class Client extends EventEmitter {
     return res;
   }
 
-  async _handleResponse (config: Record<string, any>, raw: http.IncomingMessage): Promise<ClientResponse> {
-    const res = new ClientResponse(raw);
+  async _handleResponse (config: Record<string, any>, raw: http.IncomingMessage): Promise<UserAgentResponse> {
+    const res = new UserAgentResponse(raw);
     await this._storeCookies(config.url, res);
     return this.maxRedirects > 0 ? await this._handleRedirect(config, res) : res;
   }
@@ -233,12 +233,12 @@ class Client extends EventEmitter {
   }
 
   async _requestConfig (
-    method: string, url: string | URL = '/', options?: MojoClientRequestOptions
-  ): Promise<ClientResponse> {
+    method: string, url: string | URL = '/', options?: UserAgentRequestOptions
+  ): Promise<UserAgentResponse> {
     return await this.request({url, method, ...options});
   }
 
-  async _storeCookies (url: URL, res: ClientResponse): Promise<void> {
+  async _storeCookies (url: URL, res: UserAgentResponse): Promise<void> {
     if (this.cookieJar === null) return;
 
     const header = res.headers['set-cookie'];
@@ -252,4 +252,4 @@ class Client extends EventEmitter {
   }
 }
 
-export {Client};
+export {UserAgent};

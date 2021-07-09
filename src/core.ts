@@ -31,12 +31,12 @@ export default function mojo (options?: AppOptions): App {
 }
 
 // "Professor: These old Doomsday devices are dangerously unstable. I'll rest easier not knowing where they are."
-export {Client} from './client.js';
 export {default as jsonConfigPlugin} from './plugins/json-config.js';
 export {Logger} from './logger.js';
 export {Server} from './server.js';
 export {Session} from './session.js';
-export {TestClient} from './client/test.js';
+export {TestUserAgent} from './user-agent/test.js';
+export {UserAgent} from './user-agent.js';
 export * as util from './util.js';
 
 export {
@@ -45,8 +45,5 @@ export {
   JSONValue,
   MojoAction,
   MojoApp,
-  MojoClientRequestOptions,
-  MojoClientWebSocketOptions,
-  MojoContext,
-  MojoRenderOptions
+  MojoContext
 } from './types.js';

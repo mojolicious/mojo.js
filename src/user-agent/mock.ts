@@ -1,19 +1,19 @@
 import type {App} from '../app.js';
-import type {ClientOptions} from '../types.js';
-import {Client} from '../client.js';
+import type {UserAgentOptions} from '../types.js';
 import {Server} from '../server.js';
+import {UserAgent} from '../user-agent.js';
 
-export class MockClient extends Client {
+export class MockUserAgent extends UserAgent {
   server: Server | undefined;
 
-  constructor (options?: ClientOptions) {
+  constructor (options?: UserAgentOptions) {
     super(options);
 
     this.server = undefined;
   }
 
-  static async newMockClient (app: App, options?: ClientOptions): Promise<MockClient> {
-    return await new MockClient(options).start(app);
+  static async newMockUserAgent (app: App, options?: UserAgentOptions): Promise<MockUserAgent> {
+    return await new MockUserAgent(options).start(app);
   }
 
   async start (app: App): Promise<this> {

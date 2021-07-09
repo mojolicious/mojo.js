@@ -22,11 +22,11 @@ t.test('Server', async t => {
 
   await t.test('MOJO_SERVER_DEBUG', async t => {
     process.env.MOJO_SERVER_DEBUG = 1;
-    const client = await app.newTestClient({tap: t});
+    const ua = await app.newTestUserAgent({tap: t});
 
     let res;
     const output = await captureOutput(async () => {
-      res = await client.get('/');
+      res = await ua.get('/');
     }, {stderr: true, stdout: false});
     t.equal(res.status, 200);
     t.equal(await res.text(), 'Hello World!');
@@ -37,6 +37,6 @@ t.test('Server', async t => {
     t.match(output, /Content-Length: /);
     t.match(output, /Hello World!/);
 
-    await client.stop();
+    await ua.stop();
   });
 });

@@ -14,24 +14,24 @@ t.test('Exception app', async t => {
       throw new Error('Test exception');
     });
 
-    const client = await app.newTestClient({tap: t});
+    const ua = await app.newTestUserAgent({tap: t});
 
     await t.test('Mode', async t => {
       t.equal(app.mode, 'development');
       t.equal(app.log.level, 'debug');
-      (await client.getOk('/')).statusIs(200).bodyIs('Hello World!');
+      (await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
     });
 
     await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
-      (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
         .bodyLike(/This application is in.*development.*mode/).bodyUnlike(/no-raptor\.png/);
 
       app.exceptionFormat = 'txt';
-      (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8').bodyIs('Not Found');
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8').bodyIs('Not Found');
 
       app.exceptionFormat = 'json';
-      (await client.getOk('/does_not_exist')).statusIs(404).typeIs('application/json; charset=utf-8')
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('application/json; charset=utf-8')
         .jsonIs({error: {message: 'Not Found'}});
       app.exceptionFormat = 'txt';
     });
@@ -42,15 +42,15 @@ t.test('Exception app', async t => {
       app.log.destination = file.createWriteStream();
 
       app.exceptionFormat = 'html';
-      (await client.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
         .bodyLike(/This application is in.*development.*mode/).bodyUnlike(/\/public\/mojo\/failraptor\.png/);
 
       app.exceptionFormat = 'txt';
-      (await client.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
         .bodyLike(/Test exception/);
 
       app.exceptionFormat = 'json';
-      (await client.getOk('/exception')).statusIs(500).typeIs('application/json; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('application/json; charset=utf-8')
         .bodyLike(/Test exception/);
       app.exceptionFormat = 'txt';
 
@@ -64,7 +64,7 @@ t.test('Exception app', async t => {
       t.match(await file.readFile(), /Error: Test exception/);
     });
 
-    await client.stop();
+    await ua.stop();
   });
 
   await t.test('Development (custom views)', async t => {
@@ -77,15 +77,15 @@ t.test('Exception app', async t => {
       throw new Error('Another test exception');
     });
 
-    const client = await app.newTestClient({tap: t});
+    const ua = await app.newTestUserAgent({tap: t});
 
     await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
-      (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
         .bodyLike(/Custom not found/);
 
       app.exceptionFormat = 'txt';
-      (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8')
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8')
         .bodyIs('Not Found');
     });
 
@@ -95,11 +95,11 @@ t.test('Exception app', async t => {
       app.log.destination = file.createWriteStream();
 
       app.exceptionFormat = 'html';
-      (await client.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
         .bodyLike(/Custom exception: Error: Another test exception/);
 
       app.exceptionFormat = 'txt';
-      (await client.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
         .bodyLike(/Error: Another test exception/);
 
       t.equal(app.log.history[0].level, 'error');
@@ -110,7 +110,7 @@ t.test('Exception app', async t => {
       t.match(await file.readFile(), /Error: Another test exception/);
     });
 
-    await client.stop();
+    await ua.stop();
   });
 
   await t.test('Production', async t => {
@@ -123,24 +123,24 @@ t.test('Exception app', async t => {
       throw new Error('Test exception');
     });
 
-    const client = await app.newTestClient({tap: t});
+    const ua = await app.newTestUserAgent({tap: t});
 
     await t.test('Mode', async t => {
       t.equal(app.mode, 'production');
       t.equal(app.log.level, 'info');
-      (await client.getOk('/')).statusIs(200).bodyIs('Hello World!');
+      (await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
     });
 
     await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
-      (await client.getOk('/does_not_exist')).statusIs(404).bodyUnlike(/This application is in.*development.*mode/)
+      (await ua.getOk('/does_not_exist')).statusIs(404).bodyUnlike(/This application is in.*development.*mode/)
         .bodyLike(/no-raptor\.png/);
 
       app.exceptionFormat = 'txt';
-      (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8').bodyIs('Not Found');
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8').bodyIs('Not Found');
 
       app.exceptionFormat = 'json';
-      (await client.getOk('/does_not_exist')).statusIs(404).typeIs('application/json; charset=utf-8')
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('application/json; charset=utf-8')
         .jsonIs({error: {message: 'Not Found'}});
       app.exceptionFormat = 'txt';
     });
@@ -151,15 +151,15 @@ t.test('Exception app', async t => {
       app.log.destination = file.createWriteStream();
 
       app.exceptionFormat = 'html';
-      (await client.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
         .bodyUnlike(/This application is in.*development.*mode/).bodyLike(/failraptor\.png/);
 
       app.exceptionFormat = 'txt';
-      (await client.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
         .bodyIs('Internal Server Error');
 
       app.exceptionFormat = 'json';
-      (await client.getOk('/exception')).statusIs(500).typeIs('application/json; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('application/json; charset=utf-8')
         .jsonIs({error: {message: 'Internal Server Error'}});
       app.exceptionFormat = 'txt';
 
@@ -167,7 +167,7 @@ t.test('Exception app', async t => {
       t.match(await file.readFile(), /Error: Test exception/);
     });
 
-    await client.stop();
+    await ua.stop();
   });
 
   await t.test('Production (custom views)', async t => {
@@ -179,15 +179,15 @@ t.test('Exception app', async t => {
       throw new Error('Another test exception');
     });
 
-    const client = await app.newTestClient({tap: t});
+    const ua = await app.newTestUserAgent({tap: t});
 
     await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
-      (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
         .bodyLike(/Production not found/);
 
       app.exceptionFormat = 'txt';
-      (await client.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8').bodyIs('Not Found');
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8').bodyIs('Not Found');
     });
 
     await t.test('Exception', async t => {
@@ -196,18 +196,18 @@ t.test('Exception app', async t => {
       app.log.destination = file.createWriteStream();
 
       app.exceptionFormat = 'html';
-      (await client.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
         .bodyLike(/Production exception/);
 
       app.exceptionFormat = 'txt';
-      (await client.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
         .bodyIs('Internal Server Error');
 
       t.same(app.log.history, []);
       t.match(await file.readFile(), /Error: Another test exception/);
     });
 
-    await client.stop();
+    await ua.stop();
   });
 
   await t.test('WebSocket', async t => {
@@ -277,7 +277,7 @@ t.test('Exception app', async t => {
       });
     });
 
-    const client = await app.newTestClient({tap: t});
+    const ua = await app.newTestUserAgent({tap: t});
 
     await t.test('WebSocket exception (during handshake and sync)', async t => {
       const dir = await Path.tempDir();
@@ -286,7 +286,7 @@ t.test('Exception app', async t => {
 
       let result;
       try {
-        await client.websocket('/ws/exception/before/sync');
+        await ua.websocket('/ws/exception/before/sync');
       } catch (error) {
         result = error;
       }
@@ -302,7 +302,7 @@ t.test('Exception app', async t => {
 
       let result;
       try {
-        await client.websocket('/ws/exception/before/async');
+        await ua.websocket('/ws/exception/before/async');
       } catch (error) {
         result = error;
       }
@@ -316,7 +316,7 @@ t.test('Exception app', async t => {
       const file = dir.child('websocket2a.log');
       app.log.destination = file.createWriteStream();
 
-      const ws = await client.websocket('/ws/exception/after/async');
+      const ws = await ua.websocket('/ws/exception/after/async');
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
@@ -328,7 +328,7 @@ t.test('Exception app', async t => {
       const file = dir.child('websocket2b.log');
       app.log.destination = file.createWriteStream();
 
-      const ws = await client.websocket('/ws/exception/after/sync');
+      const ws = await ua.websocket('/ws/exception/after/sync');
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
@@ -340,7 +340,7 @@ t.test('Exception app', async t => {
       const file = dir.child('websocket3a.log');
       app.log.destination = file.createWriteStream();
 
-      const ws = await client.websocket('/ws/exception/iterator');
+      const ws = await ua.websocket('/ws/exception/iterator');
       await ws.send('test');
       const code = await new Promise(resolve => ws.on('close', resolve));
 
@@ -353,7 +353,7 @@ t.test('Exception app', async t => {
       const file = dir.child('websocket3b.log');
       app.log.destination = file.createWriteStream();
 
-      const ws = await client.websocket('/ws/exception/event');
+      const ws = await ua.websocket('/ws/exception/event');
       await ws.send('test');
       const code = await new Promise(resolve => ws.on('close', resolve));
 
@@ -366,7 +366,7 @@ t.test('Exception app', async t => {
       const file = dir.child('websocket3c.log');
       app.log.destination = file.createWriteStream();
 
-      const ws = await client.websocket('/ws/exception/ping');
+      const ws = await ua.websocket('/ws/exception/ping');
       await ws.ping('test');
       const code = await new Promise(resolve => ws.on('close', resolve));
 
@@ -379,7 +379,7 @@ t.test('Exception app', async t => {
       const file = dir.child('websocket3d.log');
       app.log.destination = file.createWriteStream();
 
-      const ws = await client.websocket('/ws/exception/pong');
+      const ws = await ua.websocket('/ws/exception/pong');
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
@@ -391,7 +391,7 @@ t.test('Exception app', async t => {
       const file = dir.child('websocket3e.log');
       app.log.destination = file.createWriteStream();
 
-      const ws = await client.websocket('/ws/exception/close');
+      const ws = await ua.websocket('/ws/exception/close');
       ws.close(1000);
       const code = await new Promise(resolve => ws.on('close', resolve));
 
@@ -399,6 +399,6 @@ t.test('Exception app', async t => {
       t.match(await file.readFile(), /Error: WebSocket close test exception/);
     });
 
-    await client.stop();
+    await ua.stop();
   });
 });

@@ -1,7 +1,7 @@
 import mojo from '../lib/core.js';
 import t from 'tap';
 
-t.test('Test client', async t => {
+t.test('TestUserAgent', async t => {
   const app = mojo();
 
   if (app.mode === 'development') app.log.level = 'debug';
@@ -18,23 +18,23 @@ t.test('Test client', async t => {
     });
   });
 
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Hello World', async () => {
-    (await client.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
   });
 
   await t.test('Methods', async t => {
     const results = [];
-    client.assert = (name, args, msg) => results.push([name, args, msg]);
+    ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await client.deleteOk('/'));
-    (await client.getOk('/'));
-    (await client.headOk('/'));
-    (await client.optionsOk('/'));
-    (await client.patchOk('/'));
-    (await client.postOk('/'));
-    (await client.putOk('/'));
+    (await ua.deleteOk('/'));
+    (await ua.getOk('/'));
+    (await ua.headOk('/'));
+    (await ua.optionsOk('/'));
+    (await ua.patchOk('/'));
+    (await ua.postOk('/'));
+    (await ua.putOk('/'));
 
     t.same(results, [
       ['ok', [true], 'DELETE request for /'],
@@ -49,9 +49,9 @@ t.test('Test client', async t => {
 
   await t.test('Status', async t => {
     const results = [];
-    client.assert = (name, args, msg) => results.push([name, args, msg]);
+    ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await client.getOk('/')).statusIs(200);
+    (await ua.getOk('/')).statusIs(200);
 
     t.same(results, [
       ['ok', [true], 'GET request for /'],
@@ -61,9 +61,9 @@ t.test('Test client', async t => {
 
   await t.test('Headers', async t => {
     const results = [];
-    client.assert = (name, args, msg) => results.push([name, args, msg]);
+    ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await client.getOk('/')).typeIs('text/plain').typeLike(/plain/).headerExists('Content-Type')
+    (await ua.getOk('/')).typeIs('text/plain').typeLike(/plain/).headerExists('Content-Type')
       .headerExistsNot('Content-Disposition').headerIs('Content-Type', 'text/plain')
       .headerLike('Content-Type', /plain/);
 
@@ -80,9 +80,9 @@ t.test('Test client', async t => {
 
   await t.test('Body', async t => {
     const results = [];
-    client.assert = (name, args, msg) => results.push([name, args, msg]);
+    ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await client.getOk('/')).bodyIs('test').bodyLike(/that/).bodyUnlike(/whatever/);
+    (await ua.getOk('/')).bodyIs('test').bodyLike(/that/).bodyUnlike(/whatever/);
 
     t.same(results, [
       ['ok', [true], 'GET request for /'],
@@ -94,9 +94,9 @@ t.test('Test client', async t => {
 
   await t.test('HTML', async t => {
     const results = [];
-    client.assert = (name, args, msg) => results.push([name, args, msg]);
+    ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await client.getOk('/index.html')).elementExists('p').elementExists('h1').elementExistsNot('h1')
+    (await ua.getOk('/index.html')).elementExists('p').elementExists('h1').elementExistsNot('h1')
       .elementExistsNot('div');
 
     t.same(results, [
@@ -110,13 +110,13 @@ t.test('Test client', async t => {
 
   await t.test('WebSocket', async t => {
     const results = [];
-    client.assert = (name, args, msg) => results.push([name, args, msg]);
+    ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    await client.websocketOk('/echo');
-    await client.sendOk('hello');
-    await client.messageOk();
-    await client.closeOk(1000);
-    await client.closedOk(1000);
+    await ua.websocketOk('/echo');
+    await ua.sendOk('hello');
+    await ua.messageOk();
+    await ua.closeOk(1000);
+    await ua.closedOk(1000);
 
     t.same(results, [
       ['ok', [true], 'WebSocket handshake with /echo'],
@@ -128,20 +128,20 @@ t.test('Test client', async t => {
   });
 
   await t.test('Test without active connection', async t => {
-    const badClient = await app.newTestClient();
+    const badAgent = await app.newTestUserAgent();
 
-    t.throws(() => { badClient.statusIs(200) }, {message: /No active HTTP response/});
+    t.throws(() => { badAgent.statusIs(200) }, {message: /No active HTTP response/});
 
     let result;
     try {
-      await badClient.sendOk('fail');
+      await badAgent.sendOk('fail');
     } catch (error) {
       result = error;
     }
     t.match(result, {message: /No active WebSocket connection/});
 
-    await badClient.stop();
+    await badAgent.stop();
   });
 
-  await client.stop();
+  await ua.stop();
 });

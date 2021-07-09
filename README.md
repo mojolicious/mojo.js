@@ -7,24 +7,24 @@
 [![](https://github.com/mojolicious/mojo.js/workflows/test/badge.svg)](https://github.com/mojolicious/mojo.js/actions)
 [![npm](https://img.shields.io/npm/v/@mojojs/core.svg)](https://www.npmjs.com/package/@mojojs/core)
 
-The [Mojolicious](https://mojolicious.org) real-time web framework for [Node.js](https://nodejs.org/). If you want to
-stay up to date on the latest developments join us on [IRC](https://web.libera.chat/#mojo.js) (`#mojo.js` on
-Libera.Chat).
+The [Mojolicious](https://mojolicious.org) real-time web framework for [Node.js](https://nodejs.org/). Written in
+TypeScript. If you want to stay up to date on the latest developments join us on [IRC](https://web.libera.chat/#mojo.js)
+(`#mojo.js` on Libera.Chat).
 
 ## Features
 
   * An amazing **backend** framework, allowing you to easily grow single file prototypes into well-structured MVC web
     applications.
     * Everything you need to build cloud-native microservices for state of the art container environments.
-    * Powerful out of the box with RESTful routes, WebSockets, HTTP/HTTPS client, plugins, commands, templates, content
-      negotiation, cookies, session management, multipart forms, form and JSON validation, testing framework, HTML/XML
-      parser, static file server, first class Unicode support and much more for you to discover.
+    * Powerful out of the box with RESTful routes, WebSockets, HTTP/HTTPS user agent, plugins, commands, templates,
+      content negotiation, cookies, session management, multipart forms, form and JSON validation, testing framework,
+      HTML/XML parser, static file server, first class Unicode support and much more for you to discover.
     * No default Model. Just use your favorite database. We like [PostgreSQL](https://www.postgresql.org) and
       [Knex.js](http://knexjs.org).
     * No default frontend framework. Pair it with [React](https://reactjs.org) or [Vue](https://vuejs.org) for a great
       development experience.
   * Batteries included, yet faster than Express and Koa.
-  * Designed for modern JavaScript and TypeScript, with `async`/`await`, classes and ES modules.
+  * Designed for modern JavaScript, with `async`/`await`, classes and ES modules.
   * Actively maintained by a team with more than 20 years of experience developing mainstream web frameworks such as
     [Mojolicious](https://mojolicious.org) and [Catalyst](http://www.catalystframework.org).
 
@@ -81,7 +81,7 @@ app.get('/', async ctx => {
 app.websocket('/title', ctx => {
   ctx.plain(async ws => {
     for await (const url of ws) {
-      const res   = await ctx.client.get(url);
+      const res   = await ctx.ua.get(url);
       const html  = await res.html();
       const title = html('title').text();
       ws.send(title);

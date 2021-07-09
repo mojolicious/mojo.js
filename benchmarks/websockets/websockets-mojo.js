@@ -10,13 +10,13 @@ app.websocket('/ws').to(ctx => {
   });
 });
 
-const client = await app.newMockClient();
+const ua = await app.newMockUserAgent();
 
-const ws = await client.websocket('/ws');
+const ws = await ua.websocket('/ws');
 let i = 0;
 ws.on('message', message => {
   i++ > 100000 ? ws.close() : ws.send(message);
 });
 ws.send('Hello Mojo!');
 
-await client.stop();
+await ua.stop();

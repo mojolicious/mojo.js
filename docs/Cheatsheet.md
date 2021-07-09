@@ -7,8 +7,8 @@ A quick overview of the most important [mojo.js](https://mojojs.org) objects.
 The mojo.js application object, usually called `app`.
 
 ```js
-// client: a `Client` object for use inside the application
-const res = await app.client.get('https://mojolicious.org');
+// ua: a `UserAgent` object for use inside the application
+const res = await app.ua.get('https://mojolicious.org');
 const document = await res.html();
 const title = document('title').text();
 

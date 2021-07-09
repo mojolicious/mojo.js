@@ -1,4 +1,4 @@
-import mojo, {TestClient} from '../lib/core.js';
+import mojo, {TestUserAgent} from '../lib/core.js';
 import {captureOutput} from '../lib/util.js';
 import {app} from './support/command-app/index.js';
 import Path from '@mojojs/path';
@@ -144,10 +144,10 @@ t.test('Command app', async t => {
     t.equal(process.listenerCount('SIGTERM'), termBefore + 1);
     t.equal(process.listenerCount('SIGUSR2'), usr2Before + 1);
     t.match(output2.toString(), /Web application available at http:/);
-    const client = new TestClient({tap: t});
+    const ua = new TestUserAgent({tap: t});
     const match = output2.match(/(http:\/\/.+)$/s);
     t.notSame(match, null);
-    (await client.getOk(match[1])).statusIs(200).bodyIs('Stopping server');
+    (await ua.getOk(match[1])).statusIs(200).bodyIs('Stopping server');
     t.same(await hookPromise, true);
     t.equal(process.listenerCount('SIGINT'), intBefore);
     t.equal(process.listenerCount('SIGTERM'), termBefore);

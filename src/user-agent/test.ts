@@ -1,27 +1,27 @@
 import type {App} from '../app.js';
-import type {JSONValue, TestClientOptions, MojoClientRequestOptions, MojoClientWebSocketOptions} from '../types.js';
+import type {JSONValue, TestUserAgentOptions, UserAgentRequestOptions, UserAgentWebSocketOptions} from '../types.js';
 import type {WebSocket} from '../websocket.js';
-import type {ClientResponse} from './response.js';
+import type {UserAgentResponse} from './response.js';
 import type {URL} from 'url';
 import assert from 'assert/strict';
 import {on} from 'events';
-import {MockClient} from './mock.js';
+import {MockUserAgent} from './mock.js';
 import cheerio from 'cheerio';
 import StackUtils from 'stack-utils';
 
 type SkipFunction = (...args: any[]) => any;
 
-export class TestClient extends MockClient {
+export class TestUserAgent extends MockUserAgent {
   body: Buffer = Buffer.from('');
   _assert: typeof assert | Tap.Tap | undefined = undefined;
   _dom: cheerio.Root | undefined = undefined;
   _finished: [number, string] | null | undefined = undefined;
   _messages: AsyncIterableIterator<JSONValue> | undefined = undefined;
-  _res: ClientResponse | undefined = undefined;
+  _res: UserAgentResponse | undefined = undefined;
   _stack: StackUtils = new StackUtils();
   _ws: WebSocket | undefined = undefined;
 
-  constructor (options: TestClientOptions = {}) {
+  constructor (options: TestUserAgentOptions = {}) {
     super(options);
     if (options.tap !== undefined) this._prepareTap(options.tap);
   }
@@ -58,7 +58,7 @@ export class TestClient extends MockClient {
     this.assert('equal', [finished, code], `WebSocket closed with status ${code}`, this.closedOk);
   }
 
-  async deleteOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
+  async deleteOk (url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
     return await this._requestOk(this.deleteOk, 'delete', url, options);
   }
 
@@ -74,11 +74,11 @@ export class TestClient extends MockClient {
     return this;
   }
 
-  async getOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
+  async getOk (url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
     return await this._requestOk(this.getOk, 'get', url, options);
   }
 
-  async headOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
+  async headOk (url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
     return await this._requestOk(this.headOk, 'head', url, options);
   }
 
@@ -114,28 +114,28 @@ export class TestClient extends MockClient {
     return message;
   }
 
-  static async newTestClient (app: App, options?: TestClientOptions): Promise<TestClient> {
+  static async newTestUserAgent (app: App, options?: TestUserAgentOptions): Promise<TestUserAgent> {
     app.exceptionFormat = 'txt';
-    return await new TestClient(options).start(app);
+    return await new TestUserAgent(options).start(app);
   }
 
-  async optionsOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
+  async optionsOk (url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
     return await this._requestOk(this.optionsOk, 'options', url, options);
   }
 
-  async patchOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
+  async patchOk (url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
     return await this._requestOk(this.patchOk, 'patch', url, options);
   }
 
-  async postOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
+  async postOk (url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
     return await this._requestOk(this.postOk, 'post', url, options);
   }
 
-  async putOk (url: string | URL, options?: MojoClientRequestOptions): Promise<this> {
+  async putOk (url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
     return await this._requestOk(this.putOk, 'put', url, options);
   }
 
-  get res (): ClientResponse {
+  get res (): UserAgentResponse {
     const res = this._res;
     if (res === undefined) throw new Error('No active HTTP response');
     return res;
@@ -161,7 +161,7 @@ export class TestClient extends MockClient {
     return this;
   }
 
-  async websocketOk (url: string | URL, options?: MojoClientWebSocketOptions): Promise<void> {
+  async websocketOk (url: string | URL, options?: UserAgentWebSocketOptions): Promise<void> {
     const ws = this._ws = await this.websocket(url, options);
 
     this._res = ws.handshake ?? undefined;
@@ -199,7 +199,7 @@ export class TestClient extends MockClient {
   }
 
   async _requestOk (
-    skip: SkipFunction, method: string, url: string | URL, options?: MojoClientRequestOptions
+    skip: SkipFunction, method: string, url: string | URL, options?: UserAgentRequestOptions
   ): Promise<this> {
     this._res = await this.request({method, url, ...options});
     this.body = await this.res.buffer();

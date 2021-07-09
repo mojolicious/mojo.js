@@ -22,7 +22,7 @@ A more detailed introduction to the mojo.js router.
 
 Generating content with the mojo.js renderer.
 
-* [Client](Client.md)  (Progress: 80%)
+* [User-Agent](User-Agent.md)  (Progress: 80%)
 
 How to use the full featured HTTP and WebSocket user agent that ships with the mojo.js framework.
 

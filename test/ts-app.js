@@ -2,15 +2,15 @@ import {app} from './support/ts-app/lib/index.js';
 import t from 'tap';
 
 t.test('TypeScript app', async t => {
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Hello World', async () => {
-    (await client.getOk('/')).statusIs(200).bodyIs('Hello TypeScript!');
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello TypeScript!');
   });
 
   await t.test('Controller', async () => {
-    (await client.getOk('/hello')).statusIs(200).bodyLike(/Hello TypeScript controller!/);
+    (await ua.getOk('/hello')).statusIs(200).bodyLike(/Hello TypeScript controller!/);
   });
 
-  await client.stop();
+  await ua.stop();
 });

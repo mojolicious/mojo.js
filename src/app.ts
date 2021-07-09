@@ -3,18 +3,15 @@ import type {Server} from './server.js';
 import type {
   AnyArguments,
   AppOptions,
-  ClientOptions,
+  UserAgentOptions,
   MojoAction,
   MojoContext,
   RouteArguments,
   ServerRequestOptions,
-  TestClientOptions
+  TestUserAgentOptions
 } from './types.js';
 import type {IncomingMessage, ServerResponse} from 'http';
 import {CLI} from './cli.js';
-import {Client} from './client.js';
-import {MockClient} from './client/mock.js';
-import {TestClient} from './client/test.js';
 import {Context} from './context.js';
 import {Hooks} from './hooks.js';
 import {Logger} from './logger.js';
@@ -27,6 +24,9 @@ import {Renderer} from './renderer.js';
 import {Router} from './router.js';
 import {Session} from './session.js';
 import {Static} from './static.js';
+import {UserAgent} from './user-agent.js';
+import {MockUserAgent} from './user-agent/mock.js';
+import {TestUserAgent} from './user-agent/test.js';
 import Path from '@mojojs/path';
 import Ajv from 'ajv';
 
@@ -41,7 +41,6 @@ export type Plugin = (app: App, options: Record<string, any>) => any;
 
 export class App {
   cli: CLI = new CLI(this);
-  client: Client = new Client();
   config: Record<string, any>;
   detectImport: boolean;
   exceptionFormat: string;
@@ -55,6 +54,7 @@ export class App {
   secrets: string[];
   session: Session = new Session(this);
   static: Static = new Static();
+  ua: UserAgent = new UserAgent();
   validator: Ajv = new Ajv();
   _contextClass: any = class extends ContextWrapper {};
   _mode: string;
@@ -141,12 +141,12 @@ export class App {
     return new this._contextClass(this, req, res, options);
   }
 
-  async newMockClient (options?: ClientOptions): Promise<MockClient> {
-    return await MockClient.newMockClient(this, options);
+  async newMockUserAgent (options?: UserAgentOptions): Promise<MockUserAgent> {
+    return await MockUserAgent.newMockUserAgent(this, options);
   }
 
-  async newTestClient (options?: TestClientOptions): Promise<TestClient> {
-    return await TestClient.newTestClient(this, options);
+  async newTestUserAgent (options?: TestUserAgentOptions): Promise<TestUserAgent> {
+    return await TestUserAgent.newTestUserAgent(this, options);
   }
 
   options (...args: RouteArguments): Route {

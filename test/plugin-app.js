@@ -32,32 +32,32 @@ t.test('Plugin app', async t => {
     });
   });
 
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Tag helpers', async () => {
-    const baseURL = client.server.urls[0] + app.static.prefix.substring(1);
-    (await client.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL));
+    const baseURL = ua.server.urls[0] + app.static.prefix.substring(1);
+    (await ua.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL));
   });
 
   await t.test('Helper', async () => {
-    (await client.getOk('/helper')).statusIs(200).bodyIs('works');
+    (await ua.getOk('/helper')).statusIs(200).bodyIs('works');
   });
 
   await t.test('Decorate with getter and setter', async () => {
-    (await client.getOk('/getter/setter')).statusIs(200).bodyIs('before: works, after: also works');
+    (await ua.getOk('/getter/setter')).statusIs(200).bodyIs('before: works, after: also works');
   });
 
   await t.test('Decorate with method', async () => {
-    (await client.getOk('/method')).statusIs(200).bodyIs('also works');
+    (await ua.getOk('/method')).statusIs(200).bodyIs('also works');
   });
 
   await t.test('WebSocket', async t => {
-    await client.websocketOk('/websocket/mixed');
-    t.equal(await client.messageOk(), 'before: also works, after: works too, also: works too');
-    await client.closedOk(1005);
+    await ua.websocketOk('/websocket/mixed');
+    t.equal(await ua.messageOk(), 'before: also works, after: works too, also: works too');
+    await ua.closedOk(1005);
   });
 
-  await client.stop();
+  await ua.stop();
 });
 
 const tagHelperPlugin = `

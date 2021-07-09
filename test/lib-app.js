@@ -6,10 +6,10 @@ import Path from '@mojojs/path';
 import t from 'tap';
 
 t.test('Lib app', async t => {
-  const client = await app.newTestClient({tap: t});
-  const distClient = await distApp.newTestClient({tap: t});
-  const libClient = await libApp.newTestClient({tap: t});
-  const srcClient = await srcApp.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
+  const distAgent = await distApp.newTestUserAgent({tap: t});
+  const libAgent = await libApp.newTestUserAgent({tap: t});
+  const srcAgent = await srcApp.newTestUserAgent({tap: t});
 
   const home = Path.currentFile().sibling('support', 'lib-app');
 
@@ -20,7 +20,7 @@ t.test('Lib app', async t => {
     t.equal(app.static.publicPaths[1], home.child('public').toString());
     t.equal(app.renderer.viewPaths[1], home.child('views').toString());
 
-    (await client.getOk('/')).statusIs(200).headerExists('Content-Length').bodyIs('none');
+    (await ua.getOk('/')).statusIs(200).headerExists('Content-Length').bodyIs('none');
   });
 
   await t.test('dist', async t => {
@@ -30,7 +30,7 @@ t.test('Lib app', async t => {
     t.equal(distApp.static.publicPaths[1], home.child('public').toString());
     t.equal(distApp.renderer.viewPaths[1], home.child('views').toString());
 
-    (await distClient.getOk('/')).statusIs(200).headerExists('Content-Length').bodyIs('dist');
+    (await distAgent.getOk('/')).statusIs(200).headerExists('Content-Length').bodyIs('dist');
   });
 
   await t.test('lib', async t => {
@@ -40,7 +40,7 @@ t.test('Lib app', async t => {
     t.equal(libApp.static.publicPaths[1], home.child('public').toString());
     t.equal(libApp.renderer.viewPaths[1], home.child('views').toString());
 
-    (await libClient.getOk('/')).statusIs(200).headerExists('Content-Length').bodyIs('lib');
+    (await libAgent.getOk('/')).statusIs(200).headerExists('Content-Length').bodyIs('lib');
   });
 
   await t.test('src', async t => {
@@ -50,11 +50,11 @@ t.test('Lib app', async t => {
     t.equal(srcApp.static.publicPaths[1], home.child('public').toString());
     t.equal(srcApp.renderer.viewPaths[1], home.child('views').toString());
 
-    (await srcClient.getOk('/')).statusIs(200).headerExists('Content-Length').bodyIs('src');
+    (await srcAgent.getOk('/')).statusIs(200).headerExists('Content-Length').bodyIs('src');
   });
 
-  await client.stop();
-  await distClient.stop();
-  await libClient.stop();
-  await srcClient.stop();
+  await ua.stop();
+  await distAgent.stop();
+  await libAgent.stop();
+  await srcAgent.stop();
 });

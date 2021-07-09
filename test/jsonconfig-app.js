@@ -5,14 +5,14 @@ import Path from '@mojojs/path';
 import t from 'tap';
 
 t.test('JSONConfig app', async t => {
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('External app with config', async t => {
     t.same(app.config, {name: 'Bond. James Bond', drink: 'Martini', car: 'Aston Martin'});
-    (await client.getOk('/')).statusIs(200).bodyIs('My name is Bond. James Bond.');
+    (await ua.getOk('/')).statusIs(200).bodyIs('My name is Bond. James Bond.');
   });
 
-  await client.stop();
+  await ua.stop();
 
   t.test('Named config file', t => {
     const app = mojo();

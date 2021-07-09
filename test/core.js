@@ -1,4 +1,4 @@
-import mojo, {Client, jsonConfigPlugin, Logger, Server, Session, TestClient, util} from '../lib/core.js';
+import mojo, {jsonConfigPlugin, Logger, Server, Session, TestUserAgent, UserAgent, util} from '../lib/core.js';
 import t from 'tap';
 
 t.test('Public API', async t => {
@@ -20,10 +20,10 @@ t.test('Public API', async t => {
     t.end();
   });
 
-  t.test('Client', t => {
-    t.ok(Client !== undefined);
-    const client = new Client();
-    t.ok(client.request instanceof Function);
+  t.test('UserAgent', t => {
+    t.ok(UserAgent !== undefined);
+    const ua = new UserAgent();
+    t.ok(ua.request instanceof Function);
     t.end();
   });
 
@@ -46,10 +46,10 @@ t.test('Public API', async t => {
     t.end();
   });
 
-  t.test('TestClient', t => {
-    t.ok(TestClient !== undefined);
-    const client = new TestClient();
-    t.ok(client.getOk instanceof Function);
+  t.test('TestUserAgent', t => {
+    t.ok(TestUserAgent !== undefined);
+    const ua = new TestUserAgent();
+    t.ok(ua.getOk instanceof Function);
     t.end();
   });
 });

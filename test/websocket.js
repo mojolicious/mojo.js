@@ -42,14 +42,14 @@ t.test('WebSocket', async t => {
     });
   });
 
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Hello World', async () => {
-    (await client.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
   });
 
   await t.test('WebSocket roundtrip', async t => {
-    const ws = await client.websocket('/ws');
+    const ws = await ua.websocket('/ws');
     await ws.send('Hello Mojo!');
     const message = await new Promise(resolve => {
       ws.on('message', message => {
@@ -62,7 +62,7 @@ t.test('WebSocket', async t => {
   });
 
   await t.test('WebSocket roundtrip (client iterator)', async t => {
-    const ws = await client.websocket('/ws');
+    const ws = await ua.websocket('/ws');
     ws.send('Hello Mojo!');
     let result;
     for await (const message of ws) {
@@ -73,7 +73,7 @@ t.test('WebSocket', async t => {
   });
 
   await t.test('WebSocket roundtrip (server iterator)', async t => {
-    const ws = await client.websocket('/ws/iterator');
+    const ws = await ua.websocket('/ws/iterator');
     ws.send('Hello Mojo!');
     const message = await new Promise(resolve => {
       ws.on('message', message => {
@@ -85,7 +85,7 @@ t.test('WebSocket', async t => {
   });
 
   await t.test('WebSocket roundtrip (JSON)', async t => {
-    const ws = await client.websocket('/ws/json', {json: true});
+    const ws = await ua.websocket('/ws/json', {json: true});
     ws.send({hello: 'world'});
     let result;
     for await (const message of ws) {
@@ -98,7 +98,7 @@ t.test('WebSocket', async t => {
 
   await t.test('Ping/Pong', async t => {
     t.same(app.config.ping, null);
-    const ws = await client.websocket('/ping');
+    const ws = await ua.websocket('/ping');
     await ws.ping(Buffer.from('Hello Mojo!'));
     const data = await new Promise(resolve => {
       ws.on('pong', data => {
@@ -110,5 +110,5 @@ t.test('WebSocket', async t => {
     t.same(app.config.ping, 'Hello Mojo!');
   });
 
-  await client.stop();
+  await ua.stop();
 });

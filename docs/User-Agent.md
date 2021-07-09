@@ -1,26 +1,26 @@
 
-# The mojo.js HTTP and WebSocket Client
+# The mojo.js HTTP and WebSocket User-Agent
 
 The [mojo.js](https://mojojs.org) toolkit contains a full featured HTTP and WebSocket user agent. And while its primary
 purpose is integration testing of web applications, it can also be used for many other things.
 
 ```js
-import {Client} from '@mojojs/core';
+import {UserAgent} from '@mojojs/core';
 
-const client = new Client();
-const res = await client.get('https://mojolicious.org');
+const ua = new UserAgent();
+const res = await ua.get('https://mojolicious.org');
 const content = await res.text();
 ```
 
 The API is heavily inspired by the [Fetch Standard](https://fetch.spec.whatwg.org) and should feel familar if you've
 used `fetch` before.
 
-## Client Options
+## User-Agent Options
 
-The client can be initialized with a few options, but none of them are required.
+The user agent can be initialized with a few options, but none of them are required.
 
 ```js
-const client = new Client({
+const ua = new UserAgent({
 
   // Base URL to be used to resolve all relative request URLs with
   baseURL: 'http://127.0.0.1:3000',
@@ -40,7 +40,7 @@ By default a [tough-cookie](https://www.npmjs.com/package/tough-cookie) cookie j
 it however you like.
 
 ```js
-client.cookieJar.allowSpecialUseDomain = true;
+ua.cookieJar.allowSpecialUseDomain = true;
 ```
 
 ## Request Config
@@ -49,12 +49,12 @@ Every request is represented by a config object that contains various properties
 request.
 
 ```js
-const res = await client.request({
+const res = await ua.request({
 
   // HTTP method for request
   method: 'GET',
 
-  // URL of request target as a string or URL object, may be be relative to `client.baseURL`
+  // URL of request target as a string or URL object, may be be relative to `ua.baseURL`
   url: new URL('https://mojolicious.org'),
 
   // Headers to include in request
@@ -96,19 +96,19 @@ Since every request includes at least `method` and `url` values, there are HTTP 
 instead of `request`.
 
 ```js
-const res = await client.delete('https://mojolicious.org');
-const res = await client.get('https://mojolicious.org');
-const res = await client.head('https://mojolicious.org');
-const res = await client.options('https://mojolicious.org');
-const res = await client.patch('https://mojolicious.org');
-const res = await client.post('https://mojolicious.org');
-const res = await client.put('https://mojolicious.org');
+const res = await ua.delete('https://mojolicious.org');
+const res = await ua.get('https://mojolicious.org');
+const res = await ua.head('https://mojolicious.org');
+const res = await ua.options('https://mojolicious.org');
+const res = await ua.patch('https://mojolicious.org');
+const res = await ua.post('https://mojolicious.org');
+const res = await ua.put('https://mojolicious.org');
 ```
 
 All remaining config values can be passed with a second argument to any one of the shortcut methods.
 
 ```js
-const res = await client.post('/search', {form: {q: 'mojo'}});
+const res = await ua.post('/search', {form: {q: 'mojo'}});
 ```
 
 ## Response Headers
@@ -188,7 +188,7 @@ information from documents with just a CSS selector and almost no code at all.
 For WebSocket handshakes there are also quite a few options available.
 
 ```js
-const ws = await client.websocket('wss://mojolicious.org', {
+const ws = await ua.websocket('wss://mojolicious.org', {
 
   // Headers to include in handshake
   headers: {Accept: '*/*', Authorization: 'token 123456789abcdef'},
@@ -211,14 +211,14 @@ You can choose between multiple API styles.
 
 ```js
 // Events
-const ws = await client.websocket('/ws');
+const ws = await ua.websocket('/ws');
 ws.send('something');
 ws.on('message', message => {
   console.log(message);
 });
 
 // Async iterator
-const ws = await client.websocket('/ws');
+const ws = await ua.websocket('/ws');
 ws.send('something');
 for await (const message of ws) {
   console.log(message);
@@ -229,7 +229,7 @@ With support for `ping` and `pong` frames.
 
 ```js
 // Handshake with authentication headers
-const ws = await client.websocket('/ws', {headers: {Authorization: 'token 123456789abcdef'}});
+const ws = await ua.websocket('/ws', {headers: {Authorization: 'token 123456789abcdef'}});
 ws.on('ping', data => {
   ws.pong(data);
 });
@@ -244,27 +244,27 @@ For web application testing there is also a more specialised subclass available 
 [assert](https://nodejs.org/api/assert.html) to integrate seamlessly into most testing frameworks.
 
 ```js
-const client = TestClient({baseURL: 'https://mojolicious.org'});
-(await client.getOk('/')).statusIs(200).headerLike('Content-Type', /html/).bodyLike(/Mojolicious/);
+const ua = TestUserAgent({baseURL: 'https://mojolicious.org'});
+(await ua.getOk('/')).statusIs(200).headerLike('Content-Type', /html/).bodyLike(/Mojolicious/);
 ```
 
 [tap](https://www.npmjs.com/package/tap) subtests are also supported, and scope changes can be managed automatically
 with the `tap` option.
 
 ```js
-import {TestClient} from '@mojojs/core';
+import {TestUserAgent} from '@mojojs/core';
 import t from 'tap';
 
 t.test('Mojolicious', async t => {
-  const client = new TestClient({baseURL: 'https://mojolicious.org', tap: t});
+  const ua = new TestUserAgent({baseURL: 'https://mojolicious.org', tap: t});
 
   await t.test('Index', async t => {
-    (await client.getOk('/')).statusIs(200).bodyLike(/Mojolicious/);
+    (await ua.getOk('/')).statusIs(200).bodyLike(/Mojolicious/);
   });
 });
 ```
 
-And to test mojo.js web applications there is no need to mock anything. The test client can automatically start and
+And to test mojo.js web applications there is no need to mock anything. The test user agent can automatically start and
 manage a web server listening to a random port for you.
 
 ```js
@@ -272,40 +272,40 @@ import {app} from '../index.js';
 import t from 'tap';
 
 t.test('Example application', async t => {
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Index', async t => {
-    (await client.getOk('/')).statusIs(200).bodyLike(/mojo.js/);
+    (await ua.getOk('/')).statusIs(200).bodyLike(/mojo.js/);
   });
 
-  await client.stop();
+  await ua.stop();
 });
 ```
 
 There are test alternatives for all HTTP method shortcuts.
 
 ```js
-await client.deleteOk('/foo');
-await client.getOk('/foo', {headers: {Host: 'mojolicious.org'}});
-await client.headOk('/foo', {headers: {Accept: '*/*'}});
-await client.optionsOk('/foo', {auth: 'kraih:s3cret'});
-await client.patchOk('/foo', {formData: {role: 'admin'}});
-await client.postOk('/foo', {body: Buffer.from('Hello Mojo!')});
-await client.putOk('/foo', {json: {hello: 'world'}});
+await ua.deleteOk('/foo');
+await ua.getOk('/foo', {headers: {Host: 'mojolicious.org'}});
+await ua.headOk('/foo', {headers: {Accept: '*/*'}});
+await ua.optionsOk('/foo', {auth: 'kraih:s3cret'});
+await ua.patchOk('/foo', {formData: {role: 'admin'}});
+await ua.postOk('/foo', {body: Buffer.from('Hello Mojo!')});
+await ua.putOk('/foo', {json: {hello: 'world'}});
 
-await client.websocketOk('/ws', {protocols: ['test/1', 'test/2']});
+await ua.websocketOk('/ws', {protocols: ['test/1', 'test/2']});
 ```
 
-All test methods return the client object again to allow for easy method chaining and all state is stored inside the
-client object.
+All test methods return the user agent object again to allow for easy method chaining and all state is stored inside the
+user agent object.
 
 ```js
 // Status tests
-(await client.getOk('/foo'))
+(await ua.getOk('/foo'))
   .statusIs(200);
 
 // Header tests
-(await client.getOk('/foo'))
+(await ua.getOk('/foo'))
   .typeIs('text/html')
   .typeLike(/html/)
   .headerIs('Content-Type', 'text/html')
@@ -314,17 +314,17 @@ client object.
   .headerExistsNot('X-Test');
 
 // Body tests
-(await client.getOk('/foo'))
+(await ua.getOk('/foo'))
   .bodyIs('Hello World!')
   .bodyLike(/Hello/)
   .bodyUnlike(/Bye/);
 
 // JSON tests
-(await client.getOk('/foo'))
+(await ua.getOk('/foo'))
   .jsonIs({hello: 'world'});
 
 // HTML tests
-(await client.getOk('/foo'))
+(await ua.getOk('/foo'))
   .elementExists('head > title')
   .elementExistsNot('body #error');
 ```
@@ -332,15 +332,15 @@ client object.
 Testing WebSockets is almost as easy, but all operations are async and  have to return a `Promise`.
 
 ```js
-await client.websocketOk('/echo');
-await client.sendOk('hello');
-assert.equal(await client.messageOk(), 'echo: hello');
-await client.closeOk(4000);
-await client.closedOk(4000);
+await ua.websocketOk('/echo');
+await ua.sendOk('hello');
+assert.equal(await ua.messageOk(), 'echo: hello');
+await ua.closeOk(4000);
+await ua.closedOk(4000);
 ```
 
-And while the test client is very efficient for testing backend services, for frontend testing we recommend combining it
-with [playwright](https://www.npmjs.com/package/playwright).
+And while the test user agent is very efficient for testing backend services, for frontend testing we recommend
+combining it with [playwright](https://www.npmjs.com/package/playwright).
 
 ## Support
 

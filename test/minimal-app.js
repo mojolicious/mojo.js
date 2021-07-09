@@ -2,7 +2,7 @@ import {app} from './support/minimal-app/myapp.js';
 import t from 'tap';
 
 t.test('Minimal app', async t => {
-  const client = await app.newTestClient({tap: t});
+  const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Home directory', async t => {
     t.ok(app.home);
@@ -11,8 +11,8 @@ t.test('Minimal app', async t => {
   });
 
   await t.test('Hello World', async () => {
-    (await client.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
+    (await ua.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
   });
 
-  await client.stop();
+  await ua.stop();
 });
