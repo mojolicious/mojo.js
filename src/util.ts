@@ -213,7 +213,7 @@ export function tablify (rows: string[][] = []): string {
 }
 
 export class SafeString {
-  _safe = '';
+  _safe: string;
 
   constructor (safe: string) {
     this._safe = safe;
