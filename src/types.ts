@@ -21,6 +21,31 @@ export type AnyArguments = Array<string | string[] | MojoAction | Record<string,
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
 
+export interface AppOptions {
+  config?: Record<string, any>,
+  exceptionFormat?: string,
+  detectImport?: boolean,
+  mode?: string,
+  secrets?: string[]
+}
+
+export interface RenderOptions {
+  engine?: string,
+  format?: string,
+  inline?: string,
+  inlineLayout?: string,
+  json?: JSONValue,
+  layout?: string,
+  maybe?: boolean,
+  pretty?: boolean,
+  status?: number,
+  text?: string,
+  view?: string,
+  [key: string]: any
+}
+
+export interface ServerRequestOptions { isWebSocket: boolean, reverseProxy: boolean }
+
 export interface UserAgentOptions {
   baseURL?: string | URL,
   cookieJar?: CookieJar,
@@ -48,29 +73,3 @@ export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions
 }
 
 export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Tap};
-
-export interface ServerRequestOptions { isWebSocket: boolean, reverseProxy: boolean }
-
-interface DefaultRenderOptions {
-  engine?: string,
-  format?: string,
-  inline?: string,
-  inlineLayout?: string,
-  json?: JSONValue,
-  layout?: string,
-  maybe?: boolean,
-  pretty?: boolean,
-  status?: number,
-  text?: string,
-  view?: string
-}
-
-export interface RenderOptions extends DefaultRenderOptions { [key: string]: any }
-
-export interface AppOptions {
-  config?: Record<string, any>,
-  exceptionFormat?: string,
-  detectImport?: boolean,
-  mode?: string,
-  secrets?: string[]
-}

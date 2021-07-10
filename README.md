@@ -15,10 +15,11 @@ TypeScript. If you want to stay up to date on the latest developments join us on
 
   * An amazing **backend** framework, allowing you to easily grow single file prototypes into well-structured MVC web
     applications.
-    * Everything you need to build cloud-native microservices for state of the art container environments.
     * Powerful out of the box with RESTful routes, WebSockets, HTTP/HTTPS user agent, plugins, commands, templates,
       content negotiation, cookies, session management, multipart forms, form and JSON validation, testing framework,
-      HTML/XML parser, static file server, first class Unicode support and much more for you to discover.
+      HTML/XML parser, static file server, MIME types, logger, first class Unicode support and much more for you to
+      discover.
+    * Everything you need to build cloud-native microservices for state of the art container environments.
     * No default Model. Just use your favorite database. We like [PostgreSQL](https://www.postgresql.org) and
       [Knex.js](http://knexjs.org).
     * No default frontend framework. Pair it with [React](https://reactjs.org) or [Vue](https://vuejs.org) for a great

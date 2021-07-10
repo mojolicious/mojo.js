@@ -104,6 +104,45 @@ t.test('Util', async t => {
     });
   });
 
+  t.test('htmlEscape', t => {
+    const escape = util.htmlEscape;
+    t.same(escape('Hello World!'), 'Hello World!');
+    t.same(escape('привет<foo>'), 'привет&lt;foo&gt;');
+    t.same(escape('la<f>\nbar"baz"\'yada\n\'&lt;la'), 'la&lt;f&gt;\nbar&quot;baz&quot;&#39;yada\n&#39;&amp;lt;la');
+    t.same(escape('<p>'), '&lt;p&gt;');
+    t.same(escape(new util.SafeString('<p>')), '<p>');
+    t.end();
+  });
+
+  t.test('htmlTag', t => {
+    const tag = util.htmlTag;
+
+    t.same(tag('p', {}, 'Test').toString(), '<p>Test</p>');
+    t.same(tag('div').toString(), '<div></div>');
+    t.same(tag('div', {id: 'foo', class: 'bar baz'}).toString(), '<div id="foo" class="bar baz"></div>');
+    t.same(tag('div', {id: 'f&oo'}, tag('i', {}, 'I ♥ Mojo&!')).toString(),
+      '<div id="f&amp;oo"><i>I ♥ Mojo&amp;!</i></div>');
+
+    t.same(tag('area').toString(), '<area>');
+    t.same(tag('base').toString(), '<base>');
+    t.same(tag('br').toString(), '<br>');
+    t.same(tag('col').toString(), '<col>');
+    t.same(tag('embed').toString(), '<embed>');
+    t.same(tag('hr').toString(), '<hr>');
+    t.same(tag('img').toString(), '<img>');
+    t.same(tag('input').toString(), '<input>');
+    t.same(tag('keygen').toString(), '<keygen>');
+    t.same(tag('link').toString(), '<link>');
+    t.same(tag('menuitem').toString(), '<menuitem>');
+    t.same(tag('meta').toString(), '<meta>');
+    t.same(tag('param').toString(), '<param>');
+    t.same(tag('source').toString(), '<source>');
+    t.same(tag('track').toString(), '<track>');
+    t.same(tag('wbr').toString(), '<wbr>');
+
+    t.end();
+  });
+
   await t.test('loadModules', async t => {
     const loadModules = util.loadModules;
     const modules = await loadModules([Path.currentFile().sibling('support', 'full-app', 'controllers').toString()]);

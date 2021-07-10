@@ -8,7 +8,7 @@ import nopt from 'nopt';
 export default async function routesCommand (app: MojoApp, args: string[]): Promise<void> {
   const parsed = nopt({verbose: Boolean}, {v: '--verbose'}, args, 1);
   const table: string[][] = [];
-  app.router.children.map(route => _walk(route, 0, table, parsed.verbose));
+  app.router.children.map(route => walk(route, 0, table, parsed.verbose));
   process.stdout.write(tablify(table));
 }
 
@@ -23,7 +23,7 @@ Options:
   -v, --verbose   Print additional details about routes
 `;
 
-function _walk (route: Route | Router, depth: number, rows: string[][], verbose: boolean): void {
+function walk (route: Route | Router, depth: number, rows: string[][], verbose: boolean): void {
   const prefix = ' '.repeat(depth * 2) + (depth === 0 ? '' : '+');
   const unparsed = route.pattern.unparsed;
   const row = [prefix + (unparsed === '' ? '/' : unparsed)];
@@ -43,6 +43,6 @@ function _walk (route: Route | Router, depth: number, rows: string[][], verbose:
 
   // Children
   depth++;
-  route.children.map(child => _walk(child, depth, rows, verbose));
+  route.children.map(child => walk(child, depth, rows, verbose));
   depth--;
 }

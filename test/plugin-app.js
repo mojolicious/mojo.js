@@ -70,7 +70,7 @@ Absolute style: <%- ctx.styleTag('https://mojojs.org/public/foo/bar.css') %>
 
 function tagHelperPluginResult (baseURL) {
   return `
-Favicon: <link rel="icon" href="${baseURL}mojo/favicon.ico"></link>
+Favicon: <link rel="icon" href="${baseURL}mojo/favicon.ico">
 Relative script: <script src="${baseURL}foo/bar.js"></script>
 Relative style: <link rel="stylesheet" href="${baseURL}foo/bar.css">
 Absolute script: <script src="https://mojojs.org/public/foo/bar.js"></script>

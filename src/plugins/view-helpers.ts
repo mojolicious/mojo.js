@@ -1,6 +1,8 @@
 import type {MojoApp, MojoContext, RenderOptions} from '../types.js';
+import type {SafeString} from '../util.js';
 import type {InspectOptions} from 'util';
 import {inspect} from 'util';
+import {htmlTag} from '../util.js';
 
 export default function viewHelpersPlugin (app: MojoApp): void {
   app.decorateContext('inspect', (object: Record<string, any>, options: InspectOptions) => inspect(object, options));
@@ -12,19 +14,26 @@ export default function viewHelpersPlugin (app: MojoApp): void {
   app.addHelper('mojoFaviconTag', mojoFaviconTag);
   app.addHelper('scriptTag', scriptTag);
   app.addHelper('styleTag', styleTag);
+  app.addHelper('tag', tag);
 }
 
-function mojoFaviconTag (ctx: MojoContext): string {
+function mojoFaviconTag (ctx: MojoContext): SafeString {
   const url: string = ctx.urlForFile('/mojo/favicon.ico');
-  return `<link rel="icon" href="${url}"></link>`;
+  return ctx.tag('link', {rel: 'icon', href: url});
 }
 
-function scriptTag (ctx: MojoContext, target: string): string {
+function scriptTag (ctx: MojoContext, target: string): SafeString {
   const url: string = ctx.urlForFile(target);
-  return `<script src="${url}"></script>`;
+  return ctx.tag('script', {src: url});
 }
 
-function styleTag (ctx: MojoContext, target: string): string {
+function styleTag (ctx: MojoContext, target: string): SafeString {
   const url: string = ctx.urlForFile(target);
-  return `<link rel="stylesheet" href="${url}">`;
+  return ctx.tag('link', {rel: 'stylesheet', href: url});
+}
+
+function tag (
+  ctx: MojoContext, name: string, attrs: Record<string, string> = {}, content: string | SafeString = ''
+): SafeString {
+  return htmlTag(name, attrs, content);
 }

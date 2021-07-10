@@ -5,6 +5,31 @@ import Path from '@mojojs/path';
 import chalk from 'chalk';
 import ejs from 'ejs';
 
+const HTML_ESCAPE: Record<string, string> = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;'};
+
+const EMPTY_HTML_TAGS = [
+  'area',
+  'base',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'keygen',
+  'link',
+  'menuitem',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr'
+];
+const EMPTY = EMPTY_HTML_TAGS.reduce((previous: Record<string, boolean>, current: string): Record<string, boolean> => {
+  previous[current] = true;
+  return previous;
+}, {});
+
 export async function captureOutput (
   fn: () => void, options: {stderr?: boolean, stdout?: boolean} = {}
 ): Promise<string | Buffer> {
@@ -127,6 +152,33 @@ export async function exceptionContext (
   return context;
 }
 
+export function htmlEscape (value: string | SafeString): string {
+  if (value instanceof SafeString) return value.toString();
+  return value.replace(/[&<>'"]/g, htmlReplace);
+}
+
+function htmlReplace (char: string): string {
+  return HTML_ESCAPE[char] ?? char;
+}
+
+export function htmlTag (
+  name: string, attrs: Record<string, string> = {}, content: string | SafeString = ''
+): SafeString {
+  const result: string[] = [];
+
+  result.push('<', name);
+  for (const [name, value] of Object.entries(attrs)) {
+    result.push(' ', name, '="', htmlEscape(value), '"');
+  }
+  result.push('>');
+
+  if (!EMPTY[name]) {
+    result.push(content instanceof SafeString ? content.toString() : htmlEscape(content), '</', name, '>');
+  }
+
+  return new SafeString(result.join(''));
+}
+
 export async function loadModules (dirs: string[]): Promise<Record<string, any>> {
   const modules: Record<string, any> = {};
 
@@ -158,4 +210,16 @@ export function tablify (rows: string[][] = []): string {
 
   const lines = table.map(row => row.map((col, i) => i === row.length - 1 ? col : col.padEnd(spec[i])).join('  '));
   return lines.join('\n') + '\n';
+}
+
+export class SafeString {
+  _safe = '';
+
+  constructor (safe: string) {
+    this._safe = safe;
+  }
+
+  toString (): string {
+    return this._safe;
+  }
 }
