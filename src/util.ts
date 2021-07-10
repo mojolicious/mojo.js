@@ -5,30 +5,32 @@ import Path from '@mojojs/path';
 import chalk from 'chalk';
 import ejs from 'ejs';
 
-const HTML_ESCAPE: Record<string, string> = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;'};
+const HTML_ESCAPE: Record<string, string> = Object.freeze({
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  '\'': '&#39;'
+});
 
-const EMPTY_HTML_TAGS = [
-  'area',
-  'base',
-  'br',
-  'col',
-  'embed',
-  'hr',
-  'img',
-  'input',
-  'keygen',
-  'link',
-  'menuitem',
-  'meta',
-  'param',
-  'source',
-  'track',
-  'wbr'
-];
-const EMPTY = EMPTY_HTML_TAGS.reduce((previous: Record<string, boolean>, current: string): Record<string, boolean> => {
-  previous[current] = true;
-  return previous;
-}, {});
+const EMPTY_HTML_TAGS: Record<string, boolean> = Object.freeze({
+  area: true,
+  base: true,
+  br: true,
+  col: true,
+  embed: true,
+  hr: true,
+  img: true,
+  input: true,
+  keygen: true,
+  link: true,
+  menuitem: true,
+  meta: true,
+  param: true,
+  source: true,
+  track: true,
+  wbr: true
+});
 
 export async function captureOutput (
   fn: () => void, options: {stderr?: boolean, stdout?: boolean} = {}
@@ -173,7 +175,7 @@ export function htmlTag (
   }
   result.push('>');
 
-  if (!EMPTY[name]) {
+  if (!EMPTY_HTML_TAGS[name]) {
     result.push(content instanceof SafeString ? content.toString() : htmlEscape(content), '</', name, '>');
   }
 
