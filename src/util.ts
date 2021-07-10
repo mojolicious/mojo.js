@@ -162,8 +162,9 @@ function htmlReplace (char: string): string {
 }
 
 export function htmlTag (
-  name: string, attrs: Record<string, string> = {}, content: string | SafeString = ''
+  name: string, attrs: Record<string, string> | string | SafeString = {}, content: string | SafeString = ''
 ): SafeString {
+  if (typeof attrs === 'string' || attrs instanceof SafeString) [content, attrs] = [attrs, {}];
   const result: string[] = [];
 
   result.push('<', name);

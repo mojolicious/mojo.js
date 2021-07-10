@@ -66,6 +66,8 @@ Relative script: <%- ctx.scriptTag('/foo/bar.js') %>
 Relative style: <%- ctx.styleTag('/foo/bar.css') %>
 Absolute script: <%- ctx.scriptTag('https://mojojs.org/public/foo/bar.js') %>
 Absolute style: <%- ctx.styleTag('https://mojojs.org/public/foo/bar.css') %>
+Tag1: <%- ctx.tag('div', 'Hello Mojo!') %>
+Tag2: <%- ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
 `;
 
 function tagHelperPluginResult (baseURL) {
@@ -75,6 +77,8 @@ Relative script: <script src="${baseURL}foo/bar.js"></script>
 Relative style: <link rel="stylesheet" href="${baseURL}foo/bar.css">
 Absolute script: <script src="https://mojojs.org/public/foo/bar.js"></script>
 Absolute style: <link rel="stylesheet" href="https://mojojs.org/public/foo/bar.css">
+Tag1: <div>Hello Mojo!</div>
+Tag2: <div class="test">Hello Mojo!</div>
 `;
 }
 
