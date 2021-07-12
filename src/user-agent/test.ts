@@ -212,10 +212,10 @@ export class TestUserAgent extends MockUserAgent {
 
   async _waitFinished(): Promise<void> {
     if (this._finished != null) return;
-    return await new Promise(resolve =>
+    return await new Promise(resolve => {
       this.ws.once('close', () => {
         resolve();
-      })
-    );
+      });
+    });
   }
 }
