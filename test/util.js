@@ -20,10 +20,13 @@ t.test('Util', async t => {
     t.same(output2, undefined);
     t.match(error, /Capture error/);
 
-    const output3 = await util.captureOutput(async () => {
-      process.stdout.write('works');
-      process.stderr.write('too');
-    }, {stderr: true});
+    const output3 = await util.captureOutput(
+      async () => {
+        process.stdout.write('works');
+        process.stderr.write('too');
+      },
+      {stderr: true}
+    );
     t.match(output3, /workstoo/);
   });
 
@@ -77,27 +80,27 @@ t.test('Util', async t => {
     }
     t.same(await exceptionContext(result, {lines: 2}), {
       file: Path.currentFile().toString(),
-      line: 74,
+      line: 77,
       column: 13,
       source: [
         {
-          num: 72,
+          num: 75,
           code: '    let result;'
         },
         {
-          num: 73,
+          num: 76,
           code: '    try {'
         },
         {
-          num: 74,
+          num: 77,
           code: "      throw new Error('Test');"
         },
         {
-          num: 75,
+          num: 78,
           code: '    } catch (error) {'
         },
         {
-          num: 76,
+          num: 79,
           code: '      result = error;'
         }
       ]
@@ -122,8 +125,10 @@ t.test('Util', async t => {
     t.equal(tag('p', tag('i', 'Tes&t')).toString(), '<p><i>Tes&amp;t</i></p>');
     t.equal(tag('div').toString(), '<div></div>');
     t.equal(tag('div', {id: 'foo', class: 'bar baz'}).toString(), '<div id="foo" class="bar baz"></div>');
-    t.equal(tag('div', {id: 'f&oo'}, tag('i', {}, 'I ♥ Mojo&!')).toString(),
-      '<div id="f&amp;oo"><i>I ♥ Mojo&amp;!</i></div>');
+    t.equal(
+      tag('div', {id: 'f&oo'}, tag('i', {}, 'I ♥ Mojo&!')).toString(),
+      '<div id="f&amp;oo"><i>I ♥ Mojo&amp;!</i></div>'
+    );
 
     t.equal(tag('area').toString(), '<area>');
     t.equal(tag('base').toString(), '<base>');
@@ -168,10 +173,34 @@ t.test('Util', async t => {
     t.equal(tablify([['foo']]), 'foo\n');
     t.equal(tablify([['f\r\no o\r\n', 'bar']]), 'fo o  bar\n');
     t.equal(tablify([['  foo', '  b a r']]), '  foo    b a r\n');
-    t.equal(tablify([['foo', 'yada'], ['yada', 'yada']]), 'foo   yada\nyada  yada\n');
-    t.equal(tablify([[undefined, 'yada'], ['yada', null]]), '      yada\nyada  \n');
-    t.equal(tablify([['foo', 'bar', 'baz'], ['yada', 'yada', 'yada']]), 'foo   bar   baz\nyada  yada  yada\n');
-    t.equal(tablify([['a', '', 0], [0, '', 'b']]), 'a    0\n0    b\n');
+    t.equal(
+      tablify([
+        ['foo', 'yada'],
+        ['yada', 'yada']
+      ]),
+      'foo   yada\nyada  yada\n'
+    );
+    t.equal(
+      tablify([
+        [undefined, 'yada'],
+        ['yada', null]
+      ]),
+      '      yada\nyada  \n'
+    );
+    t.equal(
+      tablify([
+        ['foo', 'bar', 'baz'],
+        ['yada', 'yada', 'yada']
+      ]),
+      'foo   bar   baz\nyada  yada  yada\n'
+    );
+    t.equal(
+      tablify([
+        ['a', '', 0],
+        [0, '', 'b']
+      ]),
+      'a    0\n0    b\n'
+    );
     t.equal(tablify([[1, 2], [3]]), '1  2\n3\n');
     t.equal(tablify([[1], [2, 3]]), '1\n2  3\n');
     t.equal(tablify([[1], [], [2, 3]]), '1\n\n2  3\n');

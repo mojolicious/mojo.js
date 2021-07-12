@@ -70,7 +70,7 @@ Tag1: <%- ctx.tag('div', 'Hello Mojo!') %>
 Tag2: <%- ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
 `;
 
-function tagHelperPluginResult (baseURL) {
+function tagHelperPluginResult(baseURL) {
   return `
 Favicon: <link rel="icon" href="${baseURL}mojo/favicon.ico">
 Relative script: <script src="${baseURL}foo/bar.js"></script>
@@ -82,7 +82,7 @@ Tag2: <div class="test">Hello Mojo!</div>
 `;
 }
 
-function mixedPlugin (app) {
+function mixedPlugin(app) {
   app.config.test = 'works';
 
   app.addHelper('testHelper', (ctx, name) => ctx.config[name]);

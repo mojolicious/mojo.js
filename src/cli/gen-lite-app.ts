@@ -1,7 +1,7 @@
 import type {App} from '../app.js';
 import * as util from './../util.js';
 
-export default async function genLiteAppCommand (app: App, args: string[]): Promise<void> {
+export default async function genLiteAppCommand(app: App, args: string[]): Promise<void> {
   const stdout = process.stdout;
   stdout.write('Generating single file application:\n');
   await util.cliCreateFile(args[1] ?? 'index.js', liteApp, {}, {chmod: 0o744});

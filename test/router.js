@@ -118,8 +118,16 @@ r.any(['POST', 'GET'], '/method/post_get').to({testcase: 'method', action: 'post
 // * /versioned/2.4/test
 // * /versioned/2.4/test.xml
 const versioned = r.any('/versioned');
-versioned.any('/1.0').to({testcase: 'bar'}).any('/test', {ext: ['xml']}).to({action: 'baz', ext: null});
-versioned.any('/2.4').to({testcase: 'foo'}).any('/test', {ext: ['xml']}).to({action: 'bar', ext: null});
+versioned
+  .any('/1.0')
+  .to({testcase: 'bar'})
+  .any('/test', {ext: ['xml']})
+  .to({action: 'baz', ext: null});
+versioned
+  .any('/2.4')
+  .to({testcase: 'foo'})
+  .any('/test', {ext: ['xml']})
+  .to({action: 'bar', ext: null});
 
 // * /versioned/too/1.0
 const too = r.any('/versioned/too').to('too#');
@@ -299,14 +307,20 @@ t.test('Path and captures', t => {
 
 t.test('Optional captures in sub route with requirement', t => {
   const plan = r.plot({method: 'GET', path: '/bar/test/delete/22', websocket: false});
-  t.same(plan.steps, [{testcase: 'bar', action: 'test'}, {action: 'delete', id: 22}]);
+  t.same(plan.steps, [
+    {testcase: 'bar', action: 'test'},
+    {action: 'delete', id: 22}
+  ]);
   t.equal(plan.render().path, '/bar/test/delete/22');
   t.end();
 });
 
 t.test('Defaults in sub route', t => {
   const plan = r.plot({method: 'GET', path: '/bar/test/delete', websocket: false});
-  t.same(plan.steps, [{testcase: 'bar', action: 'test'}, {action: 'delete', id: 23}]);
+  t.same(plan.steps, [
+    {testcase: 'bar', action: 'test'},
+    {action: 'delete', id: 23}
+  ]);
   t.equal(plan.render().path, '/bar/test/delete');
   t.end();
 });

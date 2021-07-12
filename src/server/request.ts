@@ -20,7 +20,7 @@ export class ServerRequest extends Body {
   _url: URL | undefined = undefined;
   _userinfo: string | null | undefined = undefined;
 
-  constructor (stream: IncomingMessage, options: ServerRequestOptions) {
+  constructor(stream: IncomingMessage, options: ServerRequestOptions) {
     super(stream);
 
     this.isWebSocket = options.isWebSocket;
@@ -30,12 +30,12 @@ export class ServerRequest extends Body {
     this._reverseProxy = options.reverseProxy;
   }
 
-  get baseURL (): string {
+  get baseURL(): string {
     if (this._baseURL === undefined) this._baseURL = `${this.protocol}://${this.raw.headers.host ?? ''}`;
     return this._baseURL;
   }
 
-  getCookie (name: string): string | null {
+  getCookie(name: string): string | null {
     if (this._cookies === undefined) {
       const header = this.headers.cookie;
       this._cookies = header === undefined ? {} : cookie.parse(header);
@@ -43,7 +43,7 @@ export class ServerRequest extends Body {
     return this._cookies[name] ?? null;
   }
 
-  get ip (): string | null {
+  get ip(): string | null {
     if (this._ip === undefined) {
       this._ip = this.raw.socket.remoteAddress;
       if (this._reverseProxy) {
@@ -58,17 +58,16 @@ export class ServerRequest extends Body {
     return this._ip ?? null;
   }
 
-  get method (): string | undefined {
+  get method(): string | undefined {
     return this.raw.method;
   }
 
-  get path (): string | null {
-    // eslint-disable-next-line node/no-deprecated-api
+  get path(): string | null {
     if (this._path === undefined) this._path = decodeURIComponentSafe(url.parse(this.raw.url as string).pathname ?? '');
     return this._path;
   }
 
-  get protocol (): string {
+  get protocol(): string {
     if (this._protocol === undefined) {
       this._protocol = this.isSecure ? 'https' : 'http';
       if (this._reverseProxy) {
@@ -80,16 +79,16 @@ export class ServerRequest extends Body {
     return this._protocol;
   }
 
-  get query (): Params {
+  get query(): Params {
     return new Params(this.url.searchParams as url.URLSearchParams);
   }
 
-  get url (): URL {
+  get url(): URL {
     if (this._url === undefined) this._url = new URL(this.raw.url ?? '', this.baseURL);
     return this._url;
   }
 
-  get userinfo (): string | null {
+  get userinfo(): string | null {
     if (this._userinfo === undefined) {
       this._userinfo = null;
       const auth = this.headers.authorization;

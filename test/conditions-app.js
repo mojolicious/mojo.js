@@ -9,20 +9,35 @@ t.test('Condition app', async t => {
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
   t.notSame(app.router.cache, null);
 
-  app.get('/test').requires('headers', {'X-Test': /pass/}).to(ctx => ctx.render({text: 'Header condition'}));
+  app
+    .get('/test')
+    .requires('headers', {'X-Test': /pass/})
+    .to(ctx => ctx.render({text: 'Header condition'}));
   t.same(app.router.cache, null);
 
-  app.get('/test2').requires('headers', {'X-Test': /pass/, 'X-Test2': /works/})
+  app
+    .get('/test2')
+    .requires('headers', {'X-Test': /pass/, 'X-Test2': /works/})
     .to(ctx => ctx.render({text: 'Header conditions'}));
   t.same(app.router.cache, null);
 
-  app.get('/host').requires('host', /mojojs\.org/).to(ctx => ctx.render({text: 'Host condition'}));
+  app
+    .get('/host')
+    .requires('host', /mojojs\.org/)
+    .to(ctx => ctx.render({text: 'Host condition'}));
   t.same(app.router.cache, null);
 
-  app.get('/host').requires('host', /mojolicious\.org/).to(ctx => ctx.render({text: 'Other host condition'}));
+  app
+    .get('/host')
+    .requires('host', /mojolicious\.org/)
+    .to(ctx => ctx.render({text: 'Other host condition'}));
   t.same(app.router.cache, null);
 
-  app.any('/mixed').get().requires('host', /mojojs\.org/).requires('headers', {'X-Test': /bender/i})
+  app
+    .any('/mixed')
+    .get()
+    .requires('host', /mojojs\.org/)
+    .requires('headers', {'X-Test': /bender/i})
     .to(ctx => ctx.render({text: 'Mixed conditions'}));
   t.same(app.router.cache, null);
 
@@ -40,7 +55,8 @@ t.test('Condition app', async t => {
 
   await t.test('Multiple header conditions', async () => {
     (await ua.getOk('/test2')).statusIs(404);
-    (await ua.getOk('/test2', {headers: {'X-Test': 'should pass', 'X-Test2': 'works too'}})).statusIs(200)
+    (await ua.getOk('/test2', {headers: {'X-Test': 'should pass', 'X-Test2': 'works too'}}))
+      .statusIs(200)
       .bodyIs('Header conditions');
     (await ua.getOk('/test2', {headers: {'X-Test': 'should pass'}})).statusIs(404);
   });
@@ -55,7 +71,8 @@ t.test('Condition app', async t => {
 
   await t.test('Mixed conditions', async () => {
     (await ua.getOk('/mixed')).statusIs(404);
-    (await ua.getOk('/mixed', {headers: {Host: 'mojojs.org', 'X-Test': 'Bender'}})).statusIs(200)
+    (await ua.getOk('/mixed', {headers: {Host: 'mojojs.org', 'X-Test': 'Bender'}}))
+      .statusIs(200)
       .bodyIs('Mixed conditions');
   });
 

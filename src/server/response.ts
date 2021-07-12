@@ -8,20 +8,20 @@ export class ServerResponse {
   isSent = false;
   raw: http.ServerResponse;
   statusCode = 200;
-  _ctx: WeakRef<Context> ;
+  _ctx: WeakRef<Context>;
 
-  constructor (res: http.ServerResponse, ctx: Context) {
+  constructor(res: http.ServerResponse, ctx: Context) {
     this.raw = res;
 
     this._ctx = new WeakRef(ctx);
   }
 
-  length (len: number): this {
+  length(len: number): this {
     this.headers['Content-Length'] = len.toString();
     return this;
   }
 
-  set (name: string, value: string): this {
+  set(name: string, value: string): this {
     if (this.headers[name] !== undefined && name === 'Set-Cookie') {
       let header = this.headers[name];
       if (typeof header === 'string') header = this.headers[name] = [header];
@@ -32,7 +32,7 @@ export class ServerResponse {
     return this;
   }
 
-  async send (body?: string | Buffer | Stream): Promise<void> {
+  async send(body?: string | Buffer | Stream): Promise<void> {
     this.isSent = true;
 
     const ctx = this._ctx.deref();
@@ -41,7 +41,7 @@ export class ServerResponse {
     const app = ctx.app;
     if (ctx.isSessionActive) await app.session.store(ctx, await ctx.session());
 
-    if (await app.hooks.runHook('send', ctx, body) === true) return;
+    if ((await app.hooks.runHook('send', ctx, body)) === true) return;
 
     const raw = this.raw;
     if (typeof body === 'string' || Buffer.isBuffer(body)) {
@@ -57,16 +57,16 @@ export class ServerResponse {
     }
   }
 
-  setCookie (name: string, value: string, options: cookie.CookieSerializeOptions): this {
+  setCookie(name: string, value: string, options: cookie.CookieSerializeOptions): this {
     return this.set('Set-Cookie', cookie.serialize(name, value, options));
   }
 
-  status (code: number): this {
+  status(code: number): this {
     this.statusCode = code;
     return this;
   }
 
-  type (type: string): this {
+  type(type: string): this {
     this.headers['Content-Type'] = type;
     return this;
   }

@@ -24,14 +24,19 @@ t.test('Exception app', async t => {
 
     await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
-      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
-        .bodyLike(/This application is in.*development.*mode/).bodyUnlike(/no-raptor\.png/);
+      (await ua.getOk('/does_not_exist'))
+        .statusIs(404)
+        .typeIs('text/html; charset=utf-8')
+        .bodyLike(/This application is in.*development.*mode/)
+        .bodyUnlike(/no-raptor\.png/);
 
       app.exceptionFormat = 'txt';
       (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8').bodyIs('Not Found');
 
       app.exceptionFormat = 'json';
-      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('application/json; charset=utf-8')
+      (await ua.getOk('/does_not_exist'))
+        .statusIs(404)
+        .typeIs('application/json; charset=utf-8')
         .jsonIs({error: {message: 'Not Found'}});
       app.exceptionFormat = 'txt';
     });
@@ -42,15 +47,22 @@ t.test('Exception app', async t => {
       app.log.destination = file.createWriteStream();
 
       app.exceptionFormat = 'html';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
-        .bodyLike(/This application is in.*development.*mode/).bodyUnlike(/\/public\/mojo\/failraptor\.png/);
+      (await ua.getOk('/exception'))
+        .statusIs(500)
+        .typeIs('text/html; charset=utf-8')
+        .bodyLike(/This application is in.*development.*mode/)
+        .bodyUnlike(/\/public\/mojo\/failraptor\.png/);
 
       app.exceptionFormat = 'txt';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
+      (await ua.getOk('/exception'))
+        .statusIs(500)
+        .typeIs('text/plain; charset=utf-8')
         .bodyLike(/Test exception/);
 
       app.exceptionFormat = 'json';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('application/json; charset=utf-8')
+      (await ua.getOk('/exception'))
+        .statusIs(500)
+        .typeIs('application/json; charset=utf-8')
         .bodyLike(/Test exception/);
       app.exceptionFormat = 'txt';
 
@@ -81,12 +93,13 @@ t.test('Exception app', async t => {
 
     await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
-      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/does_not_exist'))
+        .statusIs(404)
+        .typeIs('text/html; charset=utf-8')
         .bodyLike(/Custom not found/);
 
       app.exceptionFormat = 'txt';
-      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8')
-        .bodyIs('Not Found');
+      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8').bodyIs('Not Found');
     });
 
     await t.test('Exception', async t => {
@@ -95,11 +108,15 @@ t.test('Exception app', async t => {
       app.log.destination = file.createWriteStream();
 
       app.exceptionFormat = 'html';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/exception'))
+        .statusIs(500)
+        .typeIs('text/html; charset=utf-8')
         .bodyLike(/Custom exception: Error: Another test exception/);
 
       app.exceptionFormat = 'txt';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
+      (await ua.getOk('/exception'))
+        .statusIs(500)
+        .typeIs('text/plain; charset=utf-8')
         .bodyLike(/Error: Another test exception/);
 
       t.equal(app.log.history[0].level, 'error');
@@ -133,14 +150,18 @@ t.test('Exception app', async t => {
 
     await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
-      (await ua.getOk('/does_not_exist')).statusIs(404).bodyUnlike(/This application is in.*development.*mode/)
+      (await ua.getOk('/does_not_exist'))
+        .statusIs(404)
+        .bodyUnlike(/This application is in.*development.*mode/)
         .bodyLike(/no-raptor\.png/);
 
       app.exceptionFormat = 'txt';
       (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/plain; charset=utf-8').bodyIs('Not Found');
 
       app.exceptionFormat = 'json';
-      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('application/json; charset=utf-8')
+      (await ua.getOk('/does_not_exist'))
+        .statusIs(404)
+        .typeIs('application/json; charset=utf-8')
         .jsonIs({error: {message: 'Not Found'}});
       app.exceptionFormat = 'txt';
     });
@@ -151,15 +172,19 @@ t.test('Exception app', async t => {
       app.log.destination = file.createWriteStream();
 
       app.exceptionFormat = 'html';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
-        .bodyUnlike(/This application is in.*development.*mode/).bodyLike(/failraptor\.png/);
+      (await ua.getOk('/exception'))
+        .statusIs(500)
+        .typeIs('text/html; charset=utf-8')
+        .bodyUnlike(/This application is in.*development.*mode/)
+        .bodyLike(/failraptor\.png/);
 
       app.exceptionFormat = 'txt';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
-        .bodyIs('Internal Server Error');
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8').bodyIs('Internal Server Error');
 
       app.exceptionFormat = 'json';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('application/json; charset=utf-8')
+      (await ua.getOk('/exception'))
+        .statusIs(500)
+        .typeIs('application/json; charset=utf-8')
         .jsonIs({error: {message: 'Internal Server Error'}});
       app.exceptionFormat = 'txt';
 
@@ -183,7 +208,9 @@ t.test('Exception app', async t => {
 
     await t.test('Not found', async () => {
       app.exceptionFormat = 'html';
-      (await ua.getOk('/does_not_exist')).statusIs(404).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/does_not_exist'))
+        .statusIs(404)
+        .typeIs('text/html; charset=utf-8')
         .bodyLike(/Production not found/);
 
       app.exceptionFormat = 'txt';
@@ -196,12 +223,13 @@ t.test('Exception app', async t => {
       app.log.destination = file.createWriteStream();
 
       app.exceptionFormat = 'html';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('text/html; charset=utf-8')
+      (await ua.getOk('/exception'))
+        .statusIs(500)
+        .typeIs('text/html; charset=utf-8')
         .bodyLike(/Production exception/);
 
       app.exceptionFormat = 'txt';
-      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8')
-        .bodyIs('Internal Server Error');
+      (await ua.getOk('/exception')).statusIs(500).typeIs('text/plain; charset=utf-8').bodyIs('Internal Server Error');
 
       t.same(app.log.history, []);
       t.match(await file.readFile(), /Error: Another test exception/);

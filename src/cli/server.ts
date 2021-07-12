@@ -4,14 +4,19 @@ import nopt from 'nopt';
 
 const EVENTS = ['SIGINT', 'SIGTERM', 'SIGUSR2'];
 
-export default async function serverCommand (app: MojoApp, args: string[]): Promise<void> {
-  const parsed = nopt({
-    cluster: Boolean,
-    level: String,
-    listen: [String, Array],
-    proxy: Boolean,
-    workers: Number
-  }, {c: '--cluster', L: '--level', l: '--listen', p: '--proxy', w: '--workers'}, args, 1);
+export default async function serverCommand(app: MojoApp, args: string[]): Promise<void> {
+  const parsed = nopt(
+    {
+      cluster: Boolean,
+      level: String,
+      listen: [String, Array],
+      proxy: Boolean,
+      workers: Number
+    },
+    {c: '--cluster', L: '--level', l: '--listen', p: '--proxy', w: '--workers'},
+    args,
+    1
+  );
 
   if (parsed.level !== undefined) app.log.level = parsed.level;
 

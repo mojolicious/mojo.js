@@ -1,22 +1,22 @@
 export default class FooController {
-  anotherView (ctx) {
+  anotherView(ctx) {
     const role = ctx.models.users.getRole('sri');
     return ctx.render({view: 'foo'}, {role});
   }
 
-  withInlineView (ctx) {
+  withInlineView(ctx) {
     return ctx.render({inline: 'Hello <%= name %>'});
   }
 
-  withView (ctx) {
+  withView(ctx) {
     return ctx.render('foo/hello');
   }
 
-  works (ctx) {
+  works(ctx) {
     return ctx.render({text: 'Action works!'});
   }
 
-  defaultView (ctx) {
+  defaultView(ctx) {
     return ctx.render();
   }
 }

@@ -68,29 +68,44 @@ t.test('Command app', async t => {
     t.match(app.cli.commands.get.description, /Perform HTTP request/);
     t.match(app.cli.commands.get.usage, /Usage: APPLICATION get/);
 
-    const output2 = await captureOutput(async () => {
-      await app.cli.start('get', '-v', '/');
-    }, {stderr: true});
+    const output2 = await captureOutput(
+      async () => {
+        await app.cli.start('get', '-v', '/');
+      },
+      {stderr: true}
+    );
     t.match(output2.toString(), /GET.*Host.*Content-Length.*Hello Mojo!/s);
 
-    const output3 = await captureOutput(async () => {
-      await app.cli.start('get', '-H', 'Accept: application/json', '-v', '/');
-    }, {stderr: true});
+    const output3 = await captureOutput(
+      async () => {
+        await app.cli.start('get', '-H', 'Accept: application/json', '-v', '/');
+      },
+      {stderr: true}
+    );
     t.match(output3.toString(), /GET.*Accept.*Content-Length.*Hello Mojo!/s);
 
-    const output4 = await captureOutput(async () => {
-      await app.cli.start('get', '-b', 'works', '-v', '/');
-    }, {stderr: true});
+    const output4 = await captureOutput(
+      async () => {
+        await app.cli.start('get', '-b', 'works', '-v', '/');
+      },
+      {stderr: true}
+    );
     t.match(output4.toString(), /GET.*Content-Length.*Content-Length.*Hello Mojo!/s);
 
-    const output5 = await captureOutput(async () => {
-      await app.cli.start('get', '-r', '-X', 'POST', '-v', '/redirect');
-    }, {stderr: true});
+    const output5 = await captureOutput(
+      async () => {
+        await app.cli.start('get', '-r', '-X', 'POST', '-v', '/redirect');
+      },
+      {stderr: true}
+    );
     t.match(output5.toString(), /GET.*\/.*Content-Length.*Hello Mojo!/s);
 
-    const output6 = await captureOutput(async () => {
-      await app.cli.start('get', '/index.html', 'h2');
-    }, {stderr: true});
+    const output6 = await captureOutput(
+      async () => {
+        await app.cli.start('get', '/index.html', 'h2');
+      },
+      {stderr: true}
+    );
     t.match(output6.toString(), /Second/s);
     t.notMatch(output6.toString(), /First/s);
   });

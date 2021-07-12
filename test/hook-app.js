@@ -130,28 +130,51 @@ t.test('Hook app', async t => {
   });
 
   await t.test('Request hook exception', async () => {
-    (await ua.getOk('/?exception=1')).statusIs(500).headerIs('X-Hook', 'works').bodyLike(/Error: Hook exception/);
+    (await ua.getOk('/?exception=1'))
+      .statusIs(500)
+      .headerIs('X-Hook', 'works')
+      .bodyLike(/Error: Hook exception/);
   });
 
   await t.test('Send hooks', async () => {
-    (await ua.getOk('/send?powered=1')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
-      .headerIs('X-Powered-By', 'mojo.js').jsonIs({hello: 'world'});
-    (await ua.getOk('/send?powered=0')).statusIs(200).typeIs('application/json').headerExists('Content-Length')
-      .headerExistsNot('X-Powered-By').jsonIs({hello: 'world'});
+    (await ua.getOk('/send?powered=1'))
+      .statusIs(200)
+      .typeIs('application/json')
+      .headerExists('Content-Length')
+      .headerIs('X-Powered-By', 'mojo.js')
+      .jsonIs({hello: 'world'});
+    (await ua.getOk('/send?powered=0'))
+      .statusIs(200)
+      .typeIs('application/json')
+      .headerExists('Content-Length')
+      .headerExistsNot('X-Powered-By')
+      .jsonIs({hello: 'world'});
   });
 
   await t.test('Static hooks', async () => {
-    (await ua.getOk('/public/mojo/favicon.ico?cache=1')).statusIs(200).typeIs('image/vnd.microsoft.icon')
-      .headerExists('Content-Length').headerIs('Cache-Control', 'public, max-age=604800, immutable');
-    (await ua.getOk('/public/mojo/favicon.ico?cache=0')).statusIs(200).typeIs('image/vnd.microsoft.icon')
-      .headerExists('Content-Length').headerExistsNot('Cache-Control');
+    (await ua.getOk('/public/mojo/favicon.ico?cache=1'))
+      .statusIs(200)
+      .typeIs('image/vnd.microsoft.icon')
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'public, max-age=604800, immutable');
+    (await ua.getOk('/public/mojo/favicon.ico?cache=0'))
+      .statusIs(200)
+      .typeIs('image/vnd.microsoft.icon')
+      .headerExists('Content-Length')
+      .headerExistsNot('Cache-Control');
 
-    (await ua.getOk('/public/mojo/favicon.ico?cache=1&hijack=1')).statusIs(200).headerExists('Content-Length')
-      .headerIs('Cache-Control', 'public, max-age=604800, immutable').bodyIs('Hijacked: favicon.ico');
+    (await ua.getOk('/public/mojo/favicon.ico?cache=1&hijack=1'))
+      .statusIs(200)
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'public, max-age=604800, immutable')
+      .bodyIs('Hijacked: favicon.ico');
 
-    (await ua.getOk('/public/mojo/favicon.ico?cache=1&hijack=1&powered=1')).statusIs(200)
-      .headerExists('Content-Length').headerIs('Cache-Control', 'public, max-age=604800, immutable')
-      .headerIs('X-Powered-By', 'mojo.js').bodyIs('Hijacked: favicon.ico');
+    (await ua.getOk('/public/mojo/favicon.ico?cache=1&hijack=1&powered=1'))
+      .statusIs(200)
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'public, max-age=604800, immutable')
+      .headerIs('X-Powered-By', 'mojo.js')
+      .bodyIs('Hijacked: favicon.ico');
   });
 
   t.same(serverHooks, ['start: works']);

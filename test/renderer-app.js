@@ -25,7 +25,8 @@ t.test('Renderer app', async t => {
 
   app.get('/missing', ctx => ctx.render({view: 'does_not_exist'}));
 
-  app.get('/inline/layout')
+  app
+    .get('/inline/layout')
     .to(ctx => ctx.render({inline: inlineTemplate, inlineLayout: inlineLayout}, {what: 'works'}));
 
   const ua = await app.newTestUserAgent({tap: t});

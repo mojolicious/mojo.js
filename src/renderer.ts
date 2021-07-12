@@ -1,10 +1,19 @@
 import type {MojoContext, RenderOptions} from './types.js';
 import Path from '@mojojs/path';
 
-interface EngineResult { output: string | Buffer, format: string }
-interface ViewSuggestion { format: string, engine: string, path: string }
+interface EngineResult {
+  output: string | Buffer;
+  format: string;
+}
+interface ViewSuggestion {
+  format: string;
+  engine: string;
+  path: string;
+}
 type ViewIndex = Record<string, ViewSuggestion[]>;
-interface ViewEngine { render: (ctx: MojoContext, options: RenderOptions) => Promise<Buffer> }
+interface ViewEngine {
+  render: (ctx: MojoContext, options: RenderOptions) => Promise<Buffer>;
+}
 
 export class Renderer {
   defaultEngine = 'ejs';
@@ -13,17 +22,17 @@ export class Renderer {
   viewPaths: string[] = [Path.currentFile().sibling('..', 'vendor', 'views').toString()];
   _viewIndex: ViewIndex | undefined = undefined;
 
-  addEngine (name: string, engine: ViewEngine): this {
+  addEngine(name: string, engine: ViewEngine): this {
     this.engines[name] = engine;
     return this;
   }
 
-  findView (name: string): ViewSuggestion | null {
+  findView(name: string): ViewSuggestion | null {
     if (this._viewIndex === undefined || this._viewIndex[name] === undefined) return null;
     return this._viewIndex[name][0];
   }
 
-  async render (ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
+  async render(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
     const log = ctx.log;
     if (options.text !== undefined) {
       log.trace('Rendering text response');
@@ -84,8 +93,8 @@ export class Renderer {
     return null;
   }
 
-  async warmup (): Promise<void> {
-    const viewIndex: ViewIndex = this._viewIndex = {};
+  async warmup(): Promise<void> {
+    const viewIndex: ViewIndex = (this._viewIndex = {});
     for (const dir of this.viewPaths.map(path => new Path(path))) {
       if (!(await dir.exists())) continue;
 
@@ -101,13 +110,13 @@ export class Renderer {
     }
   }
 
-  async _renderInline (ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
+  async _renderInline(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
     const engine = this.engines[options.engine ?? this.defaultEngine];
     if (engine === undefined) return null;
     return {output: await engine.render(ctx, options), format: options.format ?? this.defaultFormat};
   }
 
-  async _renderView (ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
+  async _renderView(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
     const view = this.findView(options.view ?? '');
     if (view === null) return null;
 

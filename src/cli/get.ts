@@ -3,13 +3,16 @@ import type {ClientRequest, IncomingMessage} from 'http';
 import chalk from 'chalk';
 import nopt from 'nopt';
 
-type IntrospectedRequest = ClientRequest & {getRawHeaderNames: () => string[], getHeader: (name: string) => string};
+type IntrospectedRequest = ClientRequest & {getRawHeaderNames: () => string[]; getHeader: (name: string) => string};
 type IntrospectedResponse = IncomingMessage & {req: IntrospectedRequest};
 
-export default async function getCommand (app: MojoApp, args: string[]): Promise<void> {
+export default async function getCommand(app: MojoApp, args: string[]): Promise<void> {
   const parsed = nopt(
     {body: String, header: [String, Array], insecure: Boolean, method: String, redirect: Boolean, verbose: Boolean},
-    {b: '--body', H: '--header', k: '--insecure', X: '--method', r: '--redirect', v: '--verbose'}, args, 1);
+    {b: '--body', H: '--header', k: '--insecure', X: '--method', r: '--redirect', v: '--verbose'},
+    args,
+    1
+  );
 
   const argv = parsed.argv;
   const request = {
@@ -69,7 +72,7 @@ Options:
   -v, --verbose               Print response headers to STDERR
 `;
 
-function getHeaders (req: IntrospectedRequest): string[] {
+function getHeaders(req: IntrospectedRequest): string[] {
   const headers = [];
 
   for (const name of req.getRawHeaderNames()) {
@@ -86,7 +89,7 @@ function getHeaders (req: IntrospectedRequest): string[] {
   return headers;
 }
 
-function parseHeaders (list: string[] = []): Record<string, string> {
+function parseHeaders(list: string[] = []): Record<string, string> {
   const headers: Record<string, string> = {};
   for (const pair of list) {
     const header = pair.split(/:\s+/);
@@ -95,7 +98,7 @@ function parseHeaders (list: string[] = []): Record<string, string> {
   return headers;
 }
 
-function writeHeaders (headers: string[]): void {
+function writeHeaders(headers: string[]): void {
   const stderr = process.stderr;
   for (let i = 0; i < headers.length; i += 2) {
     stderr.write(chalk.cyan(headers[i]) + `: ${headers[i + 1]}\n`);

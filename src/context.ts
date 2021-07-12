@@ -14,11 +14,13 @@ import {ServerResponse} from './server/response.js';
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
-interface ContextEvents { connection: (ws: WebSocket) => void }
+interface ContextEvents {
+  connection: (ws: WebSocket) => void;
+}
 
 declare interface Context {
-  on: <T extends keyof ContextEvents>(event: T, listener: ContextEvents[T]) => this,
-  emit: <T extends keyof ContextEvents>(event: T, ...args: Parameters<ContextEvents[T]>) => boolean
+  on: <T extends keyof ContextEvents>(event: T, listener: ContextEvents[T]) => this;
+  emit: <T extends keyof ContextEvents>(event: T, ...args: Parameters<ContextEvents[T]>) => boolean;
 }
 
 const ABSOLUTE = /^[a-zA-Z][a-zA-Z0-9]*:\/\//;
@@ -36,7 +38,7 @@ class Context extends EventEmitter {
   _session: Record<string, any> | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;
 
-  constructor (app: App, req: http.IncomingMessage, res: http.ServerResponse, options: ServerRequestOptions) {
+  constructor(app: App, req: http.IncomingMessage, res: http.ServerResponse, options: ServerRequestOptions) {
     super({captureRejections: true});
 
     this.app = app;
@@ -46,11 +48,11 @@ class Context extends EventEmitter {
     this.log = app.log.child({requestId: this.req.requestId});
   }
 
-  [EventEmitter.captureRejectionSymbol] (error: Error): void {
+  [EventEmitter.captureRejectionSymbol](error: Error): void {
     (this as MojoContext).exception(error);
   }
 
-  accepts (allowed?: string[]): string[] | null {
+  accepts(allowed?: string[]): string[] | null {
     const formats = this.app.mime.detect(this.req.headers.accept ?? '');
     const stash = this.stash;
     if (typeof stash.ext === 'string') formats.unshift(stash.ext);
@@ -61,49 +63,49 @@ class Context extends EventEmitter {
     return results.length > 0 ? results : null;
   }
 
-  get config (): Record<string, any> {
+  get config(): Record<string, any> {
     return this.app.config;
   }
 
-  handleUpgrade (ws: WebSocket): void {
+  handleUpgrade(ws: WebSocket): void {
     this._ws = new WeakRef(ws);
     this.emit('connection', ws);
     ws.on('error', error => (this as MojoContext).exception(error));
   }
 
-  get home (): Path {
+  get home(): Path {
     return this.app.home;
   }
 
-  get isAccepted (): boolean {
+  get isAccepted(): boolean {
     return this.listenerCount('connection') > 0;
   }
 
-  get isEstablished (): boolean {
+  get isEstablished(): boolean {
     return this._ws !== null;
   }
 
-  get isSessionActive (): boolean {
+  get isSessionActive(): boolean {
     return this._session !== undefined;
   }
 
-  get isWebSocket (): boolean {
+  get isWebSocket(): boolean {
     return this.req.isWebSocket;
   }
 
-  json (fn: WebSocketHandler): this {
+  json(fn: WebSocketHandler): this {
     this.jsonMode = true;
     return this.on('connection', fn as () => void);
   }
 
-  get models (): Record<string, any> {
+  get models(): Record<string, any> {
     return this.app.models;
   }
 
-  async params (options: busboy.BusboyConfig): Promise<Params> {
+  async params(options: busboy.BusboyConfig): Promise<Params> {
     if (this._params === undefined) {
       const req = this.req;
-      const params = this._params = new Params(req.query);
+      const params = (this._params = new Params(req.query));
       for (const [name, value] of await req.form(options)) {
         params.append(name, value);
       }
@@ -112,15 +114,18 @@ class Context extends EventEmitter {
     return this._params;
   }
 
-  plain (fn: WebSocketHandler): this {
+  plain(fn: WebSocketHandler): this {
     return this.on('connection', fn as () => void);
   }
 
-  async redirectTo (target: string, options: {status?: number, values?: Record<string, any>} = {}): Promise<void> {
-    await this.res.status(options.status ?? 302).set('Location', this.urlFor(target, options.values) ?? '').send();
+  async redirectTo(target: string, options: {status?: number; values?: Record<string, any>} = {}): Promise<void> {
+    await this.res
+      .status(options.status ?? 302)
+      .set('Location', this.urlFor(target, options.values) ?? '')
+      .send();
   }
 
-  async render (options: RenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
+  async render(options: RenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
     if (typeof options === 'string') options = {view: options};
     if (stash !== undefined) Object.assign(this.stash, stash);
 
@@ -140,14 +145,14 @@ class Context extends EventEmitter {
     return true;
   }
 
-  async renderToString (options: RenderOptions, stash?: Record<string, any>): Promise<string | null> {
+  async renderToString(options: RenderOptions, stash?: Record<string, any>): Promise<string | null> {
     if (typeof options === 'string') options = {view: options};
     Object.assign(this.stash, stash);
     const result = await this.app.renderer.render(this, options);
     return result === null ? null : result.output.toString();
   }
 
-  async respondTo (spec: Record<string, MojoAction>): Promise<void> {
+  async respondTo(spec: Record<string, MojoAction>): Promise<void> {
     const formats = this.accepts() ?? [];
 
     for (const format of formats) {
@@ -164,11 +169,11 @@ class Context extends EventEmitter {
     await this.res.status(204).send();
   }
 
-  async sendFile (file: Path): Promise<void> {
+  async sendFile(file: Path): Promise<void> {
     return await this.app.static.serveFile(this, file);
   }
 
-  schema (schema: Record<string, any> | string): ValidateFunction | undefined {
+  schema(schema: Record<string, any> | string): ValidateFunction | undefined {
     const validator = this.app.validator;
     if (typeof schema === 'string') return validator.getSchema(schema);
 
@@ -179,16 +184,16 @@ class Context extends EventEmitter {
     return validator.compile(schema);
   }
 
-  async session (): Promise<Record<string, any>> {
-    if (this._session === undefined) this._session = await this.app.session.load(this) ?? {};
+  async session(): Promise<Record<string, any>> {
+    if (this._session === undefined) this._session = (await this.app.session.load(this)) ?? {};
     return this._session;
   }
 
-  get ua (): UserAgent {
+  get ua(): UserAgent {
     return this.app.ua;
   }
 
-  urlFor (target: string | undefined, values?: Record<string, any>): string | null {
+  urlFor(target: string | undefined, values?: Record<string, any>): string | null {
     if (target === undefined || target === 'current') {
       if (this.plan === null) return null;
       const result = this.plan.render(values);
@@ -203,16 +208,16 @@ class Context extends EventEmitter {
     return this._urlForPath(route.render(values), route.hasWebSocket());
   }
 
-  urlForFile (path: string): string {
+  urlForFile(path: string): string {
     if (ABSOLUTE.test(path)) return path;
     return this.req.baseURL + this.app.static.filePath(path);
   }
 
-  get ws (): WebSocket | null {
+  get ws(): WebSocket | null {
     return this._ws?.deref() ?? null;
   }
 
-  _urlForPath (path: string, isWebSocket: boolean): string {
+  _urlForPath(path: string, isWebSocket: boolean): string {
     const url = this.req.baseURL + path;
     return isWebSocket ? url.replace(/^http/, 'ws') : url;
   }

@@ -12,11 +12,11 @@ import WS from 'ws';
 type ListenArgs = any[];
 
 interface ServerOptions {
-  cluster?: boolean,
-  listen?: string[],
-  quiet?: boolean,
-  reverseProxy?: boolean,
-  workers?: number
+  cluster?: boolean;
+  listen?: string[];
+  quiet?: boolean;
+  reverseProxy?: boolean;
+  workers?: number;
 }
 
 export class Server {
@@ -29,7 +29,7 @@ export class Server {
   _quiet: boolean;
   _workers: number;
 
-  constructor (app: App, options: ServerOptions = {}) {
+  constructor(app: App, options: ServerOptions = {}) {
     app.server = this;
 
     this.app = app;
@@ -42,7 +42,7 @@ export class Server {
     this._workers = options.workers ?? os.cpus().length;
   }
 
-  static listenArgsForURL (url: URL): ListenArgs {
+  static listenArgsForURL(url: URL): ListenArgs {
     const listen = [];
 
     const hostname = url.hostname;
@@ -61,7 +61,7 @@ export class Server {
     return listen;
   }
 
-  async start (): Promise<void> {
+  async start(): Promise<void> {
     await this.app.hooks.runHook('start', this.app);
     if (this._cluster && cluster.isMaster) {
       for (let i = 0; i < this._workers; i++) {
@@ -74,12 +74,12 @@ export class Server {
     }
   }
 
-  async stop (): Promise<void> {
+  async stop(): Promise<void> {
     await Promise.all(this._servers.map(async server => await new Promise(resolve => server.close(resolve))));
     await this.app.hooks.runHook('stop', this.app);
   }
 
-  async _createServer (location: string): Promise<void> {
+  async _createServer(location: string): Promise<void> {
     const url = new URL(location);
 
     let isHttps = false;
@@ -125,27 +125,30 @@ export class Server {
     });
   }
 
-  _handleRequest (req: http.IncomingMessage, res: http.ServerResponse): void {
+  _handleRequest(req: http.IncomingMessage, res: http.ServerResponse): void {
     const app = this.app;
     const ctx = app.newContext(req, res, {isWebSocket: false, reverseProxy: this.reverseProxy});
     app.handleRequest(ctx).catch(error => ctx.exception(error));
   }
 
-  _handleUpgrade (wss: WS.Server, req: http.IncomingMessage, socket: Socket, head: Buffer): void {
+  _handleUpgrade(wss: WS.Server, req: http.IncomingMessage, socket: Socket, head: Buffer): void {
     const app = this.app;
     const ctx = app.newContext(req, new http.ServerResponse(req), {isWebSocket: true, reverseProxy: this.reverseProxy});
 
-    app.handleRequest(ctx).then(() => {
-      if (ctx.isAccepted) {
-        wss.handleUpgrade(req, socket, head, ws => {
-          ctx.handleUpgrade(new WebSocket(ws, null, {jsonMode: ctx.jsonMode}));
-        });
-      } else {
-        socket.destroy();
-      }
-    }).catch(error => {
-      if (!ctx.isAccepted) socket.destroy();
-      return ctx.exception(error);
-    });
+    app
+      .handleRequest(ctx)
+      .then(() => {
+        if (ctx.isAccepted) {
+          wss.handleUpgrade(req, socket, head, ws => {
+            ctx.handleUpgrade(new WebSocket(ws, null, {jsonMode: ctx.jsonMode}));
+          });
+        } else {
+          socket.destroy();
+        }
+      })
+      .catch(error => {
+        if (!ctx.isAccepted) socket.destroy();
+        return ctx.exception(error);
+      });
   }
 }

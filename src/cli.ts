@@ -3,7 +3,11 @@ import * as util from './util.js';
 import Path from '@mojojs/path';
 import nopt from 'nopt';
 
-interface Command { (app: App, args: string[]): Promise<void>, description: string, usage: string }
+interface Command {
+  (app: App, args: string[]): Promise<void>;
+  description: string;
+  usage: string;
+}
 
 export class CLI {
   commandPaths: string[] = [Path.currentFile().sibling('cli').toString()];
@@ -11,15 +15,15 @@ export class CLI {
   _app: WeakRef<App>;
   _loaded: boolean | undefined = undefined;
 
-  constructor (app: App) {
+  constructor(app: App) {
     this._app = new WeakRef(app);
   }
 
-  addCommand (name: string, command: Command): void {
+  addCommand(name: string, command: Command): void {
     this.commands[name] = command;
   }
 
-  async start (command?: string, ...args: string[]): Promise<void> {
+  async start(command?: string, ...args: string[]): Promise<void> {
     if (this._loaded === undefined) await this._loadCommands();
 
     const commandArgs = command === undefined ? process.argv : ['', '', command, ...args];
@@ -44,12 +48,14 @@ export class CLI {
     await this._listCommands();
   }
 
-  async _listCommands (): Promise<void> {
-    const commands = Object.keys(this.commands).sort().map(name => [` ${name}`, this.commands[name].description]);
+  async _listCommands(): Promise<void> {
+    const commands = Object.keys(this.commands)
+      .sort()
+      .map(name => [` ${name}`, this.commands[name].description]);
     process.stdout.write(header + util.tablify(commands) + footer);
   }
 
-  async _loadCommands (): Promise<void> {
+  async _loadCommands(): Promise<void> {
     this._loaded = true;
     for (const [name, command] of Object.entries(await util.loadModules(this.commandPaths))) {
       this.addCommand(name, command);

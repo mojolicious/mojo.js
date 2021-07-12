@@ -9,8 +9,12 @@ const OP = Object.freeze({
   wildcard: Symbol('wildcard')
 });
 
-interface MatchOptions {isEndpoint: boolean}
-interface PlaceholderTypes {[name: string]: PlaceholderType}
+interface MatchOptions {
+  isEndpoint: boolean;
+}
+interface PlaceholderTypes {
+  [name: string]: PlaceholderType;
+}
 
 type ASTNode = [symbol, ...string[]];
 
@@ -23,11 +27,10 @@ export class Pattern {
   unparsed = '';
   _ast: ASTNode[] = [];
 
-  constructor (path?: string, options: {
-    constraints?: PlaceholderTypes,
-    defaults?: Record<string, any>,
-    types?: PlaceholderTypes
-  } = {}) {
+  constructor(
+    path?: string,
+    options: {constraints?: PlaceholderTypes; defaults?: Record<string, any>; types?: PlaceholderTypes} = {}
+  ) {
     this.constraints = options.constraints ?? {};
     this.defaults = options.defaults ?? {};
     this.types = options.types ?? {};
@@ -35,13 +38,13 @@ export class Pattern {
     if (path !== undefined) this.parse(path);
   }
 
-  match (path: string, options: MatchOptions): Record<string, any> | null {
+  match(path: string, options: MatchOptions): Record<string, any> | null {
     const result = this.matchPartial(path, options);
     if (result === null || (result.remainder.length > 0 && result.remainder !== '/')) return null;
     return result.captures;
   }
 
-  matchPartial (path: string, options: MatchOptions): Record<string, any> & {remainder: string} | null {
+  matchPartial(path: string, options: MatchOptions): (Record<string, any> & {remainder: string}) | null {
     if (this.regex === undefined) this.regex = this._compile(options.isEndpoint);
     const match = path.match(this.regex);
     if (match === null) return null;
@@ -57,13 +60,13 @@ export class Pattern {
     return {remainder: path.replace(prefix, ''), captures};
   }
 
-  parse (path = ''): this {
+  parse(path = ''): this {
     this.unparsed = path.replace(/^\/*|\/+/g, '/').replace(/\/$/, '');
     this._tokenize();
     return this;
   }
 
-  render (values: Record<string, string>, options: MatchOptions): string {
+  render(values: Record<string, string>, options: MatchOptions): string {
     let optional = values.ext == null;
 
     const parts: string[] = [];
@@ -88,7 +91,7 @@ export class Pattern {
     return options.isEndpoint && values.ext != null ? `${path}.${values.ext}` : path;
   }
 
-  _compile (withExtension: boolean): RegExp {
+  _compile(withExtension: boolean): RegExp {
     const parts = [];
     let block = '';
     let optional = true;
@@ -129,19 +132,28 @@ export class Pattern {
     return new RegExp('^' + parts.join(''), 's');
   }
 
-  _compileExtension (ext: PlaceholderType, withDefault: boolean): string {
+  _compileExtension(ext: PlaceholderType, withDefault: boolean): string {
     if (ext === undefined) return '';
     const regex = '\\.' + this._compileType(ext);
     return withDefault ? `/?(?:${regex})?$` : `/?${regex}$`;
   }
 
-  _compileType (type: PlaceholderType): string {
-    if ((type instanceof RegExp)) return `(${type.source})`;
+  _compileType(type: PlaceholderType): string {
+    if (type instanceof RegExp) return `(${type.source})`;
     if (!(type instanceof Array)) return `(${type})`;
-    return '(' + type.slice().sort().reverse().map(val => escapeStringRegexp(val)).join('|') + ')';
+    return (
+      '(' +
+      type
+        .slice()
+        .sort()
+        .reverse()
+        .map(val => escapeStringRegexp(val))
+        .join('|') +
+      ')'
+    );
   }
 
-  _tokenize (): void {
+  _tokenize(): void {
     let name = false;
     const ast = this._ast;
 

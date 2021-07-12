@@ -7,7 +7,7 @@ export class Static {
   prefix = '/public';
   publicPaths = [Path.currentFile().sibling('..', 'vendor', 'public').toString()];
 
-  async dispatch (ctx: MojoContext): Promise<boolean> {
+  async dispatch(ctx: MojoContext): Promise<boolean> {
     const req = ctx.req;
     const unsafePath = req.path;
     if (unsafePath === null || !unsafePath.startsWith(this.prefix)) return false;
@@ -20,7 +20,7 @@ export class Static {
 
     for (const dir of this.publicPaths) {
       const file = new Path(dir, relative);
-      if (!await file.isReadable()) continue;
+      if (!(await file.isReadable())) continue;
       await this.serveFile(ctx, file);
       return true;
     }
@@ -28,12 +28,12 @@ export class Static {
     return false;
   }
 
-  filePath (path: string): string {
+  filePath(path: string): string {
     if (path.startsWith('/')) path = path.replace('/', '');
     return this.prefix + path;
   }
 
-  isFresh (ctx: MojoContext, options: {etag?: string, lastModified?: Date} = {}): boolean {
+  isFresh(ctx: MojoContext, options: {etag?: string; lastModified?: Date} = {}): boolean {
     const etag = options.etag;
     const lastModified = options.lastModified;
 
@@ -62,9 +62,9 @@ export class Static {
     return false;
   }
 
-  async serveFile (ctx: MojoContext, file: Path): Promise<void> {
+  async serveFile(ctx: MojoContext, file: Path): Promise<void> {
     const app = ctx.app;
-    if (await app.hooks.runHook('static', ctx, file) === true) return;
+    if ((await app.hooks.runHook('static', ctx, file)) === true) return;
 
     const stat = await file.stat();
     const length = stat.size;
@@ -101,11 +101,15 @@ export class Static {
     if (start > end) return await this._rangeNotSatisfiable(ctx);
 
     // Range
-    await res.status(200).length((end - start) + 1).type(type).set('Content-Range', `bytes ${start}-${end}/${length}`)
+    await res
+      .status(200)
+      .length(end - start + 1)
+      .type(type)
+      .set('Content-Range', `bytes ${start}-${end}/${length}`)
       .send(file.createReadStream({start: start, end: end}));
   }
 
-  async _rangeNotSatisfiable (ctx: MojoContext): Promise<void> {
+  async _rangeNotSatisfiable(ctx: MojoContext): Promise<void> {
     await ctx.res.status(416).send();
   }
 }

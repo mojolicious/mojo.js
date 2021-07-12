@@ -4,19 +4,19 @@ import type WS from 'ws';
 import EventEmitter, {on} from 'events';
 
 interface WebSocketControlEvents {
-  close: (...args: any[]) => void,
-  ping: (...args: any[]) => void,
-  pong: (...args: any[]) => void
+  close: (...args: any[]) => void;
+  ping: (...args: any[]) => void;
+  pong: (...args: any[]) => void;
 }
 
 interface WebSocketEvents extends WebSocketControlEvents {
-  error: (this: WebSocket, error: Error) => void,
-  message: (this: WebSocket, message: JSONValue | Buffer) => void
+  error: (this: WebSocket, error: Error) => void;
+  message: (this: WebSocket, message: JSONValue | Buffer) => void;
 }
 
 declare interface WebSocket {
-  on: <T extends keyof WebSocketEvents>(event: T, listener: WebSocketEvents[T]) => this,
-  emit: <T extends keyof WebSocketEvents>(event: T, ...args: Parameters<WebSocketEvents[T]>) => boolean
+  on: <T extends keyof WebSocketEvents>(event: T, listener: WebSocketEvents[T]) => this;
+  emit: <T extends keyof WebSocketEvents>(event: T, ...args: Parameters<WebSocketEvents[T]>) => boolean;
 }
 
 class WebSocket extends EventEmitter {
@@ -24,7 +24,7 @@ class WebSocket extends EventEmitter {
   jsonMode: boolean;
   _raw: WS;
 
-  constructor (ws: WS, handshake: UserAgentResponse | null, options: {jsonMode: boolean}) {
+  constructor(ws: WS, handshake: UserAgentResponse | null, options: {jsonMode: boolean}) {
     super({captureRejections: true});
 
     this.handshake = handshake;
@@ -41,7 +41,7 @@ class WebSocket extends EventEmitter {
     ws.on('pong', safeHandler.bind(this, 'pong'));
   }
 
-  async * [Symbol.asyncIterator] (): AsyncIterableIterator<JSONValue | Buffer> {
+  async *[Symbol.asyncIterator](): AsyncIterableIterator<JSONValue | Buffer> {
     try {
       for await (const [message] of this._messageIterator()) {
         yield message;
@@ -51,20 +51,20 @@ class WebSocket extends EventEmitter {
     }
   }
 
-  close (code?: number, reason?: string): void {
+  close(code?: number, reason?: string): void {
     this._raw.close(code, reason);
   }
 
-  async ping (data: Buffer): Promise<void> {
+  async ping(data: Buffer): Promise<void> {
     return await new Promise(resolve => this._raw.ping(data, undefined, () => resolve()));
   }
 
-  async send (message: JSONValue | Buffer): Promise<void> {
+  async send(message: JSONValue | Buffer): Promise<void> {
     if (!this.jsonMode) return await new Promise(resolve => this._raw.send(message, () => resolve()));
     return new Promise(resolve => this._raw.send(JSON.stringify(message), () => resolve()));
   }
 
-  _messageIterator (): AsyncIterableIterator<Array<JSONValue | Buffer>> {
+  _messageIterator(): AsyncIterableIterator<Array<JSONValue | Buffer>> {
     // eslint-disable-next-line no-undef
     const ac = new AbortController();
 
@@ -72,9 +72,7 @@ class WebSocket extends EventEmitter {
     return on(this, 'message', {signal: ac.signal});
   }
 
-  _safeHandler <T extends keyof WebSocketControlEvents>(
-    event: T, ...args: Parameters<WebSocketControlEvents[T]>
-  ): void {
+  _safeHandler<T extends keyof WebSocketControlEvents>(event: T, ...args: Parameters<WebSocketControlEvents[T]>): void {
     try {
       this.emit(event, ...args);
     } catch (error) {
@@ -82,7 +80,7 @@ class WebSocket extends EventEmitter {
     }
   }
 
-  _safeMessageHandler (message: string | Buffer): void {
+  _safeMessageHandler(message: string | Buffer): void {
     try {
       if (!this.jsonMode) {
         this.emit('message', message);

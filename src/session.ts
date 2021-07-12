@@ -15,11 +15,11 @@ export class Session {
   secure = false;
   _app: WeakRef<App>;
 
-  constructor (app: App) {
+  constructor(app: App) {
     this._app = new WeakRef(app);
   }
 
-  static async decrypt (secrets: string[], encrypted: string): Promise<string | null> {
+  static async decrypt(secrets: string[], encrypted: string): Promise<string | null> {
     const match = encrypted.match(/^([^-]+)--([^-]+)--([^-]+)$/);
     if (match === null) return null;
 
@@ -43,7 +43,7 @@ export class Session {
     return null;
   }
 
-  static async encrypt (secret: string, value: string): Promise<string> {
+  static async encrypt(secret: string, value: string): Promise<string> {
     const key = await scrypt(secret, 'salt', 32);
     const iv = await randomBytes(12);
 
@@ -52,7 +52,7 @@ export class Session {
     return encrypted + '--' + iv.toString('base64') + '--' + cipher.getAuthTag().toString('base64');
   }
 
-  async load (ctx: Context): Promise<Record<string, any> | null> {
+  async load(ctx: Context): Promise<Record<string, any> | null> {
     const cookie = ctx.req.getCookie(this.cookieName);
     if (cookie === null) return null;
 
@@ -69,7 +69,7 @@ export class Session {
     return data;
   }
 
-  async store (ctx: Context, data: Record<string, any>): Promise<void> {
+  async store(ctx: Context, data: Record<string, any>): Promise<void> {
     if (typeof data.expires !== 'number') data.expires = Math.round(Date.now() / 1000) + this.expiration;
 
     const app = this._app.deref();

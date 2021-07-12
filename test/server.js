@@ -25,9 +25,12 @@ t.test('Server', async t => {
     const ua = await app.newTestUserAgent({tap: t});
 
     let res;
-    const output = await captureOutput(async () => {
-      res = await ua.get('/');
-    }, {stderr: true, stdout: false});
+    const output = await captureOutput(
+      async () => {
+        res = await ua.get('/');
+      },
+      {stderr: true, stdout: false}
+    );
     t.equal(res.status, 200);
     t.equal(await res.text(), 'Hello World!');
     t.match(output, /Server <<< Client/);

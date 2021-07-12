@@ -5,7 +5,7 @@ export class Plan {
   steps: Array<Record<string, any>> = [];
   stops: boolean[] = [];
 
-  render (values: Record<string, any> = {}): {path: string, websocket: boolean} {
+  render(values: Record<string, any> = {}): {path: string; websocket: boolean} {
     const merged = [...this.steps, values].reduce((result, current) => Object.assign(result, current), {});
 
     const endpoint = this.endpoint;

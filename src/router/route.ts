@@ -14,14 +14,14 @@ export class Route {
   _parent: WeakRef<Route> | undefined = undefined;
   _root: WeakRef<Router> | undefined = undefined;
 
-  addChild (child: Route): Route {
+  addChild(child: Route): Route {
     this.children.push(child);
     child.parent = this;
     child.root = this.root;
     return child;
   }
 
-  any (...args: AnyArguments): Route {
+  any(...args: AnyArguments): Route {
     const child = new Route();
 
     const childPattern = child.pattern;
@@ -42,52 +42,54 @@ export class Route {
     return this.addChild(child);
   }
 
-  delete (...args: RouteArguments): Route {
+  delete(...args: RouteArguments): Route {
     return this.any(['DELETE'], ...args);
   }
 
-  get (...args: RouteArguments): Route {
+  get(...args: RouteArguments): Route {
     return this.any(['GET'], ...args);
   }
 
-  hasWebSocket (): boolean {
-    return this._branch().map(route => route.websocketRoute).includes(true);
+  hasWebSocket(): boolean {
+    return this._branch()
+      .map(route => route.websocketRoute)
+      .includes(true);
   }
 
-  isEndpoint (): boolean {
+  isEndpoint(): boolean {
     return this.children.length === 0;
   }
 
-  name (name: string): this {
+  name(name: string): this {
     this.customName = name;
     return this;
   }
 
-  options (...args: RouteArguments): Route {
+  options(...args: RouteArguments): Route {
     return this.any(['OPTIONS'], ...args);
   }
 
-  get parent (): Route | undefined {
+  get parent(): Route | undefined {
     return this._parent?.deref();
   }
 
-  set parent (parent: Route | undefined) {
+  set parent(parent: Route | undefined) {
     this._parent = parent === undefined ? undefined : new WeakRef(parent);
   }
 
-  patch (...args: RouteArguments): Route {
+  patch(...args: RouteArguments): Route {
     return this.any(['PATCH'], ...args);
   }
 
-  post (...args: RouteArguments): Route {
+  post(...args: RouteArguments): Route {
     return this.any(['POST'], ...args);
   }
 
-  put (...args: RouteArguments): Route {
+  put(...args: RouteArguments): Route {
     return this.any(['PUT'], ...args);
   }
 
-  render (values = {}): string {
+  render(values = {}): string {
     const parts: string[] = [];
     const branch = this._branch();
     for (let i = 0; i < branch.length - 1; i++) {
@@ -97,7 +99,7 @@ export class Route {
     return parts.reverse().join('');
   }
 
-  requires (condition: string, requirement: Record<string, any>): this {
+  requires(condition: string, requirement: Record<string, any>): this {
     const root = this.root;
     if (root === undefined) return this;
 
@@ -108,15 +110,15 @@ export class Route {
     return this;
   }
 
-  get root (): Router | undefined {
+  get root(): Router | undefined {
     return this._root?.deref();
   }
 
-  set root (root: Router | undefined) {
+  set root(root: Router | undefined) {
     this._root = root === undefined ? undefined : new WeakRef(root);
   }
 
-  to (...targets: Array<string | MojoAction | Record<string, any>>): this {
+  to(...targets: Array<string | MojoAction | Record<string, any>>): this {
     const defaults = this.pattern.defaults;
 
     for (const target of targets) {
@@ -134,19 +136,19 @@ export class Route {
     return this;
   }
 
-  under (...args: AnyArguments): Route {
+  under(...args: AnyArguments): Route {
     const child = this.any(...args);
     child.underRoute = true;
     return child;
   }
 
-  websocket (...args: RouteArguments): Route {
+  websocket(...args: RouteArguments): Route {
     const child = this.any(...args);
     child.websocketRoute = true;
     return child;
   }
 
-  _branch (): Array<Router | Route> {
+  _branch(): Array<Router | Route> {
     const branch: Array<Router | Route> = [this];
     let current: Router | Route | undefined = branch[0];
     while ((current = current.parent) !== undefined) {

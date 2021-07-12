@@ -43,8 +43,9 @@ t.test('UserAgent', async t => {
 
   app.any('/test.html').to(ctx => ctx.render({text: '<div>Test<br>123</div>'}));
 
-  app.any('/test.xml')
-    .to(ctx => ctx.render({text: '<?xml version=\'1.0\' encoding=\'UTF-8\'?><script><p>Hello</p></script>'}));
+  app
+    .any('/test.xml')
+    .to(ctx => ctx.render({text: "<?xml version='1.0' encoding='UTF-8'?><script><p>Hello</p></script>"}));
 
   app.get('/auth/basic', async ctx => {
     const auth = ctx.req.userinfo ?? 'nothing';
@@ -59,27 +60,31 @@ t.test('UserAgent', async t => {
 
   app.get('/redirect/again', ctx => ctx.redirectTo('hello'));
 
-  app.get('/redirect/infinite/:num/:code', ctx => {
-    const code = ctx.stash.code;
-    const num = parseInt(ctx.stash.num) + 1;
-    ctx.redirectTo('infinite', {status: code, values: {code, num}});
-  }).name('infinite');
+  app
+    .get('/redirect/infinite/:num/:code', ctx => {
+      const code = ctx.stash.code;
+      const num = parseInt(ctx.stash.num) + 1;
+      ctx.redirectTo('infinite', {status: code, values: {code, num}});
+    })
+    .name('infinite');
 
-  app.any('/redirect/introspect', async ctx => {
-    await ctx.render({
-      json: {
-        method: ctx.req.method,
-        headers: {
-          authorization: ctx.req.get('Authorization'),
-          content: ctx.req.get('Content-Disposition'),
-          cookie: ctx.req.get('Cookie'),
-          referer: ctx.req.get('Referer'),
-          test: ctx.req.get('X-Test')
-        },
-        body: await ctx.req.text()
-      }
-    });
-  }).name('introspect');
+  app
+    .any('/redirect/introspect', async ctx => {
+      await ctx.render({
+        json: {
+          method: ctx.req.method,
+          headers: {
+            authorization: ctx.req.get('Authorization'),
+            content: ctx.req.get('Content-Disposition'),
+            cookie: ctx.req.get('Cookie'),
+            referer: ctx.req.get('Referer'),
+            test: ctx.req.get('X-Test')
+          },
+          body: await ctx.req.text()
+        }
+      });
+    })
+    .name('introspect');
 
   app.any('/redirect/introspect/:code', ctx => ctx.redirectTo('introspect', {status: ctx.stash.code}));
 
@@ -375,7 +380,7 @@ t.test('UserAgent', async t => {
   });
 
   await t.test('Redirect (header removal)', async t => {
-    function defaultOptions () {
+    function defaultOptions() {
       return {
         headers: {
           Authorization: 'one',

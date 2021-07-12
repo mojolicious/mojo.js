@@ -7,7 +7,7 @@ const COMMON: Record<string, string> = Object.freeze({
 });
 
 export class Mime {
-  detect (accepts: string): string[] {
+  detect(accepts: string): string[] {
     const types: Record<string, number> = {};
     for (const accept of accepts.split(/\s*,\s*/)) {
       const match = accept.match(/^\s*([^,; ]+)(?:\s*;\s*q\s*=\s*(\d+(?:\.\d+)?))?\s*$/i);
@@ -19,7 +19,7 @@ export class Mime {
     return detected.map(type => mime.extension(type)).filter(ext => ext !== false) as string[];
   }
 
-  extType (ext: string): string | null {
+  extType(ext: string): string | null {
     return COMMON[ext] ?? mime.types[ext] ?? null;
   }
 }

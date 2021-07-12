@@ -1,45 +1,24 @@
 {
+  "env": {
+    "node": true,
+    "es6": true
+  },
   "extends": [
+    "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "standard-with-typescript"
+    "prettier"
   ],
-  "plugins": [
-    "import"
-  ],
+  "plugins": ["import", "prettier"],
   "parserOptions": {
     "project": "./tsconfig.eslint.json"
   },
   "rules": {
-    "semi": "off",
-    "@typescript-eslint/semi": [
-      "error",
-      "always",
-      {
-        "omitLastInOneLineBlock": true
-      }
-    ],
-    "no-extra-semi": "error",
-    "max-len": [
-      "error",
-      {
-        "code": 120
-      }
-    ],
-    "object-curly-spacing": "off",
+    "prettier/prettier": "error",
     "import/order": [
       "error",
       {
-        "groups": [
-          "type",
-          "builtin",
-          [
-            "sibling",
-            "parent"
-          ],
-          "index",
-          "object"
-        ],
+        "groups": ["type", "builtin", ["sibling", "parent"], "index", "object"],
         "newlines-between": "never",
         "alphabetize": {
           "order": "asc",
@@ -51,20 +30,6 @@
       "error",
       {
         "prefer": "type-imports"
-      }
-    ],
-    "@typescript-eslint/object-curly-spacing": "error",
-    "@typescript-eslint/member-delimiter-style": [
-      "error",
-      {
-        "multiline": {
-          "delimiter": "comma",
-          "requireLast": false
-        },
-        "singleline": {
-          "delimiter": "comma",
-          "requireLast": false
-        }
       }
     ],
     "@typescript-eslint/no-explicit-any": "off"

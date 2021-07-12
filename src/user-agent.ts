@@ -10,16 +10,20 @@ import FormData from 'form-data';
 import tough from 'tough-cookie';
 import WS from 'ws';
 
-interface Upload { content: string, filename: string, type: string }
+interface Upload {
+  content: string;
+  filename: string;
+  type: string;
+}
 
 interface UserAgentEvents {
-  request: (config: UserAgentRequestOptions) => void,
-  websocket: (config: UserAgentWebSocketOptions) => void
+  request: (config: UserAgentRequestOptions) => void;
+  websocket: (config: UserAgentWebSocketOptions) => void;
 }
 
 declare interface UserAgent {
-  on: <T extends keyof UserAgentEvents>(event: T, listener: UserAgentEvents[T]) => this,
-  emit: <T extends keyof UserAgentEvents>(event: T, ...args: Parameters<UserAgentEvents[T]>) => boolean
+  on: <T extends keyof UserAgentEvents>(event: T, listener: UserAgentEvents[T]) => this;
+  emit: <T extends keyof UserAgentEvents>(event: T, ...args: Parameters<UserAgentEvents[T]>) => boolean;
 }
 
 class UserAgent extends EventEmitter {
@@ -28,7 +32,7 @@ class UserAgent extends EventEmitter {
   maxRedirects: number;
   name: string | undefined;
 
-  constructor (options: UserAgentOptions = {}) {
+  constructor(options: UserAgentOptions = {}) {
     super();
 
     this.baseURL = options.baseURL;
@@ -36,35 +40,35 @@ class UserAgent extends EventEmitter {
     this.name = options.name;
   }
 
-  async delete (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async delete(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('DELETE', url, options);
   }
 
-  async get (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async get(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('GET', url, options);
   }
 
-  async head (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async head(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('HEAD', url, options);
   }
 
-  async options (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async options(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('OPTIONS', url, options);
   }
 
-  async patch (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async patch(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('PATCH', url, options);
   }
 
-  async post (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async post(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('POST', url, options);
   }
 
-  async put (url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async put(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('PUT', url, options);
   }
 
-  async request (config: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async request(config: UserAgentRequestOptions): Promise<UserAgentResponse> {
     const filtered = this._filterConfig(config);
     await this._loadCookies(filtered.url, filtered);
 
@@ -97,7 +101,7 @@ class UserAgent extends EventEmitter {
     });
   }
 
-  async websocket (url: string | URL, options: UserAgentWebSocketOptions = {}): Promise<WebSocket> {
+  async websocket(url: string | URL, options: UserAgentWebSocketOptions = {}): Promise<WebSocket> {
     options.url = url;
     const filtered = this._filterSharedConfig(options);
     await this._loadCookies(filtered.url, filtered);
@@ -120,11 +124,11 @@ class UserAgent extends EventEmitter {
     });
   }
 
-  _cookieURL (currentURL: URL): string {
+  _cookieURL(currentURL: URL): string {
     return format(currentURL, {auth: false, fragment: false, search: false});
   }
 
-  _filterConfig (config: Record<string, any>): Record<string, any> {
+  _filterConfig(config: Record<string, any>): Record<string, any> {
     const filtered = this._filterSharedConfig(config);
     if (filtered.method === undefined) filtered.method = 'GET';
 
@@ -146,7 +150,7 @@ class UserAgent extends EventEmitter {
     return filtered;
   }
 
-  _filterSharedConfig (config: Record<string, any>): Record<string, any> {
+  _filterSharedConfig(config: Record<string, any>): Record<string, any> {
     if (!(config.url instanceof URL)) config.url = new URL(config.url, this.baseURL);
 
     // Auth
@@ -170,7 +174,7 @@ class UserAgent extends EventEmitter {
     return config;
   }
 
-  _formData (values: Record<string, string | Upload> = {}): FormData {
+  _formData(values: Record<string, string | Upload> = {}): FormData {
     const form = new FormData();
     for (const [name, value] of Object.entries(values)) {
       if (typeof value === 'string') {
@@ -182,7 +186,7 @@ class UserAgent extends EventEmitter {
     return form;
   }
 
-  async _handleRedirect (config: Record<string, any>, res: UserAgentResponse): Promise<UserAgentResponse> {
+  async _handleRedirect(config: Record<string, any>, res: UserAgentResponse): Promise<UserAgentResponse> {
     const redirected: number = config.redirected ?? 0;
     if (redirected >= this.maxRedirects) return res;
 
@@ -207,7 +211,7 @@ class UserAgent extends EventEmitter {
 
       return this.request(newConfig);
 
-    // Same request again
+      // Same request again
     } else if (res.status === 307 || res.status === 308) {
       config.url = url;
       config.redirected = redirected + 1;
@@ -220,25 +224,27 @@ class UserAgent extends EventEmitter {
     return res;
   }
 
-  async _handleResponse (config: Record<string, any>, raw: http.IncomingMessage): Promise<UserAgentResponse> {
+  async _handleResponse(config: Record<string, any>, raw: http.IncomingMessage): Promise<UserAgentResponse> {
     const res = new UserAgentResponse(raw);
     await this._storeCookies(config.url, res);
     return this.maxRedirects > 0 ? await this._handleRedirect(config, res) : res;
   }
 
-  async _loadCookies (url: URL, config: Record<string, any>): Promise<void> {
+  async _loadCookies(url: URL, config: Record<string, any>): Promise<void> {
     if (this.cookieJar === null) return;
     const cookies = await this.cookieJar.getCookies(this._cookieURL(url));
     if (cookies.length > 0) config.headers.Cookie = cookies.map(cookie => cookie.cookieString()).join('; ');
   }
 
-  async _requestConfig (
-    method: string, url: string | URL = '/', options?: UserAgentRequestOptions
+  async _requestConfig(
+    method: string,
+    url: string | URL = '/',
+    options?: UserAgentRequestOptions
   ): Promise<UserAgentResponse> {
     return await this.request({url, method, ...options});
   }
 
-  async _storeCookies (url: URL, res: UserAgentResponse): Promise<void> {
+  async _storeCookies(url: URL, res: UserAgentResponse): Promise<void> {
     if (this.cookieJar === null) return;
 
     const header = res.headers['set-cookie'];

@@ -1,4 +1,4 @@
-export default async function testCommand (app, args) {
+export default async function testCommand(app, args) {
   process.stdout.write(`Test ${args[1]}!`);
 }
 

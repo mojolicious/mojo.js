@@ -49,8 +49,14 @@ t.test('Full app', async t => {
   });
 
   await t.test('Static files', async () => {
-    (await ua.getOk('/public/test.txt')).statusIs(200).headerExists('Content-Length').bodyLike(/Static file\r?\n/);
-    (await ua.getOk('/static')).statusIs(200).headerExists('Content-Length').bodyLike(/Static file\r?\n/);
+    (await ua.getOk('/public/test.txt'))
+      .statusIs(200)
+      .headerExists('Content-Length')
+      .bodyLike(/Static file\r?\n/);
+    (await ua.getOk('/static'))
+      .statusIs(200)
+      .headerExists('Content-Length')
+      .bodyLike(/Static file\r?\n/);
     (await ua.getOk('/public/does_not_exist.txt')).headerExistsNot('Etag').statusIs(404);
     (await ua.getOk('/test.txt')).statusIs(404);
   });

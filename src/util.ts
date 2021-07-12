@@ -10,7 +10,7 @@ const HTML_ESCAPE: Record<string, string> = Object.freeze({
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
-  '\'': '&#39;'
+  "'": '&#39;'
 });
 
 const EMPTY_HTML_TAGS: Record<string, boolean> = Object.freeze({
@@ -32,8 +32,9 @@ const EMPTY_HTML_TAGS: Record<string, boolean> = Object.freeze({
   wbr: true
 });
 
-export async function captureOutput (
-  fn: () => void, options: {stderr?: boolean, stdout?: boolean} = {}
+export async function captureOutput(
+  fn: () => void,
+  options: {stderr?: boolean; stdout?: boolean} = {}
 ): Promise<string | Buffer> {
   if (options.stdout === undefined) options.stdout = true;
 
@@ -63,10 +64,10 @@ export async function captureOutput (
     stderr.write = stderrWrite;
   }
 
-  return (output.length > 0) && Buffer.isBuffer(output[0]) ? Buffer.concat(output) : output.join('');
+  return output.length > 0 && Buffer.isBuffer(output[0]) ? Buffer.concat(output) : output.join('');
 }
 
-export async function cliCreateDir (path: string): Promise<void> {
+export async function cliCreateDir(path: string): Promise<void> {
   const dir = new Path(process.cwd(), ...path.split('/'));
   const stdout = process.stdout;
   if (await dir.exists()) {
@@ -78,8 +79,11 @@ export async function cliCreateDir (path: string): Promise<void> {
   await dir.mkdir({recursive: true});
 }
 
-export async function cliCreateFile (
-  path: string, template: string, values: Record<string, any> = {}, options: {chmod?: Mode} = {}
+export async function cliCreateFile(
+  path: string,
+  template: string,
+  values: Record<string, any> = {},
+  options: {chmod?: Mode} = {}
 ): Promise<void> {
   const file = new Path(process.cwd(), ...path.split('/'));
   const stdout = process.stdout;
@@ -96,11 +100,11 @@ export async function cliCreateFile (
   }
 }
 
-export async function cliFixPackage (): Promise<void> {
+export async function cliFixPackage(): Promise<void> {
   const file = new Path(process.cwd(), 'package.json');
 
   const stdout = process.stdout;
-  if (!await file.exists()) {
+  if (!(await file.exists())) {
     stdout.write(chalk.green(' [write]') + ` ${file.toString()}\n`);
     await file.writeFile(JSON.stringify({type: 'module'}, null, 2));
     return;
@@ -117,7 +121,7 @@ export async function cliFixPackage (): Promise<void> {
   await file.writeFile(JSON.stringify(json, null, 2));
 }
 
-export function decodeURIComponentSafe (value: string): string | null {
+export function decodeURIComponentSafe(value: string): string | null {
   try {
     return decodeURIComponent(value);
   } catch (error) {
@@ -125,9 +129,10 @@ export function decodeURIComponentSafe (value: string): string | null {
   }
 }
 
-export async function exceptionContext (
-  error: Error, options: {lines?: number} = {}
-): Promise<{file: string, line: number, column: number, source: Array<{num: number, code: string}>} | null> {
+export async function exceptionContext(
+  error: Error,
+  options: {lines?: number} = {}
+): Promise<{file: string; line: number; column: number; source: Array<{num: number; code: string}>} | null> {
   const stack = error.stack ?? '';
   const match = stack.split('\n')[1].match(/^\s*at .+ \(([^)]+):(\d+):(\d+)\)\s*$/);
   if (match === null) return null;
@@ -137,10 +142,10 @@ export async function exceptionContext (
   const lineNumber = parseInt(match[2]);
   const column = parseInt(match[3]);
 
-  const startLine = (lineNumber - lines) <= 0 ? 1 : lineNumber - lines;
+  const startLine = lineNumber - lines <= 0 ? 1 : lineNumber - lines;
   const endLine = lineNumber + lines;
 
-  const source: Array<{num: number, code: string}> = [];
+  const source: Array<{num: number; code: string}> = [];
   const context = {file: file.toString(), line: lineNumber, column, source};
   let currentLine = 0;
   for await (const line of file.lines({encoding: 'utf8'})) {
@@ -154,17 +159,19 @@ export async function exceptionContext (
   return context;
 }
 
-export function htmlEscape (value: string | SafeString): string {
+export function htmlEscape(value: string | SafeString): string {
   if (value instanceof SafeString) return value.toString();
   return value.replace(/[&<>'"]/g, htmlReplace);
 }
 
-function htmlReplace (char: string): string {
+function htmlReplace(char: string): string {
   return HTML_ESCAPE[char] ?? char;
 }
 
-export function htmlTag (
-  name: string, attrs: Record<string, string> | string | SafeString = {}, content: string | SafeString = ''
+export function htmlTag(
+  name: string,
+  attrs: Record<string, string> | string | SafeString = {},
+  content: string | SafeString = ''
 ): SafeString {
   if (typeof attrs === 'string' || attrs instanceof SafeString) [content, attrs] = [attrs, {}];
   const result: string[] = [];
@@ -182,15 +189,19 @@ export function htmlTag (
   return new SafeString(result.join(''));
 }
 
-export async function loadModules (dirs: string[]): Promise<Record<string, any>> {
+export async function loadModules(dirs: string[]): Promise<Record<string, any>> {
   const modules: Record<string, any> = {};
 
   for (const dir of dirs.map(path => new Path(path))) {
-    if (!await dir.exists()) continue;
+    if (!(await dir.exists())) continue;
     for await (const file of dir.list({recursive: true})) {
       if (!/\.m?js$/.test(file.toString())) continue;
       const imports = await import(file.toFileURL().toString());
-      const name = dir.relative(file).toArray().join('/').replace(/\.m?js$/, '');
+      const name = dir
+        .relative(file)
+        .toArray()
+        .join('/')
+        .replace(/\.m?js$/, '');
       modules[name] = imports.default ?? null;
     }
   }
@@ -200,7 +211,7 @@ export async function loadModules (dirs: string[]): Promise<Record<string, any>>
 
 export const sleep = setTimeout;
 
-export function tablify (rows: string[][] = []): string {
+export function tablify(rows: string[][] = []): string {
   const spec: number[] = [];
 
   const table = rows.map(row => {
@@ -211,18 +222,18 @@ export function tablify (rows: string[][] = []): string {
     });
   });
 
-  const lines = table.map(row => row.map((col, i) => i === row.length - 1 ? col : col.padEnd(spec[i])).join('  '));
+  const lines = table.map(row => row.map((col, i) => (i === row.length - 1 ? col : col.padEnd(spec[i]))).join('  '));
   return lines.join('\n') + '\n';
 }
 
 export class SafeString {
   _safe: string;
 
-  constructor (safe: string) {
+  constructor(safe: string) {
     this._safe = safe;
   }
 
-  toString (): string {
+  toString(): string {
     return this._safe;
   }
 }

@@ -1,5 +1,5 @@
 export class Bar {
-  language (): string {
+  language(): string {
     return 'TypeScript';
   }
 }

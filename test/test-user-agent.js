@@ -28,13 +28,13 @@ t.test('TestUserAgent', async t => {
     const results = [];
     ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await ua.deleteOk('/'));
-    (await ua.getOk('/'));
-    (await ua.headOk('/'));
-    (await ua.optionsOk('/'));
-    (await ua.patchOk('/'));
-    (await ua.postOk('/'));
-    (await ua.putOk('/'));
+    await ua.deleteOk('/');
+    await ua.getOk('/');
+    await ua.headOk('/');
+    await ua.optionsOk('/');
+    await ua.patchOk('/');
+    await ua.postOk('/');
+    await ua.putOk('/');
 
     t.same(results, [
       ['ok', [true], 'DELETE request for /'],
@@ -63,8 +63,12 @@ t.test('TestUserAgent', async t => {
     const results = [];
     ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await ua.getOk('/')).typeIs('text/plain').typeLike(/plain/).headerExists('Content-Type')
-      .headerExistsNot('Content-Disposition').headerIs('Content-Type', 'text/plain')
+    (await ua.getOk('/'))
+      .typeIs('text/plain')
+      .typeLike(/plain/)
+      .headerExists('Content-Type')
+      .headerExistsNot('Content-Disposition')
+      .headerIs('Content-Type', 'text/plain')
       .headerLike('Content-Type', /plain/);
 
     t.same(results, [
@@ -82,7 +86,10 @@ t.test('TestUserAgent', async t => {
     const results = [];
     ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await ua.getOk('/')).bodyIs('test').bodyLike(/that/).bodyUnlike(/whatever/);
+    (await ua.getOk('/'))
+      .bodyIs('test')
+      .bodyLike(/that/)
+      .bodyUnlike(/whatever/);
 
     t.same(results, [
       ['ok', [true], 'GET request for /'],
@@ -96,7 +103,10 @@ t.test('TestUserAgent', async t => {
     const results = [];
     ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await ua.getOk('/index.html')).elementExists('p').elementExists('h1').elementExistsNot('h1')
+    (await ua.getOk('/index.html'))
+      .elementExists('p')
+      .elementExists('h1')
+      .elementExistsNot('h1')
       .elementExistsNot('div');
 
     t.same(results, [
@@ -130,7 +140,12 @@ t.test('TestUserAgent', async t => {
   await t.test('Test without active connection', async t => {
     const badAgent = await app.newTestUserAgent();
 
-    t.throws(() => { badAgent.statusIs(200) }, {message: /No active HTTP response/});
+    t.throws(
+      () => {
+        badAgent.statusIs(200);
+      },
+      {message: /No active HTTP response/}
+    );
 
     let result;
     try {

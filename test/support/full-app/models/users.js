@@ -1,9 +1,9 @@
 export default class Users {
-  constructor () {
+  constructor() {
     this._data = {sri: 'admin'};
   }
 
-  getRole (name) {
+  getRole(name) {
     return this._data[name];
   }
 }

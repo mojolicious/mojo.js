@@ -13,7 +13,9 @@ export type JSONValue = string | number | boolean | null | JSONValue[] | {[key: 
 
 export type MojoApp = App;
 
-export interface MojoContext extends Context { [key: string]: any }
+export interface MojoContext extends Context {
+  [key: string]: any;
+}
 
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
@@ -22,54 +24,57 @@ export type RouteArguments = Array<string | MojoAction | Record<string, string[]
 export type PlaceholderType = RegExp | string | string[];
 
 export interface AppOptions {
-  config?: Record<string, any>,
-  exceptionFormat?: string,
-  detectImport?: boolean,
-  mode?: string,
-  secrets?: string[]
+  config?: Record<string, any>;
+  exceptionFormat?: string;
+  detectImport?: boolean;
+  mode?: string;
+  secrets?: string[];
 }
 
 export interface RenderOptions {
-  engine?: string,
-  format?: string,
-  inline?: string,
-  inlineLayout?: string,
-  json?: JSONValue,
-  layout?: string,
-  maybe?: boolean,
-  pretty?: boolean,
-  status?: number,
-  text?: string,
-  view?: string,
-  [key: string]: any
+  engine?: string;
+  format?: string;
+  inline?: string;
+  inlineLayout?: string;
+  json?: JSONValue;
+  layout?: string;
+  maybe?: boolean;
+  pretty?: boolean;
+  status?: number;
+  text?: string;
+  view?: string;
+  [key: string]: any;
 }
 
-export interface ServerRequestOptions { isWebSocket: boolean, reverseProxy: boolean }
+export interface ServerRequestOptions {
+  isWebSocket: boolean;
+  reverseProxy: boolean;
+}
 
 export interface UserAgentOptions {
-  baseURL?: string | URL,
-  cookieJar?: CookieJar,
-  maxRedirects?: number,
-  name?: string
+  baseURL?: string | URL;
+  cookieJar?: CookieJar;
+  maxRedirects?: number;
+  name?: string;
 }
 interface SharedUserAgentRequestOptions {
-  auth?: string,
-  headers?: Record<string, string>,
-  query?: Record<string, string>,
-  url?: string | URL
+  auth?: string;
+  headers?: Record<string, string>;
+  query?: Record<string, string>;
+  url?: string | URL;
 }
 export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
-  agent?: Agent,
-  body?: string | Buffer | NodeJS.ReadableStream,
-  form?: Record<string, string>,
-  formData?: Record<string, string> | FormData,
-  indecure?: boolean,
-  method?: string,
-  json?: JSONValue
+  agent?: Agent;
+  body?: string | Buffer | NodeJS.ReadableStream;
+  form?: Record<string, string>;
+  formData?: Record<string, string> | FormData;
+  indecure?: boolean;
+  method?: string;
+  json?: JSONValue;
 }
 export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions {
-  json?: boolean,
-  protocols?: string[]
+  json?: boolean;
+  protocols?: string[];
 }
 
 export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Tap};

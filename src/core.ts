@@ -7,13 +7,14 @@ import type {AppOptions} from './types.js';
 import {App} from './app.js';
 import Path from '@mojojs/path';
 
-export const version =
-  JSON.parse(Path.currentFile().dirname().sibling('package.json').readFileSync().toString()).version;
+export const version = JSON.parse(
+  Path.currentFile().dirname().sibling('package.json').readFileSync().toString()
+).version;
 
-export default function mojo (options?: AppOptions): App {
+export default function mojo(options?: AppOptions): App {
   const app = new App(options);
 
-  const caller = app.home = Path.callerFile().dirname();
+  const caller = (app.home = Path.callerFile().dirname());
   const uplevel = caller.dirname();
   const callerExists = caller.child('package.json').existsSync();
   const uplevelExists = uplevel.child('package.json').existsSync();
@@ -39,11 +40,4 @@ export {TestUserAgent} from './user-agent/test.js';
 export {UserAgent} from './user-agent.js';
 export * as util from './util.js';
 
-export {
-  Expand,
-  ExpandRecursive,
-  JSONValue,
-  MojoAction,
-  MojoApp,
-  MojoContext
-} from './types.js';
+export {Expand, ExpandRecursive, JSONValue, MojoAction, MojoApp, MojoContext} from './types.js';

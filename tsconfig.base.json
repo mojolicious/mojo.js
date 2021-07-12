@@ -1,9 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
+    "lib": ["ESNext", "DOM"],
     "target": "ES2020",
     "module": "ES2020",
     "declaration": true,
@@ -11,6 +8,6 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "noErrorTruncation": true,
-    "strict": true,
+    "strict": true
   }
 }

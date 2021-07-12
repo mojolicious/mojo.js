@@ -6,14 +6,14 @@ import Path from '@mojojs/path';
 import {compile} from 'ejs';
 import LRU from 'lru-cache';
 
-export default function ejsEnginePlugin (app: App): void {
+export default function ejsEnginePlugin(app: App): void {
   app.renderer.addEngine('ejs', new EJSEngine());
 }
 
 class EJSEngine {
   cache: LRU<string, AsyncTemplateFunction> = new LRU(100);
 
-  async render (ctx: MojoContext, options: RenderOptions): Promise<Buffer> {
+  async render(ctx: MojoContext, options: RenderOptions): Promise<Buffer> {
     let template;
 
     if (options.inline !== undefined) {

@@ -35,7 +35,7 @@ const ContextWrapper = class extends Context {};
 type AppHook = (app: App, ...args: any[]) => any;
 type ContextHook = (app: MojoContext, ...args: any[]) => any;
 
-export type Decoration = ((...args: any[]) => any) & {get?: () => any, set?: (value: any) => any};
+export type Decoration = ((...args: any[]) => any) & {get?: () => any; set?: (value: any) => any};
 
 export type Plugin = (app: App, options: Record<string, any>) => any;
 
@@ -60,7 +60,7 @@ export class App {
   _mode: string;
   _server: WeakRef<Server> | null = null;
 
-  constructor (options: AppOptions = {}) {
+  constructor(options: AppOptions = {}) {
     this.config = options.config ?? {};
     this.detectImport = options.detectImport ?? true;
     this.exceptionFormat = options.exceptionFormat ?? 'html';
@@ -77,27 +77,27 @@ export class App {
     this.plugin(viewHelpersPlugin);
   }
 
-  addAppHook (name: string, fn: AppHook): this {
+  addAppHook(name: string, fn: AppHook): this {
     this.hooks.addHook(name, fn);
     return this;
   }
 
-  addContextHook (name: string, fn: ContextHook): this {
+  addContextHook(name: string, fn: ContextHook): this {
     this.hooks.addHook(name, fn);
     return this;
   }
 
-  addHelper (name: string, fn: MojoAction): this {
+  addHelper(name: string, fn: MojoAction): this {
     return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
       return fn(this, ...args);
     });
   }
 
-  any (...args: AnyArguments): Route {
+  any(...args: AnyArguments): Route {
     return this.router.any(...args);
   }
 
-  decorateContext (name: string, fn: Decoration): this {
+  decorateContext(name: string, fn: Decoration): this {
     const proto: MojoContext = Context.prototype;
     if (Object.getOwnPropertyDescriptor(proto, name) != null) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
@@ -112,86 +112,86 @@ export class App {
     return this;
   }
 
-  delete (...args: RouteArguments): Route {
+  delete(...args: RouteArguments): Route {
     return this.router.delete(...args);
   }
 
-  get (...args: RouteArguments): Route {
+  get(...args: RouteArguments): Route {
     return this.router.get(...args);
   }
 
-  async handleRequest (ctx: MojoContext): Promise<void> {
+  async handleRequest(ctx: MojoContext): Promise<void> {
     if (ctx.isWebSocket) {
-      if (await this.hooks.runHook('websocket', ctx) === true) return;
+      if ((await this.hooks.runHook('websocket', ctx)) === true) return;
       await this.router.dispatch(ctx);
       return;
     }
 
-    if (await this.hooks.runHook('request', ctx) === true) return;
+    if ((await this.hooks.runHook('request', ctx)) === true) return;
     if (await this.static.dispatch(ctx)) return;
     if (await this.router.dispatch(ctx)) return;
     await ctx.notFound();
   }
 
-  get mode (): string {
+  get mode(): string {
     return this._mode;
   }
 
-  newContext (req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): MojoContext {
+  newContext(req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): MojoContext {
     return new this._contextClass(this, req, res, options);
   }
 
-  async newMockUserAgent (options?: UserAgentOptions): Promise<MockUserAgent> {
+  async newMockUserAgent(options?: UserAgentOptions): Promise<MockUserAgent> {
     return await MockUserAgent.newMockUserAgent(this, options);
   }
 
-  async newTestUserAgent (options?: TestUserAgentOptions): Promise<TestUserAgent> {
+  async newTestUserAgent(options?: TestUserAgentOptions): Promise<TestUserAgent> {
     return await TestUserAgent.newTestUserAgent(this, options);
   }
 
-  options (...args: RouteArguments): Route {
+  options(...args: RouteArguments): Route {
     return this.router.options(...args);
   }
 
-  patch (...args: RouteArguments): Route {
+  patch(...args: RouteArguments): Route {
     return this.router.patch(...args);
   }
 
-  plugin (plugin: Plugin, options: Record<string, any> = {}): any {
+  plugin(plugin: Plugin, options: Record<string, any> = {}): any {
     return plugin(this, options);
   }
 
-  post (...args: RouteArguments): Route {
+  post(...args: RouteArguments): Route {
     return this.router.post(...args);
   }
 
-  put (...args: RouteArguments): Route {
+  put(...args: RouteArguments): Route {
     return this.router.put(...args);
   }
 
-  get server (): Server | null {
+  get server(): Server | null {
     return this._server?.deref() ?? null;
   }
 
-  set server (server: Server | null) {
+  set server(server: Server | null) {
     this._server = server === null ? null : new WeakRef(server);
   }
 
-  start (command?: string, ...args: string[]): void {
+  start(command?: string, ...args: string[]): void {
     if (this.detectImport && process.argv[1] !== Path.callerFile().toString()) return;
     this.cli.start(command, ...args).catch(error => this.log.error(error.message));
   }
 
-  under (...args: AnyArguments): Route {
+  under(...args: AnyArguments): Route {
     return this.router.under(...args);
   }
 
-  async warmup (): Promise<void> {
+  async warmup(): Promise<void> {
     await this.renderer.warmup();
     await this.router.warmup();
   }
 
-  websocket (...args: RouteArguments): Route {
+  websocket(...args: RouteArguments): Route {
     return this.router.websocket(...args);
   }
 }

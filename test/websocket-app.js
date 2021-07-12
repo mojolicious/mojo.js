@@ -163,7 +163,7 @@ t.test('WebSocket app', async t => {
   });
 
   await t.test('Session', async t => {
-    (await (await ua.postOk('/login')).statusIs(200).bodyIs('Welcome kraih'));
+    await (await ua.postOk('/login')).statusIs(200).bodyIs('Welcome kraih');
     await ua.websocketOk('/restricted');
     t.equal(await ua.messageOk(), 'Welcome back kraih');
     await ua.closedOk(1005);

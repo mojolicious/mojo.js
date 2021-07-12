@@ -6,7 +6,12 @@ import LRU from 'lru-cache';
 
 type RouteIndex = Record<string, Route>;
 
-interface RouteSpec { ctx?: MojoContext, method: string, path: string, websocket: boolean }
+interface RouteSpec {
+  ctx?: MojoContext;
+  method: string;
+  path: string;
+  websocket: boolean;
+}
 
 type RouteCondition = (ctx: MojoContext, requirements: any) => boolean;
 
@@ -20,22 +25,22 @@ export class Router extends Route {
   types: Record<string, PlaceholderType> = {num: /[0-9]+/};
   _lookupIndex: RouteIndex | undefined = undefined;
 
-  constructor () {
+  constructor() {
     super();
     this.root = this;
   }
 
-  addCondition (name: string, fn: RouteCondition): this {
+  addCondition(name: string, fn: RouteCondition): this {
     this.conditions[name] = fn;
     return this;
   }
 
-  addType (name: string, value: PlaceholderType): this {
+  addType(name: string, value: PlaceholderType): this {
     this.types[name] = value;
     return this;
   }
 
-  async dispatch (ctx: MojoContext): Promise<boolean> {
+  async dispatch(ctx: MojoContext): Promise<boolean> {
     const plan = this._getPlan(ctx);
     if (plan === null) return false;
     ctx.plan = plan;
@@ -51,7 +56,7 @@ export class Router extends Route {
 
       if (typeof step.fn === 'function') {
         log.trace('Routing to function');
-        if (await step.fn(ctx) === false) break;
+        if ((await step.fn(ctx)) === false) break;
       } else if (typeof stash.controller === 'string' && typeof stash.action === 'string') {
         const controller: string = stash.controller;
         const action: string = stash.action;
@@ -65,14 +70,14 @@ export class Router extends Route {
         const instance = new Controller();
         if (instance[action] === undefined) throw new Error(`Action "${action}" does not exist`);
         log.trace(`Routing to "${controller}#${action}"`);
-        if (await instance[action](ctx) === false) break;
+        if ((await instance[action](ctx)) === false) break;
       }
     }
 
     return true;
   }
 
-  lookup (name: string): Route | null {
+  lookup(name: string): Route | null {
     if (this._lookupIndex === undefined) {
       const defaultNames: RouteIndex = {};
       const customNames: RouteIndex = {};
@@ -92,7 +97,7 @@ export class Router extends Route {
     return this._lookupIndex[name] === undefined ? null : this._lookupIndex[name];
   }
 
-  plot (spec: RouteSpec): Plan | null {
+  plot(spec: RouteSpec): Plan | null {
     const plan = new Plan();
     const steps = plan.steps;
     const stops = plan.stops;
@@ -106,11 +111,11 @@ export class Router extends Route {
     return plan.endpoint === undefined ? null : plan;
   }
 
-  async warmup (): Promise<void> {
+  async warmup(): Promise<void> {
     Object.assign(this.controllers, await util.loadModules(this.controllerPaths));
   }
 
-  _getPlan (ctx: MojoContext): Plan | null {
+  _getPlan(ctx: MojoContext): Plan | null {
     const req = ctx.req;
     const realMethod = req.method;
     if (realMethod === undefined) return null;
@@ -136,7 +141,7 @@ export class Router extends Route {
     return plan;
   }
 
-  _walk (plan: Plan, route: Route, spec: RouteSpec): boolean {
+  _walk(plan: Plan, route: Route, spec: RouteSpec): boolean {
     // Path
     const isEndpoint = route.isEndpoint();
     const result = route.pattern.matchPartial(spec.path, {isEndpoint});
