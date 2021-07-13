@@ -1,13 +1,13 @@
 import type {PlaceholderType} from '../types.js';
 import escapeStringRegexp from 'escape-string-regexp';
 
-const OP = Object.freeze({
+const OP = {
   placeholder: Symbol('placeholder'),
   relaxed: Symbol('relaxed'),
   slash: Symbol('slash'),
   text: Symbol('text'),
   wildcard: Symbol('wildcard')
-});
+};
 
 interface MatchOptions {
   isEndpoint: boolean;

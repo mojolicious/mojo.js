@@ -14,14 +14,14 @@ interface LogEvent extends LogContext {
 }
 type LogFormatter = (data: LogEvent) => string;
 
-const LEVEL: Record<string, number> = Object.freeze({
+const LEVEL: Record<string, number> = {
   fatal: 2,
   error: 3,
   warn: 4,
   info: 5,
   debug: 6,
   trace: 7
-});
+};
 
 export class Logger {
   destination: NodeJS.WritableStream;

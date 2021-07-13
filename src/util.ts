@@ -5,15 +5,15 @@ import Path from '@mojojs/path';
 import chalk from 'chalk';
 import ejs from 'ejs';
 
-const HTML_ESCAPE: Record<string, string> = Object.freeze({
+const HTML_ESCAPE: Record<string, string> = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
   "'": '&#39;'
-});
+};
 
-const EMPTY_HTML_TAGS: Record<string, boolean> = Object.freeze({
+const EMPTY_HTML_TAGS: Record<string, boolean> = {
   area: true,
   base: true,
   br: true,
@@ -30,7 +30,7 @@ const EMPTY_HTML_TAGS: Record<string, boolean> = Object.freeze({
   source: true,
   track: true,
   wbr: true
-});
+};
 
 export async function captureOutput(
   fn: () => void,
