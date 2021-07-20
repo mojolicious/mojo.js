@@ -1,10 +1,13 @@
 import type {ServerRequestOptions} from '../types.js';
 import type {IncomingMessage} from 'http';
-import url from 'url';
+import type url from 'url';
 import {Body} from '../body.js';
 import {Params} from '../body/params.js';
 import {decodeURIComponentSafe} from '../util.js';
 import cookie from 'cookie';
+
+// Official regex from RFC 3986
+const URL_RE = /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
 
 let requestId = 0;
 
@@ -63,7 +66,10 @@ export class ServerRequest extends Body {
   }
 
   get path(): string | null {
-    if (this._path === undefined) this._path = decodeURIComponentSafe(url.parse(this.raw.url as string).pathname ?? '');
+    if (this._path === undefined) {
+      const match = (this.raw.url as string).match(URL_RE);
+      this._path = match === null ? null : decodeURIComponentSafe(match[5]);
+    }
     return this._path;
   }
 
