@@ -11,24 +11,6 @@ The [Mojolicious](https://mojolicious.org) real-time web framework for [Node.js]
 TypeScript. If you want to stay up to date on the latest developments join us on [IRC](https://web.libera.chat/#mojo.js)
 (`#mojo.js` on Libera.Chat).
 
-## Features
-
-  * An amazing **backend** framework, allowing you to easily grow single file prototypes into well-structured MVC web
-    applications.
-    * Powerful out of the box with RESTful routes, WebSockets, HTTP/HTTPS user agent, plugins, commands, templates,
-      content negotiation, cookies, session management, multipart forms, form and JSON validation, testing framework,
-      HTML/XML parser, static file server, MIME types, logger, first class Unicode support and much more for you to
-      discover.
-    * Everything you need to build cloud-native microservices for state of the art container environments.
-    * No default Model. Just use your favorite database. We like [PostgreSQL](https://www.postgresql.org) and
-      [Knex.js](http://knexjs.org).
-    * No default frontend framework. Pair it with [React](https://reactjs.org) or [Vue](https://vuejs.org) for a great
-      development experience.
-  * Batteries included, yet faster than Express and Koa.
-  * Designed for modern JavaScript, with `async`/`await`, classes and ES modules.
-  * Actively maintained by a team with more than 20 years of experience developing mainstream web frameworks such as
-    [Mojolicious](https://mojolicious.org) and [Catalyst](http://www.catalystframework.org).
-
 ## Installation
 
 All you need is Node.js 16.0.0 (or newer).
@@ -65,7 +47,7 @@ $ curl http://127.0.0.1:3000/
 I ♥ Mojo!
 ```
 
-## Duct tape for the HTML5 web
+## Duct Tape for the Web
 
   Use all the latest Node.js and HTML features in convenient single file prototypes like this one, and grow them easily
   into well-structured **Model-View-Controller** web applications.
