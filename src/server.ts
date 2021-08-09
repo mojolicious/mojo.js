@@ -104,7 +104,7 @@ export class Server {
         const stderr = process.stderr;
         socket.on('data', (chunk: string) => stderr.write(`-- Server <<< Client\n${chunk}`));
         const write = socket.write;
-        socket.write = (chunk: string, cb?: ((err?: Error | undefined) => void) | undefined) => {
+        socket.write = (chunk: any, cb: any) => {
           stderr.write(`-- Server >>> Client\n${chunk}`);
           return write.apply(socket, [chunk, cb]);
         };
