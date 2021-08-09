@@ -28,14 +28,14 @@ export class Logger {
   formatter: LogFormatter;
   history: LogEvent[] = [];
   _historySize: number;
-  _level = 6;
+  _level = 7;
 
   constructor(
     options: {destination?: WriteStream; formatter?: LogFormatter; historySize?: number; level?: string} = {}
   ) {
     this.destination = options.destination ?? process.stderr;
     this.formatter = options.formatter ?? Logger.colorFormatter;
-    this.level = process.env.MOJO_LOG_LEVEL ?? options.level ?? 'debug';
+    this.level = process.env.MOJO_LOG_LEVEL ?? options.level ?? 'trace';
 
     this._historySize = options.historySize ?? 0;
   }
