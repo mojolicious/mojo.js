@@ -102,7 +102,7 @@ class Context extends EventEmitter {
     return this.app.models;
   }
 
-  async params(options: busboy.BusboyConfig): Promise<Params> {
+  async params(options?: busboy.BusboyConfig): Promise<Params> {
     if (this._params === undefined) {
       const req = this.req;
       const params = (this._params = new Params(req.query));
