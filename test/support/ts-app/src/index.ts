@@ -23,7 +23,7 @@ app.get('/hello-name', async ctx => {
 });
 
 app.post('/data', async ctx => {
-  const body : any = await ctx.req.json();
+  const body: any = await ctx.req.json();
   await ctx.render({json : {greeting: `Hello ${body.name}`}});
 });
 
