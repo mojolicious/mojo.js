@@ -12,5 +12,17 @@ t.test('TypeScript app', async t => {
     (await ua.getOk('/hello')).statusIs(200).bodyLike(/Hello TypeScript controller!/);
   });
 
+  await t.test('Query Parameter Parse', async () => {
+    (await ua.getOk('/hello-name', {query: {name: 'User'}})).statusIs(200).bodyLike(/Hello User!/);
+  });
+
+  await t.test('Post JSON Body Parse', async () => {
+    (await ua.postOk('/data', {json: {name: 'User'}})).statusIs(200).jsonIs({greeting: 'Hello User'});
+  });
+
+  await t.test('Get Path Param Parse', async () => {
+    (await ua.getOk('/data/1')).statusIs(200).jsonIs({id: 1});
+  });
+
   await ua.stop();
 });
