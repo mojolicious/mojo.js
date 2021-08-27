@@ -3,5 +3,5 @@ package-lock.json
 coverage
 .nyc_output
 /lib
-/test/support/ts-app/lib
+/test/support/ts/full-app/lib
 *.tsbuildinfo

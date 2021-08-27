@@ -1,4 +1,4 @@
-import type {MojoApp, MojoContext} from '../../../../../lib/types.js';
+import type {MojoApp, MojoContext} from '../../../../../../lib/types.js';
 
 export default function helpersPlugin(app: MojoApp): void {
   app.addHelper('testHelper', testHelper);

@@ -4,6 +4,6 @@ export const app = mojo();
 
 app.log.level = 'debug';
 
-app.any('/', ctx => ctx.render({text: 'dist'}));
+app.any('/', ctx => ctx.render({text: 'none'}));
 
 app.start();

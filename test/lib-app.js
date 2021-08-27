@@ -1,7 +1,7 @@
-import {app as distApp} from './support/lib-app/dist/index.js';
-import {app} from './support/lib-app/index.js';
-import {app as libApp} from './support/lib-app/lib/index.js';
-import {app as srcApp} from './support/lib-app/src/index.js';
+import {app as distApp} from './support/js/lib-app/dist/index.js';
+import {app} from './support/js/lib-app/index.js';
+import {app as libApp} from './support/js/lib-app/lib/index.js';
+import {app as srcApp} from './support/js/lib-app/src/index.js';
 import Path from '@mojojs/path';
 import t from 'tap';
 
@@ -11,7 +11,7 @@ t.test('Lib app', async t => {
   const libAgent = await libApp.newTestUserAgent({tap: t});
   const srcAgent = await srcApp.newTestUserAgent({tap: t});
 
-  const home = Path.currentFile().sibling('support', 'lib-app');
+  const home = Path.currentFile().sibling('support', 'js', 'lib-app');
 
   await t.test('none', async t => {
     t.equal(app.home.toString(), home.toString());

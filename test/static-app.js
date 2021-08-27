@@ -1,4 +1,4 @@
-import {app} from './support/static-app/index.js';
+import {app} from './support/js/static-app/index.js';
 import t from 'tap';
 
 t.test('Static app', async t => {

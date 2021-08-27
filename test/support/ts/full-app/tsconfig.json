@@ -1,5 +1,5 @@
 {
-  "extends": "../../../tsconfig.base.json",
+  "extends": "../../../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "lib",
     "rootDir": "src",
@@ -7,7 +7,7 @@
   },
   "references": [
     {
-      "path": "../../../tsconfig.json"
+      "path": "../../../../tsconfig.json"
     }
   ],
   "include": [

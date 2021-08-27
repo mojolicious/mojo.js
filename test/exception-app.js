@@ -83,7 +83,7 @@ t.test('Exception app', async t => {
     const app = mojo();
 
     app.log.level = 'debug';
-    app.renderer.viewPaths.push(Path.currentFile().sibling('support', 'exception-app', 'views').toString());
+    app.renderer.viewPaths.push(Path.currentFile().sibling('support', 'js', 'exception-app', 'views').toString());
 
     app.any('/exception', () => {
       throw new Error('Another test exception');
@@ -198,7 +198,7 @@ t.test('Exception app', async t => {
   await t.test('Production (custom views)', async t => {
     process.env.NODE_ENV = 'production';
     const app = mojo();
-    app.renderer.viewPaths.push(Path.currentFile().sibling('support', 'exception-app', 'views').toString());
+    app.renderer.viewPaths.push(Path.currentFile().sibling('support', 'js', 'exception-app', 'views').toString());
 
     app.any('/exception', () => {
       throw new Error('Another test exception');

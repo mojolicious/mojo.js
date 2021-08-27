@@ -152,7 +152,9 @@ t.test('Util', async t => {
 
   await t.test('loadModules', async t => {
     const loadModules = util.loadModules;
-    const modules = await loadModules([Path.currentFile().sibling('support', 'full-app', 'controllers').toString()]);
+    const modules = await loadModules([
+      Path.currentFile().sibling('support', 'js', 'full-app', 'controllers').toString()
+    ]);
     t.ok(modules.foo != null);
     t.ok(modules.bar != null);
     t.ok(modules['foo/baz'] != null);

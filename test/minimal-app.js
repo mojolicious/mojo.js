@@ -1,4 +1,4 @@
-import {app} from './support/minimal-app/myapp.js';
+import {app} from './support/js/minimal-app/myapp.js';
 import t from 'tap';
 
 t.test('Minimal app', async t => {

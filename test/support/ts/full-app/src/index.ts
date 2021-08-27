@@ -1,4 +1,4 @@
-import mojo from '../../../../lib/core.js';
+import mojo from '../../../../../lib/core.js';
 import {Bar} from './models/bar.js';
 import helpersPlugin from './plugins/helpers.js';
 
