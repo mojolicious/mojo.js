@@ -28,7 +28,7 @@
     "clean": "rm -r tsconfig.tsbuildinfo test/support/ts-app/tsconfig.tsbuildinfo lib test/support/ts-app/lib",
     "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
     "coverage:ci": "npm run coverage -- --no-check-coverage && tap --no-check-coverage --coverage-report=text-lcov > .lcov.info",
-    "lint": "eslint \"test/*.js\" \"src/**/*.ts\" \"src/*.ts\"",
+    "lint": "eslint \"test/*.js\" \"test/**/src/**/*.ts\" \"src/**/*.ts\" \"src/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "publish:major": "npm version major && npm publish",
