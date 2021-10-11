@@ -64,7 +64,7 @@
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "autocannon": "^7.3.0",
     "concurrently": "^6.2.0",
-    "eslint": "^7.28.0",
+    "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
