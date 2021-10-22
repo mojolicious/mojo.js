@@ -302,10 +302,12 @@ t.test('App', async t => {
 
   await t.test('JSON', async () => {
     (await ua.putOk('/json', {json: {hello: 'world'}})).statusIs(200).jsonIs({hello: 'world'});
+    (await ua.putOk('/json', {json: {i: ['♥ mojo']}})).statusIs(200).jsonIs({i: ['♥ mojo']});
   });
 
   await t.test('YAML', async () => {
     (await ua.putOk('/yaml', {yaml: {hello: 'world'}})).statusIs(200).yamlIs({hello: 'world'});
+    (await ua.putOk('/yaml', {yaml: {i: ['♥ mojo']}})).statusIs(200).yamlIs({i: ['♥ mojo']});
   });
 
   await t.test('Not found', async () => {
