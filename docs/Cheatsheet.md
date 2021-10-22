@@ -92,6 +92,9 @@ await ctx.render({text: 'Hello World!'});
 // Create a JSON response from a data structure
 await ctx.render({json: {hello: 'world'}});
 
+// Create a YAML response from a data structure
+await ctx.render({yaml: {hello: 'world'}});
+
 // Create a response by rendering the view "views/foo/bar.*.*"
 await ctx.render({view: 'foo/bar'});
 

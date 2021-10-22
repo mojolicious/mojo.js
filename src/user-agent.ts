@@ -7,6 +7,7 @@ import {format, URL} from 'url';
 import {UserAgentResponse} from './user-agent/response.js';
 import {WebSocket} from './websocket.js';
 import FormData from 'form-data';
+import yaml from 'js-yaml';
 import tough from 'tough-cookie';
 import WS from 'ws';
 
@@ -136,6 +137,9 @@ class UserAgent extends EventEmitter {
     if (filtered.json !== undefined) {
       if (filtered.headers['Content-Type'] === undefined) filtered.headers['Content-Type'] = 'application/json';
       filtered.body = JSON.stringify(filtered.json);
+    } else if (filtered.yaml !== undefined) {
+      if (filtered.headers['Content-Type'] === undefined) filtered.headers['Content-Type'] = 'text/yaml';
+      filtered.body = yaml.dump(filtered.yaml);
     } else if (filtered.form !== undefined) {
       if (filtered.headers['Content-Type'] === undefined) {
         filtered.headers['Content-Type'] = 'application/x-www-form-urlencoded';

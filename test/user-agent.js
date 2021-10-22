@@ -39,6 +39,8 @@ t.test('UserAgent', async t => {
 
   app.get('/hello', {ext: 'json'}, ctx => ctx.render({json: {hello: 'world'}}));
 
+  app.get('/hello', {ext: 'yaml'}, ctx => ctx.render({yaml: {hello: 'world'}}));
+
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
   app.any('/test.html').to(ctx => ctx.render({text: '<div>Test<br>123</div>'}));
@@ -214,6 +216,12 @@ t.test('UserAgent', async t => {
     const res = await ua.get('/hello.json');
     t.equal(res.status, 200);
     t.same(await res.json(), {hello: 'world'});
+  });
+
+  await t.test('YAML', async t => {
+    const res = await ua.get('/hello.yaml');
+    t.equal(res.status, 200);
+    t.same(await res.yaml(), {hello: 'world'});
   });
 
   await t.test('Form', async t => {

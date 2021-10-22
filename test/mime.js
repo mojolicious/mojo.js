@@ -5,6 +5,7 @@ t.test('Types', t => {
   const mime = new Mime();
   t.equal(mime.extType('txt'), 'text/plain; charset=utf-8');
   t.equal(mime.extType('json'), 'application/json; charset=utf-8');
+  t.equal(mime.extType('yaml'), 'text/yaml; charset=utf-8');
   t.equal(mime.extType('html'), 'text/html; charset=utf-8');
   t.equal(mime.extType('css'), 'text/css');
   t.equal(mime.extType('xml'), 'application/xml');
@@ -26,6 +27,7 @@ t.test('Detect common MIME types', t => {
   t.same(mime.detect('image/jpeg'), ['jpeg']);
   t.same(mime.detect('application/javascript'), ['js']);
   t.same(mime.detect('application/json'), ['json']);
+  t.same(mime.detect('text/yaml'), ['yaml']);
   t.same(mime.detect('audio/mpeg'), ['mpga']);
   t.same(mime.detect('video/mp4'), ['mp4']);
   t.same(mime.detect('audio/ogg'), ['oga']);

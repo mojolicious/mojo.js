@@ -3,7 +3,8 @@ import mime from 'mime-types';
 const COMMON: Record<string, string> = {
   html: 'text/html; charset=utf-8',
   json: 'application/json; charset=utf-8',
-  txt: 'text/plain; charset=utf-8'
+  txt: 'text/plain; charset=utf-8',
+  yaml: 'text/yaml; charset=utf-8'
 };
 
 export class Mime {

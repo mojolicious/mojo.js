@@ -30,6 +30,9 @@ t.test('App', async t => {
   // PUT /json
   app.put('/json', async ctx => ctx.render({json: await ctx.req.json()}));
 
+  // PUT /yaml
+  app.put('/yaml', async ctx => ctx.render({yaml: await ctx.req.yaml()}));
+
   // GET /nested
   // *   /nested/methods
   const nested = app.under('/nested').to(async ctx => {
@@ -299,6 +302,10 @@ t.test('App', async t => {
 
   await t.test('JSON', async () => {
     (await ua.putOk('/json', {json: {hello: 'world'}})).statusIs(200).jsonIs({hello: 'world'});
+  });
+
+  await t.test('YAML', async () => {
+    (await ua.putOk('/yaml', {yaml: {hello: 'world'}})).statusIs(200).yamlIs({hello: 'world'});
   });
 
   await t.test('Not found', async () => {

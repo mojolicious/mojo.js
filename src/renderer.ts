@@ -1,5 +1,6 @@
 import type {MojoContext, RenderOptions} from './types.js';
 import Path from '@mojojs/path';
+import yaml from 'js-yaml';
 
 interface EngineResult {
   output: string | Buffer;
@@ -45,6 +46,11 @@ export class Renderer {
         return {output: Buffer.from(JSON.stringify(options.json, null, 2)), format: options.format ?? 'json'};
       }
       return {output: Buffer.from(JSON.stringify(options.json)), format: options.format ?? 'json'};
+    }
+
+    if (options.yaml !== undefined) {
+      log.trace('Rendering YAML response');
+      return {output: Buffer.from(yaml.dump(options.yaml)), format: options.format ?? 'yaml'};
     }
 
     if (options.engine !== undefined) {

@@ -7,6 +7,7 @@ import assert from 'assert/strict';
 import {on} from 'events';
 import {MockUserAgent} from './mock.js';
 import cheerio from 'cheerio';
+import yaml from 'js-yaml';
 import StackUtils from 'stack-utils';
 
 type SkipFunction = (...args: any[]) => any;
@@ -176,6 +177,11 @@ export class TestUserAgent extends MockUserAgent {
     const ws = this._ws;
     if (ws === undefined) throw new Error('No active WebSocket connection');
     return ws;
+  }
+
+  yamlIs(value: any): this {
+    this.assert('same', [yaml.load(this.body.toString()), value], 'YAML body is equal', this.yamlIs);
+    return this;
   }
 
   get _cheerio(): cheerio.Root {

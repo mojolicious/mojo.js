@@ -5,6 +5,7 @@ import {on} from 'events';
 import {Params} from './body/params.js';
 import Busboy from 'busboy';
 import cheerio from 'cheerio';
+import yaml from 'js-yaml';
 
 type BusboyFile = [string, NodeJS.ReadableStream, string, string, string];
 
@@ -91,6 +92,10 @@ export class Body {
 
   async xml(): Promise<cheerio.Root> {
     return cheerio.load(await this.buffer(), {xmlMode: true});
+  }
+
+  async yaml(): Promise<unknown> {
+    return yaml.load((await this.buffer()).toString());
   }
 
   async _consumeBody(): Promise<Uint8Array[]> {
