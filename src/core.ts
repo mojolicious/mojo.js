@@ -33,6 +33,7 @@ export default function mojo(options?: AppOptions): App {
 
 // "Professor: These old Doomsday devices are dangerously unstable. I'll rest easier not knowing where they are."
 export {default as jsonConfigPlugin} from './plugins/json-config.js';
+export {default as yamlConfigPlugin} from './plugins/yaml-config.js';
 export {Logger} from './logger.js';
 export {Server} from './server.js';
 export {Session} from './session.js';

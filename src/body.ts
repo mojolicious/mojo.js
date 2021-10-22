@@ -34,7 +34,7 @@ export class Body {
     return Buffer.concat(await this._consumeBody());
   }
 
-  async *files(options?: busboy.BusboyConfig): AsyncIterableIterator<FileUpload> {
+  async *files(options?: Busboy.BusboyConfig): AsyncIterableIterator<FileUpload> {
     if (!this._isForm()) return;
 
     try {
@@ -46,7 +46,7 @@ export class Body {
     }
   }
 
-  async form(options?: busboy.BusboyConfig): Promise<Params> {
+  async form(options?: Busboy.BusboyConfig): Promise<Params> {
     if (this._form === undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars, no-empty
       for await (const upload of this.files(options)) {
@@ -103,7 +103,7 @@ export class Body {
     });
   }
 
-  _formIterator(options?: busboy.BusboyConfig): AsyncIterableIterator<BusboyFile> {
+  _formIterator(options?: Busboy.BusboyConfig): AsyncIterableIterator<BusboyFile> {
     // eslint-disable-next-line no-undef
     const ac = new AbortController();
 

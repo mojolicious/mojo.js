@@ -1,0 +1,4 @@
+---
+name: namedConfig
+deep:
+  option: ["deep"]
