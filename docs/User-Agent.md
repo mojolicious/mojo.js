@@ -327,11 +327,13 @@ user agent object.
 
 // JSON tests
 (await ua.getOk('/foo'))
-  .jsonIs({hello: 'world'});
+  .jsonIs({hello: 'world'})
+  .jsonIs('world', '/hello');
 
 // YAML tests
 (await ua.getOk('/foo'))
-  .yamlIs({hello: 'world'});
+  .yamlIs({hello: 'world'})
+  .yamlIs('world', '/hello');
 
 // HTML tests
 (await ua.getOk('/foo'))

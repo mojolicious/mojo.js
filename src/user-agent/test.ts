@@ -5,6 +5,7 @@ import type {UserAgentResponse} from './response.js';
 import type {URL} from 'url';
 import assert from 'assert/strict';
 import {on} from 'events';
+import {jsonPointer} from '../util.js';
 import {MockUserAgent} from './mock.js';
 import cheerio from 'cheerio';
 import yaml from 'js-yaml';
@@ -103,8 +104,9 @@ export class TestUserAgent extends MockUserAgent {
     return this;
   }
 
-  jsonIs(value: JSONValue): this {
-    this.assert('same', [JSON.parse(this.body.toString()), value], 'JSON body is equal', this.jsonIs);
+  jsonIs(value: JSONValue, pointer = ''): this {
+    const expected = jsonPointer(JSON.parse(this.body.toString()), pointer);
+    this.assert('same', [expected, value], `exact match for JSON Pointer "${pointer}" (JSON)`, this.jsonIs);
     return this;
   }
 
@@ -179,8 +181,9 @@ export class TestUserAgent extends MockUserAgent {
     return ws;
   }
 
-  yamlIs(value: any): this {
-    this.assert('same', [yaml.load(this.body.toString()), value], 'YAML body is equal', this.yamlIs);
+  yamlIs(value: any, pointer = ''): this {
+    const expected = jsonPointer(yaml.load(this.body.toString()) as JSONValue, pointer);
+    this.assert('same', [expected, value], `exact match for JSON Pointer "${pointer}" (YAML)`, this.yamlIs);
     return this;
   }
 

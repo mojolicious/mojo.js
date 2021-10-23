@@ -1,3 +1,4 @@
+import type {JSONValue} from './types.js';
 import type {Mode} from 'fs';
 import {setTimeout} from 'timers/promises';
 import url from 'url';
@@ -191,6 +192,25 @@ export function htmlTag(
   }
 
   return new SafeString(result.join(''));
+}
+
+export function jsonPointer(value: JSONValue, pointer: string) {
+  if (!pointer.startsWith('/')) return pointer.length > 0 ? null : value;
+
+  let data: any = value;
+  for (const part of pointer.replace(/^\//, '').split('/')) {
+    const unescaped = part.replaceAll('~1', '/').replaceAll('~0', '~');
+
+    if (typeof data === 'object' && data[unescaped] !== undefined) {
+      data = data[unescaped];
+    } else if (Array.isArray(data) && /^\d+$/.test(unescaped)) {
+      data = data[parseInt(unescaped)];
+    } else {
+      return undefined;
+    }
+  }
+
+  return data;
 }
 
 export async function loadModules(dirs: string[]): Promise<Record<string, any>> {

@@ -157,6 +157,46 @@ t.test('Util', async t => {
     t.end();
   });
 
+  t.test('jsonPointer (RFC 6901)', t => {
+    const jsonPointer = util.jsonPointer;
+
+    t.equal(jsonPointer({hello: 'world'}, '/hello'), 'world', 'right result');
+    t.same(jsonPointer({hello: 'world'}, '/bye'), undefined, 'no result');
+    t.same(jsonPointer({hello: 'world'}, '/'), undefined, 'no result');
+    t.same(jsonPointer({hello: 'world'}, '/0'), undefined, 'no result');
+
+    t.same(jsonPointer([], '/0'), undefined, 'no result');
+    t.same(jsonPointer(['test', 123], '/0'), 'test', 'right result');
+    t.same(jsonPointer(['test', 123], '/1'), 123, 'right result');
+    t.same(jsonPointer('test', ''), 'test', 'right result');
+    t.same(jsonPointer('', '/0'), undefined, 'no result');
+
+    const value = {
+      foo: ['bar', 'baz'],
+      '': 0,
+      'a/b': 1,
+      'c%d': 2,
+      'e^f': 3,
+      'g|h': 4,
+      'i\\j': 5,
+      'k"l': 6,
+      ' ': 7,
+      'm~n': 8
+    };
+    t.same(jsonPointer(value, ''), value, 'empty pointer is whole document');
+    t.same(jsonPointer(value, '/foo'), ['bar', 'baz'], '"/foo" is "["bar", "baz"]"');
+    t.same(jsonPointer(value, '/'), 0, '"/" is 0');
+    t.same(jsonPointer(value, '/a~1b'), 1, '"/a~1b" is 1');
+    t.same(jsonPointer(value, '/c%d'), 2, '"/c%d" is 2');
+    t.same(jsonPointer(value, '/e^f'), 3, '"/e^f" is 3');
+    t.same(jsonPointer(value, '/g|h'), 4, '"/g|h" is 4');
+    t.same(jsonPointer(value, '/i\\j'), 5, '"/i\\j" is 5');
+    t.same(jsonPointer(value, '/k"l'), 6, '"/k"l" is 6');
+    t.same(jsonPointer(value, '/ '), 7, '"/ " is 7');
+    t.same(jsonPointer(value, '/m~0n'), 8, '"/m~0n" is 8');
+    t.end();
+  });
+
   await t.test('loadModules', async t => {
     const loadModules = util.loadModules;
     const modules = await loadModules([
