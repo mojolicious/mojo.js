@@ -194,7 +194,7 @@ export function htmlTag(
   return new SafeString(result.join(''));
 }
 
-export function jsonPointer(value: JSONValue, pointer: string) {
+export function jsonPointer(value: JSONValue, pointer: string): JSONValue | undefined {
   if (!pointer.startsWith('/')) return pointer.length > 0 ? null : value;
 
   let data: any = value;

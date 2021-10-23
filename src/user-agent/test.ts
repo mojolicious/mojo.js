@@ -181,7 +181,7 @@ export class TestUserAgent extends MockUserAgent {
     return ws;
   }
 
-  yamlIs(value: any, pointer = ''): this {
+  yamlIs(value: JSONValue, pointer = ''): this {
     const expected = jsonPointer(yaml.load(this.body.toString()) as JSONValue, pointer);
     this.assert('same', [expected, value], `exact match for JSON Pointer "${pointer}" (YAML)`, this.yamlIs);
     return this;
