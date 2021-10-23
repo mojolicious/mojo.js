@@ -80,10 +80,10 @@ class WebSocket extends EventEmitter {
     }
   }
 
-  _safeMessageHandler(message: string | Buffer): void {
+  _safeMessageHandler(message: Buffer, isBinary: boolean): void {
     try {
       if (!this.jsonMode) {
-        this.emit('message', message);
+        this.emit('message', isBinary ? message : message.toString());
       } else {
         this.emit('message', JSON.parse(message.toString()));
       }

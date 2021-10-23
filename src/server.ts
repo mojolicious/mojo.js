@@ -7,7 +7,7 @@ import os from 'os';
 import {URL} from 'url';
 import {WebSocket} from './websocket.js';
 import Path from '@mojojs/path';
-import WS from 'ws';
+import {WebSocketServer} from 'ws';
 
 type ListenArgs = any[];
 
@@ -93,7 +93,7 @@ export class Server {
 
     await this.app.warmup();
 
-    const wss = new WS.Server({noServer: true});
+    const wss = new WebSocketServer({noServer: true});
     const server = (isHttps ? https : http).createServer(options, this._handleRequest.bind(this));
     this._servers.push(server);
 
@@ -131,7 +131,7 @@ export class Server {
     app.handleRequest(ctx).catch(error => ctx.exception(error));
   }
 
-  _handleUpgrade(wss: WS.Server, req: http.IncomingMessage, socket: Socket, head: Buffer): void {
+  _handleUpgrade(wss: WebSocketServer, req: http.IncomingMessage, socket: Socket, head: Buffer): void {
     const app = this.app;
     const ctx = app.newContext(req, new http.ServerResponse(req), {isWebSocket: true, reverseProxy: this.reverseProxy});
 

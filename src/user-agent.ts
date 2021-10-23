@@ -109,6 +109,7 @@ class UserAgent extends EventEmitter {
 
     this.emit('websocket', filtered);
 
+    filtered.url.protocol = filtered.url.protocol === 'https:' ? 'wss:' : 'ws:';
     const ws = new WS(filtered.url, filtered.protocols, {headers: filtered.headers});
     return await new Promise((resolve, reject) => {
       let handshake: UserAgentResponse;

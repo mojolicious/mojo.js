@@ -61,7 +61,7 @@
     "@types/stack-utils": "^2.0.0",
     "@types/tap": "^15.0.3",
     "@types/tough-cookie": "^4.0.0",
-    "@types/ws": "^7.4.5",
+    "@types/ws": "^8.2.0",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "autocannon": "^7.3.0",
     "concurrently": "^6.2.0",
@@ -93,6 +93,10 @@
     "stack-utils": "^2.0.3",
     "tap": "^15.0.6",
     "tough-cookie": "^4.0.0",
-    "ws": "^7.4.5"
+    "ws": "^8.2.3"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.5",
+    "utf-8-validate": "^5.0.7"
   }
 }
