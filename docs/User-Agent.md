@@ -69,6 +69,9 @@ const res = await ua.request({
   // Data structure to be send in JSON format, or for WebSockets a `true` value to enable JSON mode
   json: {hello: ['world']},
 
+  // Data structure to be send in YAML format
+  yaml: {hello: ['world']},
+
   // Object with key/value pairs to be sent in `application/x-www-form-urlencoded` format
   form: {fieldA: 'first value', fieldB: 'second value'},
 
@@ -164,6 +167,9 @@ await res.pipe(process.stdout);
 
 // Parsed JSON
 const data = await res.json();
+
+// Parsed YAML
+const data = await res.yaml();
 
 // Parsed HTML via `cheerio`
 const document = await res.html();
@@ -322,6 +328,10 @@ user agent object.
 // JSON tests
 (await ua.getOk('/foo'))
   .jsonIs({hello: 'world'});
+
+// YAML tests
+(await ua.getOk('/foo'))
+  .yamlIs({hello: 'world'});
 
 // HTML tests
 (await ua.getOk('/foo'))
