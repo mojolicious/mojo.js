@@ -1,5 +1,5 @@
 import type {PlaceholderType} from '../types.js';
-import escapeStringRegexp from 'escape-string-regexp';
+import {escapeRegExp} from '../util.js';
 
 const OP = {
   placeholder: Symbol('placeholder'),
@@ -104,7 +104,7 @@ export class Pattern {
         optional = true;
         continue;
       } else if (token[0] === OP.text) {
-        part = escapeStringRegexp(token[1]);
+        part = escapeRegExp(token[1]);
         optional = false;
       } else {
         if (token.length > 2) {
@@ -147,7 +147,7 @@ export class Pattern {
         .slice()
         .sort()
         .reverse()
-        .map(val => escapeStringRegexp(val))
+        .map(val => escapeRegExp(val))
         .join('|') +
       ')'
     );

@@ -107,6 +107,13 @@ t.test('Util', async t => {
     });
   });
 
+  t.test('escapeRegExp', t => {
+    const escapeRegExp = util.escapeRegExp;
+    t.equal(escapeRegExp('te*s?t'), 'te\\*s\\?t', 'escaped');
+    t.equal(escapeRegExp('\\^$.*+?()[]{}|'), '\\\\\\^\\$\\.\\*\\+\\?\\(\\)\\[\\]\\{\\}\\|', 'escaped');
+    t.end();
+  });
+
   t.test('htmlEscape', t => {
     const escape = util.htmlEscape;
     t.same(escape('Hello World!'), 'Hello World!');

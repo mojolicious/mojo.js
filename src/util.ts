@@ -129,6 +129,10 @@ export function decodeURIComponentSafe(value: string): string | null {
   }
 }
 
+export function escapeRegExp(string: string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 export async function exceptionContext(
   error: Error,
   options: {lines?: number} = {}
