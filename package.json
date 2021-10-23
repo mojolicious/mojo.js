@@ -71,6 +71,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "2.4.1",
+    "tap": "^15.0.6",
     "typescript": "^=4.3.2"
   },
   "engines": {
@@ -91,7 +92,6 @@
     "mime-types": "^2.1.30",
     "nopt": "^5.0.0",
     "stack-utils": "^2.0.3",
-    "tap": "^15.0.6",
     "tough-cookie": "^4.0.0",
     "ws": "^8.2.3"
   },
