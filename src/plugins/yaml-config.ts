@@ -3,7 +3,7 @@ import Path from '@mojojs/path';
 import yaml from 'js-yaml';
 
 export default function yamlConfigPlugin(app: MojoApp, options: {file?: string}): void {
-  const filename = new Path(options.file ?? 'config.yaml');
+  const filename = new Path(options.file ?? 'config.yml');
   const filePath = filename.isAbsolute() ? filename : app.home.child(filename.toString());
 
   const log = app.log;

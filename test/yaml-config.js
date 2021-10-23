@@ -20,7 +20,7 @@ t.test('YAMLConfig app', async t => {
     app.config = {name: 'overridden', extra: 'option'};
     const file = Path.currentFile()
       .dirname()
-      .child('support', 'js', 'yamlconfig-app', 'custom', 'named.yaml')
+      .child('support', 'js', 'yamlconfig-app', 'custom', 'named.yml')
       .toString();
     app.plugin(yamlConfigPlugin, {file});
     t.same(app.config, {name: 'namedConfig', extra: 'option', deep: {option: ['deep']}});
@@ -32,7 +32,7 @@ t.test('YAMLConfig app', async t => {
     app.config = {name: 'overridden', extra: 'option'};
     const file = Path.currentFile()
       .dirname()
-      .child('support', 'js', 'yamlconfig-app', 'custom', 'named.yaml')
+      .child('support', 'js', 'yamlconfig-app', 'custom', 'named.yml')
       .toString();
     app.plugin(yamlConfigPlugin, {file});
     t.same(app.config, {name: 'namedConfig', extra: 'required', deep: {option: ['deep']}});
