@@ -114,7 +114,7 @@ export class Body {
 
     const raw = this.raw;
     const params = this._params;
-    const busboy = new Busboy({headers: raw.headers, ...options});
+    const busboy = new Busboy({headers: raw.headers as any, ...options});
     busboy.on('field', (fieldname, val) => params.append(fieldname, val));
     busboy.on('end', () => ac.abort()).on('finish', () => ac.abort());
     const files = on(busboy, 'file', {signal: ac.signal});

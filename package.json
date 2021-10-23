@@ -25,7 +25,7 @@
     "build:lint": "npm run build && npm run lint",
     "build:test": "npm run build && npm test",
     "build:watch": "npm run build -- --watch",
-    "clean": "rm -r tsconfig.tsbuildinfo test/support/ts/full-app/tsconfig.tsbuildinfo lib test/support/ts/full-app/lib",
+    "clean": "rm -rf tsconfig.tsbuildinfo test/support/ts/full-app/tsconfig.tsbuildinfo lib test/support/ts/full-app/lib",
     "coverage": "tap --node-arg='--no-warnings' --node-arg='--experimental-loader' --node-arg='@istanbuljs/esm-loader-hook' test/*.js",
     "coverage:ci": "npm run coverage -- --no-check-coverage && tap --no-check-coverage --coverage-report=text-lcov > .lcov.info",
     "lint": "eslint \"test/*.js\" \"test/support/js/**/*.js\" \"test/support/ts/**/src/**/*.ts\" \"src/**/*.ts\" \"src/*.ts\"",
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@istanbuljs/esm-loader-hook": "^=0.1.2",
-    "@types/busboy": "^0.3.0",
+    "@types/busboy": "^0.3.1",
     "@types/cheerio": "^0.22.29",
     "@types/cookie": "^0.4.0",
     "@types/ejs": "^3.0.6",

@@ -6,6 +6,7 @@ import type {UserAgent} from './user-agent.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
 import type {ValidateFunction} from 'ajv';
+import type {BusboyConfig} from 'busboy';
 import type http from 'http';
 import EventEmitter from 'events';
 import {Params} from './body/params.js';
@@ -102,7 +103,7 @@ class Context extends EventEmitter {
     return this.app.models;
   }
 
-  async params(options?: Busboy.BusboyConfig): Promise<Params> {
+  async params(options?: BusboyConfig): Promise<Params> {
     if (this._params === undefined) {
       const req = this.req;
       const params = (this._params = new Params(req.query));
