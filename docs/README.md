@@ -26,6 +26,10 @@ Generating content with the mojo.js renderer.
 
 How to use the full featured HTTP and WebSocket user agent that ships with the mojo.js framework.
 
+* [Cookbook](Cookbook.md)  (Progress: 5%)
+
+Cooking with mojo.js, recipes for every taste.
+
 * [Cheatsheet](Cheatsheet.md)  (Progress: 50%)
 
 An overview of the most commonly encountered mojo.js objects.

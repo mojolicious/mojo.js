@@ -63,7 +63,7 @@ export class Server {
 
   async start(): Promise<void> {
     await this.app.hooks.runHook('start', this.app);
-    if (this._cluster && cluster.isMaster) {
+    if (this._cluster && cluster.isPrimary) {
       for (let i = 0; i < this._workers; i++) {
         cluster.fork();
       }
