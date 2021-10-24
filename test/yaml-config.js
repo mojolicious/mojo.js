@@ -8,7 +8,7 @@ t.test('YAMLConfig app', async t => {
   const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('External app with config', async t => {
-    t.same(app.config, {name: 'Bond. James Bond', drink: 'Martini', car: 'Aston Martin'});
+    t.same(app.config, {name: 'Bond. James Bond', drink: 'Martini', car: 'Aston Martin', ext: 'works'});
     (await ua.getOk('/')).statusIs(200).bodyIs('My name is Bond. James Bond.');
   });
 

@@ -23,6 +23,7 @@
     "build:clean": "npm run clean && npm run build",
     "build:coverage": "npm run build && npm run coverage",
     "build:lint": "npm run build && npm run lint",
+    "build:node": "npm run build && node",
     "build:test": "npm run build && npm test",
     "build:watch": "npm run build -- --watch",
     "clean": "rm -rf tsconfig.tsbuildinfo test/support/ts/full-app/tsconfig.tsbuildinfo lib test/support/ts/full-app/lib",

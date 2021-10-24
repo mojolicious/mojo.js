@@ -1,13 +1,18 @@
-import type {MojoApp} from '../types.js';
+import type {MojoApp, ConfigOptions} from '../types.js';
 import Path from '@mojojs/path';
 
-export default function jsonConfigPlugin(app: MojoApp, options: {file?: string}): void {
-  const filename = new Path(options.file ?? 'config.json');
+export default function jsonConfigPlugin(app: MojoApp, options: ConfigOptions): void {
+  if (options.ext === undefined) options.ext = 'json';
+  loadConfig(app, options, JSON.parse);
+}
+
+export function loadConfig(app: MojoApp, options: ConfigOptions, parser: (config: string) => any): void {
+  const filename = new Path(options.file ?? `config.${options.ext}`);
   const filePath = filename.isAbsolute() ? filename : app.home.child(filename.toString());
 
   const log = app.log;
   if (filePath.existsSync()) {
-    Object.assign(app.config, JSON.parse(filePath.readFileSync().toString()));
+    Object.assign(app.config, parser(filePath.readFileSync().toString()));
     log.trace(`Config file "${filePath.toString()}" loaded`);
   } else {
     log.trace(`Config file "${filePath.toString()}" does not exist`);
@@ -17,7 +22,7 @@ export default function jsonConfigPlugin(app: MojoApp, options: {file?: string})
   fileParts.splice(-1, 0, app.mode);
   const modeFilePath = new Path(fileParts.join('.'));
   if (modeFilePath.existsSync()) {
-    Object.assign(app.config, JSON.parse(modeFilePath.readFileSync().toString()));
+    Object.assign(app.config, parser(modeFilePath.readFileSync().toString()));
     log.trace(`Mode specific config file "${filePath.toString()}" loaded`);
   }
 }

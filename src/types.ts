@@ -77,4 +77,9 @@ export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions
   protocols?: string[];
 }
 
+export interface ConfigOptions {
+  ext: string;
+  file?: string;
+}
+
 export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Tap};
