@@ -41,7 +41,8 @@ export class ServerResponse {
     const app = ctx.app;
     if (ctx.isSessionActive) await app.session.store(ctx, await ctx.session());
 
-    if ((await app.hooks.runHook('send', ctx, body)) === true) return;
+    const newBody = await app.hooks.runHook('send', ctx, body);
+    if (newBody !== undefined) body = newBody;
 
     const raw = this.raw;
     if (typeof body === 'string' || Buffer.isBuffer(body)) {

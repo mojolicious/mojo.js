@@ -65,15 +65,9 @@ t.test('Hook app', async t => {
   app.addContextHook('send', async (ctx, body) => {
     if (typeof body !== 'object' || Buffer.isBuffer(body) || body instanceof Stream) return;
 
-    const res = ctx.res;
-    const raw = res.raw;
-
     const json = JSON.stringify(body);
-    res.type('application/json').length(Buffer.byteLength(json));
-    raw.writeHead(res.statusCode, res.headers);
-    raw.end(json);
-
-    return true;
+    ctx.res.type('application/json').length(Buffer.byteLength(json));
+    return json;
   });
 
   app.websocket('/hello').to(ctx => {
