@@ -110,6 +110,12 @@ export class TestUserAgent extends MockUserAgent {
     return this;
   }
 
+  jsonHas(pointer: string): this {
+    const has = jsonPointer(JSON.parse(this.body.toString()), pointer) !== undefined;
+    this.assert('ok', [has], `has value for JSON Pointer "${pointer}" (JSON)`, this.jsonHas);
+    return this;
+  }
+
   async messageOk(): Promise<JSONValue> {
     if (this._messages === undefined) throw new Error('No actitve WebSocket connection');
     const message = (await this._messages.next()).value[0];
@@ -184,6 +190,12 @@ export class TestUserAgent extends MockUserAgent {
   yamlIs(value: JSONValue, pointer = ''): this {
     const expected = jsonPointer(yaml.load(this.body.toString()) as JSONValue, pointer);
     this.assert('same', [expected, value], `exact match for JSON Pointer "${pointer}" (YAML)`, this.yamlIs);
+    return this;
+  }
+
+  yamlHas(pointer: string): this {
+    const has = jsonPointer(yaml.load(this.body.toString()) as JSONValue, pointer) !== undefined;
+    this.assert('ok', [has], `has value for JSON Pointer "${pointer}" (YAML)`, this.jsonHas);
     return this;
   }
 

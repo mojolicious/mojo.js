@@ -127,12 +127,16 @@ t.test('TestUserAgent', async t => {
     ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
     (await ua.getOk('/index.json'))
+      .jsonHas('/a')
+      .jsonHas('/d')
       .jsonIs(['b', 'c'], '/a')
       .jsonIs('e', '/d')
       .jsonIs({a: ['b', 'c']});
 
     t.same(results, [
       ['ok', [true], 'GET request for /index.json'],
+      ['ok', [true], 'has value for JSON Pointer "/a" (JSON)'],
+      ['ok', [false], 'has value for JSON Pointer "/d" (JSON)'],
       [
         'same',
         [
@@ -151,12 +155,16 @@ t.test('TestUserAgent', async t => {
     ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
     (await ua.getOk('/index.yaml'))
+      .yamlHas('/a')
+      .yamlHas('/d')
       .yamlIs(['b', 'c'], '/a')
       .yamlIs('e', '/d')
       .yamlIs({a: ['b', 'c']});
 
     t.same(results, [
       ['ok', [true], 'GET request for /index.yaml'],
+      ['ok', [true], 'has value for JSON Pointer "/a" (YAML)'],
+      ['ok', [false], 'has value for JSON Pointer "/d" (YAML)'],
       [
         'same',
         [
