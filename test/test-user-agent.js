@@ -10,6 +10,10 @@ t.test('TestUserAgent', async t => {
 
   app.any('/index.html', ctx => ctx.render({text: '<p>One</p><div>Two</div>'}));
 
+  app.any('/index.json', ctx => ctx.render({json: {a: ['b', 'c']}}));
+
+  app.any('/index.yaml', ctx => ctx.render({yaml: {a: ['b', 'c']}}));
+
   app.websocket('/echo').to(ctx => {
     ctx.on('connection', ws => {
       ws.on('message', message => {
@@ -115,6 +119,54 @@ t.test('TestUserAgent', async t => {
       ['ok', [false], 'element for selector "h1" exists'],
       ['ok', [true], 'no element for selector "h1"'],
       ['ok', [false], 'no element for selector "div"']
+    ]);
+  });
+
+  await t.test('JSON', async t => {
+    const results = [];
+    ua.assert = (name, args, msg) => results.push([name, args, msg]);
+
+    (await ua.getOk('/index.json'))
+      .jsonIs(['b', 'c'], '/a')
+      .jsonIs('e', '/d')
+      .jsonIs({a: ['b', 'c']});
+
+    t.same(results, [
+      ['ok', [true], 'GET request for /index.json'],
+      [
+        'same',
+        [
+          ['b', 'c'],
+          ['b', 'c']
+        ],
+        'exact match for JSON Pointer "/a" (JSON)'
+      ],
+      ['same', [undefined, 'e'], 'exact match for JSON Pointer "/d" (JSON)'],
+      ['same', [{a: ['b', 'c']}, {a: ['b', 'c']}], 'exact match for JSON Pointer "" (JSON)']
+    ]);
+  });
+
+  await t.test('YAML', async t => {
+    const results = [];
+    ua.assert = (name, args, msg) => results.push([name, args, msg]);
+
+    (await ua.getOk('/index.yaml'))
+      .yamlIs(['b', 'c'], '/a')
+      .yamlIs('e', '/d')
+      .yamlIs({a: ['b', 'c']});
+
+    t.same(results, [
+      ['ok', [true], 'GET request for /index.yaml'],
+      [
+        'same',
+        [
+          ['b', 'c'],
+          ['b', 'c']
+        ],
+        'exact match for JSON Pointer "/a" (YAML)'
+      ],
+      ['same', [undefined, 'e'], 'exact match for JSON Pointer "/d" (YAML)'],
+      ['same', [{a: ['b', 'c']}, {a: ['b', 'c']}], 'exact match for JSON Pointer "" (YAML)']
     ]);
   });
 
