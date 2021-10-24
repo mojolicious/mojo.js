@@ -1,4 +1,4 @@
-import type {MojoApp, ConfigOptions} from '../types.js';
+import type {ConfigOptions, MojoApp} from '../types.js';
 import Path from '@mojojs/path';
 
 export default function jsonConfigPlugin(app: MojoApp, options: ConfigOptions): void {

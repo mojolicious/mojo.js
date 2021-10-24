@@ -31,6 +31,11 @@ export interface AppOptions {
   secrets?: string[];
 }
 
+export interface ConfigOptions {
+  ext: string;
+  file?: string;
+}
+
 export interface RenderOptions {
   engine?: string;
   format?: string;
@@ -75,11 +80,6 @@ export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
 export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions {
   json?: boolean;
   protocols?: string[];
-}
-
-export interface ConfigOptions {
-  ext: string;
-  file?: string;
 }
 
 export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Tap};
