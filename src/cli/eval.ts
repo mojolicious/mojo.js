@@ -1,7 +1,6 @@
 import type {MojoApp} from '../types.js';
 
 export default async function evalCommand(app: MojoApp, args: string[]): Promise<void> {
-  // eslint-disable-next-line no-eval
   console.log(eval(args[1]));
 }
 

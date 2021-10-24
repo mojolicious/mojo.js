@@ -49,7 +49,7 @@ export class Body {
 
   async form(options?: Busboy.BusboyConfig): Promise<Params> {
     if (this._form === undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars, no-empty
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for await (const upload of this.files(options)) {
         // We only care about the side effects
       }
@@ -109,7 +109,6 @@ export class Body {
   }
 
   _formIterator(options?: Busboy.BusboyConfig): AsyncIterableIterator<BusboyFile> {
-    // eslint-disable-next-line no-undef
     const ac = new AbortController();
 
     const raw = this.raw;

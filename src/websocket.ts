@@ -65,7 +65,6 @@ class WebSocket extends EventEmitter {
   }
 
   _messageIterator(): AsyncIterableIterator<Array<JSONValue | Buffer>> {
-    // eslint-disable-next-line no-undef
     const ac = new AbortController();
 
     this._raw.on('close', () => ac.abort());

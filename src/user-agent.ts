@@ -211,7 +211,6 @@ class UserAgent extends EventEmitter {
       };
 
       remove.push(...Object.keys(newConfig.headers).filter(name => name.toLowerCase().startsWith('content-')));
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       remove.forEach(name => delete newConfig.headers[name]);
 
       return this.request(newConfig);
@@ -220,7 +219,6 @@ class UserAgent extends EventEmitter {
     } else if (res.status === 307 || res.status === 308) {
       config.url = url;
       config.redirected = redirected + 1;
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       remove.forEach(name => delete config.headers[name]);
 
       return this.request(config);
