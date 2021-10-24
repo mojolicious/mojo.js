@@ -1,6 +1,6 @@
 import type {App} from '../app.js';
 import crypto from 'crypto';
-import * as util from './../util.js';
+import * as util from '../util.js';
 
 export default async function genLiteAppCommand(app: App, args: string[]): Promise<void> {
   const name = args[1] ?? 'index.js';
@@ -28,11 +28,11 @@ export default async function genLiteAppCommand(app: App, args: string[]): Promi
   await util.cliFixPackage();
 }
 
-genLiteAppCommand.description = 'Generate application directory structure';
-genLiteAppCommand.usage = `Usage: APPLICATION gen-full-app [OPTIONS] [NAME]
+genLiteAppCommand.description = 'Create application directory structure';
+genLiteAppCommand.usage = `Usage: APPLICATION create-full-app [OPTIONS] [NAME]
 
-  node index.js gen-full-app
-  node index.js gen-full-app myapp
+  node index.js create-full-app
+  node index.js create-full-app myapp
 
 Options:
   -h, --help   Show this summary of available options

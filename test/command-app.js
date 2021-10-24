@@ -178,21 +178,21 @@ t.test('Command app', async t => {
     t.match(app.cli.commands.version.usage, /Usage: APPLICATION version/);
   });
 
-  await t.test('gen-lite-app', async t => {
+  await t.test('create-lite-app', async t => {
     const dir = await Path.tempDir();
 
     const output = await captureOutput(async () => {
-      await app.cli.start('gen-lite-app', '-h');
+      await app.cli.start('create-lite-app', '-h');
     });
-    t.match(output.toString(), /Usage: APPLICATION gen-lite-app/);
-    t.match(app.cli.commands['gen-lite-app'].description, /Generate single file application/);
-    t.match(app.cli.commands['gen-lite-app'].usage, /Usage: APPLICATION gen-lite-app/);
+    t.match(output.toString(), /Usage: APPLICATION create-lite-app/);
+    t.match(app.cli.commands['create-lite-app'].description, /Create single file application/);
+    t.match(app.cli.commands['create-lite-app'].usage, /Usage: APPLICATION create-lite-app/);
 
     const cwd = process.cwd();
     process.chdir(dir.toString());
     const file = dir.child('myapp.js');
     const output2 = await captureOutput(async () => {
-      await app.cli.start('gen-lite-app', 'myapp.js');
+      await app.cli.start('create-lite-app', 'myapp.js');
     });
     t.match(output2.toString(), /\[write\].+myapp\.js/);
     t.same(await file.exists(), true);
@@ -202,13 +202,13 @@ t.test('Command app', async t => {
     t.match(await dir.child('package.json').readFile('utf8'), /module/);
 
     const output3 = await captureOutput(async () => {
-      await app.cli.start('gen-lite-app', 'myapp.js');
+      await app.cli.start('create-lite-app', 'myapp.js');
     });
     t.match(output3.toString(), /\[exists\].+myapp\.js/);
 
     const file2 = dir.child('index.js');
     const output4 = await captureOutput(async () => {
-      await app.cli.start('gen-lite-app');
+      await app.cli.start('create-lite-app');
     });
     t.match(output4.toString(), /\[write\].+index\.js/);
     t.same(await file2.exists(), true);
@@ -216,20 +216,20 @@ t.test('Command app', async t => {
     process.chdir(cwd);
   });
 
-  await t.test('gen-full-app', async t => {
+  await t.test('create-full-app', async t => {
     const dir = await Path.tempDir();
 
     const output = await captureOutput(async () => {
-      await app.cli.start('gen-full-app', '-h');
+      await app.cli.start('create-full-app', '-h');
     });
-    t.match(output.toString(), /Usage: APPLICATION gen-full-app/);
-    t.match(app.cli.commands['gen-full-app'].description, /Generate application directory structure/);
-    t.match(app.cli.commands['gen-full-app'].usage, /Usage: APPLICATION gen-full-app/);
+    t.match(output.toString(), /Usage: APPLICATION create-full-app/);
+    t.match(app.cli.commands['create-full-app'].description, /Create application directory structure/);
+    t.match(app.cli.commands['create-full-app'].usage, /Usage: APPLICATION create-full-app/);
 
     const cwd = process.cwd();
     process.chdir(dir.toString());
     const output2 = await captureOutput(async () => {
-      await app.cli.start('gen-full-app');
+      await app.cli.start('create-full-app');
     });
     t.match(output2.toString(), /\[write\].+config\.yml/);
     t.same(await dir.child('config.yml').exists(), true);
@@ -254,7 +254,7 @@ t.test('Command app', async t => {
     t.match(await dir.child('package.json').readFile('utf8'), /module/);
 
     const output3 = await captureOutput(async () => {
-      await app.cli.start('gen-full-app');
+      await app.cli.start('create-full-app');
     });
     t.match(output3.toString(), /\[exists\].+config\.yml/);
     t.match(output3.toString(), /\[exists\].+index\.js/);
@@ -267,7 +267,7 @@ t.test('Command app', async t => {
     await dir2.mkdir();
     process.chdir(dir2.toString());
     const output4 = await captureOutput(async () => {
-      await app.cli.start('gen-full-app', 'myapp.js');
+      await app.cli.start('create-full-app', 'myapp.js');
     });
     t.match(output4.toString(), /\[write\].+test-app.+myapp\.js/);
     t.same(await dir2.child('myapp.js').exists(), true);

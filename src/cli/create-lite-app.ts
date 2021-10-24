@@ -1,5 +1,5 @@
 import type {App} from '../app.js';
-import * as util from './../util.js';
+import * as util from '../util.js';
 
 export default async function genLiteAppCommand(app: App, args: string[]): Promise<void> {
   const stdout = process.stdout;
@@ -9,11 +9,11 @@ export default async function genLiteAppCommand(app: App, args: string[]): Promi
   stdout.write(tip);
 }
 
-genLiteAppCommand.description = 'Generate single file application';
-genLiteAppCommand.usage = `Usage: APPLICATION gen-lite-app [OPTIONS] [NAME]
+genLiteAppCommand.description = 'Create single file application';
+genLiteAppCommand.usage = `Usage: APPLICATION create-lite-app [OPTIONS] [NAME]
 
-  node index.js gen-lite-app
-  node index.js gen-lite-app myapp.js
+  node index.js create-lite-app
+  node index.js create-lite-app myapp.js
 
 Options:
   -h, --help   Show this summary of available options
