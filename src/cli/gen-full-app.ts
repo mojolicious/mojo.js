@@ -39,7 +39,8 @@ Options:
 `;
 
 const yamlConfig = `---
-secrets: [<%= secret %>]
+secrets:
+  - <%= secret %>
 `;
 
 const jsIndex = `import mojo, {yamlConfigPlugin} from '@mojojs/core';
