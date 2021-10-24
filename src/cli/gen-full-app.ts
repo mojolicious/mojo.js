@@ -6,7 +6,7 @@ export default async function genLiteAppCommand(app: App, args: string[]): Promi
   const name = args[1] ?? 'index.js';
 
   process.stdout.write('Generating application directory struture:\n');
-  await util.cliCreateFile('config.json', jsonConfig, {secret: crypto.randomBytes(16).toString('hex')});
+  await util.cliCreateFile('config.yml', yamlConfig, {secret: crypto.randomBytes(16).toString('hex')});
   await util.cliCreateFile(name, jsIndex);
 
   await util.cliCreateDir('controllers');
@@ -38,18 +38,15 @@ Options:
   -h, --help   Show this summary of available options
 `;
 
-const jsonConfig = `{
-  "secrets": [
-    "<%= secret %>"
-  ]
-}
+const yamlConfig = `---
+secrets: [<%= secret %>]
 `;
 
-const jsIndex = `import mojo, {jsonConfigPlugin} from '@mojojs/core';
+const jsIndex = `import mojo, {yamlConfigPlugin} from '@mojojs/core';
 
 export const app = mojo();
 
-app.plugin(jsonConfigPlugin);
+app.plugin(yamlConfigPlugin);
 app.secrets = [app.config.secrets];
 
 app.get('/').to('example#welcome');

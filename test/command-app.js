@@ -231,9 +231,9 @@ t.test('Command app', async t => {
     const output2 = await captureOutput(async () => {
       await app.cli.start('gen-full-app');
     });
-    t.match(output2.toString(), /\[write\].+config\.json/);
-    t.same(await dir.child('config.json').exists(), true);
-    t.match(await dir.child('config.json').readFile('utf8'), /"secrets"/);
+    t.match(output2.toString(), /\[write\].+config\.yml/);
+    t.same(await dir.child('config.yml').exists(), true);
+    t.match(await dir.child('config.yml').readFile('utf8'), /secrets:/);
     t.match(output2.toString(), /\[write\].+index\.js/);
     t.same(await dir.child('index.js').exists(), true);
     t.match(await dir.child('index.js').readFile('utf8'), /import mojo.+from '@mojojs\/core'/);
@@ -256,7 +256,7 @@ t.test('Command app', async t => {
     const output3 = await captureOutput(async () => {
       await app.cli.start('gen-full-app');
     });
-    t.match(output3.toString(), /\[exists\].+config\.json/);
+    t.match(output3.toString(), /\[exists\].+config\.yml/);
     t.match(output3.toString(), /\[exists\].+index\.js/);
     t.match(output3.toString(), /\[exists\].+controllers.+example\.js/);
     t.match(output3.toString(), /\[exists\].+default\.html\.ejs/);
