@@ -137,13 +137,7 @@ class Context extends EventEmitter {
       return false;
     }
 
-    const res = this.res;
-    if (res.isSent) return false;
-    if (options.status !== undefined) res.status(options.status);
-    const type = app.mime.extType(result.format) ?? 'application/octet-stream';
-    await res.type(type).send(result.output);
-
-    return true;
+    return await app.renderer.respond(this, result, {status: options.status});
   }
 
   async renderToString(options: RenderOptions, stash?: Record<string, any>): Promise<string | null> {

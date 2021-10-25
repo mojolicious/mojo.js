@@ -99,6 +99,17 @@ export class Renderer {
     return null;
   }
 
+  async respond(ctx: MojoContext, result: EngineResult, options: {status?: number}): Promise<boolean> {
+    const res = ctx.res;
+    if (res.isSent) return false;
+
+    if (options.status !== undefined) res.status(options.status);
+    const type = ctx.app.mime.extType(result.format) ?? 'application/octet-stream';
+    await res.type(type).send(result.output);
+
+    return true;
+  }
+
   async warmup(): Promise<void> {
     const viewIndex: ViewIndex = (this._viewIndex = {});
     for (const dir of this.viewPaths.map(path => new Path(path))) {
