@@ -1,4 +1,13 @@
-import mojo, {jsonConfigPlugin, Logger, Server, Session, TestUserAgent, UserAgent, util} from '../lib/core.js';
+import mojo, {
+  jsonConfigPlugin,
+  yamlConfigPlugin,
+  util,
+  Logger,
+  Server,
+  Session,
+  TestUserAgent,
+  UserAgent
+} from '../lib/core.js';
 import t from 'tap';
 
 t.test('Public API', async t => {
@@ -11,6 +20,11 @@ t.test('Public API', async t => {
 
   t.test('jsonConfigPlugin', t => {
     t.ok(jsonConfigPlugin instanceof Function);
+    t.end();
+  });
+
+  t.test('yamlConfigPlugin', t => {
+    t.ok(yamlConfigPlugin instanceof Function);
     t.end();
   });
 
