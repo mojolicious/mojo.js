@@ -1,4 +1,4 @@
-import mojo from '../../../../../lib/core.js';
+import mojo, {yamlConfigPlugin} from '../../../../../lib/core.js';
 import {Bar} from './models/bar.js';
 import helpersPlugin from './plugins/helpers.js';
 
@@ -8,6 +8,7 @@ app.log.level = 'info';
 
 app.models.bar = new Bar();
 
+app.plugin(yamlConfigPlugin);
 app.plugin(helpersPlugin);
 
 app.get('/', async ctx => {

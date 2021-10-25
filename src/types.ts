@@ -32,7 +32,7 @@ export interface AppOptions {
 }
 
 export interface ConfigOptions {
-  ext: string;
+  ext?: string;
   file?: string;
 }
 
