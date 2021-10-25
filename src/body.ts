@@ -1,17 +1,19 @@
 import type {JSONValue} from './types.js';
 import type {IncomingHttpHeaders, IncomingMessage} from 'http';
 import type {Socket} from 'net';
+import type {Readable, Writable} from 'stream';
 import {on} from 'events';
+import zlib from 'zlib';
 import {Params} from './body/params.js';
 import Busboy from 'busboy';
 import cheerio from 'cheerio';
 import yaml from 'js-yaml';
 
-type BusboyFile = [string, NodeJS.ReadableStream, string, string, string];
+type BusboyFile = [string, Readable, string, string, string];
 
 interface FileUpload {
   fieldname: string;
-  file: NodeJS.ReadableStream;
+  file: Readable;
   filename: string;
   encoding: string;
   mimetype: string;
@@ -20,6 +22,7 @@ interface FileUpload {
 type TLSSocket = Socket & {encrypted: boolean | undefined};
 
 export class Body {
+  autoDecompress = true;
   raw: IncomingMessage;
   _form: Params | undefined = undefined;
 
@@ -28,11 +31,19 @@ export class Body {
   }
 
   async *[Symbol.asyncIterator](): AsyncIterable<Buffer> {
-    yield* this.raw;
+    yield* this.createReadStream();
   }
 
   async buffer(): Promise<Buffer> {
     return Buffer.concat(await this._consumeBody());
+  }
+
+  createReadStream(): Readable {
+    if (this.autoDecompress === true && this.get('content-encoding') !== 'gzip') return this.raw;
+
+    const gunzip = zlib.createGunzip();
+    this.raw.pipe(gunzip);
+    return gunzip;
   }
 
   async *files(options?: Busboy.BusboyConfig): AsyncIterableIterator<FileUpload> {
@@ -80,10 +91,10 @@ export class Body {
     return JSON.parse((await this.buffer()).toString());
   }
 
-  async pipe(writer: NodeJS.WritableStream): Promise<void> {
-    const raw = this.raw;
-    raw.pipe(writer);
-    return await new Promise((resolve, reject) => raw.on('error', reject).on('end', resolve));
+  async pipe(writer: Writable): Promise<void> {
+    const stream = this.createReadStream();
+    stream.pipe(writer);
+    return await new Promise((resolve, reject) => stream.on('error', reject).on('end', resolve));
   }
 
   async text(charset: BufferEncoding = 'utf8'): Promise<string> {
@@ -101,7 +112,7 @@ export class Body {
   async _consumeBody(): Promise<Uint8Array[]> {
     const chunks: Uint8Array[] = [];
     return await new Promise((resolve, reject) => {
-      this.raw
+      this.createReadStream()
         .on('data', chunk => chunks.push(Buffer.from(chunk)))
         .on('error', reject)
         .on('end', () => resolve(chunks));

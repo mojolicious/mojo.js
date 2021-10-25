@@ -175,6 +175,7 @@ class UserAgent extends EventEmitter {
     // Headers
     if (config.headers === undefined) config.headers = {};
     if (this.name !== undefined) config.headers['User-Agent'] = this.name;
+    if (config.headers['Accept-Encoding'] === undefined) config.headers['Accept-Encoding'] = 'gzip';
 
     return config;
   }
