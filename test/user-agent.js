@@ -22,6 +22,7 @@ t.test('UserAgent', async t => {
     const name = ctx.req.query.get('header');
     const value = ctx.req.get(name) || 'fail';
     ctx.res.set('X-Test', 'works too');
+    ctx.res.append('X-Test2', 'just').append('X-Test2', 'works').append('X-Test2', 'too');
     return ctx.render({text: value});
   });
 
@@ -170,11 +171,13 @@ t.test('UserAgent', async t => {
     const res = await ua.get('/headers?header=user-agent');
     t.equal(res.status, 200);
     t.equal(res.get('X-Test'), 'works too');
+    t.equal(res.get('X-Test2'), 'just, works, too');
     t.equal(await res.text(), 'mojo 1.0');
 
     const res2 = await ua.get('/headers?header=test', {headers: {test: 'works'}});
     t.equal(res2.status, 200);
     t.equal(res2.get('X-Test'), 'works too');
+    t.equal(res.get('X-Test2'), 'just, works, too');
     t.equal(await res2.text(), 'works');
   });
 

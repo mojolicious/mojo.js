@@ -16,6 +16,21 @@ export class ServerResponse {
     this._ctx = new WeakRef(ctx);
   }
 
+  append(name: string, value: string) {
+    const headers = this.headers;
+    const old = headers[name];
+
+    if (old === undefined) {
+      headers[name] = value;
+    } else if (Array.isArray(old)) {
+      old.push(value);
+    } else {
+      headers[name] = [old, value];
+    }
+
+    return this;
+  }
+
   length(len: number): this {
     this.headers['Content-Length'] = len.toString();
     return this;
