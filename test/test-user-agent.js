@@ -73,6 +73,7 @@ t.test('TestUserAgent', async t => {
       .headerExists('Content-Type')
       .headerExistsNot('Content-Disposition')
       .headerIs('Content-Type', 'text/plain')
+      .headerIsnt('Content-Type', 'text/plain')
       .headerLike('Content-Type', /plain/);
 
     t.same(results, [
@@ -82,6 +83,7 @@ t.test('TestUserAgent', async t => {
       ['ok', [true], 'header "Content-Type" exists'],
       ['notOk', [false], 'no "Content-Disposition" header'],
       ['equal', ['text/plain; charset=utf-8', 'text/plain'], 'Content-Type: text/plain'],
+      ['not', ['text/plain; charset=utf-8', 'text/plain'], 'not Content-Type: text/plain'],
       ['match', ['text/plain; charset=utf-8', /plain/], 'Content-Type is similar']
     ]);
   });
@@ -92,12 +94,14 @@ t.test('TestUserAgent', async t => {
 
     (await ua.getOk('/'))
       .bodyIs('test')
+      .bodyIsnt('test')
       .bodyLike(/that/)
       .bodyUnlike(/whatever/);
 
     t.same(results, [
       ['ok', [true], 'GET request for /'],
       ['equal', ['Hello Mojo!', 'test'], 'body is equal'],
+      ['not', ['Hello Mojo!', 'test'], 'body is not equal'],
       ['match', ['Hello Mojo!', /that/], 'body is similar'],
       ['notMatch', ['Hello Mojo!', /whatever/], 'body is not similar']
     ]);

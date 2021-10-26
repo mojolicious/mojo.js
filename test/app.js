@@ -260,6 +260,9 @@ t.test('App', async t => {
     await ctx.render({json: {valid}});
   });
 
+  // GET /gzip
+  app.get('/gzip', ctx => ctx.render({text: 'a'.repeat(2048)}));
+
   const ua = await app.newTestUserAgent({tap: t});
 
   t.test('Options', t => {
@@ -704,6 +707,38 @@ t.test('App', async t => {
 
     (await ua.putOk('/schema/form?test=works')).statusIs(200).jsonIs({valid: true});
     (await ua.putOk('/schema/form?test2=fails')).statusIs(200).jsonIs({valid: false});
+  });
+
+  await t.test('Compression', async () => {
+    (await ua.getOk('/gzip'))
+      .statusIs(200)
+      .headerIsnt('Content-Length', '2048')
+      .headerIs('Content-Encoding', 'gzip')
+      .headerIs('Vary', 'Accept-Encoding')
+      .bodyIs('a'.repeat(2048));
+
+    app.renderer.autoCompress = false;
+    (await ua.getOk('/gzip'))
+      .statusIs(200)
+      .headerIs('Content-Length', '2048')
+      .headerIsnt('Content-Encoding', 'gzip')
+      .headerIsnt('Vary', 'Accept-Encoding')
+      .bodyIs('a'.repeat(2048));
+    app.renderer.autoCompress = true;
+
+    (await ua.getOk('/gzip'))
+      .statusIs(200)
+      .headerIsnt('Content-Length', '2048')
+      .headerIs('Content-Encoding', 'gzip')
+      .headerIs('Vary', 'Accept-Encoding')
+      .bodyIs('a'.repeat(2048));
+
+    (await ua.getOk('/gzip', {headers: {'Accept-Encoding': 'nothing'}}))
+      .statusIs(200)
+      .headerIs('Content-Length', '2048')
+      .headerIsnt('Content-Encoding', 'gzip')
+      .headerIs('Vary', 'Accept-Encoding')
+      .bodyIs('a'.repeat(2048));
   });
 
   t.test('Forbidden helpers', t => {

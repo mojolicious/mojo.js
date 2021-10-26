@@ -39,7 +39,7 @@ export class Body {
   }
 
   createReadStream(): Readable {
-    if (this.autoDecompress === true && this.get('content-encoding') !== 'gzip') return this.raw;
+    if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return this.raw;
 
     const gunzip = zlib.createGunzip();
     this.raw.pipe(gunzip);

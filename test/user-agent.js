@@ -91,6 +91,8 @@ t.test('UserAgent', async t => {
 
   app.any('/redirect/introspect/:code', ctx => ctx.redirectTo('introspect', {status: ctx.stash.code}));
 
+  app.get('/gzip', ctx => ctx.render({text: 'a'.repeat(2048)}));
+
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
   const ua = new UserAgent({baseURL: server.urls[0], name: 'mojo 1.0'});
@@ -457,6 +459,43 @@ t.test('UserAgent', async t => {
     const res3 = await ua.get('/test.xml');
     const html2 = await res3.html();
     t.equal(html2('script p').length, 0);
+  });
+
+  await t.test('Decompression', async t => {
+    const res = await ua.get('/gzip');
+    t.equal(res.status, 200);
+    t.not(res.get('content-length'), '2048');
+    t.equal(res.get('content-encoding'), 'gzip');
+    t.equal(res.get('vary'), 'Accept-Encoding');
+    t.equal(await res.text(), 'a'.repeat(2048));
+
+    const res2 = await ua.get('/gzip');
+    res2.autoDecompress = false;
+    t.equal(res2.status, 200);
+    t.not(res2.get('content-length'), '2048');
+    t.equal(res2.get('content-encoding'), 'gzip');
+    t.equal(res2.get('vary'), 'Accept-Encoding');
+    t.not(await res2.text(), 'a'.repeat(2048));
+
+    const res3 = await ua.get('/gzip', {headers: {'Accept-Encoding': 'nothing'}});
+    t.equal(res3.status, 200);
+    t.equal(res3.get('content-length'), '2048');
+    t.not(res3.get('content-encoding'), 'gzip');
+    t.equal(res3.get('vary'), 'Accept-Encoding');
+    t.equal(await res3.text(), 'a'.repeat(2048));
+
+    const res4 = await ua.get('/gzip');
+    const dir = await Path.tempDir();
+    const file = await dir.child('hello.txt').touch();
+    await res4.pipe(file.createWriteStream());
+    t.equal(await file.readFile('utf8'), 'a'.repeat(2048));
+
+    const res5 = await ua.get('/gzip');
+    const parts = [];
+    for await (const chunk of res5) {
+      parts.push(chunk);
+    }
+    t.equal(Buffer.concat(parts).toString(), 'a'.repeat(2048));
   });
 
   await server.stop();

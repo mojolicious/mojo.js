@@ -38,6 +38,11 @@ export class TestUserAgent extends MockUserAgent {
     return this;
   }
 
+  bodyIsnt(body: string): this {
+    this.assert('not', [this.body.toString(), body], 'body is not equal', this.bodyIsnt);
+    return this;
+  }
+
   bodyLike(regex: RegExp): this {
     this.assert('match', [this.body.toString(), regex], 'body is similar', this.bodyLike);
     return this;
@@ -96,6 +101,11 @@ export class TestUserAgent extends MockUserAgent {
 
   headerIs(name: string, value: string): this {
     this.assert('equal', [this.res.get(name), value], `${name}: ${value}`, this.headerIs);
+    return this;
+  }
+
+  headerIsnt(name: string, value: string): this {
+    this.assert('not', [this.res.get(name), value], `not ${name}: ${value}`, this.headerIsnt);
     return this;
   }
 

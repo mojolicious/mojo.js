@@ -1,6 +1,10 @@
 import type {MojoContext, RenderOptions} from './types.js';
+import {promisify} from 'util';
+import {gzip} from 'zlib';
 import Path from '@mojojs/path';
 import yaml from 'js-yaml';
+
+const gzipPromise = promisify(gzip);
 
 interface EngineResult {
   output: string | Buffer;
@@ -17,9 +21,11 @@ interface ViewEngine {
 }
 
 export class Renderer {
+  autoCompress = true;
   defaultEngine = 'ejs';
   defaultFormat = 'html';
   engines: Record<string, ViewEngine> = {};
+  minCompressSize = 860;
   viewPaths: string[] = [Path.currentFile().sibling('..', 'vendor', 'views').toString()];
   _viewIndex: ViewIndex | undefined = undefined;
 
@@ -103,9 +109,19 @@ export class Renderer {
     const res = ctx.res;
     if (res.isSent) return false;
 
+    let output = result.output;
+    if (this.autoCompress === true && Buffer.byteLength(output) >= this.minCompressSize) {
+      res.append('Vary', 'Accept-Encoding');
+      const accept = ctx.req.get('accept-encoding');
+      if (accept !== undefined && /gzip/i.test(accept)) {
+        res.set('Content-Encoding', 'gzip');
+        output = await gzipPromise(output);
+      }
+    }
+
     if (options.status !== undefined) res.status(options.status);
     const type = ctx.app.mime.extType(result.format) ?? 'application/octet-stream';
-    await res.type(type).send(result.output);
+    await res.type(type).send(output);
 
     return true;
   }
