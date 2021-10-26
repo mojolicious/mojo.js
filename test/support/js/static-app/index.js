@@ -10,4 +10,6 @@ app.any('/public/hello.txt', async ctx => {
   await ctx.render({text: `Route: ${ctx.req.method}`});
 });
 
+app.any('/urlForFile', ctx => ctx.render({text: ctx.urlForFile(ctx.req.query.get('file'))}));
+
 app.start();

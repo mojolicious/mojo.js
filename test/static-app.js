@@ -245,5 +245,31 @@ t.test('Static app', async t => {
       .bodyIs('Route: PUT');
   });
 
+  await t.test('urlFileFor', async () => {
+    (await ua.getOk('/urlForFile?file=hello.txt')).statusIs(200).bodyLike(/\/public\/hello\.txt/);
+
+    (await ua.getOk('/urlForFile?file=%2Fhello.txt')).statusIs(200).bodyLike(/\/public\/hello\.txt/);
+
+    (await ua.getOk('/urlForFile?file=mojo%2Ffavicon.ico')).statusIs(200).bodyLike(/\/public\/mojo\/favicon\.ico/);
+
+    (await ua.getOk('/urlForFile?file=%2Fmojo%2Ffavicon.ico')).statusIs(200).bodyLike(/\/public\/mojo\/favicon\.ico/);
+  });
+
+  await t.test('urlFileFor (path ends with /)', async () => {
+    const old = app.static.path;
+    app.static.path += '/';
+    try {
+      (await ua.getOk('/urlForFile?file=hello.txt')).statusIs(200).bodyLike(/\/public\/hello\.txt/);
+
+      (await ua.getOk('/urlForFile?file=%2Fhello.txt')).statusIs(200).bodyLike(/\/public\/hello\.txt/);
+
+      (await ua.getOk('/urlForFile?file=mojo%2Ffavicon.ico')).statusIs(200).bodyLike(/\/public\/mojo\/favicon\.ico/);
+
+      (await ua.getOk('/urlForFile?file=%2Fmojo%2Ffavicon.ico')).statusIs(200).bodyLike(/\/public\/mojo\/favicon\.ico/);
+    } finally {
+      app.static.path = old;
+    }
+  });
+
   await ua.stop();
 });

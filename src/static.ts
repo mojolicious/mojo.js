@@ -30,7 +30,7 @@ export class Static {
 
   filePath(path: string): string {
     if (path.startsWith('/')) path = path.replace('/', '');
-    return this.prefix + path;
+    return new Path(this.prefix, path).toString();
   }
 
   isFresh(ctx: MojoContext, options: {etag?: string; lastModified?: Date} = {}): boolean {
