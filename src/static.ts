@@ -29,7 +29,7 @@ export class Static {
   }
 
   filePath(path: string): string {
-    if (path.startsWith('/')) path = path.replace('/', '');
+    if (!path.startsWith('/')) path = '/' + path;
     return this.prefix + path;
   }
 

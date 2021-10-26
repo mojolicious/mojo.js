@@ -35,7 +35,7 @@ t.test('Plugin app', async t => {
   const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Tag helpers', async () => {
-    const baseURL = ua.server.urls[0] + app.static.prefix.substring(1);
+    const baseURL = ua.server.urls[0] + app.static.prefix.substring(1) + '/';
     (await ua.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL));
   });
 
