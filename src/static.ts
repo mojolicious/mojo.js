@@ -20,7 +20,7 @@ export class Static {
 
     for (const dir of this.publicPaths) {
       const file = new Path(dir, relative);
-      if (!(await file.isReadable())) continue;
+      if ((await file.isReadable()) !== true || (await file.stat()).isDirectory() === true) continue;
       await this.serveFile(ctx, file);
       return true;
     }

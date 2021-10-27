@@ -48,6 +48,18 @@ t.test('Static app', async t => {
     (await ua.getOk('/0')).statusIs(200).headerIs('Content-Length', '4').bodyIs('Zero');
   });
 
+  await t.test('Directories', async () => {
+    (await ua.getOk('/public/test/one.txt'))
+      .statusIs(200)
+      .headerIs('Content-Length', '7')
+      .bodyLike(/works!/);
+
+    (await ua.getOk('/public')).statusIs(404);
+    (await ua.getOk('/public/')).statusIs(404);
+    (await ua.getOk('/public/test')).statusIs(404);
+    (await ua.getOk('/public/test/')).statusIs(404);
+  });
+
   await t.test('Directory traversal', async () => {
     (await ua.getOk('/public/../../lib/mojo.js')).statusIs(404);
     (await ua.getOk('/public/..%2F..%2Flib/mojo.js')).statusIs(404);
