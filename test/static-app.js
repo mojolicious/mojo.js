@@ -49,10 +49,7 @@ t.test('Static app', async t => {
   });
 
   await t.test('Directories', async () => {
-    (await ua.getOk('/public/test/one.txt'))
-      .statusIs(200)
-      .headerIs('Content-Length', '7')
-      .bodyLike(/works!/);
+    (await ua.getOk('/public/test/one.txt')).statusIs(200).bodyLike(/works!/);
 
     (await ua.getOk('/public')).statusIs(404);
     (await ua.getOk('/public/')).statusIs(404);
