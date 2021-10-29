@@ -16,26 +16,26 @@ export function parseCookie(cookie: string): Record<string, string> {
 }
 
 export function stringifyCookie(name: string, value: string, options: CookieOptions = {}): string {
-  let cookie = name + '=' + encodeURIComponent(value);
+  const cookie: string[] = [name + '=' + encodeURIComponent(value)];
 
-  if (options.domain !== undefined) cookie += `; Domain=${options.domain}`;
-  if (options.expires !== undefined) cookie += `; Expires=${options.expires.toUTCString()}`;
-  if (options.httpOnly === true) cookie += '; HttpOnly';
-  if (options.maxAge !== undefined) cookie += `; Max-Age=${options.maxAge}`;
-  if (options.path !== undefined) cookie += `; Path=${options.path}`;
+  if (options.domain !== undefined) cookie.push(`Domain=${options.domain}`);
+  if (options.expires !== undefined) cookie.push(`Expires=${options.expires.toUTCString()}`);
+  if (options.httpOnly === true) cookie.push('HttpOnly');
+  if (options.maxAge !== undefined) cookie.push(`Max-Age=${options.maxAge}`);
+  if (options.path !== undefined) cookie.push(`Path=${options.path}`);
 
   const sameSite = options.sameSite;
   if (sameSite !== undefined) {
     if (sameSite === 'lax') {
-      cookie += '; SameSite=Lax';
+      cookie.push('SameSite=Lax');
     } else if (sameSite === 'strict') {
-      cookie += '; SameSite=Strict';
+      cookie.push('SameSite=Strict');
     } else if (sameSite === 'none') {
-      cookie += '; SameSite=None';
+      cookie.push('SameSite=None');
     }
   }
 
-  if (options?.secure === true) cookie += '; Secure';
+  if (options?.secure === true) cookie.push('Secure');
 
-  return cookie;
+  return cookie.join('; ');
 }
