@@ -92,9 +92,5 @@
     "stack-utils": "^2.0.3",
     "tough-cookie": "^4.0.0",
     "ws": "^8.2.3"
-  },
-  "optionalDependencies": {
-    "bufferutil": "^4.0.5",
-    "utf-8-validate": "^5.0.7"
   }
 }
