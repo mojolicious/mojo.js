@@ -1,7 +1,8 @@
 import type {Context} from '../context.js';
+import type {CookieOptions} from '../types.js';
 import type http from 'http';
 import {Stream} from 'stream';
-import cookie from 'cookie';
+import {stringifyCookie} from './cookie.js';
 
 export class ServerResponse {
   headers: Record<string, string | string[]> = {};
@@ -36,17 +37,6 @@ export class ServerResponse {
     return this;
   }
 
-  set(name: string, value: string): this {
-    if (this.headers[name] !== undefined && name === 'Set-Cookie') {
-      let header = this.headers[name];
-      if (typeof header === 'string') header = this.headers[name] = [header];
-      header.push(value);
-    } else {
-      this.headers[name] = value;
-    }
-    return this;
-  }
-
   async send(body?: string | Buffer | Stream): Promise<void> {
     this.isSent = true;
 
@@ -73,8 +63,19 @@ export class ServerResponse {
     }
   }
 
-  setCookie(name: string, value: string, options: cookie.CookieSerializeOptions): this {
-    return this.set('Set-Cookie', cookie.serialize(name, value, options));
+  set(name: string, value: string): this {
+    if (this.headers[name] !== undefined && name === 'Set-Cookie') {
+      let header = this.headers[name];
+      if (typeof header === 'string') header = this.headers[name] = [header];
+      header.push(value);
+    } else {
+      this.headers[name] = value;
+    }
+    return this;
+  }
+
+  setCookie(name: string, value: string, options: CookieOptions): this {
+    return this.set('Set-Cookie', stringifyCookie(name, value, options));
   }
 
   status(code: number): this {

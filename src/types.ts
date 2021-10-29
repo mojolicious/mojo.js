@@ -36,6 +36,16 @@ export interface ConfigOptions {
   file?: string;
 }
 
+export interface CookieOptions {
+  domain?: string;
+  expires?: Date;
+  httpOnly?: boolean;
+  maxAge?: number;
+  path?: string;
+  sameSite?: 'lax' | 'strict' | 'none';
+  secure?: boolean;
+}
+
 export interface RenderOptions {
   engine?: string;
   format?: string;

@@ -3,8 +3,8 @@ import type {IncomingMessage} from 'http';
 import type url from 'url';
 import {Body} from '../body.js';
 import {Params} from '../body/params.js';
+import {parseCookie} from '../server/cookie.js';
 import {decodeURIComponentSafe} from '../util.js';
-import cookie from 'cookie';
 
 // Official regex from RFC 3986
 const URL_RE = /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
@@ -41,7 +41,7 @@ export class ServerRequest extends Body {
   getCookie(name: string): string | null {
     if (this._cookies === undefined) {
       const header = this.headers.cookie;
-      this._cookies = header === undefined ? {} : cookie.parse(header);
+      this._cookies = header === undefined ? {} : parseCookie(header);
     }
     return this._cookies[name] ?? null;
   }
