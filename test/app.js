@@ -741,6 +741,19 @@ t.test('App', async t => {
       .bodyIs('a'.repeat(2048));
   });
 
+  await t.test('Mock context', async () => {
+    const ctx = app.newMockContext();
+
+    ctx.stash.hello = 'mojo';
+    t.equal(ctx.stash.hello, 'mojo');
+    t.equal(await ctx.renderToString({inline: 'Test: <%= hello %>'}), 'Test: mojo');
+
+    t.equal(app.newMockContext().tag('p', {class: 'test'}, 'Hello!').toString(), '<p class="test">Hello!</p>');
+
+    ctx.req.raw.headers.host = 'example.com';
+    t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
+  });
+
   t.test('Forbidden helpers', t => {
     let result;
     try {

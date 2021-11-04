@@ -11,6 +11,7 @@ import type {
   TestUserAgentOptions
 } from './types.js';
 import type {IncomingMessage, ServerResponse} from 'http';
+import {Socket} from 'net';
 import {CLI} from './cli.js';
 import {Context} from './context.js';
 import {Hooks} from './hooks.js';
@@ -139,6 +140,15 @@ export class App {
 
   newContext(req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): MojoContext {
     return new this._contextClass(this, req, res, options);
+  }
+
+  newMockContext(): MojoContext {
+    return new this._contextClass(
+      this,
+      {headers: {}, socket: new Socket()},
+      {},
+      {isReverseProxy: false, isWebSocket: false}
+    );
   }
 
   async newMockUserAgent(options?: UserAgentOptions): Promise<MockUserAgent> {
