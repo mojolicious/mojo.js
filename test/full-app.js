@@ -45,7 +45,7 @@ t.test('Full app', async t => {
 
     (await ua.putOk('/renderer/another.view')).statusIs(200).bodyLike(/User sri\r?\nis an admin\r?\n/);
 
-    (await ua.getOk('/default/view')).statusIs(200).bodyLike(/Header.*Default for foo and defaultView.*Footer/s);
+    (await ua.getOk('/default/view')).statusIs(200).bodyLike(/Header.*Header partial.*Default for foo and defaultView.*Footer/s);
   });
 
   await t.test('Static files', async () => {

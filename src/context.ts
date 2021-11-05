@@ -12,6 +12,7 @@ import EventEmitter from 'events';
 import {Params} from './body/params.js';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
+import {defaultObject} from './util.js';
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
@@ -31,6 +32,7 @@ class Context extends EventEmitter {
   exceptionFormat: string;
   jsonMode = false;
   log: ChildLogger;
+  partials: Record<string, string> = defaultObject<string>('');
   plan: Plan | null = null;
   req: ServerRequest;
   res: ServerResponse;
