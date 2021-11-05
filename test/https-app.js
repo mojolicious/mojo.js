@@ -6,13 +6,13 @@ import t from 'tap';
 /*
  * To regenerate all required certificates run these commands (06.11.2021)
  *
- * openssl genrsa -out ca.key 1024
- * openssl req -new -key ca.key -out ca.csr -subj "/C=US/CN=ca"
- * openssl req -x509 -days 7300 -key ca.key -in ca.csr -out ca.crt
+ * openssl genrsa -out ca.key 4096
+ * openssl req -new -sha256 -key ca.key -out ca.csr -subj "/C=US/CN=ca"
+ * openssl req -x509 -days 7300 -sha256 -key ca.key -in ca.csr -out ca.crt
  *
- * openssl genrsa -out server.key 1024
- * openssl req -new -key server.key -out server.csr -subj "/C=US/CN=localhost"
- * openssl x509 -req -days 7300 -in server.csr -out server.crt -CA ca.crt -CAkey ca.key -CAcreateserial
+ * openssl genrsa -out server.key 4096
+ * openssl req -new -sha256 -key server.key -out server.csr -subj "/C=US/CN=localhost"
+ * openssl x509 -req -days 7300 -sha256 -in server.csr -out server.crt -CA ca.crt -CAkey ca.key -CAcreateserial
  */
 t.test('HTTPS app', async t => {
   const app = mojo();
