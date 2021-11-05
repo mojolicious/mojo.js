@@ -255,4 +255,12 @@ t.test('Util', async t => {
     t.equal(tablify([[1], [], [2, 3]]), '1\n\n2  3\n');
     t.end();
   });
+
+  t.test('defaultObject', t => {
+    const foo = util.defaultObject('foo');
+    foo.bar = 'bar';
+    t.equal(foo.foo, 'foo');
+    t.equal(foo.bar, 'bar');
+    t.end();
+  });
 });

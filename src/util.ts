@@ -130,6 +130,17 @@ export function decodeURIComponentSafe(value: string): string | null {
   }
 }
 
+export function defaultObject<Type>(defaultValue: Type): Record<string, Type> {
+  return new Proxy(
+    {},
+    {
+      get: function (target: Record<string, Type>, name: string) {
+        return target[name] ?? defaultValue;
+      }
+    }
+  );
+}
+
 export function escapeRegExp(string: string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
