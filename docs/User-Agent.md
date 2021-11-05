@@ -78,11 +78,17 @@ const res = await ua.request({
   // Object with key/value pairs to be sent in `multipart/form-data` format
   formData: {fieldA: 'first value', fieldB: 'second value'},
 
+  // Basic authentication
+  auth: 'user:password',
+
   // Disable TLS certificate validation
   insecure: true,
 
-  // Basic authentication
-  auth: 'user:password',
+  // Use custom CA certificate for TLS validation
+  ca: '...',
+
+  // Server name for the SNI (Server Name Indication) TLS extension
+  servername: 'localhost',
 
   // Alternative `http.Agent` object to use, for keep-alive or SOCKS proxy support with `proxy-agent`
   agent: new http.Agent({keepAlive: true})

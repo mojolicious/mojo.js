@@ -86,12 +86,14 @@ interface SharedUserAgentRequestOptions {
 }
 export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
   agent?: Agent;
+  ca?: string | string[] | Buffer | Buffer[];
   body?: string | Buffer | NodeJS.ReadableStream;
   form?: Record<string, string>;
   formData?: Record<string, string> | FormData;
   indecure?: boolean;
-  method?: string;
   json?: JSONValue;
+  method?: string;
+  servername?: string;
 }
 export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions {
   json?: boolean;

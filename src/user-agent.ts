@@ -79,11 +79,13 @@ class UserAgent extends EventEmitter {
     if (filtered.body instanceof Buffer) filtered.headers['Content-Length'] = Buffer.byteLength(filtered.body);
 
     const options = {
-      method: filtered.method.toUpperCase(),
-      headers: filtered.headers,
-      auth: filtered.auth,
       agent: filtered.agent,
-      rejectUnauthorized: filtered.insecure !== true
+      auth: filtered.auth,
+      ca: filtered.ca,
+      headers: filtered.headers,
+      method: filtered.method.toUpperCase(),
+      rejectUnauthorized: filtered.insecure !== true,
+      servername: filtered.servername
     };
     const proto = filtered.url.protocol === 'https:' ? https : http;
 
