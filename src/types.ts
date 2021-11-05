@@ -46,6 +46,12 @@ export interface CookieOptions {
   secure?: boolean;
 }
 
+export interface MockRequestOptions {
+  headers?: Record<string, string>;
+  method?: string;
+  url?: string;
+}
+
 export interface RenderOptions {
   engine?: string;
   format?: string;

@@ -4,6 +4,7 @@ import type {
   AnyArguments,
   AppOptions,
   UserAgentOptions,
+  MockRequestOptions,
   MojoAction,
   MojoContext,
   RouteArguments,
@@ -11,12 +12,13 @@ import type {
   TestUserAgentOptions
 } from './types.js';
 import type {IncomingMessage, ServerResponse} from 'http';
-import {Socket} from 'net';
 import {CLI} from './cli.js';
 import {Context} from './context.js';
 import {Hooks} from './hooks.js';
 import {Logger} from './logger.js';
 import {Mime} from './mime.js';
+import {MockRequest} from './mock/request.js';
+import {MockResponse} from './mock/response.js';
 import ejsEnginePlugin from './plugins/ejs-engine.js';
 import exceptionHelpersPlugin from './plugins/exception-helpers.js';
 import headerConditionsPlugin from './plugins/header-conditions.js';
@@ -142,18 +144,9 @@ export class App {
     return new this._contextClass(this, req, res, options);
   }
 
-  newMockContext(options: {headers?: Record<string, string>; method?: string; url?: string} = {}): MojoContext {
-    return new this._contextClass(
-      this,
-      {
-        headers: options.headers ?? {},
-        method: options.method ?? 'GET',
-        socket: new Socket(),
-        url: options.url ?? '/'
-      },
-      {},
-      {isReverseProxy: false, isWebSocket: false}
-    );
+  newMockContext(options: MockRequestOptions = {}): MojoContext {
+    const req = new MockRequest(options);
+    return new this._contextClass(this, req, new MockResponse(req), {isReverseProxy: false, isWebSocket: false});
   }
 
   async newMockUserAgent(options?: UserAgentOptions): Promise<MockUserAgent> {
