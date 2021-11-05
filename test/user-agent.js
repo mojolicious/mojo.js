@@ -95,7 +95,7 @@ t.test('UserAgent', async t => {
 
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
-  const ua = new UserAgent({baseURL: server.urls[0], name: 'mojo 1.0'});
+  const ua = new UserAgent({baseUrl: server.urls[0], name: 'mojo 1.0'});
 
   await t.test('Hello World', async t => {
     const res = await ua.get('/hello');
@@ -308,7 +308,7 @@ t.test('UserAgent', async t => {
     t.equal(res3.status, 200);
     t.equal(await res3.text(), 'basic: foo:bar:baz, body: test');
 
-    const url = new URL('/auth/basic', ua.baseURL);
+    const url = new URL('/auth/basic', ua.baseUrl);
     url.username = 'foo@example.com';
     url.password = 'bar';
     const res4 = await ua.get(url);
@@ -340,7 +340,7 @@ t.test('UserAgent', async t => {
   });
 
   await t.test('Redirect', async t => {
-    const hello = new URL('/hello', ua.baseURL);
+    const hello = new URL('/hello', ua.baseUrl);
     const res = await ua.post('/redirect/301', {query: {location: hello.toString()}});
     t.equal(res.status, 301);
     t.equal(res.get('Location'), hello.toString());
@@ -367,7 +367,7 @@ t.test('UserAgent', async t => {
     t.equal(res5.get('Location'), hello.toString());
     t.equal(await res5.text(), '');
 
-    const again = new URL('/redirect/again', ua.baseURL);
+    const again = new URL('/redirect/again', ua.baseUrl);
     const res6 = await ua.post('/redirect/301', {query: {location: again.toString()}});
     t.equal(res6.status, 302);
     t.equal(res6.get('Location'), hello.toString());

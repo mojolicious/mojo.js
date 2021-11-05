@@ -354,37 +354,37 @@ t.test('App', async t => {
   });
 
   await t.test('urlFor', async () => {
-    const baseURL = ua.server.urls[0];
-    (await ua.postOk('/url_for', {form: {target: '/foo'}})).statusIs(200).bodyIs(`${baseURL}foo`);
-    (await ua.postOk('/url_for', {form: {target: '/foo/bar.txt'}})).statusIs(200).bodyIs(`${baseURL}foo/bar.txt`);
-    (await ua.postOk('/url_for', {form: {target: 'current'}})).statusIs(200).bodyIs(`${baseURL}url_for`);
+    const baseUrl = ua.server.urls[0];
+    (await ua.postOk('/url_for', {form: {target: '/foo'}})).statusIs(200).bodyIs(`${baseUrl}foo`);
+    (await ua.postOk('/url_for', {form: {target: '/foo/bar.txt'}})).statusIs(200).bodyIs(`${baseUrl}foo/bar.txt`);
+    (await ua.postOk('/url_for', {form: {target: 'current'}})).statusIs(200).bodyIs(`${baseUrl}url_for`);
     (await ua.postOk('/url_for', {form: {target: 'current', msg: 'test'}}))
       .statusIs(200)
-      .bodyIs(`${baseURL}url_for/test`);
+      .bodyIs(`${baseUrl}url_for/test`);
     (await ua.postOk('/url_for', {form: {target: 'https://mojolicious.org'}}))
       .statusIs(200)
       .bodyIs('https://mojolicious.org');
     (await ua.postOk('/url_for', {form: {target: 'websocket_route'}}))
       .statusIs(200)
-      .bodyIs(`${baseURL}websocket/route/works`.replace(/^http/, 'ws'));
+      .bodyIs(`${baseUrl}websocket/route/works`.replace(/^http/, 'ws'));
     (await ua.postOk('/url_for', {form: {target: 'exception', msg: 'test'}}))
       .statusIs(200)
-      .bodyIs(`${baseURL}exception/test`);
+      .bodyIs(`${baseUrl}exception/test`);
   });
 
   await t.test('redirectTo', async () => {
-    const baseURL = ua.server.urls[0];
+    const baseUrl = ua.server.urls[0];
     (await ua.postOk('/redirect', {form: {target: '/foo'}}))
       .statusIs(302)
-      .headerIs('Location', `${baseURL}foo`)
+      .headerIs('Location', `${baseUrl}foo`)
       .bodyIs('');
     (await ua.postOk('/redirect', {form: {target: '/foo', status: '301'}}))
       .statusIs(301)
-      .headerIs('Location', `${baseURL}foo`)
+      .headerIs('Location', `${baseUrl}foo`)
       .bodyIs('');
     (await ua.postOk('/redirect', {form: {target: 'websocket_route'}}))
       .statusIs(302)
-      .headerIs('Location', `${baseURL}websocket/route/works`.replace(/^http/, 'ws'))
+      .headerIs('Location', `${baseUrl}websocket/route/works`.replace(/^http/, 'ws'))
       .bodyIs('');
     (await ua.postOk('/redirect', {form: {target: 'https://mojolicious.org'}}))
       .statusIs(302)
@@ -759,7 +759,7 @@ t.test('App', async t => {
     t.same(ctx2.req.raw.method, 'POST');
     t.same(ctx2.req.raw.url, '/test');
     t.same(ctx2.req.raw.headers, {host: 'mojolicious.org'});
-    t.equal(ctx2.req.baseURL, 'http://mojolicious.org');
+    t.equal(ctx2.req.baseUrl, 'http://mojolicious.org');
     t.equal(ctx2.req.url.toString(), 'http://mojolicious.org/test');
   });
 

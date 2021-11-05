@@ -67,7 +67,7 @@ export interface ServerRequestOptions {
 }
 
 export interface UserAgentOptions {
-  baseURL?: string | URL;
+  baseUrl?: string | URL;
   cookieJar?: CookieJar;
   maxRedirects?: number;
   name?: string;
