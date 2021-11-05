@@ -743,15 +743,24 @@ t.test('App', async t => {
 
   await t.test('Mock context', async () => {
     const ctx = app.newMockContext();
+    t.same(ctx.req.raw.method, 'GET');
+    t.same(ctx.req.raw.url, '/');
+    t.same(ctx.req.raw.headers, {});
 
     ctx.stash.hello = 'mojo';
     t.equal(ctx.stash.hello, 'mojo');
     t.equal(await ctx.renderToString({inline: 'Test: <%= hello %>'}), 'Test: mojo');
-
     t.equal(app.newMockContext().tag('p', {class: 'test'}, 'Hello!').toString(), '<p class="test">Hello!</p>');
 
     ctx.req.raw.headers.host = 'example.com';
     t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
+
+    const ctx2 = app.newMockContext({method: 'POST', url: '/test', headers: {host: 'mojolicious.org'}});
+    t.same(ctx2.req.raw.method, 'POST');
+    t.same(ctx2.req.raw.url, '/test');
+    t.same(ctx2.req.raw.headers, {host: 'mojolicious.org'});
+    t.equal(ctx2.req.baseURL, 'http://mojolicious.org');
+    t.equal(ctx2.req.url.toString(), 'http://mojolicious.org/test');
   });
 
   t.test('Forbidden helpers', t => {

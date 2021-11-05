@@ -142,10 +142,15 @@ export class App {
     return new this._contextClass(this, req, res, options);
   }
 
-  newMockContext(): MojoContext {
+  newMockContext(options: {headers?: Record<string, string>; method?: string; url?: string} = {}): MojoContext {
     return new this._contextClass(
       this,
-      {headers: {}, socket: new Socket()},
+      {
+        headers: options.headers ?? {},
+        method: options.method ?? 'GET',
+        socket: new Socket(),
+        url: options.url ?? '/'
+      },
       {},
       {isReverseProxy: false, isWebSocket: false}
     );
