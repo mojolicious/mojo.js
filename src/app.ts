@@ -144,7 +144,7 @@ export class App {
     return new this._contextClass(this, req, res, options);
   }
 
-  newMockContext(options: MockRequestOptions = {}): MojoContext {
+  newMockContext(options?: MockRequestOptions): MojoContext {
     const req = new MockRequest(options);
     return new this._contextClass(this, req, new MockResponse(req), {isReverseProxy: false, isWebSocket: false});
   }
