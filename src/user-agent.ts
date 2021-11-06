@@ -78,15 +78,12 @@ class UserAgent extends EventEmitter {
     if (typeof filtered.body === 'string') filtered.body = Buffer.from(filtered.body);
     if (filtered.body instanceof Buffer) filtered.headers['Content-Length'] = Buffer.byteLength(filtered.body);
 
-    const options = {
-      agent: filtered.agent,
-      auth: filtered.auth,
-      ca: filtered.ca,
-      headers: filtered.headers,
-      method: filtered.method.toUpperCase(),
-      rejectUnauthorized: filtered.insecure !== true,
-      servername: filtered.servername
-    };
+    const options: https.RequestOptions = {headers: filtered.headers, method: filtered.method.toUpperCase()};
+    if (filtered.agent !== undefined) options.agent = filtered.agent;
+    if (filtered.auth !== undefined) options.auth = filtered.auth;
+    if (filtered.ca !== undefined) options.ca = filtered.ca;
+    if (filtered.insecure !== undefined) options.rejectUnauthorized = filtered.insecure !== true;
+    if (filtered.servername !== undefined) options.servername = filtered.servername;
     const proto = filtered.url.protocol === 'https:' ? https : http;
 
     return await new Promise((resolve, reject) => {
