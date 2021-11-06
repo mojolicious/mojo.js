@@ -75,8 +75,8 @@ const res = await ua.request({
   // Object with key/value pairs to be sent in `application/x-www-form-urlencoded` format
   form: {fieldA: 'first value', fieldB: 'second value'},
 
-  // Object with key/value pairs to be sent in `multipart/form-data` format
-  formData: {fieldA: 'first value', fieldB: 'second value'},
+  // Object with key/value pairs and a file upload to be sent in `multipart/form-data` format
+  formData: {fieldA: 'first value', fieldB: 'second value', fieldC: {content: 'Hello Mojo!', filename: 'test.txt'}},
 
   // Basic authentication
   auth: 'user:password',
