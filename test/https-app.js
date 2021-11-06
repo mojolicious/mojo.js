@@ -49,7 +49,7 @@ t.test('HTTPS app', async t => {
 
   await t.test('HTTPS (self signed cert is accepted with custom ca cert and server name)', async () => {
     const ca = await Path.currentFile().sibling('support', 'certs', 'ca.crt').readFile();
-    (await ua.getOk('/', {ca, servername: 'localhost'})).statusIs(200).bodyIs('HTTPS: true');
+    (await ua.getOk('/', {ca: [ca], servername: 'localhost'})).statusIs(200).bodyIs('HTTPS: true');
   });
 
   await server.stop();

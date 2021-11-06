@@ -84,8 +84,8 @@ const res = await ua.request({
   // Disable TLS certificate validation
   insecure: true,
 
-  // Use custom CA certificate for TLS validation
-  ca: '...',
+  // Override the trusted CA certificates (defaults to CAs curated by Mozilla that ship with Node)
+  ca: ['...', '...'],
 
   // Server name for the SNI (Server Name Indication) TLS extension
   servername: 'localhost',
