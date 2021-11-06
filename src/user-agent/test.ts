@@ -170,6 +170,30 @@ export class TestUserAgent extends MockUserAgent {
     return this;
   }
 
+  textIs(selector: string, value: string): this {
+    const text = this._cheerio(selector).text();
+    this.assert('equal', [text, value], 'text is equal', this.textIs);
+    return this;
+  }
+
+  textIsnt(selector: string, value: string): this {
+    const text = this._cheerio(selector).text();
+    this.assert('not', [text, value], 'text is not equal', this.textIsnt);
+    return this;
+  }
+
+  textLike(selector: string, regex: RegExp): this {
+    const text = this._cheerio(selector).text();
+    this.assert('match', [text, regex], 'text is similar', this.textLike);
+    return this;
+  }
+
+  textUnlike(selector: string, regex: RegExp): this {
+    const text = this._cheerio(selector).text();
+    this.assert('notMatch', [text, regex], 'text is not similar', this.textUnlike);
+    return this;
+  }
+
   typeIs(value: string): this {
     this.assert('equal', [this.res.type, value], `Content-Type: ${value}`, this.typeIs);
     return this;

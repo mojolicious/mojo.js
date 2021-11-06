@@ -1,4 +1,9 @@
-Header
-<%- ctx.partials.head %>
-<%- view.content %>
-Footer
+<html>
+  <head>
+    <title><%- ctx.partials.title %></title>
+  </head>
+  <body>
+    <main><%- view.content %></main>
+    <footer><%- '' + ctx.partials.footer %></footer>
+  </body>
+</html>
