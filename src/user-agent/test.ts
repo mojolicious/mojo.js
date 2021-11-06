@@ -49,7 +49,7 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   bodyUnlike(regex: RegExp): this {
-    this.assert('notMatch', [this.body.toString(), regex], 'body is not similar', this.bodyLike);
+    this.assert('notMatch', [this.body.toString(), regex], 'body is not similar', this.bodyUnlike);
     return this;
   }
 
