@@ -81,7 +81,7 @@ function getHeaders(req: IntrospectedRequest): string[] {
       headers.push(name, header);
     } else if (typeof header === 'number') {
       headers.push(name, header.toString());
-    } else if (header instanceof Array) {
+    } else if (Array.isArray(header)) {
       header.forEach(value => headers.push(name, value));
     }
   }

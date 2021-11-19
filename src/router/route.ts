@@ -29,7 +29,7 @@ export class Route {
       if (typeof arg === 'string') {
         child.defaultName = arg.replace(/[^0-9a-z]+/gi, '_').replace(/^_|_$/g, '');
         childPattern.parse(arg);
-      } else if (arg instanceof Array) {
+      } else if (Array.isArray(arg)) {
         child.methods = arg;
       } else if (typeof arg === 'function') {
         childPattern.defaults.fn = arg;

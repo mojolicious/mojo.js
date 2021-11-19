@@ -140,7 +140,7 @@ export class Pattern {
 
   _compileType(type: PlaceholderType): string {
     if (type instanceof RegExp) return `(${type.source})`;
-    if (!(type instanceof Array)) return `(${type})`;
+    if (!Array.isArray(type)) return `(${type})`;
     return (
       '(' +
       type
