@@ -1,6 +1,6 @@
 {
   "name": "@mojojs/core",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Real-time web framework",
   "keywords": [
     "web",
