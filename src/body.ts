@@ -71,7 +71,7 @@ export class Body {
 
   get(name: string): string | undefined {
     const header = this.raw.headers[name.toLowerCase()];
-    return typeof header === 'object' ? header.join(',') : header;
+    return header instanceof Array ? header.join(',') : header;
   }
 
   get headers(): IncomingHttpHeaders {

@@ -164,6 +164,7 @@ t.test('Util', async t => {
     t.same(jsonPointer({hello: 'world'}, '/bye'), undefined, 'no result');
     t.same(jsonPointer({hello: 'world'}, '/'), undefined, 'no result');
     t.same(jsonPointer({hello: 'world'}, '/0'), undefined, 'no result');
+    t.same(jsonPointer({hello: null}, '/hello'), null, 'right result');
 
     t.same(jsonPointer([], '/0'), undefined, 'no result');
     t.same(jsonPointer(['test', 123], '/0'), 'test', 'right result');

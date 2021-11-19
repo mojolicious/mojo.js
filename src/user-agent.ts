@@ -184,7 +184,7 @@ class UserAgent extends EventEmitter {
     for (const [name, value] of Object.entries(values)) {
       if (typeof value === 'string') {
         form.append(name, value);
-      } else if (typeof value === 'object') {
+      } else if (typeof value === 'object' && value !== null) {
         form.append(name, value.content, {filename: value.filename, contentType: value.type});
       }
     }

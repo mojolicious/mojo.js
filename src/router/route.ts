@@ -33,7 +33,7 @@ export class Route {
         child.methods = arg;
       } else if (typeof arg === 'function') {
         childPattern.defaults.fn = arg;
-      } else if (typeof arg === 'object') {
+      } else if (typeof arg === 'object' && arg !== null) {
         Object.assign(childPattern.constraints, arg);
       }
     }

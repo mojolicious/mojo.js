@@ -201,7 +201,7 @@ export function jsonPointer(value: JSONValue, pointer: string): JSONValue | unde
   for (const part of pointer.replace(/^\//, '').split('/')) {
     const unescaped = part.replaceAll('~1', '/').replaceAll('~0', '~');
 
-    if (typeof data === 'object' && data[unescaped] !== undefined) {
+    if (typeof data === 'object' && data !== null && data[unescaped] !== undefined) {
       data = data[unescaped];
     } else if (Array.isArray(data) && /^\d+$/.test(unescaped)) {
       data = data[parseInt(unescaped)];
