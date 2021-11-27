@@ -51,7 +51,6 @@
   "devDependencies": {
     "@istanbuljs/esm-loader-hook": "^=0.1.2",
     "@types/busboy": "^0.3.1",
-    "@types/cheerio": "^0.22.29",
     "@types/ejs": "^3.0.6",
     "@types/js-yaml": "^4.0.3",
     "@types/lru-cache": "^5.1.0",
@@ -78,11 +77,11 @@
     "node": ">= 16"
   },
   "dependencies": {
+    "@mojojs/dom": "^0.0.1",
     "@mojojs/path": "^1.1.2",
     "ajv": "^8.5.0",
     "busboy": "^0.3.1",
     "chalk": "^4.1.1",
-    "cheerio": "^1.0.0-rc.10",
     "ejs": "^3.1.6",
     "form-data": "^4.0.0",
     "js-yaml": "^4.1.0",

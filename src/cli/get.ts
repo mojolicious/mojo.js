@@ -44,7 +44,12 @@ export default async function getCommand(app: MojoApp, args: string[]): Promise<
 
   if (argv.remain[1] !== undefined) {
     const html = await res.html();
-    process.stdout.write(html(argv.remain[1]).html() ?? '');
+    process.stdout.write(
+      html
+        .find(argv.remain[1])
+        .map(e => e.toString())
+        .join('') ?? ''
+    );
   } else {
     await res.pipe(process.stdout);
   }

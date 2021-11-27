@@ -959,7 +959,7 @@ app.get('/', async ctx => {
 
   const res   = await ctx.ua.get(url);
   const html  = await res.html();
-  const title = html('title').text();
+  const title = html.at('title').text();
 
   await ctx.render({text: title});
 });

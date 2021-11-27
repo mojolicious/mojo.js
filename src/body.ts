@@ -5,8 +5,8 @@ import type {Readable, Writable} from 'stream';
 import {on} from 'events';
 import zlib from 'zlib';
 import {Params} from './body/params.js';
+import DOM from '@mojojs/dom';
 import Busboy from 'busboy';
-import cheerio from 'cheerio';
 import yaml from 'js-yaml';
 
 type BusboyFile = [string, Readable, string, string, string];
@@ -78,8 +78,8 @@ export class Body {
     return this.raw.headers;
   }
 
-  async html(): Promise<cheerio.Root> {
-    return cheerio.load(await this.buffer());
+  async html(): Promise<DOM> {
+    return new DOM(await this.text());
   }
 
   get isSecure(): boolean {
@@ -101,8 +101,8 @@ export class Body {
     return (await this.buffer()).toString(charset);
   }
 
-  async xml(): Promise<cheerio.Root> {
-    return cheerio.load(await this.buffer(), {xmlMode: true});
+  async xml(): Promise<DOM> {
+    return new DOM(await this.text(), {xml: true});
   }
 
   async yaml(): Promise<unknown> {

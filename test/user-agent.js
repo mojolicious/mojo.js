@@ -449,16 +449,16 @@ t.test('UserAgent', async t => {
   await t.test('HTML/XML', async t => {
     const res = await ua.get('/test.html');
     const html = await res.html();
-    t.equal(html('div').text(), 'Test123');
+    t.equal(html.at('div').text(), 'Test123');
 
     const res2 = await ua.get('/test.xml');
     const xml = await res2.xml();
-    t.equal(xml('script p').length, 1);
-    t.equal(xml('script p').text(), 'Hello');
+    t.equal(xml.find('script p').length, 1);
+    t.equal(xml.at('script p').text(), 'Hello');
 
     const res3 = await ua.get('/test.xml');
     const html2 = await res3.html();
-    t.equal(html2('script p').length, 0);
+    t.same(html2.at('script p'), null);
   });
 
   await t.test('Decompression', async t => {

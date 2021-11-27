@@ -66,7 +66,7 @@ app.websocket('/title', ctx => {
     for await (const url of ws) {
       const res   = await ctx.ua.get(url);
       const html  = await res.html();
-      const title = html('title').text();
+      const title = html.at('title').text();
       ws.send(title);
     }
   });

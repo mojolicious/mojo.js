@@ -7,7 +7,7 @@ import assert from 'assert/strict';
 import {on} from 'events';
 import {jsonPointer} from '../util.js';
 import {MockUserAgent} from './mock.js';
-import cheerio from 'cheerio';
+import DOM from '@mojojs/dom';
 import yaml from 'js-yaml';
 import StackUtils from 'stack-utils';
 
@@ -16,7 +16,7 @@ type SkipFunction = (...args: any[]) => any;
 export class TestUserAgent extends MockUserAgent {
   body: Buffer = Buffer.from('');
   _assert: typeof assert | Tap.Tap | undefined = undefined;
-  _dom: cheerio.Root | undefined = undefined;
+  _dom: DOM | undefined = undefined;
   _finished: [number, string] | null | undefined = undefined;
   _messages: AsyncIterableIterator<JSONValue> | undefined = undefined;
   _res: UserAgentResponse | undefined = undefined;
@@ -70,13 +70,13 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   elementExists(selector: string): this {
-    const elements = this._cheerio(selector);
+    const elements = this._html.find(selector);
     this.assert('ok', [elements.length > 0], `element for selector "${selector}" exists`, this.elementExists);
     return this;
   }
 
   elementExistsNot(selector: string): this {
-    const elements = this._cheerio(selector);
+    const elements = this._html.find(selector);
     this.assert('ok', [elements.length === 0], `no element for selector "${selector}"`, this.elementExistsNot);
     return this;
   }
@@ -209,8 +209,8 @@ export class TestUserAgent extends MockUserAgent {
     return this;
   }
 
-  get _cheerio(): cheerio.Root {
-    if (this._dom === undefined) this._dom = cheerio.load(this.body ?? '');
+  get _html(): DOM {
+    if (this._dom === undefined) this._dom = new DOM((this.body ?? '').toString());
     return this._dom;
   }
 

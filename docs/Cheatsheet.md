@@ -9,8 +9,8 @@ The mojo.js application object, usually called `app`.
 ```js
 // ua: a `UserAgent` object for use inside the application
 const res = await app.ua.get('https://mojolicious.org');
-const document = await res.html();
-const title = document('title').text();
+const dom = await res.html();
+const title = dom.at('title').text();
 
 // config: plain configuration object, filled with data by config plugins, use it to to store arbitrary information
 app.config.foo = 'bar';

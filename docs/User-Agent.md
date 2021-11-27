@@ -177,12 +177,12 @@ const data = await res.json();
 // Parsed YAML
 const data = await res.yaml();
 
-// Parsed HTML via `cheerio`
-const document = await res.html();
-const title = document('title').text();
+// Parsed HTML via `@mojojs/dom`
+const dom = await res.html();
+const title = dom.at('title').text();
 
-// Parsed XML via `cheerio`
-const document = await res.xml();
+// Parsed XML via `@mojojs/dom`
+const dom = await res.xml();
 
 // Async iterator
 const parts = [];
@@ -192,8 +192,8 @@ for await (const chunk of res) {
 const buffer = Buffer.concat(parts);
 ```
 
-For HTML and XML parsing [cheerio](https://www.npmjs.com/package/cheerio) will be used. Making it very easy to extract
-information from documents with just a CSS selector and almost no code at all.
+For HTML and XML parsing [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom) will be used. Making it very easy to
+extract information from documents with just a CSS selector and almost no code at all.
 
 ## WebSockets
 
