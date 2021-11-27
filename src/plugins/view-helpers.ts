@@ -1,5 +1,5 @@
 import type {MojoApp, MojoContext, RenderOptions} from '../types.js';
-import type {SafeString} from '../util.js';
+import type {SafeString} from '@mojojs/dom';
 import type {InspectOptions} from 'util';
 import {inspect} from 'util';
 import {htmlTag} from '../util.js';

@@ -2,7 +2,7 @@ import type {JSONValue} from './types.js';
 import type {Mode} from 'fs';
 import {setTimeout} from 'timers/promises';
 import url from 'url';
-import {xmlEscape} from '@mojojs/dom';
+import {SafeString, xmlEscape} from '@mojojs/dom';
 import Path from '@mojojs/path';
 import chalk from 'chalk';
 import ejs from 'ejs';
@@ -228,16 +228,4 @@ export function tablify(rows: string[][] = []): string {
 
   const lines = table.map(row => row.map((col, i) => (i === row.length - 1 ? col : col.padEnd(spec[i]))).join('  '));
   return lines.join('\n') + '\n';
-}
-
-export class SafeString {
-  _safe: string;
-
-  constructor(safe: string) {
-    this._safe = safe;
-  }
-
-  toString(): string {
-    return this._safe;
-  }
 }
