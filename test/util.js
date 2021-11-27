@@ -107,23 +107,6 @@ t.test('Util', async t => {
     });
   });
 
-  t.test('escapeRegExp', t => {
-    const escapeRegExp = util.escapeRegExp;
-    t.equal(escapeRegExp('te*s?t'), 'te\\*s\\?t', 'escaped');
-    t.equal(escapeRegExp('\\^$.*+?()[]{}|'), '\\\\\\^\\$\\.\\*\\+\\?\\(\\)\\[\\]\\{\\}\\|', 'escaped');
-    t.end();
-  });
-
-  t.test('htmlEscape', t => {
-    const escape = util.htmlEscape;
-    t.same(escape('Hello World!'), 'Hello World!');
-    t.same(escape('привет<foo>'), 'привет&lt;foo&gt;');
-    t.same(escape('la<f>\nbar"baz"\'yada\n\'&lt;la'), 'la&lt;f&gt;\nbar&quot;baz&quot;&#39;yada\n&#39;&amp;lt;la');
-    t.same(escape('<p>'), '&lt;p&gt;');
-    t.same(escape(new util.SafeString('<p>')), '<p>');
-    t.end();
-  });
-
   t.test('htmlTag', t => {
     const tag = util.htmlTag;
 

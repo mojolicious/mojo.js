@@ -2,17 +2,10 @@ import type {JSONValue} from './types.js';
 import type {Mode} from 'fs';
 import {setTimeout} from 'timers/promises';
 import url from 'url';
+import {xmlEscape} from '@mojojs/dom';
 import Path from '@mojojs/path';
 import chalk from 'chalk';
 import ejs from 'ejs';
-
-const HTML_ESCAPE: Record<string, string> = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#39;'
-};
 
 const EMPTY_HTML_TAGS: Record<string, boolean> = {
   area: true,
@@ -130,10 +123,6 @@ export function decodeURIComponentSafe(value: string): string | null {
   }
 }
 
-export function escapeRegExp(string: string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 export async function exceptionContext(
   error: Error,
   options: {lines?: number} = {}
@@ -164,15 +153,6 @@ export async function exceptionContext(
   return context;
 }
 
-export function htmlEscape(value: string | SafeString): string {
-  if (value instanceof SafeString) return value.toString();
-  return value.replace(/[&<>'"]/g, htmlReplace);
-}
-
-function htmlReplace(char: string): string {
-  return HTML_ESCAPE[char] ?? char;
-}
-
 export function htmlTag(
   name: string,
   attrs: Record<string, string> | string | SafeString = {},
@@ -183,12 +163,12 @@ export function htmlTag(
 
   result.push('<', name);
   for (const [name, value] of Object.entries(attrs)) {
-    result.push(' ', name, '="', htmlEscape(value), '"');
+    result.push(' ', name, '="', xmlEscape(value), '"');
   }
   result.push('>');
 
   if (!EMPTY_HTML_TAGS[name]) {
-    result.push(content instanceof SafeString ? content.toString() : htmlEscape(content), '</', name, '>');
+    result.push(content instanceof SafeString ? content.toString() : xmlEscape(content), '</', name, '>');
   }
 
   return new SafeString(result.join(''));

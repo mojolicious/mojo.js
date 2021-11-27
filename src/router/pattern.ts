@@ -1,5 +1,5 @@
 import type {PlaceholderType} from '../types.js';
-import {escapeRegExp} from '../util.js';
+import {escapeRegExp} from '@mojojs/dom';
 
 const OP = {
   placeholder: Symbol('placeholder'),
