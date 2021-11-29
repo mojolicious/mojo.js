@@ -77,7 +77,7 @@
     "node": ">= 16"
   },
   "dependencies": {
-    "@mojojs/dom": "^0.0.1",
+    "@mojojs/dom": "^0.0.4",
     "@mojojs/path": "^1.1.2",
     "ajv": "^8.5.0",
     "busboy": "^0.3.1",
