@@ -37,5 +37,5 @@ An overview of the most commonly encountered mojo.js objects.
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
-[Forum](https://github.com/mojolicious/mojo.js/discussions) or the official IRC channel `#mojo.js` on `irc.libera.chat`
-([chat now](https://web.libera.chat/#mojo.js)!).
+[Forum](https://github.com/mojolicious/mojo.js/discussions) or the official IRC channel `#mojo` on `irc.libera.chat`
+([chat now](https://web.libera.chat/#mojo)!).

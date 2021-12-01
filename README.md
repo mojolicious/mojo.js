@@ -8,8 +8,8 @@
 [![npm](https://img.shields.io/npm/v/@mojojs/core.svg)](https://www.npmjs.com/package/@mojojs/core)
 
 The [Mojolicious](https://mojolicious.org) real-time web framework for [Node.js](https://nodejs.org/). Written in
-TypeScript. If you want to stay up to date on the latest developments join us on [IRC](https://web.libera.chat/#mojo.js)
-(`#mojo.js` on Libera.Chat).
+TypeScript. If you want to stay up to date on the latest developments join us on [IRC](https://web.libera.chat/#mojo)
+(`#mojo` on Libera.Chat).
 
 ## Installation
 
