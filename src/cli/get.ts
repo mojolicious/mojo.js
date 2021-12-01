@@ -47,7 +47,7 @@ export default async function getCommand(app: MojoApp, args: string[]): Promise<
     process.stdout.write(
       html
         .find(argv.remain[1])
-        .map(e => e.toString())
+        .map(el => el.toString())
         .join('') ?? ''
     );
   } else {
