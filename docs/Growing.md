@@ -117,6 +117,143 @@ functionality and then moves on to producing code that passes these tests. There
 having good test coverage and code being designed for testability, which will in turn often prevent future changes from
 breaking old code. Much of mojo.js was developed using TDD.
 
+## Prototype
+
+Mojolicious allows you to both create a lite app and a full app. The lite app
+is perfect for rapid prototyping.
+
+You can create the lite app by:
+
+  $ npx mojo create-lite-app          !!!!!VERIFY THIS
+
+This creates a single file.
+
+```
+index.js  // Templates and even static files can be inlined
+```
+
+```index.js``` starts the mojo app server by default on port 3000 and renders a
+minimal webpage.
+
+You can test simply by opening a web browser at url ```localhost:3000```.
+
+Full Mojolicious applications on the other hand are set-up to be a well 
+organized distribution to maximize maintainability.
+
+First, create your project folder and step into it. 
+
+```bash
+mkdir my_app
+cd my_app
+```
+
+You can now create the full app by:
+
+```bash
+  $ npx mojo create-full-app
+```
+
+The full app will have the following structure:
+
+```bash
+my_app                                // Application dir created manually
+|- config.yml                         // Configuration file
+|- index.js                           // Application script
+|- node_modules/
+|   |- *lots of node files*
+|- package.json                       // Node package information and settings
+|- package-lock.json                  // Describes exact tree generated in node_modules/
+|- test/                              // Test directory
+|   |- example.js                     // Random test
+|- controllers/                       // Controller directory
+|   |- example.js                     // 
+|- models/                            // Model directory
+|- public/                            // Static file directory (served automatically)
+|   |- index.html                     // Static HTML file
+|- views/                             // Views directory
+|   |- example/                       // View directory for "Example"
+|   |   |- welcome.html.ejs
+|   |- layouts/                       // View directory for layouts
+|   |   |- default.html.ejs           // Layout view/template
+
+```
+
+Again, both application skeletons can be automatically generated with:
+
+```bash
+$ npx mojo create-lite-app      !!!VERIFY THIS
+$ npx mojo create-full-app
+```
+
+Feature-wise both are almost equal, the only real differences are 
+organizational, so each one can be gradually transformed into the other.
+
+### Foundation
+
+We start our new application with a single javascript script.
+
+```bash
+$ mkdir my_app
+$ cd my_app
+$ touch myapp.pl
+```
+
+This will be the foundation for our login manager example application.
+
+```javascript
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/', ctx => ctx.render({text: 'I ♥ Mojo!'}));
+
+app.start();
+```
+
+The built-in development web server makes working on your application a lot of 
+fun thanks to automatic reloading.
+
+```bash
+$ node index.js server
+```
+
+Just save your changes and they will be automatically in effect the next time 
+you refresh your browser.
+
+### A bird's-eye view
+
+It all starts with an HTTP request like this, sent by your browser.
+
+```
+GET / HTTP/1.1
+Host: localhost:3000
+```
+
+Once the request has been received by the web server through the event loop, it
+will be passed on to Mojolicious, where it will be handled in a few simple 
+steps.
+
+1. Check if a static file exists that would meet the requirements.
+
+2. Try to find a route that would meet the requirements.
+
+3. Dispatch the request to this route, usually reaching one or more actions.
+
+4. Process the request, maybe generating a response with the renderer.
+
+5. Return control to the web server, and if no response has been generated yet,
+wait for a non-blocking operation to do so through the event loop.
+
+With our application the router would have found an action in step 2, and 
+rendered some text in step 4, resulting in an HTTP response like this being 
+sent back to the browser.
+
+```
+HTTP/1.1 200 OK
+Content-Length: 12
+Hello World!
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
