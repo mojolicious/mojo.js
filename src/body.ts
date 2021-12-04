@@ -9,7 +9,17 @@ import DOM from '@mojojs/dom';
 import Busboy from 'busboy';
 import yaml from 'js-yaml';
 
-type BusboyFile = [string, Readable, string, string, string];
+interface UploadOptions {
+  limits?: {
+    fieldNameSize?: number;
+    fieldSize?: number;
+    fields?: number;
+    fileSize?: number;
+    files?: number;
+    parts?: number;
+    headerPairs?: number;
+  };
+}
 
 interface FileUpload {
   fieldname: string;
@@ -46,7 +56,7 @@ export class Body {
     return gunzip;
   }
 
-  async *files(options?: Busboy.BusboyConfig): AsyncIterableIterator<FileUpload> {
+  async *files(options?: UploadOptions): AsyncIterableIterator<FileUpload> {
     if (!this._isForm()) return;
 
     try {
@@ -58,7 +68,7 @@ export class Body {
     }
   }
 
-  async form(options?: Busboy.BusboyConfig): Promise<Params> {
+  async form(options?: UploadOptions): Promise<Params> {
     if (this._form === undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for await (const upload of this.files(options)) {
@@ -119,12 +129,15 @@ export class Body {
     });
   }
 
-  _formIterator(options?: Busboy.BusboyConfig): AsyncIterableIterator<BusboyFile> {
+  _formIterator(options?: UploadOptions): AsyncIterableIterator<[string, Readable, string, string, string]> {
     const ac = new AbortController();
 
     const raw = this.raw;
+    const headers = raw.headers;
+    const type = headers['content-type'] ?? '';
     const params = this._params;
-    const busboy = new Busboy({headers: raw.headers as any, ...options});
+
+    const busboy = new Busboy({headers: {'content-type': type, ...headers}, ...options});
     busboy.on('field', (fieldname, val) => params.append(fieldname, val));
     busboy.on('end', () => ac.abort()).on('finish', () => ac.abort());
     const files = on(busboy, 'file', {signal: ac.signal});
