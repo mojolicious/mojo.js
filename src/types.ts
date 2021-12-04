@@ -1,5 +1,6 @@
 import type {App} from './app.js';
 import type {Context} from './context.js';
+import type {ValidatorResult} from './validator/result.js';
 import type {Agent} from 'http';
 import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';
@@ -108,3 +109,5 @@ export interface ValidationError {
   message?: string;
   schemaPath: string;
 }
+
+export type ValidatorFunction = (data: JSONObject) => ValidatorResult;

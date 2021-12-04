@@ -1,9 +1,8 @@
 import type {App} from './app.js';
 import type {ChildLogger} from './logger.js';
 import type {Plan} from './router/plan.js';
-import type {MojoAction, MojoContext, RenderOptions, ServerRequestOptions} from './types.js';
+import type {MojoAction, MojoContext, RenderOptions, ServerRequestOptions, ValidatorFunction} from './types.js';
 import type {UserAgent} from './user-agent.js';
-import type {ValidatorSchema} from './validator/schema.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
 import type {BusboyConfig} from 'busboy';
@@ -168,7 +167,7 @@ class Context extends EventEmitter {
     return await this.app.static.serveFile(this, file);
   }
 
-  schema(schema: Record<string, any> | string): ValidatorSchema | null {
+  schema(schema: Record<string, any> | string): ValidatorFunction | null {
     return this.app.validator.schema(schema);
   }
 

@@ -768,7 +768,7 @@ const app = mojo();
 app.get('/form', async ctx => {
 
   // Prepare validation function for schema
-  const schema = ctx.schema({
+  const validate = ctx.schema({
     $id: 'testForm',
     type: 'object',
     properties: {
@@ -782,7 +782,7 @@ app.get('/form', async ctx => {
   const testData = params.toObject();
 
   // Validate request parameters
-  const result = schema.validate(testData);
+  const result = validate(testData);
   if (result.isValid === true) {
     await ctx.render({json: testData});
   } else {
@@ -807,7 +807,7 @@ app.validator.addSchema({
 }, 'testForm');
 
 // Request schema by name from now on
-const schema = ctx.schema('testForm');
+const validate = ctx.schema('testForm');
 ```
 
 ## Home

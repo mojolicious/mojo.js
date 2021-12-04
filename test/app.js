@@ -221,15 +221,15 @@ t.test('App', async t => {
 
   // PUT /schema/user
   app.put('/schema/user', async ctx => {
-    const schema = ctx.schema('user');
+    const validate = ctx.schema('user');
     const data = await ctx.req.json();
-    const result = schema.validate(data);
+    const result = validate(data);
     await ctx.render({json: {valid: result.isValid}});
   });
 
   // PUT /schema/form
   app.put('/schema/form', async ctx => {
-    const schema = ctx.schema({
+    const validate = ctx.schema({
       type: 'object',
       properties: {
         test: {type: 'string'}
@@ -238,14 +238,14 @@ t.test('App', async t => {
     });
 
     const params = await ctx.params();
-    const result = schema.validate(params.toObject());
+    const result = validate(params.toObject());
 
     await ctx.render({json: {valid: result.isValid}});
   });
 
   // PUT /schema/dynamic
   app.put('/schema/dynamic', async ctx => {
-    const schema = ctx.schema({
+    const validate = ctx.schema({
       $id: 'test123',
       type: 'object',
       properties: {
@@ -255,7 +255,7 @@ t.test('App', async t => {
     });
 
     const data = await ctx.req.json();
-    const result = schema.validate(data);
+    const result = validate(data);
 
     await ctx.render({json: {valid: result.isValid, errors: result.errors}});
   });
