@@ -16,8 +16,7 @@ export class Validator {
     if (typeof schema === 'string') {
       validate = ajv.getSchema(schema);
     } else if (schema.$id !== undefined) {
-      validate = ajv.getSchema(schema.$id as string);
-      if (validate === undefined) validate = ajv.compile(schema);
+      if ((validate = ajv.getSchema(schema.$id as string)) === undefined) validate = ajv.compile(schema);
     } else {
       validate = ajv.compile(schema);
     }
