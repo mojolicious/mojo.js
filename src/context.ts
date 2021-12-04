@@ -3,9 +3,9 @@ import type {ChildLogger} from './logger.js';
 import type {Plan} from './router/plan.js';
 import type {MojoAction, MojoContext, RenderOptions, ServerRequestOptions} from './types.js';
 import type {UserAgent} from './user-agent.js';
+import type {ValidatorSchema} from './validator/schema.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
-import type {ValidateFunction} from 'ajv';
 import type {BusboyConfig} from 'busboy';
 import type http from 'http';
 import EventEmitter from 'events';
@@ -168,15 +168,8 @@ class Context extends EventEmitter {
     return await this.app.static.serveFile(this, file);
   }
 
-  schema(schema: Record<string, any> | string): ValidateFunction | undefined {
-    const validator = this.app.validator;
-    if (typeof schema === 'string') return validator.getSchema(schema);
-
-    if (schema.$id !== undefined) {
-      const validate = validator.getSchema(schema.$id);
-      if (validate !== undefined) return validate;
-    }
-    return validator.compile(schema);
+  schema(schema: Record<string, any> | string): ValidatorSchema | null {
+    return this.app.validator.schema(schema);
   }
 
   async session(): Promise<Record<string, any>> {

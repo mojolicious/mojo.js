@@ -221,15 +221,15 @@ t.test('App', async t => {
 
   // PUT /schema/user
   app.put('/schema/user', async ctx => {
-    const validate = ctx.schema('user');
+    const schema = ctx.schema('user');
     const data = await ctx.req.json();
-    const valid = validate(data);
-    await ctx.render({json: {valid}});
+    const result = schema.validate(data);
+    await ctx.render({json: {valid: result.isValid}});
   });
 
   // PUT /schema/form
   app.put('/schema/form', async ctx => {
-    const validate = ctx.schema({
+    const schema = ctx.schema({
       type: 'object',
       properties: {
         test: {type: 'string'}
@@ -238,14 +238,14 @@ t.test('App', async t => {
     });
 
     const params = await ctx.params();
-    const valid = validate(params.toObject());
+    const result = schema.validate(params.toObject());
 
-    await ctx.render({json: {valid}});
+    await ctx.render({json: {valid: result.isValid}});
   });
 
   // PUT /schema/dynamic
   app.put('/schema/dynamic', async ctx => {
-    const validate = ctx.schema({
+    const schema = ctx.schema({
       $id: 'test123',
       type: 'object',
       properties: {
@@ -255,9 +255,9 @@ t.test('App', async t => {
     });
 
     const data = await ctx.req.json();
-    const valid = validate(data);
+    const result = schema.validate(data);
 
-    await ctx.render({json: {valid}});
+    await ctx.render({json: {valid: result.isValid, errors: result.errors}});
   });
 
   // GET /gzip
@@ -691,10 +691,19 @@ t.test('App', async t => {
     (await ua.putOk('/schema/user', {json: {user: 'kraih'}})).statusIs(200).jsonIs({valid: false});
     (await ua.putOk('/schema/user', {json: {username: 'sri'}})).statusIs(200).jsonIs({valid: true});
 
-    t.notOk(app.validator.getSchema('test123'));
-    (await ua.putOk('/schema/dynamic', {json: {test: 123}})).statusIs(200).jsonIs({valid: true});
-    t.ok(app.validator.getSchema('test123'));
-    (await ua.putOk('/schema/dynamic', {json: {test: '123'}})).statusIs(200).jsonIs({valid: false});
+    t.notOk(app.validator.schema('test123'));
+    (await ua.putOk('/schema/dynamic', {json: {test: 123}})).statusIs(200).jsonIs({valid: true, errors: []});
+    t.ok(app.validator.schema('test123'));
+    (await ua.putOk('/schema/dynamic', {json: {test: '123'}})).statusIs(200).jsonIs({
+      valid: false,
+      errors: [
+        {
+          instancePath: '/test',
+          schemaPath: '#/properties/test/type',
+          message: 'must be number'
+        }
+      ]
+    });
 
     (await ua.putOk('/schema/form', {form: {test: 'works'}})).statusIs(200).jsonIs({valid: true});
     (await ua.putOk('/schema/form', {form: {test2: 'fails'}})).statusIs(200).jsonIs({valid: false});

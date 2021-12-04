@@ -30,8 +30,8 @@ import {Static} from './static.js';
 import {UserAgent} from './user-agent.js';
 import {MockUserAgent} from './user-agent/mock.js';
 import {TestUserAgent} from './user-agent/test.js';
+import {Validator} from './validator.js';
 import Path from '@mojojs/path';
-import Ajv from 'ajv';
 
 const ContextWrapper = class extends Context {};
 
@@ -58,7 +58,7 @@ export class App {
   session: Session = new Session(this);
   static: Static = new Static();
   ua: UserAgent = new UserAgent();
-  validator: Ajv = new Ajv();
+  validator = new Validator();
   _contextClass: any = class extends ContextWrapper {};
   _mode: string;
   _server: WeakRef<Server> | null = null;

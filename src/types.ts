@@ -10,6 +10,7 @@ export type ExpandRecursive<T> = T extends infer O ? {[K in keyof O]: ExpandRecu
 
 // Plain JSON
 export type JSONValue = string | number | boolean | null | JSONValue[] | {[key: string]: JSONValue};
+export type JSONObject = {[key: string]: JSONValue};
 
 export type MojoApp = App;
 
@@ -101,3 +102,9 @@ export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions
 }
 
 export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Tap};
+
+export interface ValidationError {
+  instancePath: string;
+  message?: string;
+  schemaPath: string;
+}
