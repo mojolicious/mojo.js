@@ -638,7 +638,7 @@ const admin = app.under('/admin', async ctx => {
 // GET /admin?name=Bender
 admin.get('/', async ctx => {
   await ctx.render({text: 'Hi Bender!'});
-}});
+});
 
 app.start();
 ```
