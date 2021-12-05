@@ -554,7 +554,7 @@ const app = mojo();
 app.any('/:foo', {foo: ['test', '123']}, async ctx => {
   const foo = ctx.stash.foo;
   await ctx.render({text: `Our :foo placeholder matched ${foo}.`});
-}});
+});
 
 app.start();
 ```
@@ -572,7 +572,7 @@ const app = mojo();
 app.any('/:bar', {bar: /\d+/}, async ctx => {
   const bar = ctx.stash.bar;
   await ctx.render({text: `Our :bar placeholder matched ${bar}.`});
-}});
+});
 
 app.start();
 ```
@@ -600,13 +600,13 @@ const foo = app.any('/foo').to({name: 'Daniel'});
 foo.get('/bar', async ctx => {
   const name = ctx.stash.name;
   await ctx.render({text: `My name is ${name}.`});
-}});
+});
 
 // GET /foo/baz
 foo.get('/baz', async ctx => {
   const name = ctx.stash.name;
   await ctx.render({text: `My name is also ${name}.`});
-}});
+});
 
 app.start();
 ```
@@ -658,7 +658,7 @@ const app = mojo();
 app.get('/detect', {ext: ['html', 'txt']}, async ctx => {
   const ext = ctx.stash.ext;
   await ctx.render({text: `Detected .${ext} extension.`});
-}});
+});
 
 app.start();
 ```
@@ -676,7 +676,7 @@ const app = mojo();
 app.get('/detect', {ext: /html?/}).to({ext: 'html'}, async ctx => {
   const ext = ctx.stash.ext;
   await ctx.render({text: `Detected .${ext} extension.`});
-}});
+});
 
 app.start();
 ```
@@ -702,7 +702,7 @@ const app = mojo();
 app.get('/file', async ctx => {
   const url = ctx.urlForFile('/test.txt');
   await ctx.redirectTo(url, {status: 301});
-}});
+});
 
 app.start();
 ```
