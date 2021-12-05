@@ -46,6 +46,9 @@ serverCommand.usage = `Usage: APPLICATION server [OPTIONS]
   node index.js server -l http://*:8080 -l http://*:8081
   node index.js server -l 'https://*:443?cert=./server.crt&key=./server.key'
 
+  # Run server in production mode
+  NODE_ENV=production node index.js server
+
 Options:
   -c, --cluster             Run in cluster mode with multiple processes
   -h, --help                Show this summary of available options
