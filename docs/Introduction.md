@@ -217,7 +217,7 @@ const app = mojo();
 app.get('/agent', async ctx => {
   const host = ctx.req.url.hostname;
   const ua = ctx.req.get('User-Agent');
-  await ctx.render({text: `Request by ${ua} reached ${host}.`);
+  await ctx.render({text: `Request by ${ua} reached ${host}.`});
 });
 
 // Echo the request body and send custom header with response
