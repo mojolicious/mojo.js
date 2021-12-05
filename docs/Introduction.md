@@ -388,7 +388,7 @@ as part of your application. You can register plugins with `app.plugin()`.
 import mojo, {jsonConfigPlugin} from '@mojojs/core';
 
 // Create application with default configuration
-const app = mojo({config: {foo = 'default value'}});
+const app = mojo({config: {foo: 'default value'}});
 
 app.plugin(jsonConfigPlugin, {file: 'myapp.conf'});
 
