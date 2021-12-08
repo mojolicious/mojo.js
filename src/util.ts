@@ -2,29 +2,9 @@ import type {JSONValue} from './types.js';
 import type {Mode} from 'fs';
 import {setTimeout} from 'timers/promises';
 import url from 'url';
-import {SafeString, xmlEscape} from '@mojojs/dom';
 import Path from '@mojojs/path';
 import chalk from 'chalk';
 import ejs from 'ejs';
-
-const EMPTY_HTML_TAGS: Record<string, boolean> = {
-  area: true,
-  base: true,
-  br: true,
-  col: true,
-  embed: true,
-  hr: true,
-  img: true,
-  input: true,
-  keygen: true,
-  link: true,
-  menuitem: true,
-  meta: true,
-  param: true,
-  source: true,
-  track: true,
-  wbr: true
-};
 
 export async function captureOutput(
   fn: () => void,
@@ -151,27 +131,6 @@ export async function exceptionContext(
   }
 
   return context;
-}
-
-export function htmlTag(
-  name: string,
-  attrs: Record<string, string> | string | SafeString = {},
-  content: string | SafeString = ''
-): SafeString {
-  if (typeof attrs === 'string' || attrs instanceof SafeString) [content, attrs] = [attrs, {}];
-  const result: string[] = [];
-
-  result.push('<', name);
-  for (const [name, value] of Object.entries(attrs)) {
-    result.push(' ', name, '="', xmlEscape(value), '"');
-  }
-  result.push('>');
-
-  if (!EMPTY_HTML_TAGS[name]) {
-    result.push(content instanceof SafeString ? content.toString() : xmlEscape(content), '</', name, '>');
-  }
-
-  return new SafeString(result.join(''));
 }
 
 export function jsonPointer(value: JSONValue, pointer: string): JSONValue | undefined {

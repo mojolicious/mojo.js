@@ -1,8 +1,7 @@
 import type {MojoApp, MojoContext, RenderOptions} from '../types.js';
-import type {SafeString} from '@mojojs/dom';
 import type {InspectOptions} from 'util';
 import {inspect} from 'util';
-import {htmlTag} from '../util.js';
+import DOM, {SafeString} from '@mojojs/dom';
 
 export default function viewHelpersPlugin(app: MojoApp): void {
   app.decorateContext('inspect', (object: Record<string, any>, options: InspectOptions) => inspect(object, options));
@@ -38,5 +37,5 @@ function tag(
   attrs: Record<string, string> = {},
   content: string | SafeString = ''
 ): SafeString {
-  return htmlTag(name, attrs, content);
+  return new SafeString(DOM.newTag(name, attrs, content).toString());
 }

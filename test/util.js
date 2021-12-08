@@ -107,39 +107,6 @@ t.test('Util', async t => {
     });
   });
 
-  t.test('htmlTag', t => {
-    const tag = util.htmlTag;
-
-    t.equal(tag('p', {}, 'Test').toString(), '<p>Test</p>');
-    t.equal(tag('p', 'Test').toString(), '<p>Test</p>');
-    t.equal(tag('p', tag('i', 'Tes&t')).toString(), '<p><i>Tes&amp;t</i></p>');
-    t.equal(tag('div').toString(), '<div></div>');
-    t.equal(tag('div', {id: 'foo', class: 'bar baz'}).toString(), '<div id="foo" class="bar baz"></div>');
-    t.equal(
-      tag('div', {id: 'f&oo'}, tag('i', {}, 'I ♥ Mojo&!')).toString(),
-      '<div id="f&amp;oo"><i>I ♥ Mojo&amp;!</i></div>'
-    );
-
-    t.equal(tag('area').toString(), '<area>');
-    t.equal(tag('base').toString(), '<base>');
-    t.equal(tag('br').toString(), '<br>');
-    t.equal(tag('col').toString(), '<col>');
-    t.equal(tag('embed').toString(), '<embed>');
-    t.equal(tag('hr').toString(), '<hr>');
-    t.equal(tag('img').toString(), '<img>');
-    t.equal(tag('input').toString(), '<input>');
-    t.equal(tag('keygen').toString(), '<keygen>');
-    t.equal(tag('link').toString(), '<link>');
-    t.equal(tag('menuitem').toString(), '<menuitem>');
-    t.equal(tag('meta').toString(), '<meta>');
-    t.equal(tag('param').toString(), '<param>');
-    t.equal(tag('source').toString(), '<source>');
-    t.equal(tag('track').toString(), '<track>');
-    t.equal(tag('wbr').toString(), '<wbr>');
-
-    t.end();
-  });
-
   t.test('jsonPointer (RFC 6901)', t => {
     const jsonPointer = util.jsonPointer;
 
