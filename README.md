@@ -8,8 +8,8 @@
 [![npm](https://img.shields.io/npm/v/@mojojs/core.svg)](https://www.npmjs.com/package/@mojojs/core)
 
 The [Mojolicious](https://mojolicious.org) real-time web framework for [Node.js](https://nodejs.org/). Written in
-TypeScript. If you want to stay up to date on the latest developments join us on [IRC](https://web.libera.chat/#mojo)
-(`#mojo` on Libera.Chat).
+TypeScript. Unapologetically designed for state of the art backend web services. If you want to stay up to date on the
+latest developments join us on [IRC](https://web.libera.chat/#mojo) (`#mojo` on Libera.Chat).
 
 ## Installation
 
@@ -18,6 +18,9 @@ All you need is Node.js 16.0.0 (or newer).
 ```
 $ npm install @mojojs/core
 ```
+
+Maybe take a look at our high quality spin-off projects [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom) and
+[@mojojs/path](https://www.npmjs.com/package/@mojojs/path).
 
 ## Getting Started
 
