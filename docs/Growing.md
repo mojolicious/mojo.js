@@ -72,13 +72,13 @@ and all session state is kept client-side.
 +---------+                        +------------+
 ```
 
-While HTTP methods such as `PUT`, `GET` and `DELETE` are not directly part of REST they go very well with it and are
+While HTTP methods such as `PUT`, `GET` and `DELETE` are not directly part of REST they go well with it and are
 commonly used to manipulate resources.
 
 ### Sessions
 
 HTTP was designed as a stateless protocol, web servers don't know anything about previous requests, which makes
-user-friendly login systems very tricky. Sessions solve this problem by allowing web applications to keep stateful
+user-friendly login systems tricky. Sessions solve this problem by allowing web applications to keep stateful
 information across several HTTP requests.
 
 ```
@@ -100,7 +100,7 @@ Content-Length: 16
 Hello again sebastian.
 ```
 
-Traditionally all session data was stored on the server-side and only session ids were exchanged between browser and
+Traditionally all session data was stored on the server-side and only session IDs were exchanged between browser and
 web server in the form of cookies.
 
 ```
@@ -116,6 +116,126 @@ TDD is a software development process where the developer starts writing failing
 functionality and then moves on to producing code that passes these tests. There are many advantages such as always
 having good test coverage and code being designed for testability, which will in turn often prevent future changes from
 breaking old code. Much of mojo.js was developed using TDD.
+
+## Prototype
+
+An important difference between mojo.js and other web frameworks is that it can operate in two modes, both as a 
+full-fledged web framework, and as a single file micro web framework optimized for rapid prototyping.
+
+### Differences
+
+You likely know the feeling, you've got a really cool idea and want to try it as quickly as possible. That's exactly
+why mojo.js applications don't need more than a single JavaScript file (in addition to package.json).
+
+```
+package.json   // Will be generated when you install mojo.js
+myapp.js       // Templates can be inlined in the file.
+```
+
+Full mojo.js applications on the other hand follow the MVC pattern more closely and separate concerns into different
+files to maximize maintainability:
+
+```
+my_app                        // Application dir created manually
+|- config.yml                 // Configuration file
+|- index.js                   // Application script
+|- node_modules/
+|   |- *lots of node files*
+|- package.json               // Node package information and settings
+|- package-lock.json          // Describes exact tree generated in node_modules/
+|- test/                      // Test directory
+|   |- example.js             // Random test
+|- controllers/               // Controller directory
+|   |- example.js             // Controller containing route actions
+|- models/                    // Model directory
+|- public/                    // Static file directory (served automatically)
+|   |- index.html             // Static HTML file
+|- views/                     // Views directory
+|   |- example/               // View directory for "Example"
+|   |   |- welcome.html.ejs   // EJS template generating HTML
+|   |- layouts/               // View directory for layouts
+|   |   |- default.html.ejs   // Layout view/template
+```
+
+Both application skeletons can be automatically generated with the commands `npx mojo create-lite-app` and
+`npx mojo create-full-app`.
+```
+$ mkdir myapp && cd myapp
+$ npm i @mojojs/core
+$ npx mojo create-full-app myapp # or
+$ npx mojo create-lite-app myapp
+```
+
+Feature-wise both are almost equal, the only real differences are organizational, so each one can be gradually
+transformed into the other.
+
+## Foundation
+
+We start our new application with a single JavaScript file.
+
+```
+$ mkdir login-manager
+$ cd login-manager
+$ npm i @mojojs/core
+$ touch index.js
+```
+
+This will be the foundation for our login manager example application. 
+
+``` js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  await ctx.render({text: 'Hello World!'})
+});
+
+app.start();
+```
+
+Let's start it as a server with node:
+
+```
+$ node ./index.js server
+Web application available at http://0.0.0.0:3000/
+```
+
+Note how it outputs the URL you can reach the server on. If you want a bit of convenice, we recommend
+using [nodemon](https://github.com/remy/nodemon) instead, which will automatically handle restarts for you.
+
+## A bird's-eye view
+
+It all starts with an HTTP request like this, sent by your browser.
+
+```
+GET / HTTP/1.1
+Host: localhost:3000
+```
+
+Once the request has been received by the web server through the event loop, it will be passed on to mojo.js, where it
+will be handled in a few simple steps.
+
+1. Check if a static file exists that would meet the requirements.
+2. Try to find a route that would meet the requirements.
+3. Dispatch the request to this route, usually reaching one or more actions.
+4. Process the request, maybe generating a response with the renderer.
+5. Return control to the web server, and if no response has been generated yet,
+   wait for a non-blocking operation to do so through the event loop.
+
+With our application the router would have found an action in step 2, and rendered some text in step 4, resulting in an
+HTTP response like this being sent back to the browser.
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=utf-8
+Content-Length: 12
+Date: Wed, 15 Dec 2021 22:47:21 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+Hello World!
+```
 
 ## Support
 
