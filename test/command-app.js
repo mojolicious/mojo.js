@@ -42,21 +42,34 @@ t.test('Command app', async t => {
 
   await t.test('eval', async t => {
     const output = await captureOutput(async () => {
-      await app.cli.start('eval', '100 + 924');
+      await app.cli.start('eval', '-v', '100 + 924');
     });
     t.match(output, /1024/);
     t.match(app.cli.commands.eval.description, /Run code against application/);
     t.match(app.cli.commands.eval.usage, /Usage: APPLICATION eval/);
 
-    let output2, error;
+    const output2 = await captureOutput(async () => {
+      await app.cli.start('eval', 'await 100 + 924');
+    });
+    t.equal(output2, '');
+
+    const output3 = await captureOutput(async () => {
+      await app.cli.start('eval', '-v', 'await 100 + 924');
+    });
+    t.match(output3, /1024/);
+
+    let output4, error;
+    app.addHelper('testError', () => {
+      throw new Error('test error');
+    });
     try {
-      output2 = await captureOutput(async () => {
-        await app.cli.start('eval', 'throw new Error("test error")');
+      output4 = await captureOutput(async () => {
+        await app.cli.start('eval', 'app.newMockContext().testError()');
       });
     } catch (err) {
       error = err;
     }
-    t.same(output2, undefined);
+    t.same(output4, undefined);
     t.match(error, /test error/);
   });
 
