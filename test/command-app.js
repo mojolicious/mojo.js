@@ -73,6 +73,16 @@ t.test('Command app', async t => {
     t.match(error, /test error/);
   });
 
+  await t.test('repl', async t => {
+    const output = await captureOutput(async () => {
+      process.stdin.push('.exit\n');
+      await app.cli.start('repl');
+    });
+    t.match(output, /> /);
+    t.match(app.cli.commands.repl.description, /Start a repl for application/);
+    t.match(app.cli.commands.repl.usage, /Usage: APPLICATION repl/);
+  });
+
   await t.test('get', async t => {
     const output = await captureOutput(async () => {
       await app.cli.start('get', '/');
