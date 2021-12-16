@@ -87,6 +87,8 @@ app.start();
 There is also a helper command available to generate a small example application for you.
 
 ```
+$ mkdir myapp && cd myapp
+$ npm i @mojojs/core
 $ npx mojo create-lite-app
 ...
 ```
