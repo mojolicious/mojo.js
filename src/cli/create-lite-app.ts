@@ -4,7 +4,7 @@ import * as util from '../util.js';
 export default async function genLiteAppCommand(app: App, args: string[]): Promise<void> {
   const stdout = process.stdout;
   stdout.write('Generating single file application:\n');
-  await util.cliCreateFile(args[1] ?? 'index.js', liteApp, {}, {chmod: 0o744});
+  await util.cliCreateFile(args[1] ?? 'index.js', liteApp);
   await util.cliFixPackage();
   stdout.write(tip);
 }
@@ -24,8 +24,7 @@ Tip: Single file applications are best used for prototyping, for anything more
      complicated we recommend the use of a full mojo.js application.
 `;
 
-const liteApp = `#!/usr/bin/env node
-import mojo from '@mojojs/core';
+const liteApp = `import mojo from '@mojojs/core';
 
 const app = mojo();
 
