@@ -244,6 +244,66 @@ Keep-Alive: timeout=5
 Hello World!
 ```
 
+## Model
+
+In mojo.js we consider web applications simple frontends for existing business logic. That means mojo.js is by design
+entirely _model_ layer agnostic, and you just use whatever JavaScript modules you like most.
+
+```
+  $ mkdir models
+  $ touch models/users.js
+```
+
+Our login manager will use a JavaScript class abstracting away all logic related to matching usernames and passwords. 
+The path `models/users.js` is an arbitrary choice, and is simply used to make the separation of concerns more
+visible.
+
+``` js
+export default class Users {
+  constructor() {
+    this._data = {
+      joel: 'las3rs',
+      marcus: 'lulz',
+      sebastian: 'secr3t'
+    };
+  }
+
+  check(user, pass) {
+    if(this._data[user] === undefined) return false;
+    return this._data[user] === pass;
+  }
+}
+```
+
+We can add the model to the app to make it available to all actions and templates.
+
+``` js
+import mojo from '@mojojs/core';
+import Users from './models/users.js';
+
+export const app = mojo();
+
+app.models.users = new Users();
+
+app.any('/', async ctx => {
+  // Query parameters
+  const params = await ctx.params();
+  const user = params.get('user')
+  const pass = params.get('pass')
+
+  // Check password
+  if(ctx.models.users.check(user, pass) === true) return ctx.render({text: `Welcome ${user}.`});
+
+  // Failed
+  ctx.render({text: 'Wrong username or password.'});
+});
+
+app.start();
+```
+
+The method `params` is used to access both query parameters and `POST` parameters. It returns a `Promise` that
+resolves with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) object.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
