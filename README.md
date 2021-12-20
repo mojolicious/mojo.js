@@ -31,7 +31,7 @@ If you want to stay up to date on the latest developments join us on [IRC](https
 * Very clean, `class` and `async`/`await` based API, written in TypeScript, with very few requirements to avoid NPM
   dependency hell and allow for "Perl-grade" long term support.
 
-* Fresh code based upon years of experience developing [Catalyst](http://www.catalystframework.org) and
+* Fresh code based upon decades of experience developing [Catalyst](http://www.catalystframework.org) and
 [Mojolicious](https://mojolicious.org), free and open source.
 
 ## Installation
