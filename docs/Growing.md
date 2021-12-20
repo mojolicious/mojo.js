@@ -125,44 +125,46 @@ full-fledged web framework, and as a single file micro web framework optimized f
 ### Differences
 
 You likely know the feeling, you've got a really cool idea and want to try it as quickly as possible. That's exactly
-why mojo.js applications don't need more than a single JavaScript file (in addition to package.json).
+why mojo.js applications don't need more than a single JavaScript file (in addition to `package.json`).
 
 ```
-package.json   // Will be generated when you install mojo.js
-myapp.js       // Templates can be inlined in the file.
+myapp                         // Application directory (created manually)
+|- node_modules/
+|   |- *lots of node files*
+|- package.json               // Will be generated when you install mojo.js
+|- myapp.js                   // Templates can be inlined in the file
 ```
 
 Full mojo.js applications on the other hand follow the MVC pattern more closely and separate concerns into different
 files to maximize maintainability:
 
 ```
-my_app                        // Application dir created manually
+myapp                         // Application directory (created manually)
 |- config.yml                 // Configuration file
 |- index.js                   // Application script
-|- node_modules/
+|- node_modules
 |   |- *lots of node files*
 |- package.json               // Node package information and settings
-|- package-lock.json          // Describes exact tree generated in node_modules/
-|- test/                      // Test directory
+|- test                       // Test directory
 |   |- example.js             // Random test
-|- controllers/               // Controller directory
-|   |- example.js             // Controller containing route actions
-|- models/                    // Model directory
-|- public/                    // Static file directory (served automatically)
+|- controllers                // Controller directory
+|   |- example.js             // Controller class
+|- models                     // Model directory
+|- public                     // Static file directory (served automatically)
 |   |- index.html             // Static HTML file
-|- views/                     // Views directory
-|   |- example/               // View directory for "Example"
-|   |   |- welcome.html.ejs   // EJS template generating HTML
-|   |- layouts/               // View directory for layouts
-|   |   |- default.html.ejs   // Layout view/template
+|- views                      // Views directory
+|   |- example                // View directory for "Example" controller
+|   |   |- welcome.html.ejs   // Template for "welcome" action
+|   |- layouts                // View directory for layout templates
+|   |   |- default.html.ejs   // Layout template
 ```
 
 Both application skeletons can be automatically generated with the commands `npx mojo create-lite-app` and
 `npx mojo create-full-app`.
 ```
 $ mkdir myapp && cd myapp
-$ npm i @mojojs/core
-$ npx mojo create-full-app myapp # or
+$ npm install @mojojs/core
+$ npx mojo create-full-app myapp   # or
 $ npx mojo create-lite-app myapp
 ```
 
@@ -174,10 +176,10 @@ transformed into the other.
 We start our new application with a single JavaScript file.
 
 ```
-$ mkdir login-manager
-$ cd login-manager
-$ npm i @mojojs/core
-$ touch index.js
+$ mkdir myapp
+$ cd myapp
+$ npm install @mojojs/core
+$ touch myapp.js
 ```
 
 This will be the foundation for our login manager example application. 
@@ -194,15 +196,20 @@ app.get('/', async ctx => {
 app.start();
 ```
 
-Let's start it as a server with node:
+Use the built-in `server` command to start a development web server with node.
 
 ```
-$ node ./index.js server
+$ node myapp.js server
 Web application available at http://0.0.0.0:3000/
 ```
 
-Note how it outputs the URL you can reach the server on. If you want a bit of convenice, we recommend
-using [nodemon](https://github.com/remy/nodemon) instead, which will automatically handle restarts for you.
+For a little more convenice, we recommend [nodemon](https://github.com/remy/nodemon), which can watch files for changes
+and automatically restart the web server for you.
+
+```
+$ npm install nodemon
+$ npx nodemon myapp.js server
+```
 
 ## A bird's-eye view
 
