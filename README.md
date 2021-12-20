@@ -8,28 +8,28 @@
 [![npm](https://img.shields.io/npm/v/@mojojs/core.svg)](https://www.npmjs.com/package/@mojojs/core)
 
 The [Mojolicious](https://mojolicious.org) real-time web framework for [Node.js](https://nodejs.org/). Written in
-TypeScript. Meticulously designed for state of the art backend web services using bleeding edge JavaScript features.
+TypeScript. Meticulously designed for high performance backend web services using bleeding edge JavaScript features.
 
 If you want to stay up to date on the latest developments join us on [IRC](https://web.libera.chat/#mojo)
 (`#mojo` on Libera.Chat).
 
 ## Features
 
-* An amazing real-time web framework, allowing you to easily grow single file prototypes into well-structured MVC web
+* A real-time web framework, allowing you to easily grow single file prototypes into well-structured MVC web
   applications.
-  * Everything you need to build cloud-native web applications for state of the art container environments.
   * Powerful out of the box with RESTful routes, WebSockets, plugins, commands, logging, templates, content negotiation,
     session management, form validation, testing framework, static file server, cluster mode, first class Unicode
     support and much more for you to discover.
 
 * A powerful web development toolkit, that you can use for all kinds of applications, independently of the web
   framework.
-  * Full featured HTTP and WebSocket user agent with HTTPS/WSS, cookie, redirect, urlencoded/multi-part form,
-    file upload, JSON/YAML, HTML/XML, mocking, API testing, HTTP/SOCKS proxy, and gzip compression support.
+  * Full featured HTTP and WebSocket user agent with support for HTTPS/WSS, cookies, redirects,
+    urlencoded/multi-part forms, file uploads, JSON/YAML, HTML/XML, mocking, API testing, HTTP/SOCKS proxies, and gzip
+    compression.
   * HTML/XML parser with CSS selector support.
 
-* Very clean, class based API, written in TypeScript, with very few dependencies to avoid NPM dependency hell and allow
-  for "Perl-grade" long term support.
+* Very clean, `class` and `async`/`await` based API, written in TypeScript, with very few requirements to avoid NPM
+  dependency hell and allow for "Perl-grade" long term support.
 
 * Fresh code based upon years of experience developing [Catalyst](http://www.catalystframework.org) and
 [Mojolicious](https://mojolicious.org), free and open source.
