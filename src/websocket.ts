@@ -60,7 +60,7 @@ class WebSocket extends EventEmitter {
   }
 
   async send(message: JSONValue | Buffer): Promise<void> {
-    if (!this.jsonMode) return await new Promise(resolve => this._raw.send(message, () => resolve()));
+    if (this.jsonMode === false) return await new Promise(resolve => this._raw.send(message, () => resolve()));
     return new Promise(resolve => this._raw.send(JSON.stringify(message), () => resolve()));
   }
 
@@ -81,7 +81,7 @@ class WebSocket extends EventEmitter {
 
   _safeMessageHandler(message: Buffer, isBinary: boolean): void {
     try {
-      if (!this.jsonMode) {
+      if (this.jsonMode === false) {
         this.emit('message', isBinary ? message : message.toString());
       } else {
         this.emit('message', JSON.parse(message.toString()));

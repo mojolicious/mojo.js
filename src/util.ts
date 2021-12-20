@@ -18,7 +18,7 @@ export async function captureOutput(
   const stdoutWrite = stdout.write;
   const stderrWrite = stderr.write;
 
-  if (options.stdout) {
+  if (options.stdout === true) {
     stdout.write = (chunk: Uint8Array) => {
       output.push(chunk);
       return true;
@@ -44,7 +44,7 @@ export async function captureOutput(
 export async function cliCreateDir(path: string): Promise<void> {
   const dir = new Path(process.cwd(), ...path.split('/'));
   const stdout = process.stdout;
-  if (await dir.exists()) {
+  if ((await dir.exists()) === true) {
     stdout.write(chalk.green(' [exists]') + ` ${dir.toString()}\n`);
     return;
   }
@@ -61,7 +61,7 @@ export async function cliCreateFile(
 ): Promise<void> {
   const file = new Path(process.cwd(), ...path.split('/'));
   const stdout = process.stdout;
-  if (await file.exists()) {
+  if ((await file.exists()) === true) {
     stdout.write(chalk.red(' [exists]') + ` ${file.toString()}\n`);
     return;
   }
@@ -78,7 +78,7 @@ export async function cliFixPackage(): Promise<void> {
   const file = new Path(process.cwd(), 'package.json');
 
   const stdout = process.stdout;
-  if (!(await file.exists())) {
+  if ((await file.exists()) === false) {
     stdout.write(chalk.green(' [write]') + ` ${file.toString()}\n`);
     await file.writeFile(JSON.stringify({type: 'module'}, null, 2));
     return;
@@ -134,7 +134,7 @@ export async function exceptionContext(
 }
 
 export function jsonPointer(value: JSONValue, pointer: string): JSONValue | undefined {
-  if (!pointer.startsWith('/')) return pointer.length > 0 ? null : value;
+  if (pointer.startsWith('/') === false) return pointer.length > 0 ? null : value;
 
   let data: any = value;
   for (const part of pointer.replace(/^\//, '').split('/')) {
@@ -142,7 +142,7 @@ export function jsonPointer(value: JSONValue, pointer: string): JSONValue | unde
 
     if (typeof data === 'object' && data !== null && data[unescaped] !== undefined) {
       data = data[unescaped];
-    } else if (Array.isArray(data) && /^\d+$/.test(unescaped)) {
+    } else if (Array.isArray(data) && /^\d+$/.test(unescaped) === true) {
       data = data[parseInt(unescaped)];
     } else {
       return undefined;
@@ -156,9 +156,9 @@ export async function loadModules(dirs: string[]): Promise<Record<string, any>> 
   const modules: Record<string, any> = {};
 
   for (const dir of dirs.map(path => new Path(path))) {
-    if (!(await dir.exists())) continue;
+    if ((await dir.exists()) === false) continue;
     for await (const file of dir.list({recursive: true})) {
-      if (!/\.m?js$/.test(file.toString())) continue;
+      if (/\.m?js$/.test(file.toString()) === false) continue;
       const imports = await import(file.toFileURL().toString());
       const name = dir
         .relative(file)

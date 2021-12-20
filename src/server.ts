@@ -52,7 +52,7 @@ export class Server {
     if (port !== '' && hostname !== '') {
       listen.push(parseInt(port));
       listen.push(hostname === '*' ? '0.0.0.0' : hostname.replace(/^\[/, '').replace(/]$/, ''));
-    } else if (params.has('fd')) {
+    } else if (params.has('fd') === true) {
       listen.push({fd: parseInt(params.get('fd') ?? '')});
     } else {
       listen.push(undefined, '0.0.0.0');
@@ -63,7 +63,7 @@ export class Server {
 
   async start(): Promise<void> {
     await this.app.hooks.runHook('start', this.app);
-    if (this._cluster && cluster.isPrimary) {
+    if (this._cluster === true && cluster.isPrimary === true) {
       for (let i = 0; i < this._workers; i++) {
         cluster.fork();
       }
@@ -119,7 +119,15 @@ export class Server {
         const host = address.family === 'IPv6' ? `[${address.address}]` : address.address;
         const realLocation = new URL(`${url.protocol}//${host}:${address.port}`);
         this.urls.push(realLocation);
-        if (!this._quiet) console.log(`[${process.pid}] Web application available at ${realLocation.toString()}`);
+
+        if (this._quiet === false) {
+          if (this._cluster === true) {
+            console.log(`[${process.pid}] Web application available at ${realLocation}`);
+          } else {
+            console.log(`Web application available at ${realLocation}`);
+          }
+        }
+
         resolve();
       });
     });
@@ -138,7 +146,7 @@ export class Server {
     app
       .handleRequest(ctx)
       .then(() => {
-        if (ctx.isAccepted) {
+        if (ctx.isAccepted === true) {
           wss.handleUpgrade(req, socket, head, ws => {
             ctx.handleUpgrade(new WebSocket(ws, null, {jsonMode: ctx.jsonMode}));
           });
@@ -147,7 +155,7 @@ export class Server {
         }
       })
       .catch(error => {
-        if (!ctx.isAccepted) socket.destroy();
+        if (ctx.isAccepted === false) socket.destroy();
         return ctx.exception(error);
       });
   }

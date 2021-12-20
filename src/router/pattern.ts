@@ -72,7 +72,7 @@ export class Pattern {
     const parts: string[] = [];
     for (const token of this._ast) {
       if (token[0] === OP.slash) {
-        if (!optional) parts.unshift('/');
+        if (optional === false) parts.unshift('/');
       } else if (token[0] === OP.text) {
         parts.unshift(token[1]);
         optional = false;
@@ -82,8 +82,8 @@ export class Pattern {
         const value = hasDefault ? defaults[token[1]] : null;
         const part = values[token[1]] !== undefined ? values[token[1]] : value;
 
-        if (!hasDefault || value !== part) optional = false;
-        if (!optional) parts.unshift(part);
+        if (hasDefault === false || value !== part) optional = false;
+        if (optional === false) parts.unshift(part);
       }
     }
 
@@ -163,16 +163,16 @@ export class Pattern {
         name = true;
       } else if (char === '>') {
         name = false;
-      } else if (!name && char === ':') {
-        if (!name) ast.push([OP.placeholder, '']);
+      } else if (name === false && char === ':') {
+        if (name === false) ast.push([OP.placeholder, '']);
         name = true;
-      } else if (!name && (char === '#' || char === '*')) {
-        if (!name) ast.push([char === '#' ? OP.relaxed : OP.wildcard, '']);
+      } else if (name === false && (char === '#' || char === '*')) {
+        if (name === false) ast.push([char === '#' ? OP.relaxed : OP.wildcard, '']);
         name = true;
       } else if (char === '/') {
         ast.push([OP.slash]);
         name = false;
-      } else if (name) {
+      } else if (name === true) {
         ast[ast.length - 1][1] = ast[ast.length - 1][1].concat(char);
       } else if (ast[ast.length - 1][0] === OP.text) {
         ast[ast.length - 1][1] = ast[ast.length - 1][1].concat(char);

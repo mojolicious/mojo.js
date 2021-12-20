@@ -124,15 +124,15 @@ export class App {
   }
 
   async handleRequest(ctx: MojoContext): Promise<void> {
-    if (ctx.isWebSocket) {
+    if (ctx.isWebSocket === true) {
       if ((await this.hooks.runHook('websocket', ctx)) === true) return;
       await this.router.dispatch(ctx);
       return;
     }
 
     if ((await this.hooks.runHook('request', ctx)) === true) return;
-    if (await this.static.dispatch(ctx)) return;
-    if (await this.router.dispatch(ctx)) return;
+    if ((await this.static.dispatch(ctx)) === true) return;
+    if ((await this.router.dispatch(ctx)) === true) return;
     await ctx.notFound();
   }
 

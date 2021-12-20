@@ -6,7 +6,7 @@ import {on} from 'events';
 import zlib from 'zlib';
 import {Params} from './body/params.js';
 import DOM from '@mojojs/dom';
-import Busboy from 'busboy';
+import busboy from 'busboy';
 import yaml from 'js-yaml';
 
 interface UploadOptions {
@@ -57,10 +57,11 @@ export class Body {
   }
 
   async *files(options?: UploadOptions): AsyncIterableIterator<FileUpload> {
-    if (!this._isForm()) return;
+    if (this._isForm() === false) return;
 
     try {
-      for await (const [fieldname, file, filename, encoding, mimetype] of this._formIterator(options)) {
+      for await (const [fieldname, file, name, encoding, mimetype] of this._formIterator(options)) {
+        const filename = (name as any).filename as string;
         yield {fieldname, file, filename, encoding, mimetype};
       }
     } catch (error) {
@@ -137,11 +138,11 @@ export class Body {
     const type = headers['content-type'] ?? '';
     const params = this._params;
 
-    const busboy = new Busboy({headers: {'content-type': type, ...headers}, ...options});
-    busboy.on('field', (fieldname, val) => params.append(fieldname, val));
-    busboy.on('end', () => ac.abort()).on('finish', () => ac.abort());
-    const files = on(busboy, 'file', {signal: ac.signal});
-    raw.pipe(busboy);
+    const bb = busboy({headers: {'content-type': type, ...headers}, ...options});
+    bb.on('field', (fieldname, val) => params.append(fieldname, val));
+    bb.on('end', () => ac.abort()).on('close', () => ac.abort());
+    const files = on(bb, 'file', {signal: ac.signal});
+    raw.pipe(bb);
 
     return files;
   }

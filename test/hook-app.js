@@ -91,7 +91,7 @@ t.test('Hook app', async t => {
 
   app.addContextHook('static', async (ctx, file) => {
     const params = await ctx.params();
-    if (!params.has('hijack')) return;
+    if (params.has('hijack') === false) return;
 
     ctx.res.send(`Hijacked: ${file.basename()}`);
     return true;

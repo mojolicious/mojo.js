@@ -52,7 +52,7 @@ export class Router extends Route {
     for (let i = 0; i < steps.length; i++) {
       const step = steps[i];
       Object.assign(stash, step, {fn: undefined});
-      if (!stops[i]) continue;
+      if (stops[i] === false) continue;
 
       if (typeof step.fn === 'function') {
         log.trace('Routing to function');
@@ -173,7 +173,7 @@ export class Router extends Route {
     }
 
     // Endpoint
-    if (isEndpoint) {
+    if (isEndpoint === true) {
       plan.endpoint = route;
       return true;
     }
@@ -182,7 +182,7 @@ export class Router extends Route {
     for (const child of route.children) {
       const old = spec.path;
       spec.path = result.remainder;
-      if (this._walk(plan, child, spec)) return true;
+      if (this._walk(plan, child, spec) === true) return true;
       spec.path = old;
       steps.pop();
       stops.pop();

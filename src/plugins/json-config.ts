@@ -11,7 +11,7 @@ export function loadConfig(app: MojoApp, options: ConfigOptions, parser: (config
   const filePath = filename.isAbsolute() ? filename : app.home.child(filename.toString());
 
   const log = app.log;
-  if (filePath.existsSync()) {
+  if (filePath.existsSync() === true) {
     Object.assign(app.config, parser(filePath.readFileSync().toString()));
     log.trace(`Config file "${filePath.toString()}" loaded`);
   } else {
@@ -21,7 +21,7 @@ export function loadConfig(app: MojoApp, options: ConfigOptions, parser: (config
   const fileParts = filePath.toString().split('.');
   fileParts.splice(-1, 0, app.mode);
   const modeFilePath = new Path(fileParts.join('.'));
-  if (modeFilePath.existsSync()) {
+  if (modeFilePath.existsSync() === true) {
     Object.assign(app.config, parser(modeFilePath.readFileSync().toString()));
     log.trace(`Mode specific config file "${filePath.toString()}" loaded`);
   }

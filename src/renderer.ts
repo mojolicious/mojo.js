@@ -129,7 +129,7 @@ export class Renderer {
   async warmup(): Promise<void> {
     const viewIndex: ViewIndex = (this._viewIndex = {});
     for (const dir of this.viewPaths.map(path => new Path(path))) {
-      if (!(await dir.exists())) continue;
+      if ((await dir.exists()) === false) continue;
 
       for await (const file of dir.list({recursive: true})) {
         const name = dir.relative(file).toArray().join('/');

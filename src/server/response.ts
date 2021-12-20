@@ -47,7 +47,7 @@ export class ServerResponse {
     const newBody = await app.hooks.runHook('send', ctx, body);
     if (newBody !== undefined) body = newBody;
 
-    if (ctx.isSessionActive) await app.session.store(ctx, await ctx.session());
+    if (ctx.isSessionActive === true) await app.session.store(ctx, await ctx.session());
 
     const raw = this.raw;
     if (typeof body === 'string' || Buffer.isBuffer(body)) {

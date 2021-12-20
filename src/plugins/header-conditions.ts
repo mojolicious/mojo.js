@@ -11,7 +11,7 @@ function headerCondition(ctx: MojoContext, requirement: Record<string, RegExp>):
   for (const [name, regex] of Object.entries(requirement)) {
     const value = ctx.req.get(name);
     if (typeof value !== 'string') return false;
-    if (!regex.test(value)) return false;
+    if (regex.test(value) === false) return false;
   }
 
   return true;
