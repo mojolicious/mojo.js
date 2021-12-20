@@ -6,7 +6,7 @@ The guides are still a **work in progress**. But we are aiming for the same leve
 
 ## Guides
 
-* [Introduction](Introduction.md) (Progress: 99%)
+* [Introduction](Introduction.md) (Progress: 100%)
 
 A quick exaple driven introduction to the basic concepts of [mojo.js](https://mojojs.org).
 

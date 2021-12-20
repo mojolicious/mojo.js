@@ -168,6 +168,77 @@ They can be useful for manually matching entire file paths.
 /music/rock/song.mp3 -> /music/*filepath -> {filepath: 'rock/song.mp3'}
 ```
 
+## Basics
+
+Most commonly used features every mojo.js developer should know about.
+
+### WebSockets
+
+With the `websocket` routing method you can restrict access to WebSocket handshakes, which are normal `GET` requests
+with some additional information.
+
+```js
+// WebSocket handshake route ("index.js")
+app.websocket('/echo').to('foo#echo');
+
+// Controller ("controllers/foo.js")
+export default class FooController {
+
+  // Action
+  echo(ctx) {
+    ctx.plain(async ws => {
+      for await (const message of ws) {
+        ws.send(`echo: ${message}`);
+      }
+    });
+  }
+}
+```
+
+The context methods `plain` and `json` can be used to accept the incoming WebSocket connection either in plain
+text/binary message mode, or with automatic JSON encoding and decoding.
+
+```js
+export default class BarController {
+  addFuturamaQuote(ctx) {
+    ctx.json(async ws => {
+      for await (const message of ws) {
+        if (typeof message === 'object') {
+          message.quote = 'Shut up and take my money!';
+          ws.send(message);
+        }
+        else {
+          ws.close();
+        }
+      }
+    });
+  }
+}
+```
+
+The `close` WebSocket method is used to end an established WebSocket connection. To reject an incoming connection
+completely, just don't do anything, the rejection will happen automatically.
+
+```
+GET /echo HTTP/1.1
+Host: mojolicious.org
+User-Agent: Mojolicious (Perl)
+Connection: Upgrade
+Upgrade: websocket
+Sec-WebSocket-Key: IDM3ODE4NDk2MjA1OTcxOQ==
+Sec-WebSocket-Version: 13
+
+HTTP/1.1 101 Switching Protocols
+Server: Mojolicious (Perl)
+Date: Tue, 03 Feb 2015 17:08:24 GMT
+Connection: Upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: SWsp5N2iNxPbHlcOTIw8ERvyVPY=
+```
+
+On the protocol level, the connection gets established with a `101` HTTP response. The handshake request can contain
+any number of arbitrary HTTP headers, this can be very useful for authentication.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
