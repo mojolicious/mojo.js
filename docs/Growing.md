@@ -250,13 +250,12 @@ In mojo.js we consider web applications simple frontends for existing business l
 entirely _model_ layer agnostic, and you just use whatever JavaScript modules you like most.
 
 ```
-  $ mkdir models
-  $ touch models/users.js
+$ mkdir models
+$ touch models/users.js
 ```
 
-Our login manager will use a JavaScript class abstracting away all logic related to matching usernames and passwords. 
-The path `models/users.js` is an arbitrary choice, and is simply used to make the separation of concerns more
-visible.
+Our login manager will use a JavaScript class abstracting away all logic related to matching usernames and passwords.
+The path `models/users.js` is an arbitrary choice, and is simply used to make the separation of concerns more visible.
 
 ``` js
 export default class Users {
@@ -295,14 +294,14 @@ app.any('/', async ctx => {
   if(ctx.models.users.check(user, pass) === true) return ctx.render({text: `Welcome ${user}.`});
 
   // Failed
-  ctx.render({text: 'Wrong username or password.'});
+  return ctx.render({text: 'Wrong username or password.'});
 });
 
 app.start();
 ```
 
-The method `params` is used to access both query parameters and `POST` parameters. It returns a `Promise` that
-resolves with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) object.
+The method `params` is used to access both query parameters and `POST` parameters. It returns a `Promise` that resolves
+with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) object.
 
 ## Support
 
