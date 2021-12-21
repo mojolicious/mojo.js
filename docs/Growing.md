@@ -303,6 +303,78 @@ app.start();
 The method `params` is used to access both query parameters and `POST` parameters. It returns a `Promise` that resolves
 with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) object.
 
+## Testing
+
+In mojo.js we take testing very seriously and try to make it a pleasant experience.
+
+```
+$ mkdir tests/
+$ touch tests/login.js
+````
+
+`TestUserAgent` is a scriptable HTTP user agent designed specifically for testing, with many fun and state-of-the-art
+features such as CSS selectors based on [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom).
+
+``` js 
+import {app} from '../myapp.js';
+import t from 'tap';
+
+t.test('Example application', async t => {
+  const ua = await app.newTestUserAgent({tap: t, maxRedirects: 1});
+
+  await t.test('Index', async t => {
+    (await ua.getOk('/'))
+      .statusIs(200)
+      .elementExists('form input[name="user"]')
+      .elementExists('form input[name="pass"]')
+      .elementExists('form input[type="submit"]');
+    (await ua.postOk('/', {form: {user: 'sebastian', pass: 'secr3t'}}))
+      .statusIs(200).textLike('html body', /Welcome sebastian/);
+
+    // Test accessing a protected page
+    (await ua.getOk('/protected')).statusIs(200).textLike('a', /Logout/);
+
+    // Test if HTML login form shows up again after logout
+    (await ua.getOk('/logout'))
+      .statusIs(200)
+      .elementExists('form input[name="user"]')
+      .elementExists('form input[name="pass"]')
+      .elementExists('form input[type="submit"]');
+  });
+
+  await ua.stop();
+});
+```
+
+Your application won't pass these tests, but from now on you can use them to check your progress.
+
+```
+$ node tests/login.t
+```
+
+Or perform quick requests right from the command line with the `get` command.
+
+```
+$ node myapp.pl get /
+Wrong username or password.
+
+$ node myapp.js get -v '/?user=sebastian&pass=secr3t'
+[2021-12-22T19:06:06.688Z] [trace] [16173-000001] GET "/"
+[2021-12-22T19:06:06.688Z] [trace] [16173-000001] Routing to function
+[2021-12-22T19:06:06.689Z] [trace] [16173-000001] Rendering text response
+GET /?user=sebastian&pass=secr3t HTTP/1.1
+Accept-Encoding: gzip
+Host: 0.0.0.0:55841
+
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=utf-8
+Content-Length: 18
+Date: Wed, 22 Dec 2021 19:06:06 GMT
+Connection: close
+
+Welcome sebastian.⏎
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
