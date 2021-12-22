@@ -66,6 +66,11 @@ export class Session {
     delete data.expires;
     if (expires <= Math.round(Date.now() / 1000)) return null;
 
+    if (data.nextFlash !== undefined) {
+      data.flash = data.nextFlash;
+      delete data.nextFlash;
+    }
+
     return data;
   }
 
@@ -74,6 +79,8 @@ export class Session {
 
     const app = this._app.deref();
     if (app === undefined) return;
+
+    delete data.flash;
     const encrypted = await Session.encrypt(app.secrets[0], JSON.stringify(data));
 
     ctx.res.setCookie(this.cookieName, encrypted, {

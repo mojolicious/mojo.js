@@ -113,6 +113,15 @@ t.test('App', async t => {
     return ctx.render({text: `Logout: ${session.user}`});
   });
 
+  // GET /flash
+  app.get('/flash', async ctx => {
+    const flash = await ctx.flash();
+    const params = await ctx.params();
+    const message = params.get('message');
+    if (message !== null) flash.message = message;
+    return ctx.render({text: `Flash: ${flash.message ?? 'none'}`});
+  });
+
   // GET /ua
   app.get('/ua', async ctx => {
     const res = await ctx.ua.get(ua.server.urls[0] + 'config');
@@ -433,6 +442,28 @@ t.test('App', async t => {
     (await ua.getOk('/session/members', {headers: {Cookie: 'realValue--abcdef'}}))
       .statusIs(200)
       .bodyIs('Member: not logged in, with extra cookie');
+  });
+
+  await t.test('Flash', async t => {
+    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: none');
+    (await ua.getOk('/flash?message=Hello')).statusIs(200).bodyIs('Flash: none');
+    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: Hello');
+    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: none');
+
+    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: none');
+    (await ua.getOk('/flash?message=Hello')).statusIs(200).bodyIs('Flash: none');
+    (await ua.getOk('/flash?message=World')).statusIs(200).bodyIs('Flash: Hello');
+    (await ua.getOk('/flash?message=!')).statusIs(200).bodyIs('Flash: World');
+    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: !');
+    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: none');
+
+    (await ua.getOk('/flash?message=Hello')).statusIs(200).bodyIs('Flash: none');
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
+    (await ua.getOk('/flash?message=World')).statusIs(200).bodyIs('Flash: Hello');
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
+    (await ua.getOk('/flash?message=!')).statusIs(200).bodyIs('Flash: World');
+    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: !');
+    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: none');
   });
 
   await t.test('Session (secret rotation)', async t => {

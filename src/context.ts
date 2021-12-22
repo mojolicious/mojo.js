@@ -12,6 +12,8 @@ import {Params} from './body/params.js';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
 
+type SessionData = Record<string, any>;
+
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
 interface ContextEvents {
@@ -34,6 +36,7 @@ class Context extends EventEmitter {
   req: ServerRequest;
   res: ServerResponse;
   stash: Record<string, any> = {};
+  _flash: SessionData | undefined;
   _params: Params | undefined = undefined;
   _session: Record<string, any> | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;
@@ -65,6 +68,25 @@ class Context extends EventEmitter {
 
   get config(): Record<string, any> {
     return this.app.config;
+  }
+
+  async flash(): Promise<SessionData> {
+    if (this._flash === undefined) {
+      const session = await this.session();
+      this._flash = new Proxy(session, {
+        get: function (target: SessionData, name: string): any {
+          if (target.flash === undefined) target.flash = {};
+          return target.flash[name];
+        },
+        set: function (target: SessionData, name: string, value: any): boolean {
+          if (target.nextFLash === undefined) target.nextFlash = {};
+          target.nextFlash[name] = value;
+          return true;
+        }
+      });
+    }
+
+    return this._flash;
   }
 
   handleUpgrade(ws: WebSocket): void {
@@ -171,7 +193,7 @@ class Context extends EventEmitter {
     return this.app.validator.schema(schema);
   }
 
-  async session(): Promise<Record<string, any>> {
+  async session(): Promise<SessionData> {
     if (this._session === undefined) this._session = (await this.app.session.load(this)) ?? {};
     return this._session;
   }
