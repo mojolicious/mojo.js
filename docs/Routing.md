@@ -258,13 +258,14 @@ router.get('/test').to({controller: 'bar', action: 'test'});
 
 ### WebSockets
 
-With the `websocket` routing method you can restrict access to WebSocket handshakes, which are normal `GET` requests
-with some additional information.
+With the `websocket` method of the router you can restrict access to WebSocket handshakes, which are normal `GET`
+requests with some additional information.
 
 ```js
 // WebSocket handshake route ("index.js")
 app.websocket('/echo').to('foo#echo');
-
+```
+```js
 // Controller ("controllers/foo.js")
 export default class FooController {
 
@@ -272,7 +273,7 @@ export default class FooController {
   echo(ctx) {
     ctx.plain(async ws => {
       for await (const message of ws) {
-        ws.send(`echo: ${message}`);
+        await ws.send(`echo: ${message}`);
       }
     });
   }
@@ -284,13 +285,19 @@ text/binary message mode, or with automatic JSON encoding and decoding.
 
 ```js
 export default class BarController {
+
   addFuturamaQuote(ctx) {
+    // Activate JSON mode
     ctx.json(async ws => {
-      for await (const message of ws) {
-        if (typeof message === 'object') {
-          message.quote = 'Shut up and take my money!';
-          ws.send(message);
+      for await (const data of ws) {
+
+        // Add a Futurama quote to JSON objects
+        if (typeof data === 'object') {
+          data.quote = 'Shut up and take my money!';
+          await ws.send(data);
         }
+
+        // Close the connection for everything else
         else {
           ws.close();
         }
@@ -300,8 +307,8 @@ export default class BarController {
 }
 ```
 
-The `close` WebSocket method is used to end an established WebSocket connection. To reject an incoming connection
-completely, just don't do anything, the rejection will happen automatically.
+The `close` method is used to end an established WebSocket connection. To reject an incoming connection completely, just
+don't do anything at all, the rejection will happen automatically.
 
 ```
 GET /echo HTTP/1.1

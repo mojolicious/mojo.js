@@ -224,14 +224,14 @@ You can choose between multiple API styles.
 ```js
 // Events
 const ws = await ua.websocket('/ws');
-ws.send('something');
+await ws.send('something');
 ws.on('message', message => {
   console.log(message);
 });
 
 // Async iterator
 const ws = await ua.websocket('/ws');
-ws.send('something');
+await ws.send('something');
 for await (const message of ws) {
   console.log(message);
 }
