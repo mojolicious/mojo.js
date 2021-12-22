@@ -192,7 +192,7 @@ app.start();
 ```
 
 The minimal route above will load and instantiate the controller `controllers/foo.js` and call its `welcome` method.
-Routes are usually configured in the main application script (usually called `index.js`), but the router can be accessed
+Routes are usually configured in the main application script (often called `index.js`), but the router can be accessed
 from everywhere (even at runtime).
 
 ```js
@@ -211,7 +211,7 @@ All routes match in the same order in which they were defined, and matching stop
 found. So you can improve the routing performance by declaring your most frequently accessed routes first. A routing
 cache will also be used automatically to handle sudden traffic spikes more gracefully.
 
-### Routing destination
+### Routing Destination
 
 After you start a new route with methods like `get`, you can also give it a destination in the form of an object using
 the chained method `to`.
@@ -223,6 +223,38 @@ router.get('/welcome').to({controller: 'foo', action: 'welcome'});
 
 Now if the route matches an incoming request it will use the content of this object to try and find appropriate code to
 generate a response.
+
+### HTTP Methods
+
+There are already shortcuts for the most common HTTP request methods like `post`, and for more control `any` accepts an
+optional array with arbitrary request methods as first argument.
+
+```js
+// PUT /hello  -> null
+// GET /hello  -> {controller: 'foo', action: 'hello'}
+router.get('/hello').to({controller: 'foo', action: 'hello'});
+
+// PUT /hello -> {controller: 'foo', action: 'hello'}
+router.put('/hello').to({controller: 'foo', action: 'hello'});
+
+// POST /hello -> {controller: 'foo', action: 'hello'}
+router.post('/hello').to({controller: 'foo', action: 'hello'});
+
+// GET|POST /bye  -> {controller: 'foo', action: 'bye'}
+router.any(['GET', 'POST'], '/bye').to({controller: 'foo', action: 'bye'});
+
+// * /whatever -> {controller: 'foo', action: 'whatever'}
+router.any('/whatever').to({controller: 'foo', action: 'whatever'});
+```
+
+There is one small exception, `HEAD` requests are considered equal to `GET`, but content will not be sent with the
+response even if it is present.
+
+```js
+// GET /test  -> {controller: 'bar', action: 'test'}
+// HEAD /test -> {controller: 'bar', action: 'test'}
+router.get('/test').to({controller: 'bar', action: 'test'});
+```
 
 ### WebSockets
 
