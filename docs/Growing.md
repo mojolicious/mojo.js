@@ -308,7 +308,7 @@ with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchpara
 In mojo.js we take testing very seriously and try to make it a pleasant experience.
 
 ```
-$ mkdir tests/
+$ mkdir tests
 $ touch tests/login.js
 ````
 
@@ -350,6 +350,7 @@ Your application won't pass these tests, but from now on you can use them to che
 
 ```
 $ node tests/login.t
+...
 ```
 
 Or perform quick requests right from the command line with the `get` command.
@@ -372,7 +373,7 @@ Content-Length: 18
 Date: Wed, 22 Dec 2021 19:06:06 GMT
 Connection: close
 
-Welcome sebastian.⏎
+Welcome sebastian.
 ```
 
 ## Support
