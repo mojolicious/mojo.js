@@ -172,6 +172,58 @@ They can be useful for manually matching entire file paths.
 
 Most commonly used features every mojo.js developer should know about.
 
+### Minimal Route
+
+The `router` property of every mojo.js application contains a router object you can use to generate route structures.
+
+```js
+import mojo from '@mojojs/core';
+
+// Application
+const app = mojo();
+
+// Router
+const router = app.router;
+
+// Route
+router.get('/welcome').to({controller: 'foo', action: 'welcome'});
+
+app.start();
+```
+
+The minimal route above will load and instantiate the controller `controllers/foo.js` and call its `welcome` method.
+Routes are usually configured in the main application script (usually called `index.js`), but the router can be accessed
+from everywhere (even at runtime).
+
+```js
+// Controller
+export default class FooController {
+
+  // Action
+  async welcome(ctx) {
+    // Render response
+    await ctx.render({text: 'Hello there.'});
+  }
+}
+```
+
+All routes match in the same order in which they were defined, and matching stops as soon as a suitable route has been
+found. So you can improve the routing performance by declaring your most frequently accessed routes first. A routing
+cache will also be used automatically to handle sudden traffic spikes more gracefully.
+
+### Routing destination
+
+After you start a new route with methods like `get`, you can also give it a destination in the form of an object using
+the chained method `to`.
+
+```js
+// GET /welcome -> {controller: 'foo', action: 'welcome'}
+router.get('/welcome').to({controller: 'foo', action: 'welcome'});
+```
+
+Now if the route matches an incoming request it will use the content of this object to try and find appropriate code to
+generate a response.
+
 ### WebSockets
 
 With the `websocket` routing method you can restrict access to WebSocket handshakes, which are normal `GET` requests
