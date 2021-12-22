@@ -115,14 +115,18 @@ t.test('TestUserAgent', async t => {
       .elementExists('p')
       .elementExists('h1')
       .elementExistsNot('h1')
-      .elementExistsNot('div');
+      .elementExistsNot('div')
+      .textLike('div', /test/)
+      .textLike('nothing', /123/);
 
     t.same(results, [
       ['ok', [true], 'GET request for /index.html'],
       ['ok', [true], 'element for selector "p" exists'],
       ['ok', [false], 'element for selector "h1" exists'],
       ['ok', [true], 'no element for selector "h1"'],
-      ['ok', [false], 'no element for selector "div"']
+      ['ok', [false], 'no element for selector "div"'],
+      ['match', ['Two', /test/], 'similar match for selector "div"'],
+      ['match', ['', /123/], 'similar match for selector "nothing"']
     ]);
   });
 

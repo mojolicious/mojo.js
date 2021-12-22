@@ -170,6 +170,16 @@ export class TestUserAgent extends MockUserAgent {
     return this;
   }
 
+  textLike(selector: string, regex: RegExp): this {
+    this.assert(
+      'match',
+      [this._html.at(selector)?.text() ?? '', regex],
+      `similar match for selector "${selector}"`,
+      this.textLike
+    );
+    return this;
+  }
+
   typeIs(value: string): this {
     this.assert('equal', [this.res.type, value], `Content-Type: ${value}`, this.typeIs);
     return this;

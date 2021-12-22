@@ -344,7 +344,8 @@ user agent object.
 // HTML tests
 (await ua.getOk('/foo'))
   .elementExists('head > title')
-  .elementExistsNot('body #error');
+  .elementExistsNot('body #error')
+  .textLike('head > title', /Welcome/);
 ```
 
 Testing WebSockets is almost as easy, but all operations are async and  have to return a `Promise`.
