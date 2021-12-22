@@ -127,7 +127,7 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   async messageOk(): Promise<JSONValue> {
-    if (this._messages === undefined) throw new Error('No actitve WebSocket connection');
+    if (this._messages === undefined) throw new Error('No active WebSocket connection');
     const message = (await this._messages.next()).value[0];
     this.assert('ok', [true], 'message received', this.messageOk);
     return message;
