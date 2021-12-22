@@ -69,9 +69,10 @@ At the beginning of the template, stash values get automatically initialized as 
 also a `stash` variable and the context object is available as `ctx`, giving you full access to request information and
 helpers.
 
-```
+```js
 ctx.stash.name = 'tester';
-
+```
+```
 Hello <%= name %> from <%= ctx.req.ip %>.
 ```
 
