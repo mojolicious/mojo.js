@@ -10,11 +10,11 @@ The guides are still a **work in progress**. But we are aiming for the same leve
 
 A quick exaple driven introduction to the basic concepts of [mojo.js](https://mojojs.org).
 
-* [Growing](Growing.md) (Progress: 30%)
+* [Growing](Growing.md) (Progress: 50%)
 
 Starting a single file prototype from scratch and growing it into a well-structured mojo.js application.
 
-* [Routing](Routing.md) (Progress: 10%)
+* [Routing](Routing.md) (Progress: 30%)
 
 A more detailed introduction to the mojo.js router.
 
