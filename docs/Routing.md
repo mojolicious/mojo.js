@@ -265,6 +265,34 @@ IRIs are handled transparently, that means paths are guaranteed to be unescaped 
 router.get('/☃').to({controller: 'foo', action: 'snowman'});
 ```
 
+### Stash
+
+The generated object of a matching route is actually the center of the whole mojo.js request cycle. We call it the
+stash, and it persists until a response has been generated.
+
+```js
+// GET /bye -> {controller: 'foo', action: 'bye', mymessage: 'Bye'}
+router.get('/bye').to({controller: 'foo', action: 'bye', mymessage: 'Bye'});
+```
+
+There are a few stash values with special meaning, such as `controller` and `action`, but you can generally fill it
+with whatever data you need to generate a response. Once dispatched the whole stash content can be changed at any time.
+
+```js
+// Action
+async bye(ctx) {
+
+  // Get message from stash
+  const msg = ctx.stash.mymessage;
+
+  // Change message in stash
+  ctx.stash.mymessage = 'Welcome';
+
+  // Render a template that might use stash values
+  await ctx.render({template: 'bye'});
+}
+```
+
 ### WebSockets
 
 With the `websocket` method of the router you can restrict access to WebSocket handshakes, which are normal `GET`
