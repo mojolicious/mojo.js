@@ -24,6 +24,9 @@ t.test('App', async t => {
   // GET /
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
+  // GET /☃
+  app.get('/☃', ctx => ctx.render({text: 'Hello Snowman!'}));
+
   // * /methods
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
@@ -295,6 +298,10 @@ t.test('App', async t => {
     t.equal(app.router.cache.itemCount, 1);
     (await ua.getOk('/')).statusIs(200).headerLike('Content-Length', /1/).bodyLike(/Mojo/);
     t.equal(app.router.cache.itemCount, 1);
+  });
+
+  await t.test('IRI', async () => {
+    (await ua.getOk('/☃')).statusIs(200).bodyIs('Hello Snowman!');
   });
 
   await t.test('Methods', async () => {

@@ -256,6 +256,15 @@ response even if it is present.
 router.get('/test').to({controller: 'bar', action: 'test'});
 ```
 
+### IRIs
+
+IRIs are handled transparently, that means paths are guaranteed to be unescaped and decoded from bytes to characters.
+
+```js
+// GET /☃ (Unicode snowman) -> {controller: 'foo', action: 'snowman'}
+router.get('/☃').to({controller: 'foo', action: 'snowman'});
+```
+
 ### WebSockets
 
 With the `websocket` method of the router you can restrict access to WebSocket handshakes, which are normal `GET`
