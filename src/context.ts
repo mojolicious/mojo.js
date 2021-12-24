@@ -1,6 +1,7 @@
 import type {App} from './app.js';
 import type {ChildLogger} from './logger.js';
 import type {Plan} from './router/plan.js';
+import type {SessionData} from './types.js';
 import type {MojoAction, MojoContext, RenderOptions, ServerRequestOptions, ValidatorFunction} from './types.js';
 import type {UserAgent} from './user-agent.js';
 import type {WebSocket} from './websocket.js';
@@ -11,8 +12,6 @@ import EventEmitter from 'events';
 import {Params} from './body/params.js';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
-
-type SessionData = Record<string, any>;
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
@@ -70,7 +69,7 @@ class Context extends EventEmitter {
     return this.app.config;
   }
 
-  async flash(): Promise<SessionData> {
+  async flash(): Promise<Record<string, any>> {
     if (this._flash === undefined) {
       const session = await this.session();
       this._flash = new Proxy(session, {
@@ -80,7 +79,7 @@ class Context extends EventEmitter {
         },
         set: function (target: SessionData, name: string, value: any): boolean {
           if (target.nextFLash === undefined) target.nextFlash = {};
-          target.nextFlash[name] = value;
+          (target.nextFlash as any)[name] = value;
           return true;
         }
       });

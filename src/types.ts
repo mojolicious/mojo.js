@@ -25,6 +25,14 @@ export type AnyArguments = Array<string | string[] | MojoAction | Record<string,
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
 
+export interface SessionData {
+  expiration?: number;
+  expires?: number;
+  flash?: {[key: string]: any};
+  nextFlash?: {[key: string]: any};
+  [key: string]: any;
+}
+
 export interface AppOptions {
   config?: Record<string, any>;
   exceptionFormat?: string;

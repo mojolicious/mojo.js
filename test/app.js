@@ -116,6 +116,21 @@ t.test('App', async t => {
     return ctx.render({text: `Logout: ${session.user}`});
   });
 
+  // GET /session/expiration
+  app.get('/session/expiration', async ctx => {
+    const params = await ctx.params();
+    const session = await ctx.session();
+
+    const expiration = params.get('expiration');
+    if (expiration !== null) {
+      session.expiration = parseInt(expiration);
+      session.value = 'works';
+      return ctx.redirectTo('session_expiration');
+    }
+
+    await ctx.render({text: `expiration: ${session.expiration ?? 'none'}, value: ${session.value ?? 'none'}`});
+  });
+
   // GET /flash
   app.get('/flash', async ctx => {
     const flash = await ctx.flash();
@@ -449,9 +464,16 @@ t.test('App', async t => {
     (await ua.getOk('/session/members', {headers: {Cookie: 'realValue--abcdef'}}))
       .statusIs(200)
       .bodyIs('Member: not logged in, with extra cookie');
+
+    (await ua.getOk('/session/expiration')).statusIs(200).bodyIs('expiration: none, value: none');
+    (await ua.getOk('/session/expiration?expiration=120')).statusIs(302).bodyIs('');
+    (await ua.getOk('/session/expiration')).statusIs(200).bodyIs('expiration: 120, value: works');
+    (await ua.getOk('/session/expiration?expiration=0')).statusIs(302).bodyIs('');
+    (await ua.getOk('/session/expiration')).statusIs(200).bodyIs('expiration: 0, value: works');
+    (await ua.getOk('/session/expiration')).statusIs(200).bodyIs('expiration: 0, value: works');
   });
 
-  await t.test('Flash', async t => {
+  await t.test('Flash', async () => {
     (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: none');
     (await ua.getOk('/flash?message=Hello')).statusIs(200).bodyIs('Flash: none');
     (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: Hello');
