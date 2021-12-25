@@ -26,13 +26,37 @@ declare interface UserAgent {
   emit: <T extends keyof UserAgentEvents>(event: T, ...args: Parameters<UserAgentEvents[T]>) => boolean;
 }
 
+/**
+ * HTTP and WebSocket user agent.
+ */
 class UserAgent extends EventEmitter {
+  /**
+   * Base URL to be used to resolve all relative request URLs with.
+   */
   baseUrl: string | URL | undefined;
+  /**
+   * Cookie jar to use, defaults to `tough-cookie`.
+   */
   cookieJar: tough.CookieJar | null = new tough.CookieJar();
+  /**
+   * Transport backend to perform HTTP requests with.
+   */
   httpTransport = new HTTPTransport();
+  /**
+   * Transport backend to perform HTTPS requests with.
+   */
   httpsTransport = new HTTPSTransport();
+  /**
+   * Maximum number of redirects to follow, default to `0`.
+   */
   maxRedirects: number;
+  /**
+   * Name of user agent to send with `User-Agent` header.
+   */
   name: string | undefined;
+  /**
+   * Transport backend to use for WebSocket connections.
+   */
   wsTransport = new WSTransport();
 
   constructor(options: UserAgentOptions = {}) {
@@ -43,39 +67,66 @@ class UserAgent extends EventEmitter {
     this.name = options.name;
   }
 
+  /**
+   * Destroy all active keep-alive connections.
+   */
   destroy(): void {
     this.httpTransport.destroy();
     this.httpsTransport.destroy();
   }
 
+  /**
+   * Perform `DELETE` request.
+   */
   async delete(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('DELETE', url, options);
   }
 
+  /**
+   * Perform `GET` request.
+   */
   async get(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('GET', url, options);
   }
 
+  /**
+   * Perform `HEAD` request.
+   */
   async head(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('HEAD', url, options);
   }
 
+  /**
+   * Perform `OPTIONS` request.
+   */
   async options(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('OPTIONS', url, options);
   }
 
+  /**
+   * Perform `PATCH` request.
+   */
   async patch(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('PATCH', url, options);
   }
 
+  /**
+   * Perform `POST` request.
+   */
   async post(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('POST', url, options);
   }
 
+  /**
+   * Perform `PUT` request.
+   */
   async put(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('PUT', url, options);
   }
 
+  /**
+   * Perform HTTP request.
+   */
   async request(config: UserAgentRequestOptions): Promise<UserAgentResponse> {
     const filtered = this._filterConfig(config);
     await this._loadCookies(filtered.url, filtered);
@@ -93,6 +144,9 @@ class UserAgent extends EventEmitter {
     return res;
   }
 
+  /**
+   * Open WebSocket connection.
+   */
   async websocket(url: string | URL, options: UserAgentWebSocketOptions = {}): Promise<WebSocket> {
     options.url = url;
     const filtered = this._filterSharedConfig(options);

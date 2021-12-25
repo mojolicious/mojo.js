@@ -1,4 +1,5 @@
 import type {UserAgentRequestOptions} from '../../types.js';
+import type {URL} from 'url';
 import http from 'http';
 import Stream from 'stream';
 import {UserAgentResponse} from '../response.js';
@@ -14,7 +15,7 @@ export class HTTPTransport {
     const options = this._prepareOptions(config);
 
     return await new Promise((resolve, reject) => {
-      const req = this._sendRequest(config.url ?? '', options, res => resolve(new UserAgentResponse(res)));
+      const req = this._sendRequest(config.url as URL, options, res => resolve(new UserAgentResponse(res)));
       req.once('error', reject);
       req.once('close', reject);
 
@@ -28,7 +29,7 @@ export class HTTPTransport {
     });
   }
 
-  _prepareOptions(config: UserAgentRequestOptions): Record<string, any> {
+  _prepareOptions(config: UserAgentRequestOptions): http.RequestOptions {
     const options: Record<string, any> = {headers: config.headers, method: (config.method ?? '').toUpperCase()};
     if (config.agent !== undefined) options.agent = config.agent;
     if (options.agent === undefined) options.agent = this.agent;
@@ -36,7 +37,7 @@ export class HTTPTransport {
     return options;
   }
 
-  _sendRequest(url: any, options: http.RequestOptions, cb: (res: http.IncomingMessage) => void): http.ClientRequest {
+  _sendRequest(url: URL, options: http.RequestOptions, cb: (res: http.IncomingMessage) => void): http.ClientRequest {
     return http.request(url, options, cb);
   }
 }
