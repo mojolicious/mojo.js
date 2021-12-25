@@ -6,6 +6,10 @@ import {UserAgentResponse} from '../response.js';
 export class HTTPTransport {
   agent = new http.Agent();
 
+  destroy(): void {
+    this.agent.destroy();
+  }
+
   prepareOptions(config: UserAgentRequestOptions): Record<string, any> {
     const options: Record<string, any> = {headers: config.headers, method: (config.method ?? '').toUpperCase()};
     if (config.agent !== undefined) options.agent = config.agent;

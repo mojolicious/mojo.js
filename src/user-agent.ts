@@ -43,6 +43,11 @@ class UserAgent extends EventEmitter {
     this.name = options.name;
   }
 
+  destroy(): void {
+    this.httpTransport.destroy();
+    this.httpsTransport.destroy();
+  }
+
   async delete(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('DELETE', url, options);
   }

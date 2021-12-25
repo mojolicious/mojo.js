@@ -24,6 +24,7 @@ export class MockUserAgent extends UserAgent {
   }
 
   async stop(): Promise<void> {
+    this.destroy();
     if (this.server === undefined) return;
     return await this.server.stop();
   }
