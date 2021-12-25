@@ -4,9 +4,12 @@ import Stream from 'stream';
 import {UserAgentResponse} from '../response.js';
 
 export class HTTPTransport {
+  agent = new http.Agent();
+
   prepareOptions(config: UserAgentRequestOptions): Record<string, any> {
     const options: Record<string, any> = {headers: config.headers, method: (config.method ?? '').toUpperCase()};
     if (config.agent !== undefined) options.agent = config.agent;
+    if (options.agent === undefined) options.agent = this.agent;
     if (config.auth !== undefined) options.auth = config.auth;
     return options;
   }
