@@ -2,13 +2,13 @@ import type {UserAgentOptions, UserAgentRequestOptions, UserAgentWebSocketOption
 import type {UserAgentResponse} from './user-agent/response.js';
 import type {WebSocket} from './websocket.js';
 import EventEmitter from 'events';
-import {format, URL} from 'url';
+import {URL} from 'url';
+import {CookieJar} from './user-agent/cookie-jar.js';
 import {HTTPTransport} from './user-agent/transport/http.js';
 import {HTTPSTransport} from './user-agent/transport/https.js';
 import {WSTransport} from './user-agent/transport/ws.js';
 import FormData from 'form-data';
 import yaml from 'js-yaml';
-import tough from 'tough-cookie';
 
 interface Upload {
   content: string;
@@ -35,9 +35,9 @@ class UserAgent extends EventEmitter {
    */
   baseUrl: string | URL | undefined;
   /**
-   * Cookie jar to use, defaults to `tough-cookie`.
+   * Cookie jar to use.
    */
-  cookieJar: tough.CookieJar | null = new tough.CookieJar();
+  cookieJar: CookieJar | null = new CookieJar();
   /**
    * Transport backend to perform HTTP requests with.
    */
@@ -128,8 +128,7 @@ class UserAgent extends EventEmitter {
    * Perform HTTP request.
    */
   async request(config: UserAgentRequestOptions): Promise<UserAgentResponse> {
-    const filtered = this._filterConfig(config);
-    await this._loadCookies(filtered.url, filtered);
+    const filtered = await this._filterConfig(config);
 
     this.emit('request', filtered);
 
@@ -139,7 +138,7 @@ class UserAgent extends EventEmitter {
     const transport = filtered.url.protocol === 'https:' ? this.httpsTransport : this.httpTransport;
     let res = await transport.request(filtered);
 
-    await this._storeCookies(filtered.url, res);
+    if (this.cookieJar !== null) await this.cookieJar.storeCookies(filtered.url, res.headers['set-cookie']);
     if (this.maxRedirects > 0) res = await this._handleRedirect(config, res);
     return res;
   }
@@ -149,8 +148,7 @@ class UserAgent extends EventEmitter {
    */
   async websocket(url: string | URL, options: UserAgentWebSocketOptions = {}): Promise<WebSocket> {
     options.url = url;
-    const filtered = this._filterSharedConfig(options);
-    await this._loadCookies(filtered.url, filtered);
+    const filtered = await this._filterSharedConfig(options);
 
     this.emit('websocket', filtered);
 
@@ -158,12 +156,8 @@ class UserAgent extends EventEmitter {
     return await this.wsTransport.connect(filtered);
   }
 
-  _cookieURL(currentURL: URL): string {
-    return format(currentURL, {auth: false, fragment: false, search: false});
-  }
-
-  _filterConfig(config: UserAgentRequestOptions): Record<string, any> {
-    const filtered = this._filterSharedConfig(config);
+  async _filterConfig(config: UserAgentRequestOptions): Promise<Record<string, any>> {
+    const filtered = await this._filterSharedConfig(config);
     if (filtered.method === undefined) filtered.method = 'GET';
 
     // Body
@@ -187,7 +181,7 @@ class UserAgent extends EventEmitter {
     return filtered;
   }
 
-  _filterSharedConfig(config: UserAgentRequestOptions | UserAgentWebSocketOptions): Record<string, any> {
+  async _filterSharedConfig(config: UserAgentRequestOptions | UserAgentWebSocketOptions): Promise<Record<string, any>> {
     if (!(config.url instanceof URL)) config.url = new URL(config.url ?? '', this.baseUrl);
 
     // Auth
@@ -208,6 +202,10 @@ class UserAgent extends EventEmitter {
     if (config.headers === undefined) config.headers = {};
     if (this.name !== undefined) config.headers['User-Agent'] = this.name;
     if (config.headers['Accept-Encoding'] === undefined) config.headers['Accept-Encoding'] = 'gzip';
+    if (this.cookieJar !== null) {
+      const cookies = await this.cookieJar.loadCookies(config.url);
+      if (cookies !== null) config.headers.Cookie = cookies;
+    }
 
     return config;
   }
@@ -260,31 +258,12 @@ class UserAgent extends EventEmitter {
     return res;
   }
 
-  async _loadCookies(url: URL, config: Record<string, any>): Promise<void> {
-    if (this.cookieJar === null) return;
-    const cookies = await this.cookieJar.getCookies(this._cookieURL(url));
-    if (cookies.length > 0) config.headers.Cookie = cookies.map(cookie => cookie.cookieString()).join('; ');
-  }
-
   async _requestConfig(
     method: string,
     url: string | URL = '/',
     options?: UserAgentRequestOptions
   ): Promise<UserAgentResponse> {
     return await this.request({url, method, ...options});
-  }
-
-  async _storeCookies(url: URL, res: UserAgentResponse): Promise<void> {
-    if (this.cookieJar === null) return;
-
-    const header = res.headers['set-cookie'];
-    if (header === undefined) return;
-
-    const cookieURL = this._cookieURL(url);
-    for (const cookie of header.map(value => tough.Cookie.parse(value ?? ''))) {
-      if (cookie === undefined) continue;
-      await this.cookieJar.setCookie(cookie, cookieURL);
-    }
   }
 }
 

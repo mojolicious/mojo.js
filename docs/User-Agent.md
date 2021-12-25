@@ -25,22 +25,12 @@ const ua = new UserAgent({
   // Base URL to be used to resolve all relative request URLs with
   baseUrl: 'http://127.0.0.1:3000',
 
-  // Cookie jar to use, defaults to `tough-cookie`
-  cookieJar: new tough.CookieJar(),
-
   // Maximum number of redirects to follow, default to none
   maxRedirects: 5,
 
   // Name of user agent to send with `User-Agent` header
   name: 'mojoUA/1.0'
 });
-```
-
-By default a [tough-cookie](https://www.npmjs.com/package/tough-cookie) cookie jar will be used, and you can reconfigure
-it however you like.
-
-```js
-ua.cookieJar.allowSpecialUseDomain = true;
 ```
 
 ## Request Config
@@ -194,6 +184,21 @@ const buffer = Buffer.concat(parts);
 
 For HTML and XML parsing [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom) will be used. Making it very easy to
 extract information from documents with just a CSS selector and almost no code at all.
+
+## Cookies
+
+By default a [tough-cookie](https://www.npmjs.com/package/tough-cookie) based cookie jar will be used for state keeping,
+and you can reconfigure it however you like.
+
+```js
+ua.cookieJar.storage.allowSpecialUseDomain = true;
+```
+
+Of course you can also just disable cookies completely.
+
+```js
+const ua = new UserAgent({cookieJar: null});
+```
 
 ## WebSockets
 
