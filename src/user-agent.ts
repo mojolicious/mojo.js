@@ -1,15 +1,14 @@
 import type {UserAgentOptions, UserAgentRequestOptions, UserAgentWebSocketOptions} from './types.js';
+import type {UserAgentResponse} from './user-agent/response.js';
+import type {WebSocket} from './websocket.js';
 import EventEmitter from 'events';
-import http from 'http';
-import https from 'https';
-import Stream from 'stream';
 import {format, URL} from 'url';
-import {UserAgentResponse} from './user-agent/response.js';
-import {WebSocket} from './websocket.js';
+import {HTTPTransport} from './user-agent/transport/http.js';
+import {HTTPSTransport} from './user-agent/transport/https.js';
+import {WSTransport} from './user-agent/transport/ws.js';
 import FormData from 'form-data';
 import yaml from 'js-yaml';
 import tough from 'tough-cookie';
-import WS from 'ws';
 
 interface Upload {
   content: string;
@@ -30,8 +29,11 @@ declare interface UserAgent {
 class UserAgent extends EventEmitter {
   baseUrl: string | URL | undefined;
   cookieJar: tough.CookieJar | null = new tough.CookieJar();
+  httpTransport = new HTTPTransport();
+  httpsTransport = new HTTPSTransport();
   maxRedirects: number;
   name: string | undefined;
+  wsTransport = new WSTransport();
 
   constructor(options: UserAgentOptions = {}) {
     super();
@@ -78,27 +80,12 @@ class UserAgent extends EventEmitter {
     if (typeof filtered.body === 'string') filtered.body = Buffer.from(filtered.body);
     if (filtered.body instanceof Buffer) filtered.headers['Content-Length'] = Buffer.byteLength(filtered.body);
 
-    const options: https.RequestOptions = {headers: filtered.headers, method: filtered.method.toUpperCase()};
-    if (filtered.agent !== undefined) options.agent = filtered.agent;
-    if (filtered.auth !== undefined) options.auth = filtered.auth;
-    if (filtered.ca !== undefined) options.ca = filtered.ca;
-    if (filtered.insecure !== undefined) options.rejectUnauthorized = filtered.insecure !== true;
-    if (filtered.servername !== undefined) options.servername = filtered.servername;
-    const proto = filtered.url.protocol === 'https:' ? https : http;
+    const transport = filtered.url.protocol === 'https:' ? this.httpsTransport : this.httpTransport;
+    let res = await transport.request(filtered);
 
-    return await new Promise((resolve, reject) => {
-      const req = proto.request(filtered.url, options, res => resolve(this._handleResponse(filtered, res)));
-      req.once('error', reject);
-      req.once('abort', reject);
-
-      if (filtered.body instanceof Buffer) {
-        req.end(filtered.body);
-      } else if (filtered.body instanceof Stream) {
-        filtered.body.pipe(req);
-      } else {
-        req.end();
-      }
-    });
+    await this._storeCookies(filtered.url, res);
+    if (this.maxRedirects > 0) res = await this._handleRedirect(config, res);
+    return res;
   }
 
   async websocket(url: string | URL, options: UserAgentWebSocketOptions = {}): Promise<WebSocket> {
@@ -109,20 +96,7 @@ class UserAgent extends EventEmitter {
     this.emit('websocket', filtered);
 
     filtered.url.protocol = filtered.url.protocol === 'https:' ? 'wss:' : 'ws:';
-    const ws = new WS(filtered.url, filtered.protocols, {headers: filtered.headers});
-    return await new Promise((resolve, reject) => {
-      let handshake: UserAgentResponse;
-      ws.on('upgrade', res => (handshake = new UserAgentResponse(res)));
-      ws.on('error', reject);
-
-      ws.on('open', () => {
-        // Workaround for a race condition where the first message arrives before the promise resolves
-        const socket = handshake.raw.socket;
-        socket.pause();
-        queueMicrotask(() => socket.resume());
-        resolve(new WebSocket(ws, handshake, {jsonMode: filtered.json}));
-      });
-    });
+    return await this.wsTransport.connect(filtered);
   }
 
   _cookieURL(currentURL: URL): string {
@@ -225,12 +199,6 @@ class UserAgent extends EventEmitter {
     }
 
     return res;
-  }
-
-  async _handleResponse(config: Record<string, any>, raw: http.IncomingMessage): Promise<UserAgentResponse> {
-    const res = new UserAgentResponse(raw);
-    await this._storeCookies(config.url, res);
-    return this.maxRedirects > 0 ? await this._handleRedirect(config, res) : res;
   }
 
   async _loadCookies(url: URL, config: Record<string, any>): Promise<void> {
