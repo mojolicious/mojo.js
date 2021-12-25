@@ -103,7 +103,7 @@ class UserAgent extends EventEmitter {
     return format(currentURL, {auth: false, fragment: false, search: false});
   }
 
-  _filterConfig(config: Record<string, any>): Record<string, any> {
+  _filterConfig(config: UserAgentRequestOptions): Record<string, any> {
     const filtered = this._filterSharedConfig(config);
     if (filtered.method === undefined) filtered.method = 'GET';
 
@@ -128,8 +128,8 @@ class UserAgent extends EventEmitter {
     return filtered;
   }
 
-  _filterSharedConfig(config: Record<string, any>): Record<string, any> {
-    if (!(config.url instanceof URL)) config.url = new URL(config.url, this.baseUrl);
+  _filterSharedConfig(config: UserAgentRequestOptions | UserAgentWebSocketOptions): Record<string, any> {
+    if (!(config.url instanceof URL)) config.url = new URL(config.url ?? '', this.baseUrl);
 
     // Auth
     const url: URL = config.url;

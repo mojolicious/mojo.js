@@ -100,7 +100,7 @@ export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
   body?: string | Buffer | NodeJS.ReadableStream;
   form?: Record<string, string>;
   formData?: Record<string, string> | FormData;
-  indecure?: boolean;
+  insecure?: boolean;
   json?: JSONValue;
   method?: string;
   servername?: string;

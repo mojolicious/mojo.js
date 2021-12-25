@@ -1,20 +1,21 @@
+import type {UserAgentRequestOptions} from '../../types.js';
 import http from 'http';
 import Stream from 'stream';
 import {UserAgentResponse} from '../response.js';
 
 export class HTTPTransport {
-  prepareOptions(config: Record<string, any>): Record<string, any> {
-    const options: Record<string, any> = {headers: config.headers, method: config.method.toUpperCase()};
+  prepareOptions(config: UserAgentRequestOptions): Record<string, any> {
+    const options: Record<string, any> = {headers: config.headers, method: (config.method ?? '').toUpperCase()};
     if (config.agent !== undefined) options.agent = config.agent;
     if (config.auth !== undefined) options.auth = config.auth;
     return options;
   }
 
-  async request(config: Record<string, any>): Promise<UserAgentResponse> {
+  async request(config: UserAgentRequestOptions): Promise<UserAgentResponse> {
     const options = this.prepareOptions(config);
 
     return await new Promise((resolve, reject) => {
-      const req = this.sendRequest(config.url, options, res => resolve(new UserAgentResponse(res)));
+      const req = this.sendRequest(config.url ?? '', options, res => resolve(new UserAgentResponse(res)));
       req.once('error', reject);
       req.once('close', reject);
 
@@ -28,7 +29,7 @@ export class HTTPTransport {
     });
   }
 
-  sendRequest(url: any, options: any, cb: (res: http.IncomingMessage) => void): http.ClientRequest {
+  sendRequest(url: any, options: http.RequestOptions, cb: (res: http.IncomingMessage) => void): http.ClientRequest {
     return http.request(url, options, cb);
   }
 }
