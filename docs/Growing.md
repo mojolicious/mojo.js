@@ -376,6 +376,51 @@ Connection: close
 Welcome sebastian.
 ```
 
+# State keeping
+
+Sessions in mojo.js pretty much just work out-of-the-box once you await the `session` method, there is no setup
+required, but we suggest setting a more secure passphrase with `app.secrets`
+
+``` js
+app.secrets(['Mojolicious rocks']);
+```
+
+This passphrase is used by the AES-256-GCM algorithm to encrypt cookies and can be changed at any time to invalidate
+all existing sessions.
+
+``` js
+const session = await ctx.session();
+session.user = 'sebastian';
+const user = session.user;
+```
+
+By default, all sessions expire after one hour. For more control you can use the `expiration` session value to set an
+expiration date in seconds from now.
+
+``` js
+const session = await ctx.session();
+session.expiration = 3600;
+```
+
+And the whole session can be deleted by using the `expires` session value to set an absolute expiration date in the
+past.
+
+``` js
+session.expires = 1;
+```
+
+For data that should only be visible on the next request, like a confirmation message after a `302` redirect performed
+with `ctx.redirectTo()`, you can use the flash, accessible through `ctx.flash`.
+
+``` js
+const flash = await ctx.flash();
+flash.message = 'Everything is fine.';
+return ctx.redirectTo('goodbye');
+```
+
+Just remember that all session data gets serialized to JSON and stored in encrypted cookies, which usually have a `4096`
+byte (4KiB) limit, depending on browser.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
