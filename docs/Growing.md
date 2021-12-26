@@ -285,16 +285,16 @@ export const app = mojo();
 app.models.users = new Users();
 
 app.any('/', async ctx => {
-  // Query parameters
+  // Query or POST parameters
   const params = await ctx.params();
   const user = params.get('user')
   const pass = params.get('pass')
 
   // Check password
-  if(ctx.models.users.check(user, pass) === true) return ctx.render({text: `Welcome ${user}.`});
+  if(ctx.models.users.check(user, pass) === true) return await ctx.render({text: `Welcome ${user}.`});
 
   // Failed
-  return ctx.render({text: 'Wrong username or password.'});
+  return await ctx.render({text: 'Wrong username or password.'});
 });
 
 app.start();
@@ -327,7 +327,7 @@ t.test('Example application', async t => {
       .statusIs(200)
       .elementExists('form input[name="user"]')
       .elementExists('form input[name="pass"]')
-      .elementExists('form input[type="submit"]');
+      .elementExists('button[type="submit"]');
     (await ua.postOk('/', {form: {user: 'sebastian', pass: 'secr3t'}}))
       .statusIs(200).textLike('html body', /Welcome sebastian/);
 
@@ -339,7 +339,7 @@ t.test('Example application', async t => {
       .statusIs(200)
       .elementExists('form input[name="user"]')
       .elementExists('form input[name="pass"]')
-      .elementExists('form input[type="submit"]');
+      .elementExists('button[type="submit"]');
   });
 
   await ua.stop();
@@ -415,11 +415,118 @@ with `ctx.redirectTo()`, you can use the flash, accessible through `ctx.flash`.
 ```js
 const flash = await ctx.flash();
 flash.message = 'Everything is fine.';
-return ctx.redirectTo('goodbye');
+await ctx.redirectTo('goodbye');
 ```
 
 Just remember that all session data gets serialized to JSON and stored in encrypted cookies, which usually have a `4096`
 byte (4KiB) limit, depending on browser.
+
+## Final prototype
+
+A final `myapp.js` prototype passing all of the tests above could look like this.
+
+```js
+import mojo from '@mojojs/core';
+import Users from './models/users.js';
+
+// Set custom cookie secret to ensure encryption is more secure
+export const app = mojo({secrets: ['Mojolicious rocks']});
+
+app.models.users = new Users();
+
+// Main login action
+app.any('/', async ctx => {
+  // Query or POST parameters
+  const params = await ctx.params();
+  ctx.stash.user = params.get('user');
+  const pass = params.get('pass');
+
+  // Check password and render the index inline template if necessary
+  if (ctx.models.users.check(ctx.stash.user, pass) === false) { 
+    return await ctx.render({inline: indexTemplate, inlineLayout: defaultLayout});
+  }
+
+  // Store username in session
+  const session = await ctx.session();
+  session.user = ctx.stash.user;
+
+  // Store a friendly message for the next page in flash
+  const flash = await ctx.flash();
+  flash.message = 'Thanks for logging in.';
+
+  // Redirect to protected page with a 302 response
+  await ctx.redirectTo('protected');
+}); 
+
+// Make sure user is logged in for actions in this action
+const protectedArea = app.under('/protected').to(async ctx => {
+  const session = await ctx.session();
+  if (session.user !== undefined) return;
+  await ctx.redirectTo('/');
+  return false;
+});
+
+// A protected page auto rendering the protected inline template"
+protectedArea.get('/').to(async ctx => {
+  await ctx.render({inline: protectedTemplate, inlineLayout: defaultLayout});
+});
+
+// Logout action
+app.get('/logout', async ctx => {
+  // Expire and in turn clear session automatically
+  const session = await ctx.session();
+  session.expires = 1;
+  // Redirect to main page with a 302 response
+  await ctx.redirectTo('/');
+});
+
+app.start();
+
+const indexTemplate = `
+<form method="post">
+% if (ctx.stash.user !== null) {
+  <b>Wrong name or password, please try again.</b><br>
+% }
+  User:<br>
+  <input name="user">
+  <br>Password:<br>
+  <input type="password" name="pass">
+  <br>
+  <button type="submit">Log in</button>
+</form>
+`;
+
+const protectedTemplate = `
+% const flash = await ctx.flash()
+% if (flash.message != null) {
+<b><%= flash.message %></b><br>
+% }
+Welcome <%= ctx.stash.session.user %>.<br>
+<a href="/logout">Logout</a>
+`;
+
+const defaultLayout = `
+<!DOCTYPE html>
+<html>
+  <head><title>Login Manager</title></head>
+  <body><%== view.content %></body>
+</html>
+`;
+```
+
+And the directory structure should be looking like this now.
+
+```
+myapp
+|- myapp.js
+|- models
+|  +- users.js
++- tests
+   +- login.js
+```
+
+Our templates are using quite a few features of the renderer, the [Rendering](Rendering.md) guide explains them all in
+great detail.
 
 ## Support
 
