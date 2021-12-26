@@ -293,6 +293,91 @@ async bye(ctx) {
 }
 ```
 
+### Nested Routes
+
+It is also possible to build tree structures from routes to remove repetitive code. A route with children can't match on
+its own though, only the actual endpoints of these nested routes can.
+
+```js
+// GET /foo     -> undef
+// GET /foo/bar -> {controller: 'foo', action: 'bar'}
+const foo = router.any('/foo').to({controller: 'foo'});
+foo.get('/bar').to({action: 'bar'});
+```
+
+The stash is simply inherited from route to route and newer values override old ones.
+
+```js
+// GET /cats      -> {controller: 'cats', action: 'index'}
+// GET /cats/nyan -> {controller: 'cats', action: 'nyan'}
+// GET /cats/lol  -> {controller: 'cats', action: 'default'}
+const cats = router.any('/cats').to({controller: 'cats', action: 'default'});
+cats.get('/').to({action: 'index'});
+cats.get('/nyan').to({action: 'nyan'});
+cats.get('/lol');
+```
+
+With a few common prefixes you can also greatly improve the routing performance of applications with many routes,
+because children are only tried if the prefix matched first.
+
+### Special Stash Values
+
+When the dispatcher sees `controller` and `action` values in the stash it will always try find a controller instance and
+method to dispatch to. By default, the router will load and instantiate all controller classes from the `controllers`
+directory during application startup.
+
+```js
+// Application ("index.js")
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+const router = app.router;
+
+// GET /bye -> "controllers/foo.js"
+router.get('/bye').to({controller: 'foo', action: 'bye'});
+
+app.start();
+```
+```js
+// Controller ("controllers/foo.js")
+export default class FooController {
+
+  // Action
+  async bye(ctx) {
+    // Render response
+    await ctx.render({text: 'Good bye.'});
+  }
+}
+```
+
+Controller classes are perfect for organizing code in larger projects. There are more dispatch strategies, but because
+controllers are the most commonly used ones they also got a special shortcut in the form of `controller#action`.
+
+```js
+// GET /bye -> {controller: 'foo', action: 'bye'}
+router.get('/bye').to('foo#bye');
+```
+
+### Route to Function
+
+The `fn` stash value, which won't be inherited by nested routes, can be used to bypass controllers and execute a
+function instead.
+
+```js
+router.get('/bye').to({fn: async ctx => {
+  await ctx.render({text => 'Good bye.'});
+});
+```
+
+But you can also just pass the callback directly to `get` (and similar methods), which usually looks much better.
+
+```js
+router.get('/bye', async ctx => {
+  await ctx.render({text => 'Good bye.'});
+});
+```
+
 ### WebSockets
 
 With the `websocket` method of the router you can restrict access to WebSocket handshakes, which are normal `GET`
