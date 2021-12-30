@@ -61,12 +61,12 @@ t.test('Plugin app', async t => {
 });
 
 const tagHelperPlugin = `
-Favicon: <%== ctx.mojoFaviconTag() %>
-Relative script: <%== ctx.scriptTag('/foo/bar.js') %>
-Relative style: <%== ctx.styleTag('/foo/bar.css') %>
-Absolute script: <%== ctx.scriptTag('https://mojojs.org/public/foo/bar.js') %>
-Absolute style: <%== ctx.styleTag('https://mojojs.org/public/foo/bar.css') %>
-Tag1: <%== ctx.tag('div', 'Hello Mojo!') %>
+Favicon: <%= ctx.mojoFaviconTag() %>
+Relative script: <%= ctx.scriptTag('/foo/bar.js') %>
+Relative style: <%= ctx.styleTag('/foo/bar.css') %>
+Absolute script: <%= ctx.scriptTag('https://mojojs.org/public/foo/bar.js') %>
+Absolute style: <%= ctx.styleTag('https://mojojs.org/public/foo/bar.css') %>
+Tag1: <%= ctx.tag('div', 'Hello Mojo!') %>
 Tag2: <%== ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
 `;
 

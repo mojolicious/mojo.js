@@ -1,6 +1,7 @@
 import type {App} from '../app.js';
 import type {MojoContext, RenderOptions} from '../types.js';
 import {createHash} from 'crypto';
+import {xmlEscape} from '@mojojs/dom';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
 import LRU from 'lru-cache';
@@ -20,7 +21,7 @@ class MTEngine {
       template = this.cache.get(checksum);
 
       if (template === undefined) {
-        template = new Template(options.inline).compile();
+        template = new Template(options.inline, {escape: xmlEscape}).compile();
         this.cache.set(checksum, template);
       }
     } else {
@@ -29,7 +30,7 @@ class MTEngine {
       if (template === undefined) {
         if (options.viewPath === undefined) throw new Error('viewPath is not defined for mtEngine');
         const source = await new Path(options.viewPath).readFile('utf8');
-        template = new Template(source.toString(), {name: options.viewPath}).compile();
+        template = new Template(source.toString(), {escape: xmlEscape, name: options.viewPath}).compile();
         this.cache.set(options.viewPath, template);
       }
     }

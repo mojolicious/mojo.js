@@ -3,13 +3,13 @@
 <html>
   <head>
     <title>Debug</title>
-    <%== ctx.mojoFaviconTag() %>
-    <%== ctx.scriptTag('/mojo/bootstrap/bootstrap.bundle.min.js') %>
-    <%== ctx.scriptTag('/mojo/highlight.js/highlight.pack.js') %>
-    <%== ctx.styleTag('/mojo/bootstrap/bootstrap.min.css') %>
-    <%== ctx.styleTag('/mojo/highlight.js/highlight-mojo-dark.css') %>
-    <%== ctx.styleTag('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css') %>
-    <%== ctx.styleTag('/mojo/mojo.css') %>
+    <%= ctx.mojoFaviconTag() %>
+    <%= ctx.scriptTag('/mojo/bootstrap/bootstrap.bundle.min.js') %>
+    <%= ctx.scriptTag('/mojo/highlight.js/highlight.pack.js') %>
+    <%= ctx.styleTag('/mojo/bootstrap/bootstrap.min.css') %>
+    <%= ctx.styleTag('/mojo/highlight.js/highlight-mojo-dark.css') %>
+    <%= ctx.styleTag('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css') %>
+    <%= ctx.styleTag('/mojo/mojo.css') %>
     <script>
       hljs.initHighlightingOnLoad();
       window.onload = function() {

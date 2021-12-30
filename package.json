@@ -76,7 +76,7 @@
     "node": ">= 16"
   },
   "dependencies": {
-    "@mojojs/dom": "^1.0.1",
+    "@mojojs/dom": "^1.1.2",
     "@mojojs/path": "^1.1.2",
     "@mojojs/template": "^1.0.0",
     "ajv": "^8.5.0",
