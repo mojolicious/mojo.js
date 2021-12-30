@@ -1,17 +1,16 @@
 import type {App} from '../app.js';
 import type {MojoContext, RenderOptions} from '../types.js';
-import type {AsyncTemplateFunction} from 'ejs';
 import {createHash} from 'crypto';
 import Path from '@mojojs/path';
-import {compile} from 'ejs';
+import Template from '@mojojs/template';
 import LRU from 'lru-cache';
 
-export default function ejsEnginePlugin(app: App): void {
-  app.renderer.addEngine('ejs', new EJSEngine());
+export default function mtEnginePlugin(app: App): void {
+  app.renderer.addEngine('mt', new MTEngine());
 }
 
-class EJSEngine {
-  cache: LRU<string, AsyncTemplateFunction> = new LRU(100);
+class MTEngine {
+  cache: LRU<string, (data?: Record<string, any>) => Promise<string>> = new LRU(100);
 
   async render(ctx: MojoContext, options: RenderOptions): Promise<Buffer> {
     let template;
@@ -21,16 +20,16 @@ class EJSEngine {
       template = this.cache.get(checksum);
 
       if (template === undefined) {
-        template = compile(options.inline, {async: true});
+        template = new Template(options.inline).compile();
         this.cache.set(checksum, template);
       }
     } else {
       template = this.cache.get(options.viewPath);
 
       if (template === undefined) {
-        if (options.viewPath === undefined) throw new Error('viewPath is not defined for ejsEngine');
+        if (options.viewPath === undefined) throw new Error('viewPath is not defined for mtEngine');
         const source = await new Path(options.viewPath).readFile('utf8');
-        template = compile(source.toString(), {async: true, filename: options.viewPath});
+        template = new Template(source.toString(), {name: options.viewPath}).compile();
         this.cache.set(options.viewPath, template);
       }
     }

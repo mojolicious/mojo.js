@@ -1,0 +1,3 @@
+Header
+<%== view.content %>
+Footer

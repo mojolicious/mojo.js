@@ -1,2 +1,2 @@
-<% view.layout = 'default' %>
+<% view.layout = 'default'; %>
 Default for <%= controller %> and <%= action %>

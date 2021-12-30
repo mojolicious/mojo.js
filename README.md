@@ -42,7 +42,8 @@ All you need is Node.js 16.0.0 (or newer).
 $ npm install @mojojs/core
 ```
 
-Maybe take a look at our high quality spin-off projects [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom) and
+Maybe take a look at our high quality spin-off projects [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom),
+[@mojojs/template](https://www.npmjs.com/package/@mojojs/template) and
 [@mojojs/path](https://www.npmjs.com/package/@mojojs/path).
 
 ## Getting Started

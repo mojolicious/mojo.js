@@ -3,8 +3,8 @@ import type {Mode} from 'fs';
 import {setTimeout} from 'timers/promises';
 import url from 'url';
 import Path from '@mojojs/path';
+import Template from '@mojojs/template';
 import chalk from 'chalk';
-import ejs from 'ejs';
 
 export async function captureOutput(
   fn: () => void,
@@ -67,7 +67,7 @@ export async function cliCreateFile(
   }
 
   stdout.write(chalk.green(' [write]') + ` ${file.toString()}\n`);
-  await file.writeFile(ejs.compile(template)(values));
+  await file.writeFile(await Template.render(template, values));
   if (options.chmod !== undefined) {
     stdout.write(chalk.green(' [chmod]') + ` ${file.toString()} (${options.chmod.toString(8)})\n`);
     await file.chmod(options.chmod);

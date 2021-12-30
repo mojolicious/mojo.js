@@ -51,7 +51,6 @@
   "devDependencies": {
     "@istanbuljs/esm-loader-hook": "^0.1.2",
     "@types/busboy": "^0.3.1",
-    "@types/ejs": "^3.0.6",
     "@types/js-yaml": "^4.0.3",
     "@types/lru-cache": "^5.1.0",
     "@types/mime-types": "^2.1.0",
@@ -79,10 +78,10 @@
   "dependencies": {
     "@mojojs/dom": "^1.0.1",
     "@mojojs/path": "^1.1.2",
+    "@mojojs/template": "^1.0.0",
     "ajv": "^8.5.0",
     "busboy": "^1.0.0",
     "chalk": "^5.0.0",
-    "ejs": "^3.1.6",
     "form-data": "^4.0.0",
     "js-yaml": "^4.1.0",
     "lru-cache": "^6.0.0",

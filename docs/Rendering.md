@@ -19,11 +19,11 @@ encoding modules.
 
 Views can be automatically detected if enough information is provided by the developer or routes. View names are
 expected to follow the `view.format.engine` scheme, with `view` defaulting to `controller/action` or the route name,
-`format` defaulting to `html` and `engine` to `ejs`.
+`format` defaulting to `html` and `engine` to `mt`.
 
 ```
-{controller: 'users', action: 'list'} -> 'users/list.html.ejs'
-{view: 'foo', format: 'txt'}          -> 'foo.txt.ejs'
+{controller: 'users', action: 'list'} -> 'users/list.html.mt'
+{view: 'foo', format: 'txt'}          -> 'foo.txt.mt'
 {view: 'foo', engine => 'haml'}       -> 'foo.html.haml'
 ```
 
@@ -36,18 +36,23 @@ app.renderer.viewPaths.unshift(app.home.child('more-views').toString());
 
 The renderer can be easily extended to support additional template engine with plugins, but more about that later.
 
-### EJS
+### Templates
 
-The default template engine used by mojo.js is [ejs](https://www.npmjs.com/package/ejs). It allows the embedding of
-JavaScript code right into actual content using a small set of special tags. Templates are compiled to `async`
-functions, so you can even use `await`.
+The default template engine used by mojo.js is [@mojojs/template](https://www.npmjs.com/package/@mojojs/template). It
+allows the embedding of JavaScript code right into actual content using a small set of special tags. Templates are
+compiled to `async` functions, so you can even use `await`.
 
 ```
 <% JavaScript code %>
-<%= JavaScript expression, replaced with HTML escaped result %>
-<%- JavaScript expression, replaced with result %>
+<%= JavaScript expression, replaced with XML escaped result %>
+<%== JavaScript expression, replaced with result %>
 <%# Comment, useful for debugging %>
 <%% Replaced with "<%", useful for generating templates %>
+% JavaScript code line, treated as "<% line %>"
+%= JavaScript expression line, treated as "<%= line %>"
+%== JavaScript expression line, treated as "<%== line %>"
+%# Comment line, useful for debugging
+%% Replaced with "%", useful for generating templates
 ```
 
 By default the characters `<`, `>`, `&`, `'` and `"` will be escaped in results from JavaScript expressions, to prevent
@@ -55,14 +60,7 @@ XSS attacks against your application.
 
 ```
 <%= 'I ♥ mojo.js!' %>
-<%- '<p>I ♥ mojo.js!</p>' %>
-```
-
-Whitespace characters around tags can be trimmed.
-
-```
-<% Trim following newline -%>
-<% Trim following whitespace characters _%>
+<%== '<p>I ♥ mojo.js!</p>' %>
 ```
 
 At the beginning of the template, stash values get automatically initialized as normal variables. Additionally there is

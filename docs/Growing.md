@@ -139,24 +139,24 @@ Full mojo.js applications on the other hand follow the MVC pattern more closely 
 files to maximize maintainability:
 
 ```
-myapp                         // Application directory (created manually)
-|- config.yml                 // Configuration file
-|- index.js                   // Application script
+myapp                        // Application directory (created manually)
+|- config.yml                // Configuration file
+|- index.js                  // Application script
 |- node_modules
 |   |- *lots of node files*
-|- package.json               // Node package information and settings
-|- test                       // Test directory
-|   |- example.js             // Random test
-|- controllers                // Controller directory
-|   |- example.js             // Controller class
-|- models                     // Model directory
-|- public                     // Static file directory (served automatically)
-|   |- index.html             // Static HTML file
-|- views                      // Views directory
-|   |- example                // View directory for "Example" controller
-|   |   |- welcome.html.ejs   // Template for "welcome" action
-|   |- layouts                // View directory for layout templates
-|   |   |- default.html.ejs   // Layout template
+|- package.json              // Node package information and settings
+|- test                      // Test directory
+|   |- example.js            // Random test
+|- controllers               // Controller directory
+|   |- example.js            // Controller class
+|- models                    // Model directory
+|- public                    // Static file directory (served automatically)
+|   |- index.html            // Static HTML file
+|- views                     // Views directory
+|   |- example               // View directory for "Example" controller
+|   |   |- welcome.html.mt   // Template for "welcome" action
+|   |- layouts               // View directory for layout templates
+|   |   |- default.html.mt   // Layout template
 ```
 
 Both application skeletons can be automatically generated with the commands `npx mojo create-lite-app` and

@@ -3,13 +3,13 @@
 <html>
   <head>
     <title>Debug</title>
-    <%- ctx.mojoFaviconTag() %>
-    <%- ctx.scriptTag('/mojo/bootstrap/bootstrap.bundle.min.js') %>
-    <%- ctx.scriptTag('/mojo/highlight.js/highlight.pack.js') %>
-    <%- ctx.styleTag('/mojo/bootstrap/bootstrap.min.css') %>
-    <%- ctx.styleTag('/mojo/highlight.js/highlight-mojo-dark.css') %>
-    <%- ctx.styleTag('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css') %>
-    <%- ctx.styleTag('/mojo/mojo.css') %>
+    <%== ctx.mojoFaviconTag() %>
+    <%== ctx.scriptTag('/mojo/bootstrap/bootstrap.bundle.min.js') %>
+    <%== ctx.scriptTag('/mojo/highlight.js/highlight.pack.js') %>
+    <%== ctx.styleTag('/mojo/bootstrap/bootstrap.min.css') %>
+    <%== ctx.styleTag('/mojo/highlight.js/highlight-mojo-dark.css') %>
+    <%== ctx.styleTag('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css') %>
+    <%== ctx.styleTag('/mojo/mojo.css') %>
     <script>
       hljs.initHighlightingOnLoad();
       window.onload = function() {
@@ -69,7 +69,7 @@
               </div>
               <div id="showcase" class="mojo-box mojo-code mojo-no-bottom-border mojo-no-top-border mojo-border-radius-top">
                 <pre id="error" class="mojo-error"><%= exception %></pre>
-                <% const context = await view.exceptionContext(exception) %>
+                <% const context = await view.exceptionContext(exception); %>
                 <% if (context !== null) { %>
                   <div>
                     <table class="mojo-wide">
@@ -130,9 +130,9 @@
                       <% } %>
                     </td>
                   </tr>
-                  <% depth++ %>
+                  <% depth++; %>
                   <%= route.children.map(child => walk(child, depth)).join('') %>
-                  <% depth-- %>
+                  <% depth--; %>
                 <% } %>
                 <table class="mojo-striped-light mojo-wide">
                   <thead>
@@ -162,7 +162,7 @@
                 <%= keyValue('Base URL', ctx.req.baseUrl) %>
                 <%= keyValue('Parameters', ctx.inspect((await ctx.params()).toObject())) %>
                 <%= keyValue('Stash', ctx.inspect(ctx.stash) ) %>
-                <% const rawHeaders = ctx.req.raw.rawHeaders %>
+                <% const rawHeaders = ctx.req.raw.rawHeaders; %>
                 <% for (let i = 0; i < rawHeaders.length; i += 2) { %>
                   <%= keyValue(rawHeaders[i], rawHeaders[i + 1]) %>
                 <% } %>
@@ -171,7 +171,7 @@
           </div>
           <div class="row">
             <% if (ctx.app.log.history.length > 0) { %>
-              <% const log = ctx.app.log.history.map(view.stringFormatter).join('') %>
+              <% const log = ctx.app.log.history.map(view.stringFormatter).join(''); %>
               <pre class="mojo-terminal"><code class="nohighlight"><%= log %></code></pre>
             <% } else { %>
               <div class="alert alert-warning mojo-wide" role="alert">

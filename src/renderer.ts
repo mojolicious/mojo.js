@@ -22,7 +22,7 @@ interface ViewEngine {
 
 export class Renderer {
   autoCompress = true;
-  defaultEngine = 'ejs';
+  defaultEngine = 'mt';
   defaultFormat = 'html';
   engines: Record<string, ViewEngine> = {};
   minCompressSize = 860;

@@ -11,7 +11,7 @@ t.test('Types', t => {
   t.equal(mime.extType('xml'), 'application/xml');
   t.same(mime.extType('.unknown'), null);
   t.same(mime.extType('unknown'), null);
-  t.equal(mime.extType('html.ejs'), null);
+  t.equal(mime.extType('html.mt'), null);
   t.end();
 });
 
