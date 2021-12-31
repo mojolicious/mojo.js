@@ -378,6 +378,53 @@ router.get('/bye', async ctx => {
 });
 ```
 
+### Named Routes
+
+Naming your routes will allow backreferencing in many methods and helpers throughout the whole framework, most of which
+internally rely on `ctx.urlFor` for this.
+
+```js
+// GET /foo/marcus -> {controller: 'foo', action: 'bar', user: 'marcus'}
+router.get('/foo/:user').to('foo#bar').name('baz');
+```
+```js
+// Generate URL "/foo/marcus" for route "baz" (in previous request context)
+const url = ctx.urlFor('baz');
+
+// Generate URL "/foo/jan" for route "baz"
+const url = ctx.urlFor('baz', {user: 'jan'});
+```
+
+You can manually assign a name or let the router generate one automatically, which would be equal to the route itself
+with all non-word characters replaced with the `_` character. Custom names have a higher precedence.
+
+```js
+// GET /foo/bar ("foobar")
+router.get('/foo/bar').to('test#stuff');
+```
+```js
+// Generate URL "/foo/bar"
+const url = ctx.urlFor('foo_bar');
+```
+
+To refer to the current route you can use the reserved name `current` or no name at all.
+
+```js
+// Generate URL for current route
+const url = ctx.urlFor('current');
+const url = ctx.urlFor();
+```
+
+To check or get the name of the current route you can use the helper `ctx.currentRoute`.
+
+```js
+// Name for current route
+const name = ctx.currentRoute();
+
+// Check route name in code shared by multiple routes
+if (if ctx.currentRoute() === 'login') ctx.stash.button = 'green';
+```
+
 ### WebSockets
 
 With the `websocket` method of the router you can restrict access to WebSocket handshakes, which are normal `GET`

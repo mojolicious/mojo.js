@@ -61,6 +61,7 @@ t.test('Plugin app', async t => {
 });
 
 const tagHelperPlugin = `
+Route: <%= ctx.currentRoute() %>
 Favicon: <%= ctx.mojoFaviconTag() %>
 Relative script: <%= ctx.scriptTag('/foo/bar.js') %>
 Relative style: <%= ctx.styleTag('/foo/bar.css') %>
@@ -72,6 +73,7 @@ Tag2: <%== ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
 
 function tagHelperPluginResult(baseUrl) {
   return `
+Route: tag_helpers
 Favicon: <link rel="icon" href="${baseUrl}mojo/favicon.ico">
 Relative script: <script src="${baseUrl}foo/bar.js"></script>
 Relative style: <link rel="stylesheet" href="${baseUrl}foo/bar.css">

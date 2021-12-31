@@ -815,6 +815,7 @@ t.test('App', async t => {
     t.same(ctx.req.raw.method, 'GET');
     t.same(ctx.req.raw.url, '/');
     t.same(ctx.req.raw.headers, {});
+    t.same(ctx.currentRoute(), null);
 
     ctx.stash.hello = 'mojo';
     t.equal(ctx.stash.hello, 'mojo');
