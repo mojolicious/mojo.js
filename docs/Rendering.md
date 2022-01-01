@@ -48,11 +48,51 @@ compiled to `async` functions, so you can even use `await`.
 <%== JavaScript expression, replaced with result %>
 <%# Comment, useful for debugging %>
 <%% Replaced with "<%", useful for generating templates %>
-% JavaScript code line, treated as "<% line %>"
+% JavaScript code line, treated as "<% line =%>" (explained later)
 %= JavaScript expression line, treated as "<%= line %>"
 %== JavaScript expression line, treated as "<%== line %>"
 %# Comment line, useful for debugging
 %% Replaced with "%", useful for generating templates
+```
+
+Tags and lines work pretty much the same, but depending on context one will usually look a bit better. Semicolons get
+automatically appended to all expressions.
+
+```
+<% const i = 10; %>
+<ul>
+  <% for (let j = 1; i > j; j++) { %>
+    <li>
+      <%= j %>
+    </li>
+  <% } %>
+</ul>
+```
+```
+% const i = 10;
+<ul>
+  % for (let j = 1; i > j; j++) {
+    <li>
+      %= j
+    </li>
+  % }
+</ul>
+```
+
+Aside from differences in whitespace handling, both examples generate similar JavaScript code, a naive translation
+could look like this.
+
+```js
+let __output = '';
+const i = 10;
+__output += '<ul>';
+for (let j = 1; i > j; j++) {
+  __output += '<li>';
+  __output += __escape(j);
+  ___output += '</li>';
+}
+__output += '</ul>';
+return __output;
 ```
 
 By default the characters `<`, `>`, `&`, `'` and `"` will be escaped in results from JavaScript expressions, to prevent
@@ -61,6 +101,23 @@ XSS attacks against your application.
 ```
 <%= 'I ♥ mojo.js!' %>
 <%== '<p>I ♥ mojo.js!</p>' %>
+```
+
+Newline characters after code and expression blocks can be trimmed by adding an additional equal sign to the end of a
+tag.
+
+```
+<% for (let i = 1; i <= 3; i++) { =%>
+  <%= 'The code blocks around this expression are not visible in the output' %>
+<% } =%>
+```
+
+Code lines are automatically trimmed and always completely invisible in the output.
+
+```
+% for (let i = 1; i <= 3; i++) {
+  <%= 'The code lines around this expression are not visible in the output' %>
+% }
 ```
 
 At the beginning of the template, stash values get automatically initialized as normal variables. Additionally there is
