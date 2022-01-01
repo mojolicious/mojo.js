@@ -33,6 +33,8 @@ async function htmlException(ctx: MojoContext, error: Error): Promise<boolean> {
 }
 
 async function htmlNotFound(ctx: MojoContext): Promise<boolean> {
+  ctx.stash.exception = null;
+
   const mode: string = ctx.app.mode;
   if (await ctx.render({view: `not-found.${mode}`, maybe: true, status: 404})) return true;
   if (await ctx.render({view: 'not-found', maybe: true, status: 404})) return true;

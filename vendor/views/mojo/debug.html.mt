@@ -61,8 +61,7 @@
       <div class="row flex-wrap">
         <main class="col-sm-12 col-md-8 col-lg-10 py-md-3 pl-md-5">
           <div class="row mojo-divider">
-            % if (ctx.stash.exception !== undefined) {
-              % const exception = ctx.stash.exception;
+            % if (exception !== null) {
               <div class="alert alert-danger mojo-wide" role="alert">
                 <h2>Server Error</h2>
                 This application is in <b>development</b> mode and will show internal information to help you with
