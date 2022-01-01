@@ -103,9 +103,9 @@ export class Body {
   }
 
   async pipe(writer: Writable): Promise<void> {
-    const stream = this.createReadStream();
-    stream.pipe(writer);
-    return await new Promise((resolve, reject) => stream.on('error', reject).on('end', resolve));
+    return await new Promise((resolve, reject) => {
+      this.createReadStream().on('error', reject).on('end', resolve).pipe(writer);
+    });
   }
 
   async text(charset: BufferEncoding = 'utf8'): Promise<string> {
