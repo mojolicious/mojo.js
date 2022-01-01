@@ -149,22 +149,22 @@
           </div>
           <div class="row mojo-divider">
             <div id="request" class="mojo-box mojo-no-padding mojo-border-radius-both">
-              <% function keyValue (key, value) { %>
-              <tr>
-                <td class="mojo-key text-right"><%= key %>:</td>
-                <td class="mojo-value"><pre><%= value %></pre></td>
-              </tr>
-              <% } %>
+              <% const keyValue = function (key, value) { %>
+                <tr>
+                  <td class="mojo-key text-right"><%= key %>:</td>
+                  <td class="mojo-value"><pre><%= value %></pre></td>
+                </tr>
+              <% }; %>
               <table class="mojo-striped mojo-fixed-table mojo-wide">
-                <%= keyValue('Request ID', ctx.req.requestId) %>
-                <%= keyValue('Method', ctx.req.method) %>
-                <%= keyValue('Path', ctx.req.path) %>
-                <%= keyValue('Base URL', ctx.req.baseUrl) %>
-                <%= keyValue('Parameters', ctx.inspect((await ctx.params()).toObject())) %>
-                <%= keyValue('Stash', ctx.inspect(ctx.stash) ) %>
+                <% keyValue('Request ID', ctx.req.requestId); %>
+                <% keyValue('Method', ctx.req.method); %>
+                <% keyValue('Path', ctx.req.path); %>
+                <% keyValue('Base URL', ctx.req.baseUrl); %>
+                <% keyValue('Parameters', ctx.inspect((await ctx.params()).toObject())); %>
+                <% keyValue('Stash', ctx.inspect(ctx.stash)); %>
                 <% const rawHeaders = ctx.req.raw.rawHeaders; %>
                 <% for (let i = 0; i < rawHeaders.length; i += 2) { %>
-                  <%= keyValue(rawHeaders[i], rawHeaders[i + 1]) %>
+                  <% keyValue(rawHeaders[i], rawHeaders[i + 1]); %>
                 <% } %>
               </table>
             </div>
