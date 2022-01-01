@@ -8,7 +8,7 @@ The guides are still a **work in progress**. But we are aiming for the same leve
 
 * [Introduction](Introduction.md) (Progress: 100%)
 
-A quick exaple driven introduction to the basic concepts of [mojo.js](https://mojojs.org).
+A quick example driven introduction to the basic concepts of [mojo.js](https://mojojs.org).
 
 * [Growing](Growing.md) (Progress: 60%)
 
