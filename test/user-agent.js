@@ -287,7 +287,9 @@ t.test('UserAgent', async t => {
     t.equal(res.status, 200);
     const dir = await Path.tempDir();
     const file = await dir.child('hello.txt').touch();
-    await res.pipe(file.createWriteStream());
+    const stream = file.createWriteStream();
+    await res.pipe(stream);
+    t.equal(stream.bytesWritten, 11);
     t.equal(await file.readFile('utf8'), 'Hello Mojo!');
 
     const res2 = await ua.put('/body', {body: file.createReadStream()});

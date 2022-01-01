@@ -104,7 +104,7 @@ export class Body {
 
   async pipe(writer: Writable): Promise<void> {
     return await new Promise((resolve, reject) => {
-      this.createReadStream().on('error', reject).on('end', resolve).pipe(writer);
+      this.createReadStream().on('error', reject).pipe(writer).on('unpipe', resolve);
     });
   }
 
