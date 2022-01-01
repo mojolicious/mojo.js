@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>Page Not Found</title>
-    <%= ctx.mojoFaviconTag() %>
+    %= ctx.mojoFaviconTag()
     <style>
       a img {
         border: 0;

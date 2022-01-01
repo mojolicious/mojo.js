@@ -3,18 +3,18 @@
 <html>
   <head>
     <title>Debug</title>
-    <%= ctx.mojoFaviconTag() %>
-    <%= ctx.scriptTag('/mojo/bootstrap/bootstrap.bundle.min.js') %>
-    <%= ctx.scriptTag('/mojo/highlight.js/highlight.pack.js') %>
-    <%= ctx.styleTag('/mojo/bootstrap/bootstrap.min.css') %>
-    <%= ctx.styleTag('/mojo/highlight.js/highlight-mojo-dark.css') %>
-    <%= ctx.styleTag('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css') %>
-    <%= ctx.styleTag('/mojo/mojo.css') %>
+    %= ctx.mojoFaviconTag()
+    %= ctx.scriptTag('/mojo/bootstrap/bootstrap.bundle.min.js')
+    %= ctx.scriptTag('/mojo/highlight.js/highlight.pack.js')
+    %= ctx.styleTag('/mojo/bootstrap/bootstrap.min.css')
+    %= ctx.styleTag('/mojo/highlight.js/highlight-mojo-dark.css')
+    %= ctx.styleTag('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css')
+    %= ctx.styleTag('/mojo/mojo.css')
     <script>
       hljs.initHighlightingOnLoad();
       window.onload = function() {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        const tooltipList = tooltipTriggerList.map(tooltipTriggerEl => {
           return new bootstrap.Tooltip(tooltipTriggerEl);
         });
       };
@@ -61,7 +61,7 @@
       <div class="row flex-wrap">
         <main class="col-sm-12 col-md-8 col-lg-10 py-md-3 pl-md-5">
           <div class="row mojo-divider">
-            <% if (exception !== null) { %>
+            % if (exception !== null) {
               <div class="alert alert-danger mojo-wide" role="alert">
                 <h2>Server Error</h2>
                 This application is in <b>development</b> mode and will show internal information to help you with
@@ -69,33 +69,33 @@
               </div>
               <div id="showcase" class="mojo-box mojo-code mojo-no-bottom-border mojo-no-top-border mojo-border-radius-top">
                 <pre id="error" class="mojo-error"><%= exception %></pre>
-                <% const context = await view.exceptionContext(exception); %>
-                <% if (context !== null) { %>
+                % const context = await view.exceptionContext(exception);
+                % if (context !== null) {
                   <div>
                     <table class="mojo-wide">
-                      <% for (const line of context.source) { %>
-                        <% const extra = context.line === line.num ? ' mojo-important' : ''; %>
+                      % for (const line of context.source) {
+                        % const extra = context.line === line.num ? ' mojo-important' : '';
                         <tr>
                           <td class="text-right<%= extra %>"><%= line.num %></td>
                           <td class="mojo-context mojo-wide<%= extra %>"><pre><code><%= line.code %></code></pre></td>
                         </tr>
-                      <% } %>
+                      % }
                     </table>
                   </div>
-                <% } %>
+                % }
               </div>
               <div id="trace" class="mojo-box mojo-no-padding more mojo-no-top-border mojo-border-radius-bottom">
                 <div id="frames" class="more">
                   <table class="mojo-striped-grey mojo-wide">
-                    <% const lines = exception.stack.split('\n').filter(line => line.match(/^\s*at\ /)); %>
-                    <% const trace = lines.map(val => val.replace(/^\s+/, '')); %>
-                    <% for (const frame of trace) { %>
+                    % const lines = exception.stack.split('\n').filter(line => line.match(/^\s*at\ /));
+                    % const trace = lines.map(val => val.replace(/^\s+/, ''));
+                    % for (const frame of trace) {
                       <tr><td class="mojo-value"><pre><%= frame %></pre></td></tr>
-                    <% } %>
+                    % }
                   </table>
                 </div>
               </div>
-            <% } else { %>
+            % } else {
               <div class="alert alert-warning mojo-wide" role="alert">
                 <h2>Page Not Found</h2>
                 This application is in <b>development</b> mode and will show internal information to help you with
@@ -108,12 +108,12 @@
                     for <code><%= ctx.req.path %></code>, maybe you need to add a new one?
                   </p>
                 </div>
-                <% function walk (route, depth) { %>
-                  <% const pattern = route.pattern; %>
-                  <% let unparsed = pattern.unparsed || '/'; %>
-                  <% if (depth > 0) unparsed = `+${unparsed}`; %>
-                  <% pattern.match('/', {isEndpoint: route.isEndpoint}); %>
-                  <% const regex = pattern.regex.toString(); %>
+                % function walk (route, depth) {
+                  % const pattern = route.pattern;
+                  % let unparsed = pattern.unparsed || '/';
+                  % if (depth > 0) unparsed = `+${unparsed}`;
+                  % pattern.match('/', {isEndpoint: route.isEndpoint});
+                  % const regex = pattern.regex.toString();
                   <tr data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true"
                     title="<b>Regex:</b> <code><%= regex %></code>">
                     <td class="mojo-value">
@@ -123,17 +123,17 @@
                       <pre><%= route.methods.join(', ').toUpperCase() || '*' %></pre>
                     </td>
                     <td class="mojo-value">
-                      <% if (route.customName !== undefined) { %>
+                      % if (route.customName !== undefined) {
                         <span class="badge bg-success"><%= route.customName %></span>
-                      <% } else if (route.defaultName !== undefined) { %>
+                      % } else if (route.defaultName !== undefined) {
                         <span class="badge bg-secondary"><%= route.defaultName %></span>
-                      <% } %>
+                      % }
                     </td>
                   </tr>
-                  <% depth++; %>
-                  <%= route.children.map(child => walk(child, depth)).join('') %>
-                  <% depth--; %>
-                <% } %>
+                  % depth++;
+                  %= route.children.map(child => walk(child, depth)).join('')
+                  % depth--;
+                % }
                 <table class="mojo-striped-light mojo-wide">
                   <thead>
                     <tr>
@@ -142,43 +142,43 @@
                       <th>Name</th>
                     </tr>
                   </thead>
-                  <%= ctx.app.router.children.map(child => walk(child, 0)).join('') %>
+                  %= ctx.app.router.children.map(child => walk(child, 0)).join('')
                 </table>
               </div>
-            <% } %>
+            % }
           </div>
           <div class="row mojo-divider">
             <div id="request" class="mojo-box mojo-no-padding mojo-border-radius-both">
-              <% const keyValue = function (key, value) { %>
+              % const keyValue = function (key, value) {
                 <tr>
                   <td class="mojo-key text-right"><%= key %>:</td>
                   <td class="mojo-value"><pre><%= value %></pre></td>
                 </tr>
-              <% }; %>
+              % };
               <table class="mojo-striped mojo-fixed-table mojo-wide">
-                <% keyValue('Request ID', ctx.req.requestId); %>
-                <% keyValue('Method', ctx.req.method); %>
-                <% keyValue('Path', ctx.req.path); %>
-                <% keyValue('Base URL', ctx.req.baseUrl); %>
-                <% keyValue('Parameters', ctx.inspect((await ctx.params()).toObject())); %>
-                <% keyValue('Stash', ctx.inspect(ctx.stash)); %>
-                <% const rawHeaders = ctx.req.raw.rawHeaders; %>
-                <% for (let i = 0; i < rawHeaders.length; i += 2) { %>
-                  <% keyValue(rawHeaders[i], rawHeaders[i + 1]); %>
-                <% } %>
+                % keyValue('Request ID', ctx.req.requestId);
+                % keyValue('Method', ctx.req.method);
+                % keyValue('Path', ctx.req.path);
+                % keyValue('Base URL', ctx.req.baseUrl);
+                % keyValue('Parameters', ctx.inspect((await ctx.params()).toObject()));
+                % keyValue('Stash', ctx.inspect(ctx.stash));
+                % const rawHeaders = ctx.req.raw.rawHeaders;
+                % for (let i = 0; i < rawHeaders.length; i += 2) {
+                  % keyValue(rawHeaders[i], rawHeaders[i + 1]);
+                % }
               </table>
             </div>
           </div>
           <div class="row">
-            <% if (ctx.app.log.history.length > 0) { %>
-              <% const log = ctx.app.log.history.map(view.stringFormatter).join(''); %>
+            % if (ctx.app.log.history.length > 0) {
+              % const log = ctx.app.log.history.map(view.stringFormatter).join('');
               <pre class="mojo-terminal"><code class="nohighlight"><%= log %></code></pre>
-            <% } else { %>
+            % } else {
               <div class="alert alert-warning mojo-wide" role="alert">
                 The application log appears to be empty, perhaps the log level <b><%= ctx.app.log.level %></b> is too
                 high? Try lowering it to <b>trace</b> for framework specific information.
               </div>
-            <% } %>
+            % }
           </div>
         </main>
       </div>

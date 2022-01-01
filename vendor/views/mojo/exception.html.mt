@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>Server Error</title>
-    <%= ctx.mojoFaviconTag() %>
+    %= ctx.mojoFaviconTag()
     <style>
       body {
         background-color: #caecf6;
