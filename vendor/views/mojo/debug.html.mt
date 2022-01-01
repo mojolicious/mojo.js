@@ -74,11 +74,17 @@
                   <div>
                     <table class="mojo-wide">
                       % for (const line of context.source) {
-                        % const extra = context.line === line.num ? ' mojo-important' : '';
-                        <tr>
-                          <td class="text-right<%= extra %>"><%= line.num %></td>
-                          <td class="mojo-context mojo-wide<%= extra %>"><pre><code><%= line.code %></code></pre></td>
-                        </tr>
+                        % if (context.line === line.num) {
+                          <tr>
+                            <td class="text-right mojo-important"><%= line.num %></td>
+                            <td class="mojo-context mojo-wide mojo-important"><pre><code><%= line.code %></code></pre></td>
+                          </tr>
+                        % } else {
+                          <tr>
+                            <td class="text-right"><%= line.num %></td>
+                            <td class="mojo-context mojo-wide"><pre><code><%= line.code %></code></pre></td>
+                          </tr>
+                        % }
                       % }
                     </table>
                   </div>
