@@ -43,7 +43,7 @@ app.start();
 const indexTemplate = \`
 <h1>Waiting...</h1>
 <script>
-  const ws = new WebSocket('<%%= ctx.urlFor('heading') %%>');
+  const ws = new WebSocket('<%%= ctx.urlFor('heading') %>');
   ws.onmessage = event => { document.querySelector('h1').innerHTML = event.data };
 </script>
 \`;
@@ -52,10 +52,10 @@ const defaultLayout = \`
 <!DOCTYPE html>
 <html>
   <head>
-    <%%= ctx.mojoFaviconTag() %%>
-    <title><%%= title %%></title>
+    <%%= ctx.mojoFaviconTag() %>
+    <title><%%= title %></title>
   </head>
-  <body><%%== view.content %%></body>
+  <body><%%== view.content %></body>
 </html>
 \`;
 `;

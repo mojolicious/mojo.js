@@ -67,19 +67,19 @@ const jsController = `export default class Controller {
 const mtLayout = `<!DOCTYPE html>
 <html>
   <head>
-    <%%= ctx.mojoFaviconTag() %%>
+    <%%= ctx.mojoFaviconTag() %>
     <title>Welcome</title>
   </head>
   <body><%%== view.content %></body>
 </html>
 `;
 
-const mtView = `<%% view.layout = 'default'; %%>
+const mtView = `<%% view.layout = 'default'; %>
 <h2><%%= msg %></h2>
 <p>
   This page was generated from the template "views/example/welcome.html.mt" and the layout
-  "views/layouts/default.html.mt", <a href="<%%= ctx.urlFor() %%>">click here</a> to reload the page or
-  <a href="<%%= ctx.urlFor('/public/index.html') %%>">here</a> to move forward to a static page.
+  "views/layouts/default.html.mt", <a href="<%%= ctx.urlFor() %>">click here</a> to reload the page or
+  <a href="<%%= ctx.urlFor('/public/index.html') %>">here</a> to move forward to a static page.
 </p>
 `;
 
