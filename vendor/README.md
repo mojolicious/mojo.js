@@ -4,7 +4,7 @@ This distribution includes a few files with different licenses that have been bu
 
 * Mojolicious Artwork
 
-  Copyright (C) 2010-2021, Sebastian Riedel.
+  Copyright (C) 2010-2022, Sebastian Riedel.
 
   Licensed under the [CC-SA License, Version 4.0](http://creativecommons.org/licenses/by-sa/4.0).
 

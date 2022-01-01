@@ -52,10 +52,10 @@ const defaultLayout = \`
 <!DOCTYPE html>
 <html>
   <head>
-    <%%- ctx.mojoFaviconTag() %%>
+    <%%= ctx.mojoFaviconTag() %%>
     <title><%%= title %%></title>
   </head>
-  <body><%%- view.content %%></body>
+  <body><%%== view.content %%></body>
 </html>
 \`;
 `;

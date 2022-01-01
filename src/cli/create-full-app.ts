@@ -67,10 +67,10 @@ const jsController = `export default class Controller {
 const mtLayout = `<!DOCTYPE html>
 <html>
   <head>
-    <%%- ctx.mojoFaviconTag() %%>
+    <%%= ctx.mojoFaviconTag() %%>
     <title>Welcome</title>
   </head>
-  <body><%%- view.content %></body>
+  <body><%%== view.content %></body>
 </html>
 `;
 
