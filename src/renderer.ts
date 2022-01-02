@@ -7,13 +7,14 @@ import yaml from 'js-yaml';
 const gzipPromise = promisify(gzip);
 
 interface EngineResult {
-  output: string | Buffer;
   format: string;
+  output: string | Buffer;
 }
 interface ViewSuggestion {
-  format: string;
   engine: string;
+  format: string;
   path: string;
+  variant?: string;
 }
 type ViewIndex = Record<string, ViewSuggestion[]>;
 interface ViewEngine {
@@ -34,9 +35,23 @@ export class Renderer {
     return this;
   }
 
-  findView(name: string): ViewSuggestion | null {
-    if (this._viewIndex === undefined || this._viewIndex[name] === undefined) return null;
-    return this._viewIndex[name][0];
+  findView(options: RenderOptions): ViewSuggestion | null {
+    const view = options.view;
+    const index = this._viewIndex;
+    if (view === undefined || index === undefined || index[view] === undefined) return null;
+
+    // Variants
+    let fallback;
+    const variant = options.variant;
+    const views = index[view];
+    if (views.length > 1) {
+      for (const suggestion of views) {
+        if (suggestion.variant === variant) return suggestion;
+        if (fallback === undefined && suggestion.variant === undefined) fallback = suggestion;
+      }
+    }
+
+    return fallback ?? views[0];
   }
 
   async render(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
@@ -134,11 +149,11 @@ export class Renderer {
       for await (const file of dir.list({recursive: true})) {
         const name = dir.relative(file).toArray().join('/');
 
-        const match = name.match(/^(.+)\.([^.]+)\.([^.]+)$/);
+        const match = name.match(/^(.+)\.([^.]+?)(?:\+([^.]+))?\.([^.]+)$/);
         if (match === null) continue;
 
         if (viewIndex[match[1]] === undefined) viewIndex[match[1]] = [];
-        viewIndex[match[1]].push({format: match[2], engine: match[3], path: file.toString()});
+        viewIndex[match[1]].push({format: match[2], variant: match[3], engine: match[4], path: file.toString()});
       }
     }
   }
@@ -150,7 +165,7 @@ export class Renderer {
   }
 
   async _renderView(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
-    const view = this.findView(options.view ?? '');
+    const view = this.findView(options);
     if (view === null) return null;
 
     const engine = this.engines[view.engine];

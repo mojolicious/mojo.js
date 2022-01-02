@@ -137,28 +137,28 @@ Most commonly used features every mojo.js developer should know about.
 
 ### Rendering Templates
 
-The renderer will always try to detect the right template, but you can also use the `template` stash value to render a
+The renderer will always try to detect the right template, but you can also use the `view` stash value to render a
 specific one. Everything before the last slash will be interpreted as the subdirectory path in which to find the
 template.
 
 ```js
-// foo/bar/baz.*.*
-await ctx.render({template: 'foo/bar/baz'});
+// views/foo/bar/baz.*.*
+await ctx.render({view: 'foo/bar/baz'});
 ```
 
 Choosing a specific `format` and `handler` is just as easy.
 
 ```js
-// foo/bar/baz.txt.mt
-await ctx.render({template: 'foo/bar/baz', format: 'txt', handler: 'mt'});
+// views/foo/bar/baz.txt.mt
+await ctx.render({view: 'foo/bar/baz', format: 'txt', handler: 'mt'});
 ```
 
 If you're not sure in advance if a template actually exists, you can also use `maybe` render option to try multiple
 alternatives.
 
 ```js
-if (await ctx.render({template: 'localized/baz', maybe: true}) === false) {
-  await ctx.render({template: 'foo/bar/baz'});
+if (await ctx.render({view: 'localized/baz', maybe: true}) === false) {
+  await ctx.render({view: 'foo/bar/baz'});
 }
 ```
 
@@ -168,8 +168,22 @@ Sometimes you might want to use the rendered result directly instead of generati
 emails, this can be done with `ctx.renderToString`.
 
 ```js
-const html = await ctx.renderToString({template: 'email/confirmation'});
+const html = await ctx.renderToString({view: 'email/confirmation'});
 ```
+
+### Template Variants
+
+To make your application look great on many different devices you can also use the `variant` render option to choose
+between different variants of your templates.
+
+```js
+// views/foo/bar/baz.html+phone.mt
+// views/foo/bar/baz.html.mt
+await ctx.render({view: 'foo/bar/baz', variant: 'phone'});
+```
+
+This can be done very liberally since it only applies when a template with the correct name actually exists and falls
+back to the generic one otherwise.
 
 ## Support
 

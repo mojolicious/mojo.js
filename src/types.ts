@@ -73,6 +73,7 @@ export interface RenderOptions {
   pretty?: boolean;
   status?: number;
   text?: string;
+  variant?: string;
   view?: string;
   [key: string]: any;
 }

@@ -1,0 +1,1 @@
+Variant: <%= view.content %>

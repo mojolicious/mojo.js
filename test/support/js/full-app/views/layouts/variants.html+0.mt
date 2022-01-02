@@ -1,0 +1,1 @@
+Another variant: <%= view.content %>

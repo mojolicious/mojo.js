@@ -20,6 +20,8 @@ bar.get('/:msg').to('#hello');
 
 app.get('/foo/baz').to('foo/baz#test');
 
+app.get('/variants').to('foo#variants');
+
 const renderer = app.any('/renderer');
 renderer.get('/hello/:name').to('foo#withView');
 renderer.get('/inline/:name').to('foo#withInlineView');

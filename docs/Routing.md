@@ -289,7 +289,7 @@ async bye(ctx) {
   ctx.stash.mymessage = 'Welcome';
 
   // Render a template that might use stash values
-  await ctx.render({template: 'bye'});
+  await ctx.render({view: 'bye'});
 }
 ```
 

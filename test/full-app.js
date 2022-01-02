@@ -48,6 +48,13 @@ t.test('Full app', async t => {
     (await ua.getOk('/default/view')).statusIs(200).bodyLike(/Header.*Default for foo and defaultView.*Footer/s);
   });
 
+  await t.test('View (variants)', async () => {
+    (await ua.getOk('/variants')).statusIs(200).bodyIs('Variant: Desktop!\n\n');
+    (await ua.getOk('/variants?device=tablet')).statusIs(200).bodyIs('Variant: Tablet!\n\n');
+    (await ua.getOk('/variants?device=phone')).statusIs(200).bodyIs('Variant: Desktop!\n\n');
+    (await ua.getOk('/variants?device=0')).statusIs(200).bodyIs('Another variant: Desktop!\n\n');
+  });
+
   await t.test('Static files', async () => {
     (await ua.getOk('/public/test.txt'))
       .statusIs(200)

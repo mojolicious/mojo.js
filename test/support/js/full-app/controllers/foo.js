@@ -19,4 +19,10 @@ export default class FooController {
   defaultView(ctx) {
     return ctx.render();
   }
+
+  async variants(ctx) {
+    const params = await ctx.params();
+    const variant = params.get('device');
+    await ctx.render({view: 'variants', layout: 'variants', variant});
+  }
 }
