@@ -131,6 +131,46 @@ ctx.stash.name = 'tester';
 Hello <%= name %> from <%= ctx.req.ip %>.
 ```
 
+## Basics
+
+Most commonly used features every mojo.js developer should know about.
+
+### Rendering Templates
+
+The renderer will always try to detect the right template, but you can also use the `template` stash value to render a
+specific one. Everything before the last slash will be interpreted as the subdirectory path in which to find the
+template.
+
+```js
+// foo/bar/baz.*.*
+await ctx.render({template: 'foo/bar/baz'});
+```
+
+Choosing a specific `format` and `handler` is just as easy.
+
+```js
+// foo/bar/baz.txt.mt
+await ctx.render({template: 'foo/bar/baz', format: 'txt', handler: 'mt'});
+```
+
+If you're not sure in advance if a template actually exists, you can also use `maybe` render option to try multiple
+alternatives.
+
+```js
+if (await ctx.render({template: 'localized/baz', maybe: true}) === false) {
+  await ctx.render({template: 'foo/bar/baz'});
+}
+```
+
+### Rendering to Strings
+
+Sometimes you might want to use the rendered result directly instead of generating a response, for example, to send
+emails, this can be done with `ctx.renderToString`.
+
+```js
+const html = await ctx.renderToString({template: 'email/confirmation'});
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the

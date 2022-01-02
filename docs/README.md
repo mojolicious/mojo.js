@@ -14,11 +14,11 @@ A quick exaple driven introduction to the basic concepts of [mojo.js](https://mo
 
 Starting a single file prototype from scratch and growing it into a well-structured mojo.js application.
 
-* [Routing](Routing.md) (Progress: 50%)
+* [Routing](Routing.md) (Progress: 60%)
 
 A more detailed introduction to the mojo.js router.
 
-* [Rendering](Rendering.md)  (Progress: 5%)
+* [Rendering](Rendering.md)  (Progress: 15%)
 
 Generating content with the mojo.js renderer.
 
