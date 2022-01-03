@@ -299,7 +299,7 @@ It is also possible to build tree structures from routes to remove repetitive co
 its own though, only the actual endpoints of these nested routes can.
 
 ```js
-// GET /foo     -> undef
+// GET /foo     -> null
 // GET /foo/bar -> {controller: 'foo', action: 'bar'}
 const foo = router.any('/foo').to({controller: 'foo'});
 foo.get('/bar').to({action: 'bar'});
@@ -425,6 +425,178 @@ const name = ctx.currentRoute();
 if (if ctx.currentRoute() === 'login') ctx.stash.button = 'green';
 ```
 
+### Optional Placeholders
+
+Extracted placeholder values will simply redefine older stash values if they already exist.
+
+```js
+// GET /bye -> {controller: 'foo', action: 'bar', mymessage: 'bye'}
+// GET /hey -> {controller: 'foo', action: 'bar', mymessage: 'hey'}
+router.get('/:mymessage').to({controller: 'foo', action: 'bar', mymessage: 'hi'});
+```
+
+One more interesting effect, a placeholder automatically becomes optional if there is already a stash value of the same
+name present, this works similar to the regular expression `([^/.]+)?`.
+
+```js
+// GET / -> {controller: 'foo', action: 'bar', mymessage: 'hi'}
+router.get('/:mymessage').to({controller: 'foo', action: 'bar', mymessage: 'hi'});
+
+// GET /test/123     -> {controller: 'foo', action: 'bar', mymessage: 'hi'}
+// GET /test/bye/123 -> {controller: 'foo', action: 'bar', mymessage: 'bye'}
+router.get('/test/:mymessage/123').to({controller: 'foo', action: 'bar', mymessage: 'hi'});
+```
+
+And if two optional placeholders are only separated by a slash, that slash can become optional as well.
+
+### Restrictive Placeholders
+
+A very easy way to make placeholders more restrictive are alternatives, you just make a list of possible values, which
+then work similar to the regular expression `(bender|leela)`.
+
+```js
+// GET /fry    -> null
+// GET /bender -> {controller: 'foo', action: 'bar', name: 'bender'}
+//GET  /leela  -> {controller: 'foo', action: 'bar', name: 'leela'}
+router.get('/:name', {'name': ['bender', 'leela']}).to('foo#bar');
+```
+
+You can also adjust the regular expressions behind placeholders directly, just make sure not to use `^` and `$` or
+capturing groups `(...)`, because placeholders become part of a larger regular expression internally, non-capturing
+groups `(?:...)` are fine though.
+
+```js
+// GET /23   -> {controller: 'foo', action: 'bar', number: 23}
+// GET /test -> null
+router.get('/:number', {number: /\d+/}).to('foo#bar');
+
+// GET /23   -> null
+// GET /test -> {controller: 'foo', action: 'bar', name: 'test'}
+router.get('/:name', {name: /[a-zA-Z]+/}).to('foo#bar');
+```
+
+This way you get easily readable routes and the raw power of regular expressions.
+
+### Placeholder Types
+
+And if you have multiple routes using restrictive placeholders you can also turn them into placeholder types with
+`app.router.addType`.
+
+```js
+// A type with alternatives
+router.addType('futurama_name', ['bender', 'leela']);
+
+// GET /fry    -> null
+// GET /bender -> {controller: 'foo', action: 'bar', name: 'bender'}
+// GET /leela  -> {controller: 'foo', action: 'bar', name: 'leela'}
+router.get('/<name:futurama_name>').to('foo#bar');
+```
+
+Placeholder types work just like restrictive placeholders, they are just reusable with the `<placeholder:type>`
+notation.
+
+```js
+// A type adjusting the regular expression
+router.addType('upper', /[A-Z]+/);
+
+// GET /user/ROOT -> {controller: 'users', action: 'show', name: 'ROOT'}
+// GET /user/root -> null
+// GET /user/23   -> null
+router.get('/user/<name:upper>').to('users#show');
+```
+
+Some types like `num` are used so commonly that they are available by default.
+
+```js
+// GET /article/12   -> {controller: 'article', action: 'show', id: 12}
+// GET /article/test -> null
+router.get('/article/<id:num>').to('articles#show');
+```
+
+### Introspection
+
+The `routes` command can be used from the command line to list all available routes together with names and underlying
+regular expressions.
+
+```
+$ node myapp.js routes -v
+/foo/:name  POST  fooname  /^\/foo\/([^/.]+)/s
+/bar        *     bar      /^\/bar/s
+  +/baz     GET   baz      /^\/baz\/([^/.]+)/s
+/yada       *     yada     /^\/yada\/([^/.]+)/s
+```
+
+### #Under
+
+To share code with multiple nested routes you can use `app.router.under`, because unlike normal nested routes, the
+routes generated with it have their own intermediate destination and result in additional dispatch cycles when they
+match.
+
+```js
+// GET /foo     -> null
+// GET /foo/bar -> {controller: 'foo', action: 'baz'}
+//                 {controller: 'foo', action: 'bar'}
+const foo = router.under('/foo').to('foo#baz');
+foo.get('/bar').to('#bar');
+```
+
+The actual action code for this destination can return `false` to break the dispatch chain, this can be a very powerful
+tool for authentication.
+
+```js
+// GET /blackjack -> {fn: ctx => {...}}
+//                   {controller: 'hideout', action: 'blackjack'}
+const auth = router.under('/' => async ctx => {
+  // Authenticated
+  if (ctx.req.headers['x-bender'] !== undefined) return;
+
+  // Not authenticated
+  await ctx.render({text: "You're not Bender.", status: 401});
+  return false;
+});
+auth.get('/blackjack').to('hideout#blackjack');
+```
+
+Every destination is just a snapshot of the stash at the time the route matched. For a little more power you can
+introspect the preceding and succeeding destinations with `ctx.plan`.
+
+```js
+// Action of the fourth dispatch cycle
+const action = ctx.plan.step[3].action;
+```
+
+### Extensions
+
+File extensions like `.html` and `.txt` at the end of a route can be detected and stored in the stash value `ext`. Use
+a restrictive placeholder to declare the possible values.
+
+```js
+// GET /foo.txt -> null
+// GET /foo.rss -> {controller: 'foo', action: 'bar', format: 'rss'}
+// GET /foo.xml -> {controller: 'foo', action: 'bar', format: 'xml'}
+router.get('/foo', {ext: ['rss', 'xml']}).to('foo#bar');
+```
+
+And just like with placeholders you can use a default value to make the extension optional.
+
+```js
+// GET /foo      -> {controller: 'foo', action: 'bar'}
+// GET /foo.html -> {controller: 'foo', action: 'bar', ext: 'html'}
+// GET /foo.txt  -> {controller: 'foo', action: 'bar', ext: 'txt'}
+router.get('/foo', {ext: ['html', 'txt']}).to({controller: 'foo', action: 'bar', ext: null);
+```
+
+An extension value can also be passed to `ctx.urlFor`.
+
+```js
+// GET /foo/23.txt -> {controller: 'foo', action: 'bar', id: 23, ext: 'txt'}
+router.get('/foo/:id', {ext: ['txt', 'json']}).to('foo#bar').name('baz');
+```
+```js
+// Generate URL "/foo/24.json" for route "baz"
+const url = ctx.urlFor('baz', {id: 24, ext: 'txt'});
+```
+
 ### WebSockets
 
 With the `websocket` method of the router you can restrict access to WebSocket handshakes, which are normal `GET`
@@ -498,6 +670,20 @@ Sec-WebSocket-Accept: SWsp5N2iNxPbHlcOTIw8ERvyVPY=
 
 On the protocol level, the connection gets established with a `101` HTTP response. The handshake request can contain
 any number of arbitrary HTTP headers, this can be very useful for authentication.
+
+### Catch-all Route
+
+Since routes match in the order in which they were defined, you can catch all requests that did not match in your last
+route with an optional wildcard placeholder.
+
+```js
+// * /*
+router.any('/*whatever').to({whatever: '', fn: async ctx => {
+  const params = await ctx.params;
+  const whatever = params.whatever;
+  await ctx.render({text: `/${whatever} did not match.`, status: 404});
+}});
+```
 
 ## Support
 
