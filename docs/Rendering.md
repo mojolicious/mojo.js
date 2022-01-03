@@ -185,6 +185,57 @@ await ctx.render({view: 'foo/bar/baz', variant: 'phone'});
 This can be done very liberally since it only applies when a template with the correct name actually exists and falls
 back to the generic one otherwise.
 
+### Rendering Inline Templates
+
+Some engines such as `mt` allow templates to be passed inline.
+
+```js
+await ctx.render({inline: 'The result is <%= 1 + 1 %>.'});
+```
+
+Since auto-detection depends on a path you might have to supply an `engine` name too.
+
+```js
+await ctx.render({inline: "The result is {{ result }}", engine => 'handlebars');
+```
+
+### Rendering Text
+
+Character strings (as well as binary buffers) can be rendered with the `text` stash value.
+
+```js
+await ctx.render({text: 'I ♥ Mojolicious!'});
+```
+
+### Rendering JSON
+
+The `json` stash value allows you to pass JavaScript data structures to the renderer which get directly encoded to
+JSON.
+
+```js
+await ctx.render({json: {foo: [1, 'test', 3]}});
+```
+
+### Status Code
+
+Response status codes can be changed with the `status` stash value.
+
+```js
+await ctx.render({text: 'Oops.', status: 500});
+```
+
+### Content Type
+
+The `Content-Type` header of the response is actually based on the MIME type mapping of the `format` render option.
+
+```js
+// Content-Type: text/plain
+await ctx.render({text: 'Hello.', format: 'txt'});
+
+// Content-Type: image/png
+await ctx.render({text: Buffer.from(...), format: 'png'});
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the

@@ -685,6 +685,22 @@ router.any('/*whatever').to({whatever: '', fn: async ctx => {
 }});
 ```
 
+### Conditions
+
+Conditions such as `headers` and `host` can be applied to any route with `route.requires`, and allow even more powerful
+route constructs.
+
+```js
+// GET / (Origin: http://perl.org)
+router.get('/').requires('headers', {Origin: /perl\.org/}}).to('foo#bar');
+
+// GET http://docs.mojolicious.org/Mojolicious
+router.get('/').requires('host', /docs\.mojolicious\.org/).to('perldoc#index');
+```
+
+Just be aware that conditions are too complex for the routing cache, which normally speeds up recurring requests, and
+can therefore reduce performance.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
