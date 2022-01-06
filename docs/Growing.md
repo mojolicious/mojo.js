@@ -382,7 +382,7 @@ Sessions in mojo.js pretty much just work out-of-the-box once you await the `ses
 required, but we suggest setting a more secure passphrase with `app.secrets`
 
 ``` js
-app.secrets(['Mojolicious rocks']);
+app.secrets = ['Mojolicious rocks'];
 ```
 
 This passphrase is used by the AES-256-GCM algorithm to encrypt cookies and can be changed at any time to invalidate
