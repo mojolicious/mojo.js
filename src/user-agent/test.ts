@@ -66,7 +66,7 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   async deleteOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
-    return await this._requestOk(this.deleteOk, 'delete', url, options);
+    return await this._requestOk(this.deleteOk, 'DELETE', url, options);
   }
 
   elementExists(selector: string): this {
@@ -82,11 +82,11 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   async getOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
-    return await this._requestOk(this.getOk, 'get', url, options);
+    return await this._requestOk(this.getOk, 'GET', url, options);
   }
 
   async headOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
-    return await this._requestOk(this.headOk, 'head', url, options);
+    return await this._requestOk(this.headOk, 'HEAD', url, options);
   }
 
   headerExists(name: string): this {
@@ -139,19 +139,19 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   async optionsOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
-    return await this._requestOk(this.optionsOk, 'options', url, options);
+    return await this._requestOk(this.optionsOk, 'OPTIONS', url, options);
   }
 
   async patchOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
-    return await this._requestOk(this.patchOk, 'patch', url, options);
+    return await this._requestOk(this.patchOk, 'PATCH', url, options);
   }
 
   async postOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
-    return await this._requestOk(this.postOk, 'post', url, options);
+    return await this._requestOk(this.postOk, 'POST', url, options);
   }
 
   async putOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
-    return await this._requestOk(this.putOk, 'put', url, options);
+    return await this._requestOk(this.putOk, 'PUT', url, options);
   }
 
   get res(): UserAgentResponse {
