@@ -38,7 +38,7 @@ const ContextWrapper = class extends Context {};
 type AppHook = (app: App, ...args: any[]) => any;
 type ContextHook = (app: MojoContext, ...args: any[]) => any;
 
-export type Decoration = ((...args: any[]) => any) & {get?: () => any; set?: (value: any) => any};
+export type Decoration = ((...args: any[]) => any) | {get?: () => any; set?: (value: any) => any};
 
 export type Plugin = (app: App, options: Record<string, any>) => any;
 
@@ -106,7 +106,7 @@ export class App {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
     }
 
-    if (typeof fn.get === 'function' || typeof fn.set === 'function') {
+    if (typeof fn !== 'function') {
       Object.defineProperty(this._contextClass.prototype, name, fn);
     } else {
       this._contextClass.prototype[name] = fn;
