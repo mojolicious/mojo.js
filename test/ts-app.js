@@ -12,5 +12,9 @@ t.test('TypeScript app', async t => {
     (await ua.getOk('/hello')).statusIs(200).bodyLike(/Hello TypeScript controller!/);
   });
 
+  await t.test('Context decorator', async () => {
+    (await ua.getOk('/decorate/hello')).statusIs(200).bodyIs('Hello Test!');
+  });
+
   await ua.stop();
 });
