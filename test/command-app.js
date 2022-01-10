@@ -297,4 +297,16 @@ t.test('Command app', async t => {
     t.match(await dir2.child('myapp.js').readFile('utf8'), /import mojo.+from '@mojojs\/core'/);
     process.chdir(cwd);
   });
+
+  await t.test('Command hook', async t => {
+    const output = await captureOutput(async () => {
+      await app.cli.start('hook-command-intercept');
+    });
+    t.match(output.toString(), /intercepted: development/);
+
+    const output2 = await captureOutput(async () => {
+      await app.cli.start('hook-command-get', '/');
+    });
+    t.match(output2.toString(), /Hello Mojo!/);
+  });
 });

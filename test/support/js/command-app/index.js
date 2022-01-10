@@ -4,6 +4,16 @@ export const app = mojo();
 
 if (app.mode === 'development') app.log.level = 'debug';
 
+app.addAppHook('command', (app, args) => {
+  if (args[2] === 'hook-command-intercept') {
+    const mode = app.mode;
+    process.stdout.write(`intercepted: ${mode}`);
+    return true;
+  } else if (args[2] === 'hook-command-get') {
+    args[2] = 'get';
+  }
+});
+
 app.any('/', ctx => ctx.render({text: 'Hello Mojo!'})).name('root');
 
 app.any('/index.html', ctx => ctx.render({text: '<h1>First</h1><h2>Second</h2>'}));
