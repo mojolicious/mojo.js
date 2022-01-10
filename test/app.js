@@ -140,6 +140,19 @@ t.test('App', async t => {
     return ctx.render({text: `Flash: ${flash.message ?? 'none'}`});
   });
 
+  // GET /flash/two
+  app.get('/flash/two', async ctx => {
+    const flash = await ctx.flash();
+
+    flash.first = 'one';
+    flash.second = 'two';
+
+    const first = flash.first ?? 'nothing';
+    const second = flash.second ?? 'nothing';
+
+    await ctx.render({text: `first: ${first}, second: ${second}`});
+  });
+
   // GET /ua
   app.get('/ua', async ctx => {
     const res = await ctx.ua.get(ua.server.urls[0] + 'config');
@@ -493,6 +506,9 @@ t.test('App', async t => {
     (await ua.getOk('/flash?message=!')).statusIs(200).bodyIs('Flash: World');
     (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: !');
     (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: none');
+
+    (await ua.getOk('/flash/two')).statusIs(200).bodyIs('first: nothing, second: nothing');
+    (await ua.getOk('/flash/two')).statusIs(200).bodyIs('first: one, second: two');
   });
 
   await t.test('Session (secret rotation)', async t => {

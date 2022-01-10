@@ -74,12 +74,13 @@ class Context extends EventEmitter {
       const session = await this.session();
       this._flash = new Proxy(session, {
         get: function (target: SessionData, name: string): any {
-          if (target.flash === undefined) target.flash = {};
+          if (target.flash === undefined) return undefined;
           return target.flash[name];
         },
         set: function (target: SessionData, name: string, value: any): boolean {
-          if (target.nextFLash === undefined) target.nextFlash = {};
-          (target.nextFlash as any)[name] = value;
+          const nextFlash = target.nextFlash ?? {};
+          nextFlash[name] = value;
+          target.nextFlash = nextFlash;
           return true;
         }
       });
