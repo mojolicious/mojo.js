@@ -467,9 +467,18 @@ t.test('Exception app', async t => {
       .typeIs('text/plain; charset=utf-8')
       .bodyLike(/Just a string!/);
 
+    app.exceptionFormat = 'html';
+    (await ua.getOk('/async/exception'))
+      .statusIs(500)
+      .typeIs('text/html; charset=utf-8')
+      .bodyLike(/Just a string!/)
+      .bodyLike(/\/\/ If you see this then your code has thrown something that was not an Error object/);
+
     t.equal(app.log.history[0].level, 'error');
     t.match(app.log.history[0].msg, /Error: Just a string!/);
-    t.same(app.log.history[1], undefined);
+    t.equal(app.log.history[0].level, 'error');
+    t.match(app.log.history[0].msg, /Error: Just a string!/);
+    t.same(app.log.history[2], undefined);
 
     await ua.stop();
   });
