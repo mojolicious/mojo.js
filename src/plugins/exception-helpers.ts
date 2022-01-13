@@ -102,7 +102,7 @@ async function websocketException(ctx: MojoContext, error: any): Promise<boolean
   return true;
 }
 
-// If you see this then your has thrown something that was not an Error object
+// If you see this then your code has thrown something that was not an Error object
 function ensureError(error: any): Error {
   return error instanceof Error ? error : new Error(error);
 }
