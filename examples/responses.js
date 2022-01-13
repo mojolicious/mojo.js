@@ -19,7 +19,7 @@ app.get('/res3', ctx => {
   return ctx.render({text: '', status: 204});
 });
 
-app.get('/res4', ctx => {
+app.get('/res4', () => {
   throw new Error('Hello World!');
 });
 
@@ -33,6 +33,16 @@ app.get('/res6', ctx => {
 
 app.get('/res7', ctx => {
   return ctx.render({json: {hello: 'world'}});
+});
+
+app.get('/res8', async () => {
+  function myAsyncFunction() {
+    return new Promise(() => {
+      throw 'Just a string!';
+    });
+  }
+
+  await myAsyncFunction();
 });
 
 app.start();

@@ -43,8 +43,9 @@ async function htmlNotFound(ctx: MojoContext): Promise<boolean> {
   return await ctx.render({view, status: 404, stringFormatter: Logger.stringFormatter});
 }
 
-async function httpException(ctx: MojoContext, error: Error): Promise<boolean> {
-  ctx.log.error(error.stack as string);
+async function httpException(ctx: MojoContext, error: any): Promise<boolean> {
+  error = ensureError(error);
+  ctx.log.error(error.stack);
 
   const exceptionFormat = ctx.exceptionFormat;
   if (exceptionFormat === 'txt') return ctx.txtException(error);
@@ -92,9 +93,16 @@ async function txtNotFound(ctx: MojoContext): Promise<boolean> {
   return await ctx.render({text: 'Not Found', status: 404});
 }
 
-async function websocketException(ctx: MojoContext, error: Error): Promise<boolean> {
-  ctx.log.error(error.stack as string);
+async function websocketException(ctx: MojoContext, error: any): Promise<boolean> {
+  error = ensureError(error);
+  ctx.log.error(error.stack);
+
   const ws = ctx.ws;
   if (ws !== null && ctx.isEstablished) ws.close(1011);
   return true;
+}
+
+// If you see this then your has thrown something that was not an Error object
+function ensureError(error: any): Error {
+  return error instanceof Error ? error : new Error(error);
 }

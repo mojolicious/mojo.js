@@ -87,7 +87,8 @@
               <div id="trace" class="mojo-box mojo-no-padding more mojo-no-top-border mojo-border-radius-bottom">
                 <div id="frames" class="more">
                   <table class="mojo-striped-grey mojo-wide">
-                    % const lines = exception.stack.split('\n').filter(line => line.match(/^\s*at\ /));
+                    % const stack = exception.stack ?? '';
+                    % const lines = stack.split('\n').filter(line => line.match(/^\s*at\ /));
                     % const trace = lines.map(val => val.replace(/^\s+/, ''));
                     % for (const frame of trace) {
                       <tr><td class="mojo-value"><pre><%= frame %></pre></td></tr>

@@ -14,6 +14,17 @@ t.test('Exception app', async t => {
       throw new Error('Test exception');
     });
 
+    app.any('/async/exception', async () => {
+      function myAsyncFunction() {
+        return new Promise(() => {
+          console.warn('throw');
+          throw `Uh-oh!`;
+        });
+      }
+
+      await myAsyncFunction();
+    });
+
     const ua = await app.newTestUserAgent({tap: t});
 
     await t.test('Mode', async t => {
@@ -426,6 +437,39 @@ t.test('Exception app', async t => {
       t.equal(code, 1000);
       t.match(await file.readFile(), /Error: WebSocket close test exception/);
     });
+
+    await ua.stop();
+  });
+
+  await t.test('Async string exception', async t => {
+    const app = mojo({mode: 'development'});
+
+    const dir = await Path.tempDir();
+    const file = dir.child('development.log');
+    app.log.destination = file.createWriteStream();
+    app.log.level = 'warn';
+
+    app.any('/async/exception', async () => {
+      function myAsyncFunction() {
+        return new Promise(() => {
+          throw 'Just a string!';
+        });
+      }
+
+      await myAsyncFunction();
+    });
+
+    const ua = await app.newTestUserAgent({tap: t});
+
+    app.exceptionFormat = 'txt';
+    (await ua.getOk('/async/exception'))
+      .statusIs(500)
+      .typeIs('text/plain; charset=utf-8')
+      .bodyLike(/Just a string!/);
+
+    t.equal(app.log.history[0].level, 'error');
+    t.match(app.log.history[0].msg, /Error: Just a string!/);
+    t.same(app.log.history[1], undefined);
 
     await ua.stop();
   });
