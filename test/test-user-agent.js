@@ -22,6 +22,10 @@ t.test('TestUserAgent', async t => {
     });
   });
 
+  app.post('/redirect', ctx => ctx.redirectTo('/target'));
+
+  app.get('/target', ctx => ctx.render({text: 'Hi'}));
+
   const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Hello World', async () => {
@@ -224,6 +228,12 @@ t.test('TestUserAgent', async t => {
     t.match(result, {message: /No active WebSocket connection/});
 
     await badAgent.stop();
+  });
+
+  await t.test('Test redirects', async t => {
+    const uaRedirect = await app.newTestUserAgent({tap: t, maxRedirects: 1});
+    (await uaRedirect.postOk('/redirect')).statusIs(200).bodyIs('Hi');
+    await uaRedirect.stop();
   });
 
   await ua.stop();
