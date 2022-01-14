@@ -1,7 +1,6 @@
 import type {JSONValue} from './types.js';
 import type {Mode} from 'fs';
 import {setTimeout} from 'timers/promises';
-import url from 'url';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
 import chalk from 'chalk';
@@ -112,7 +111,7 @@ export async function exceptionContext(
   if (match === null || match[1].startsWith('file://') === false) return null;
 
   const lines = options.lines ?? 3;
-  const file = new Path(url.fileURLToPath(match[1]));
+  const file = Path.fromFileURL(match[1]);
   const lineNumber = parseInt(match[2]);
   const column = parseInt(match[3]);
 
