@@ -109,10 +109,10 @@ export async function exceptionContext(
 ): Promise<{file: string; line: number; column: number; source: Array<{num: number; code: string}>} | null> {
   const stack = error.stack ?? '';
   const match = stack.split('\n')[1].match(/^\s*at .+ \(([^)]+):(\d+):(\d+)\)\s*$/);
-  if (match === null) return null;
+  if (match === null || match[1].startsWith('file://') === false) return null;
 
   const lines = options.lines ?? 3;
-  const file = new Path(match[1].startsWith('file://') ? url.fileURLToPath(match[1]) : match[1]);
+  const file = new Path(url.fileURLToPath(match[1]));
   const lineNumber = parseInt(match[2]);
   const column = parseInt(match[3]);
 
