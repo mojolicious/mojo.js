@@ -32,7 +32,7 @@ If you want to stay up to date on the latest developments join us on [IRC](https
   dependency hell and allow for "Perl-grade" long term support.
 
 * Fresh code based upon decades of experience developing [Mojolicious](https://mojolicious.org) and
-  [Catalyst](https://en.wikipedia.org/wiki/Catalyst_(software)), free and open source.
+  [Catalyst](http://catalyst.perl.org), free and open source.
 
 ## Installation
 
