@@ -44,7 +44,7 @@ export class ServerResponse {
     if (ctx === undefined) return;
 
     const app = ctx.app;
-    const newBody = await app.hooks.runHook('send', ctx, body);
+    const newBody = await app.hooks.runHook('send:before', ctx, body);
     if (newBody !== undefined) body = newBody;
 
     if (ctx.isSessionActive === true) await app.session.store(ctx, await ctx.session());

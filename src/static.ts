@@ -64,7 +64,7 @@ export class Static {
 
   async serveFile(ctx: MojoContext, file: Path): Promise<void> {
     const app = ctx.app;
-    if ((await app.hooks.runHook('static', ctx, file)) === true) return;
+    if ((await app.hooks.runHook('static:before', ctx, file)) === true) return;
 
     const stat = await file.stat();
     const length = stat.size;

@@ -701,6 +701,147 @@ router.get('/').requires('host', /docs\.mojolicious\.org/).to('perldoc#index');
 Just be aware that conditions are too complex for the routing cache, which normally speeds up recurring requests, and
 can therefore reduce performance.
 
+### Hooks
+
+Hooks operate outside the routing system and allow you to extend the framework itself by running code at different
+phases in the lifecycle of your application and/or every request. That makes them a very powerful tool especially for
+plugins.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+const router = app.router;
+
+// Check all requests for a "/test" path
+app.addContextHook('request:before', async ctx => {
+  if (ctx.req.path !== '/test') return;
+  await ctx.render({text: 'This request did not reach the router.'});
+  return true;
+});
+
+// These will not be reached if the hook above renders a response
+router.get('/welcome').to('foo#welcome');
+router.get('/bye').to('foo#bye');
+
+app.start();
+```
+
+Every handler can return a value other than `undefined` to prevent followup handlers positioned later in the hook chain
+from running. Additionally, some hooks also use specific return values like `true` to trigger effects such as
+intercepting followup logic.
+
+#### Application Hooks
+
+These are all application hooks that are currently available, in the same order they usually run:
+
+##### `command:before`
+
+Runs after `app.start()` has been called, and before the application reaches a command or prints the command list.
+
+```js
+app.addAppHook('command:before', async (app, args) => {
+  if (args[2] === 'legacy-server') args[2] = 'server';
+});
+```
+
+Useful for reconfiguring the application before running a command or to modify the behavior of a command. Passed the
+application object and command arguments.
+
+##### `server:start`
+
+Runs whenever the server has been started.
+
+```js
+app.addAppHook('server:start', async app => {
+  app.mode = 'production';
+});
+```
+
+Useful for reconfiguring the application or warming up caches. Passed the application object.
+
+##### `server:stop`
+
+Runs whenever the server has been stopped.
+
+```js
+app.addAppHook('server:stop', async app => {
+  await app.models.foo.someCleanupCode();
+});
+```
+
+Useful for cleanup tasks. Passed the application object.
+
+##### `command:after`
+
+Runs after a command is finished or the command list has been printed.
+
+```js
+app.addAppHook('command:after', async (app, args) => {
+  if (args[2] === 'server') await app.models.foo.someCleanupCode();
+});
+```
+
+Useful for cleanup tasks. Passed the application object and command argument.
+
+#### Context Hooks
+
+These are all context hooks that are currently available, in the same order they usually run:
+
+##### `request:before`
+
+Runs after a new request has been received and before the static file server and router start their work.
+
+```js
+app.addContextHook('request:before', async ctx => {
+  const agent = ctx.req.get('user-agent') ?? '';
+  if (/Internet Explorer/.test(agent) === true) ctx.stash.browser = 'ie';
+});
+```
+
+Useful for rewriting incoming requests and other preprocessing tasks. Passed the context object. Can return `true` to
+intercept the static file server and router.
+
+##### `websocket:before`
+
+Runs after a new WebSocket handshake has been received and before the routers starts its work.
+
+```js
+app.addContextHook('websocket:before', async ctx => {
+  const agent = ctx.req.get('user-agent') ?? '';
+  if (/Internet Explorer/.test(agent) === true) ctx.stash.browser = 'ie';
+});
+```
+
+Useful for rewriting incoming WebSocket handshakes and other preprocessing tasks. Passed the context object. Can return
+`true` to intercept the router.
+
+##### `static:before`
+
+Runs before the static file server sends a response.
+
+```js
+app.addContextHook('static:before', async (ctx, file) => {
+  ctx.res.set('Cache-Control', 'max-age=3600, must-revalidate');
+});
+```
+
+Mostly used for post-processing static file responses. Passed the context object and the static file to be sent. Can
+return `true` to intercept sending the static file.
+
+##### `send:before`
+
+Runs after `ctx.res.send()` has been called and before dynamically generated content is sent with the response.
+
+```js
+app.addContextHook('send:before', async (ctx, body) => {
+  ctx.res.set('Cache-Control', 'max-age=3600, must-revalidate');
+});
+```
+
+Useful for post-processing dynamically generated content. Passed the context object and the dynamically generated
+content. Can return an arbitrary value to replace the dynamic content.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the

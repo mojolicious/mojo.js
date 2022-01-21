@@ -4,14 +4,16 @@ export const app = mojo();
 
 if (app.mode === 'development') app.log.level = 'debug';
 
-app.addAppHook('command', (app, args) => {
-  if (args[2] === 'hook-command-intercept') {
+app.addAppHook('command:before', (app, args) => {
+  if (args[2] === 'hook-command-get') {
     const mode = app.mode;
-    process.stdout.write(`intercepted: ${mode}`);
-    return true;
-  } else if (args[2] === 'hook-command-get') {
+    process.stdout.write(Buffer.from(`before: ${mode}`));
     args[2] = 'get';
   }
+});
+
+app.addAppHook('command:after', (app, args) => {
+  if (args[2] === 'get') process.stdout.write(Buffer.from(`after: ${app.mode}`));
 });
 
 app.any('/', ctx => ctx.render({text: 'Hello Mojo!'})).name('root');

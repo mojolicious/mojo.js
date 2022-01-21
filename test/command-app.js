@@ -171,7 +171,7 @@ t.test('Command app', async t => {
       ctx.res.raw.on('finish', () => process.emit('SIGUSR2', 'SIGUSR2'));
       await ctx.render({text: 'Stopping server'});
     });
-    const hookPromise = new Promise(resolve => app2.addAppHook('stop', () => resolve(true)));
+    const hookPromise = new Promise(resolve => app2.addAppHook('server:stop', () => resolve(true)));
     const intBefore = process.listenerCount('SIGINT');
     const termBefore = process.listenerCount('SIGTERM');
     const usr2Before = process.listenerCount('SIGUSR2');
@@ -298,15 +298,12 @@ t.test('Command app', async t => {
     process.chdir(cwd);
   });
 
-  await t.test('Command hook', async t => {
+  await t.test('Command hooks', async t => {
     const output = await captureOutput(async () => {
-      await app.cli.start('hook-command-intercept');
-    });
-    t.match(output.toString(), /intercepted: development/);
-
-    const output2 = await captureOutput(async () => {
       await app.cli.start('hook-command-get', '/');
     });
-    t.match(output2.toString(), /Hello Mojo!/);
+    t.match(output.toString(), /before: development/);
+    t.match(output.toString(), /after: development/);
+    t.match(output.toString(), /Hello Mojo!/);
   });
 });

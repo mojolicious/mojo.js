@@ -18,16 +18,16 @@ t.test('Hook app', async t => {
   });
 
   const serverHooks = [];
-  app.addAppHook('start', async app => {
+  app.addAppHook('server:start', async app => {
     await util.sleep(1);
     serverHooks.push(`start: ${app.config.serverHooks}`);
   });
-  app.addAppHook('stop', async app => {
+  app.addAppHook('server:stop', async app => {
     await util.sleep(1);
     serverHooks.push(`stop: ${app.config.serverHooks}`);
   });
 
-  app.addContextHook('request', async ctx => {
+  app.addContextHook('request:before', async ctx => {
     const first = ctx.req.query.get('first');
     if (first !== '1') return;
     await util.sleep(1);
@@ -35,18 +35,18 @@ t.test('Hook app', async t => {
     return true;
   });
 
-  app.addContextHook('request', ctx => {
+  app.addContextHook('request:before', ctx => {
     ctx.res.set('X-Hook', 'works');
   });
 
-  app.addContextHook('request', async ctx => {
+  app.addContextHook('request:before', async ctx => {
     const second = ctx.req.query.get('second');
     if (second !== '1') return;
     await ctx.render({text: 'Second request hook'});
     return true;
   });
 
-  app.addContextHook('websocket', async ctx => {
+  app.addContextHook('websocket:before', async ctx => {
     const third = ctx.req.query.get('third');
     if (third !== '1') return;
     ctx.on('connection', ws => {
@@ -57,12 +57,12 @@ t.test('Hook app', async t => {
     return true;
   });
 
-  app.addContextHook('send', async ctx => {
+  app.addContextHook('send:before', async ctx => {
     const params = await ctx.params();
     if (params.get('powered') === '1') ctx.res.set('X-Powered-By', 'mojo.js');
   });
 
-  app.addContextHook('send', async (ctx, body) => {
+  app.addContextHook('send:before', async (ctx, body) => {
     if (typeof body !== 'object' || Buffer.isBuffer(body) || body instanceof Stream) return;
 
     const json = JSON.stringify(body);
@@ -77,19 +77,19 @@ t.test('Hook app', async t => {
     });
   });
 
-  app.addContextHook('request', async ctx => {
+  app.addContextHook('request:before', async ctx => {
     await util.sleep(1);
     const exception = ctx.req.query.get('exception');
     if (exception !== '1') return;
     throw new Error('Hook exception');
   });
 
-  app.addContextHook('static', async ctx => {
+  app.addContextHook('static:before', async ctx => {
     const params = await ctx.params();
     if (params.get('cache') === '1') ctx.res.set('Cache-Control', 'public, max-age=604800, immutable');
   });
 
-  app.addContextHook('static', async (ctx, file) => {
+  app.addContextHook('static:before', async (ctx, file) => {
     const params = await ctx.params();
     if (params.has('hijack') === false) return;
 

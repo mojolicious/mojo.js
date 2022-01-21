@@ -62,7 +62,7 @@ export class Server {
   }
 
   async start(): Promise<void> {
-    await this.app.hooks.runHook('start', this.app);
+    await this.app.hooks.runHook('server:start', this.app);
     if (this._cluster === true && cluster.isPrimary === true) {
       for (let i = 0; i < this._workers; i++) {
         cluster.fork();
@@ -76,7 +76,7 @@ export class Server {
 
   async stop(): Promise<void> {
     await Promise.all(this._servers.map(async server => await new Promise(resolve => server.close(resolve))));
-    await this.app.hooks.runHook('stop', this.app);
+    await this.app.hooks.runHook('server:stop', this.app);
   }
 
   async _createServer(location: string): Promise<void> {

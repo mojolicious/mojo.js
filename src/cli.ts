@@ -29,7 +29,7 @@ export class CLI {
     const commandArgs = command === undefined ? process.argv : ['', '', command, ...args];
     const app = this._app.deref();
     if (app === undefined) return;
-    if ((await app.hooks.runHook('command', app, commandArgs)) === true) return;
+    await app.hooks.runHook('command:before', app, commandArgs);
 
     const parsed = nopt({help: Boolean}, {h: '--help'}, commandArgs);
     const argv = parsed.argv;
@@ -44,10 +44,11 @@ export class CLI {
       } else {
         await command(app, argv.original);
       }
-      return;
+    } else {
+      await this._listCommands();
     }
 
-    await this._listCommands();
+    await app.hooks.runHook('command:after', app, commandArgs);
   }
 
   async _listCommands(): Promise<void> {
