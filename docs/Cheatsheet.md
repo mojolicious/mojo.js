@@ -50,7 +50,7 @@ The main object representing an HTTP request or WebSocket handshake, usually cal
 
 ```js
 // req: the request object
-const url = ctx.req.url;
+const path = ctx.req.path;
 
 // res: the response object
 await ctx.res.status(200).type('text/html').send('Hello World!');
@@ -115,8 +115,11 @@ The `ctx.req` property of the [context](#Context) object. All URLs use
 // method: HTTP request method
 const method = ctx.req.method;
 
-// url: a `URL` object with full request URL (protocol might be from the X-Forwarded-Proto header)
-const url = ctx.req.url;
+// path: request path
+const path = ctx.req.path;
+
+// baseURL: base URL for request (protocol might be from the X-Forwarded-Proto header)
+const baseURL = ctx.req.baseURL;
 
 // ip: the client IP address (may be from the X-Forwarded-For header)
 const address = ctx.req.ip;

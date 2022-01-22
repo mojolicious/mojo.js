@@ -1,6 +1,5 @@
 import type {ServerRequestOptions} from '../types.js';
 import type {IncomingMessage} from 'http';
-import type url from 'url';
 import {Body} from '../body.js';
 import {Params} from '../body/params.js';
 import {parseCookie} from '../server/cookie.js';
@@ -19,6 +18,7 @@ export class ServerRequest extends Body {
   _ip: string | undefined = undefined;
   _path: string | null | undefined = undefined;
   _protocol: string | undefined = undefined;
+  _query: Params | undefined = undefined;
   _reverseProxy: boolean;
   _url: URL | undefined = undefined;
   _userinfo: string | null | undefined = undefined;
@@ -34,8 +34,7 @@ export class ServerRequest extends Body {
   }
 
   get baseURL(): string {
-    if (this._baseURL === undefined) this._baseURL = `${this.protocol}://${this.raw.headers.host ?? ''}`;
-    return this._baseURL;
+    return `${this.protocol}://${this.raw.headers.host ?? ''}`;
   }
 
   getCookie(name: string): string | null {
@@ -86,12 +85,11 @@ export class ServerRequest extends Body {
   }
 
   get query(): Params {
-    return new Params(this.url.searchParams as url.URLSearchParams);
-  }
-
-  get url(): URL {
-    if (this._url === undefined) this._url = new URL(this.raw.url ?? '', this.baseURL);
-    return this._url;
+    if (this._query === undefined) {
+      const match = (this.raw.url as string).match(URL_RE);
+      this._query = match === null ? new Params() : new Params(match[7]);
+    }
+    return this._query;
   }
 
   get userinfo(): string | null {

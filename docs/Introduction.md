@@ -215,7 +215,7 @@ const app = mojo();
 
 // Access request information
 app.get('/agent', async ctx => {
-  const host = ctx.req.url.hostname;
+  const host = ctx.req.get('Host');
   const ua = ctx.req.get('User-Agent');
   await ctx.render({text: `Request by ${ua} reached ${host}.`});
 });

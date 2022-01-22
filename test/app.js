@@ -846,7 +846,6 @@ t.test('App', async t => {
     t.same(ctx2.req.raw.url, '/test');
     t.same(ctx2.req.raw.headers, {host: 'mojolicious.org'});
     t.equal(ctx2.req.baseURL, 'http://mojolicious.org');
-    t.equal(ctx2.req.url.toString(), 'http://mojolicious.org/test');
   });
 
   t.test('Forbidden helpers', t => {
