@@ -275,6 +275,80 @@ set, you can just use `ctx.stash`.
 % }
 ```
 
+### Helpers
+
+Helpers are little functions you can use in templates as well as controller code.
+
+```
+%# Template
+%= ctx.inspect([1, 2, 3])
+```
+```js
+// Controller
+const serialized = ctx.inspect([1, 2, 3]);
+```
+
+While there can be any number of different types of helpers, we usually split them up into two categories. Generic
+helpers like  `ctx.inspect()`, which can be useful in any given context, and template specific helpers like `ctx.tag()`.
+
+#### Generic Helpers
+
+These generic helpers are currently available by default:
+
+##### `currentRoute`
+
+```js
+const name = ctx.currentRoute();
+```
+
+Get the current route name.
+
+##### `inspect`
+
+```js
+const serialized = ctx.inpsect({hello: 'world'});
+```
+
+Serialize data structure for debugging.
+
+#### Template Helpers
+
+These template helpers are currently available by default:
+
+##### `mojoFaviconTag`
+
+```
+%= ctx.mojoFaviconTag()
+```
+
+Generate `<link>` tag for the default mojo.js favicon.
+
+##### `scriptTag`
+
+```
+%= ctx.scriptTag('/bootstrap/bootstrap.bundle.min.js')
+```
+
+Generate `<script>` tag for JavaScript file.
+
+##### `styleTag`
+
+```
+%= ctx.styleTag('/bootstrap/bootstrap.min.css')
+```
+
+Generate `<link>` tag for CSS file.
+
+##### `tag`
+
+```
+%= tag 'div'
+%= tag 'div', {class: 'wrapper'}
+%= tag 'div', {class: 'wrapper'}, 'Hello World!'
+```
+
+Generate HTML tag.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the

@@ -6,7 +6,7 @@ import Template from '@mojojs/template';
 import chalk from 'chalk';
 
 export async function captureOutput(
-  fn: () => void,
+  fn: () => Promise<void> | void,
   options: {stderr?: boolean; stdout?: boolean} = {}
 ): Promise<string | Buffer> {
   if (options.stdout === undefined) options.stdout = true;
