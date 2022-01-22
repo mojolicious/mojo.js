@@ -33,7 +33,7 @@ class UserAgent extends EventEmitter {
   /**
    * Base URL to be used to resolve all relative request URLs with.
    */
-  baseURL: string | URL | undefined;
+  baseURL: string | URL | undefined = undefined;
   /**
    * Cookie jar to use.
    */
@@ -53,7 +53,7 @@ class UserAgent extends EventEmitter {
   /**
    * Name of user agent to send with `User-Agent` header.
    */
-  name: string | undefined;
+  name: string | undefined = undefined;
   /**
    * Transport backend to use for WebSocket connections.
    */

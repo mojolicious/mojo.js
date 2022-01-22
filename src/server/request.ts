@@ -13,7 +13,6 @@ let requestId = 0;
 export class ServerRequest extends Body {
   isWebSocket: boolean;
   requestId: string;
-  _baseURL: string | undefined = undefined;
   _cookies: Record<string, string> | undefined = undefined;
   _ip: string | undefined = undefined;
   _path: string | null | undefined = undefined;
@@ -75,7 +74,7 @@ export class ServerRequest extends Body {
   get protocol(): string {
     if (this._protocol === undefined) {
       this._protocol = this.isSecure ? 'https' : 'http';
-      if (this._reverseProxy) {
+      if (this._reverseProxy === true) {
         const forwarded = this.get('X-Forwarded-Proto');
         if (forwarded !== undefined) this._protocol = forwarded;
       }

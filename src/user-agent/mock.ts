@@ -4,7 +4,7 @@ import {Server} from '../server.js';
 import {UserAgent} from '../user-agent.js';
 
 export class MockUserAgent extends UserAgent {
-  server: Server | undefined;
+  server: Server | undefined = undefined;
 
   constructor(options?: UserAgentOptions) {
     super(options);

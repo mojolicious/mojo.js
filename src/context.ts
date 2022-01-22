@@ -35,7 +35,7 @@ class Context extends EventEmitter {
   req: ServerRequest;
   res: ServerResponse;
   stash: Record<string, any> = {};
-  _flash: SessionData | undefined;
+  _flash: SessionData | undefined = undefined;
   _params: Params | undefined = undefined;
   _session: Record<string, any> | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;
