@@ -236,6 +236,45 @@ await ctx.render({text: 'Hello.', format: 'txt'});
 await ctx.render({text: Buffer.from(...), format: 'png'});
 ```
 
+### Stash Data
+
+Any of the native JavaScript data types can be passed to templates as references through `ctx.stash`.
+
+```js
+ctx.stash.description = 'web framework';
+ctx.stash.frameworks  = ['Catalyst', 'Mojolicious', 'mojo.js'];
+ctx.stash.spinoffs    = {minion: 'job queue'};
+```
+```
+<%= description %>
+<%= frameworks[1] %>
+<%= spinoffs.minion %>
+```
+
+Since everything is just JavaScript, normal control structures just work.
+
+```
+% for (const framework of frameworks) {
+  <%= framework %> is a <%= description %>.
+% }
+```
+```
+% const description = spinoffs.minion;
+% if (description !== undefined) {
+  Minion is a <%= description %>.
+% }
+```
+
+For templates that might get rendered in different ways and where you're not sure if a stash value will actually be
+set, you can just use `ctx.stash`.
+
+```
+% const spinoffs = ctx.stash.spinoffs;
+% if (spinoffs !== undefined) {
+  Minion is a <%= $spinoffs.minion %>.
+% }
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
