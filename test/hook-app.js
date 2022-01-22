@@ -31,7 +31,7 @@ t.test('Hook app', async t => {
     const first = ctx.req.query.get('first');
     if (first !== '1') return;
     await util.sleep(1);
-    await ctx.render({text: 'First request hook'});
+    await ctx.render({text: 'First hook'});
     return true;
   });
 
@@ -42,7 +42,7 @@ t.test('Hook app', async t => {
   app.addContextHook('dispatch:before', async ctx => {
     const second = ctx.req.query.get('second');
     if (second !== '1') return;
-    await ctx.render({text: 'Second request hook'});
+    await ctx.render({text: 'Second hook'});
     return true;
   });
 
@@ -56,6 +56,14 @@ t.test('Hook app', async t => {
       ws.close();
     });
     await util.sleep(1);
+    return true;
+  });
+
+  app.addContextHook('router:before', async ctx => {
+    const fourth = ctx.req.query.get('fourth');
+    if (fourth !== '1') return;
+    await util.sleep(1);
+    await ctx.render({text: 'Fourth hook'});
     return true;
   });
 
@@ -103,15 +111,15 @@ t.test('Hook app', async t => {
   const ua = await app.newTestUserAgent({tap: t});
   t.same(serverHooks, ['start: works']);
 
-  await t.test('Request hooks', async () => {
+  await t.test('Dispatch hooks (HTTP)', async () => {
     (await ua.getOk('/')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Hello Mojo!');
-    (await ua.getOk('/?first=1')).statusIs(200).headerExistsNot('X-Hook').bodyIs('First request hook');
-    (await ua.getOk('/?second=1')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Second request hook');
-    (await ua.getOk('/whatever?second=1')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Second request hook');
+    (await ua.getOk('/?first=1')).statusIs(200).headerExistsNot('X-Hook').bodyIs('First hook');
+    (await ua.getOk('/?second=1')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Second hook');
+    (await ua.getOk('/whatever?second=1')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Second hook');
     (await ua.getOk('/whatever')).statusIs(404);
   });
 
-  await t.test('WebSocket hooks', async t => {
+  await t.test('Dispatch hooks (WebSocket)', async t => {
     await ua.websocketOk('/hello');
     t.equal(await ua.messageOk(), 'Hello Mojo!');
     await ua.closedOk(1005);
@@ -125,11 +133,17 @@ t.test('Hook app', async t => {
     await ua.closedOk(1005);
   });
 
-  await t.test('Request hook exception', async () => {
+  await t.test('Dispatch hook exception', async () => {
     (await ua.getOk('/?exception=1'))
       .statusIs(500)
       .headerIs('X-Hook', 'works')
       .bodyLike(/Error: Hook exception/);
+  });
+
+  await t.test('Router hooks', async () => {
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
+    (await ua.getOk('/?fourth=1')).statusIs(200).bodyIs('Fourth hook');
+    (await ua.getOk('/public/mojo/favicon.ico?fourth=1')).statusIs(200).bodyIsnt('Fourth hook');
   });
 
   await t.test('Send hooks', async () => {

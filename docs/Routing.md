@@ -815,6 +815,21 @@ app.addContextHook('static:before', async (ctx, file) => {
 Mostly used for post-processing static file responses. Passed the context object and the static file to be sent. Can
 return `true` to intercept sending the static file.
 
+##### `router:before`
+
+Runs after the static file server determined if a static file should be served and before the router starts its work.
+
+```js
+app.addContextHook('router:before', async ctx => {
+  if (ctx.req.path !== '/test') return;
+  await ctx.render({text: 'Intercepted!'});
+  return true;
+});
+```
+
+Mostly used for custom dispatchers and collecting metrics. Passed the context object. Can return `true` to intercept
+the router.
+
 ##### `send:before`
 
 Runs after `ctx.res.send()` has been called and before dynamically generated content is sent with the response.
