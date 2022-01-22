@@ -160,7 +160,7 @@
                 % keyValue('Request ID', ctx.req.requestId);
                 % keyValue('Method', ctx.req.method);
                 % keyValue('Path', ctx.req.path);
-                % keyValue('Base URL', ctx.req.baseUrl);
+                % keyValue('Base URL', ctx.req.baseURL);
                 % keyValue('Parameters', ctx.inspect((await ctx.params()).toObject()));
                 % keyValue('Stash', ctx.inspect(ctx.stash));
                 % const rawHeaders = ctx.req.raw.rawHeaders;

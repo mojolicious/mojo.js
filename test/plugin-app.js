@@ -35,8 +35,8 @@ t.test('Plugin app', async t => {
   const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Tag helpers', async () => {
-    const baseUrl = ua.server.urls[0] + app.static.prefix.substring(1) + '/';
-    (await ua.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseUrl));
+    const baseURL = ua.server.urls[0] + app.static.prefix.substring(1) + '/';
+    (await ua.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL));
   });
 
   await t.test('Helper', async () => {
@@ -71,12 +71,12 @@ Tag1: <%= ctx.tag('div', 'Hello Mojo!') %>
 Tag2: <%== ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
 `;
 
-function tagHelperPluginResult(baseUrl) {
+function tagHelperPluginResult(baseURL) {
   return `
 Route: tag_helpers
-Favicon: <link rel="icon" href="${baseUrl}mojo/favicon.ico">
-Relative script: <script src="${baseUrl}foo/bar.js"></script>
-Relative style: <link rel="stylesheet" href="${baseUrl}foo/bar.css">
+Favicon: <link rel="icon" href="${baseURL}mojo/favicon.ico">
+Relative script: <script src="${baseURL}foo/bar.js"></script>
+Relative style: <link rel="stylesheet" href="${baseURL}foo/bar.css">
 Absolute script: <script src="https://mojojs.org/public/foo/bar.js"></script>
 Absolute style: <link rel="stylesheet" href="https://mojojs.org/public/foo/bar.css">
 Tag1: <div>Hello Mojo!</div>

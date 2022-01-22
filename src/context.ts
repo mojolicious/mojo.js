@@ -209,7 +209,7 @@ class Context extends EventEmitter {
       return this._urlForPath(result.path, result.websocket);
     }
 
-    if (target.startsWith('/')) return this.req.baseUrl + target;
+    if (target.startsWith('/')) return this.req.baseURL + target;
     if (ABSOLUTE.test(target)) return target;
 
     const route = this.app.router.lookup(target);
@@ -219,7 +219,7 @@ class Context extends EventEmitter {
 
   urlForFile(path: string): string {
     if (ABSOLUTE.test(path)) return path;
-    return this.req.baseUrl + this.app.static.filePath(path);
+    return this.req.baseURL + this.app.static.filePath(path);
   }
 
   get ws(): WebSocket | null {
@@ -227,7 +227,7 @@ class Context extends EventEmitter {
   }
 
   _urlForPath(path: string, isWebSocket: boolean): string {
-    const url = this.req.baseUrl + path;
+    const url = this.req.baseURL + path;
     return isWebSocket ? url.replace(/^http/, 'ws') : url;
   }
 }

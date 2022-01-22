@@ -23,7 +23,7 @@ The user agent can be initialized with a few options, but none of them are requi
 const ua = new UserAgent({
 
   // Base URL to be used to resolve all relative request URLs with
-  baseUrl: 'http://127.0.0.1:3000',
+  baseURL: 'http://127.0.0.1:3000',
 
   // Maximum number of redirects to follow, default to none
   maxRedirects: 5,
@@ -44,7 +44,7 @@ const res = await ua.request({
   // HTTP method for request
   method: 'GET',
 
-  // URL of request target as a string or URL object, may be be relative to `ua.baseUrl`
+  // URL of request target as a string or URL object, may be be relative to `ua.baseURL`
   url: new URL('https://mojolicious.org'),
 
   // Headers to include in request
@@ -261,7 +261,7 @@ For web application testing there is also a more specialised subclass available 
 [assert](https://nodejs.org/api/assert.html) to integrate seamlessly into most testing frameworks.
 
 ```js
-const ua = TestUserAgent({baseUrl: 'https://mojolicious.org'});
+const ua = TestUserAgent({baseURL: 'https://mojolicious.org'});
 (await ua.getOk('/')).statusIs(200).headerLike('Content-Type', /html/).bodyLike(/Mojolicious/);
 ```
 
@@ -273,7 +273,7 @@ import {TestUserAgent} from '@mojojs/core';
 import t from 'tap';
 
 t.test('Mojolicious', async t => {
-  const ua = new TestUserAgent({baseUrl: 'https://mojolicious.org', tap: t});
+  const ua = new TestUserAgent({baseURL: 'https://mojolicious.org', tap: t});
 
   await t.test('Index', async t => {
     (await ua.getOk('/')).statusIs(200).bodyLike(/Mojolicious/);

@@ -31,7 +31,7 @@ t.test('HTTPS app', async t => {
     (await ua.getOk('/')).statusIs(200).bodyIs('HTTPS: false');
   });
 
-  ua.baseUrl = server.urls[0];
+  ua.baseURL = server.urls[0];
 
   await t.test('HTTPS (self signed cert is rejected by default)', async t => {
     let result;

@@ -33,7 +33,7 @@ class UserAgent extends EventEmitter {
   /**
    * Base URL to be used to resolve all relative request URLs with.
    */
-  baseUrl: string | URL | undefined;
+  baseURL: string | URL | undefined;
   /**
    * Cookie jar to use.
    */
@@ -62,7 +62,7 @@ class UserAgent extends EventEmitter {
   constructor(options: UserAgentOptions = {}) {
     super();
 
-    this.baseUrl = options.baseUrl;
+    this.baseURL = options.baseURL;
     this.maxRedirects = options.maxRedirects ?? 0;
     this.name = options.name;
   }
@@ -182,7 +182,7 @@ class UserAgent extends EventEmitter {
   }
 
   async _filterSharedConfig(config: UserAgentRequestOptions | UserAgentWebSocketOptions): Promise<Record<string, any>> {
-    if (!(config.url instanceof URL)) config.url = new URL(config.url ?? '', this.baseUrl);
+    if (!(config.url instanceof URL)) config.url = new URL(config.url ?? '', this.baseURL);
 
     // Auth
     const url: URL = config.url;

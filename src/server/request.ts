@@ -14,7 +14,7 @@ let requestId = 0;
 export class ServerRequest extends Body {
   isWebSocket: boolean;
   requestId: string;
-  _baseUrl: string | undefined = undefined;
+  _baseURL: string | undefined = undefined;
   _cookies: Record<string, string> | undefined = undefined;
   _ip: string | undefined = undefined;
   _path: string | null | undefined = undefined;
@@ -33,9 +33,9 @@ export class ServerRequest extends Body {
     this._reverseProxy = options.reverseProxy;
   }
 
-  get baseUrl(): string {
-    if (this._baseUrl === undefined) this._baseUrl = `${this.protocol}://${this.raw.headers.host ?? ''}`;
-    return this._baseUrl;
+  get baseURL(): string {
+    if (this._baseURL === undefined) this._baseURL = `${this.protocol}://${this.raw.headers.host ?? ''}`;
+    return this._baseURL;
   }
 
   getCookie(name: string): string | null {
@@ -90,7 +90,7 @@ export class ServerRequest extends Body {
   }
 
   get url(): URL {
-    if (this._url === undefined) this._url = new URL(this.raw.url ?? '', this.baseUrl);
+    if (this._url === undefined) this._url = new URL(this.raw.url ?? '', this.baseURL);
     return this._url;
   }
 

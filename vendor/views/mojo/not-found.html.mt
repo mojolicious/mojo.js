@@ -29,7 +29,7 @@
     </style>
   </head>
   <body>
-    <a href="<%= ctx.req.baseUrl %>">
+    <a href="<%= ctx.req.baseURL %>">
       <img src="<%= ctx.urlForFile('/mojo/no-raptor.png') %>" alt="Bye!" id="no-raptor">
     </a>
     <div id="not-found"></div>
