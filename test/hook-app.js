@@ -27,7 +27,7 @@ t.test('Hook app', async t => {
     serverHooks.push(`stop: ${app.config.serverHooks}`);
   });
 
-  app.addContextHook('request:before', async ctx => {
+  app.addContextHook('dispatch:before', async ctx => {
     const first = ctx.req.query.get('first');
     if (first !== '1') return;
     await util.sleep(1);
@@ -35,18 +35,20 @@ t.test('Hook app', async t => {
     return true;
   });
 
-  app.addContextHook('request:before', ctx => {
+  app.addContextHook('dispatch:before', ctx => {
     ctx.res.set('X-Hook', 'works');
   });
 
-  app.addContextHook('request:before', async ctx => {
+  app.addContextHook('dispatch:before', async ctx => {
     const second = ctx.req.query.get('second');
     if (second !== '1') return;
     await ctx.render({text: 'Second request hook'});
     return true;
   });
 
-  app.addContextHook('websocket:before', async ctx => {
+  app.addContextHook('dispatch:before', async ctx => {
+    if (ctx.isWebSocket === false) return;
+
     const third = ctx.req.query.get('third');
     if (third !== '1') return;
     ctx.on('connection', ws => {
@@ -77,7 +79,7 @@ t.test('Hook app', async t => {
     });
   });
 
-  app.addContextHook('request:before', async ctx => {
+  app.addContextHook('dispatch:before', async ctx => {
     await util.sleep(1);
     const exception = ctx.req.query.get('exception');
     if (exception !== '1') return;

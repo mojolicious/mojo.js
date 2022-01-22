@@ -714,7 +714,7 @@ const app = mojo();
 const router = app.router;
 
 // Check all requests for a "/test" path
-app.addContextHook('request:before', async ctx => {
+app.addContextHook('dispatch:before', async ctx => {
   if (ctx.req.path !== '/test') return;
   await ctx.render({text: 'This request did not reach the router.'});
   return true;
@@ -788,12 +788,12 @@ Useful for cleanup tasks. Passed the application object and command argument.
 
 These are all context hooks that are currently available, in the same order they usually run:
 
-##### `request:before`
+##### `dispatch:before`
 
 Runs after a new request has been received and before the static file server and router start their work.
 
 ```js
-app.addContextHook('request:before', async ctx => {
+app.addContextHook('dispatch:before', async ctx => {
   const agent = ctx.req.get('user-agent') ?? '';
   if (/Internet Explorer/.test(agent) === true) ctx.stash.browser = 'ie';
 });
@@ -801,20 +801,6 @@ app.addContextHook('request:before', async ctx => {
 
 Useful for rewriting incoming requests and other preprocessing tasks. Passed the context object. Can return `true` to
 intercept the static file server and router.
-
-##### `websocket:before`
-
-Runs after a new WebSocket handshake has been received and before the routers starts its work.
-
-```js
-app.addContextHook('websocket:before', async ctx => {
-  const agent = ctx.req.get('user-agent') ?? '';
-  if (/Internet Explorer/.test(agent) === true) ctx.stash.browser = 'ie';
-});
-```
-
-Useful for rewriting incoming WebSocket handshakes and other preprocessing tasks. Passed the context object. Can return
-`true` to intercept the router.
 
 ##### `static:before`
 
