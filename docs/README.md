@@ -14,7 +14,7 @@ A quick exaple driven introduction to the basic concepts of [mojo.js](https://mo
 
 Starting a single file prototype from scratch and growing it into a well-structured mojo.js application.
 
-* [Routing](Routing.md) (Progress: 80%)
+* [Routing](Routing.md) (Progress: 100%)
 
 A more detailed introduction to the mojo.js router.
 
@@ -22,7 +22,7 @@ A more detailed introduction to the mojo.js router.
 
 Generating content with the mojo.js renderer.
 
-* [User-Agent](User-Agent.md)  (Progress: 80%)
+* [User-Agent](User-Agent.md)  (Progress: 100%)
 
 How to use the full featured HTTP and WebSocket user agent that ships with the mojo.js framework.
 

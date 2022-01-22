@@ -41,7 +41,7 @@ export class Router extends Route {
   }
 
   async dispatch(ctx: MojoContext): Promise<boolean> {
-    const plan = this._getPlan(ctx);
+    const plan = await this._getPlan(ctx);
     if (plan === null) return false;
     ctx.plan = plan;
 
@@ -97,13 +97,13 @@ export class Router extends Route {
     return this._lookupIndex[name] === undefined ? null : this._lookupIndex[name];
   }
 
-  plot(spec: RouteSpec): Plan | null {
+  async plot(spec: RouteSpec): Promise<Plan | null> {
     const plan = new Plan();
     const steps = plan.steps;
     const stops = plan.stops;
 
     for (const child of this.children) {
-      if (this._walk(plan, child, spec)) break;
+      if (await this._walk(plan, child, spec)) break;
       steps.pop();
       stops.pop();
     }
@@ -115,7 +115,7 @@ export class Router extends Route {
     Object.assign(this.controllers, await util.loadModules(this.controllerPaths));
   }
 
-  _getPlan(ctx: MojoContext): Plan | null {
+  async _getPlan(ctx: MojoContext): Promise<Plan | null> {
     const req = ctx.req;
     const realMethod = req.method;
     if (realMethod === null) return null;
@@ -126,7 +126,7 @@ export class Router extends Route {
     ctx.log.trace(`${realMethod} "${path}"`);
 
     // Cache deactivated
-    if (this.cache === null) return this.plot({ctx, method, path, websocket: isWebSocket});
+    if (this.cache === null) return await this.plot({ctx, method, path, websocket: isWebSocket});
 
     // Cached
     const cacheKey = `${method}:${path}:${isWebSocket.toString()}`;
@@ -135,13 +135,13 @@ export class Router extends Route {
     if (cachedPlan !== undefined) return cachedPlan;
 
     // Not yet cached
-    const plan = this.plot({ctx, method, path, websocket: isWebSocket});
+    const plan = await this.plot({ctx, method, path, websocket: isWebSocket});
     if (plan === null) return null;
     cache.set(cacheKey, plan);
     return plan;
   }
 
-  _walk(plan: Plan, route: Route, spec: RouteSpec): boolean {
+  async _walk(plan: Plan, route: Route, spec: RouteSpec): Promise<boolean> {
     // Path
     const isEndpoint = route.isEndpoint();
     const result = route.pattern.matchPartial(spec.path, {isEndpoint});
@@ -168,7 +168,9 @@ export class Router extends Route {
       if (root === undefined) return false;
       const conditions = root.conditions;
       for (const value of route.requirements) {
-        if (spec.ctx === undefined || !conditions[value.condition](spec.ctx, value.requirement)) return false;
+        if (spec.ctx === undefined || (await conditions[value.condition](spec.ctx, value.requirement)) === false) {
+          return false;
+        }
       }
     }
 
@@ -182,7 +184,7 @@ export class Router extends Route {
     for (const child of route.children) {
       const old = spec.path;
       spec.path = result.remainder;
-      if (this._walk(plan, child, spec) === true) return true;
+      if ((await this._walk(plan, child, spec)) === true) return true;
       spec.path = old;
       steps.pop();
       stops.pop();

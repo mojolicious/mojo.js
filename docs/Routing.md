@@ -843,6 +843,46 @@ app.addContextHook('send:before', async (ctx, body) => {
 Useful for post-processing dynamically generated content. Passed the context object and the dynamically generated
 content. Can return an arbitrary value to replace the dynamic content.
 
+## Advanced
+
+Less commonly used and more powerful features.
+
+### Adding Conditions
+
+You can also add your own conditions with `router.addCondition()`. All conditions are basically router plugins that
+run every time a new request arrives, and which need to return `true` for the route to match.
+
+```js
+// A condition that randomly allows a route to match
+router.addCondition('random', (ctx, num) => {
+  // Winner
+  if (Math.floor(Math.random() * 10) === num) return true;
+
+  // Loser
+  return false;
+});
+
+// GET /maybe (10% chance)
+router.get('/maybe').requires('random', 5).to('foo#bar');
+```
+
+Use whatever request information you need. Conditions can be `async` functions too.
+
+```js
+// A condition to check query parameters (useful for mock web services)
+router.addCondition('query', async (ctx, values) => {
+  const params = await ctx.params();
+  for (const [name, value] of Object.entries(values)) {
+    if (params.get(name) !== value) return false;
+  }
+
+  return true;
+});
+
+// GET /hello?to=world&test=1
+router.get('/hello').requires('query', {test: '1', to: 'world'}).to('foo#bar');
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the

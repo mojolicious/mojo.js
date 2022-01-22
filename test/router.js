@@ -144,398 +144,375 @@ r.get('/missing/too/*', {'': ['test']}).to({controller: 'missing', action: 'too'
 // WebSocket /websocket/route/works
 r.any('/websocket').websocket('/route').any('/works').name('websocket_route');
 
-t.test('No match', t => {
-  t.same(r.plot({method: 'GET', path: '/does_not_exist', websocket: false}), null);
-  t.end();
-});
+t.test('Router', async t => {
+  await t.test('No match', async t => {
+    t.same(await r.plot({method: 'GET', path: '/does_not_exist', websocket: false}), null);
+  });
 
-t.test('Introspect', t => {
-  t.equal(r.lookup('null').customName, 'null');
-  t.end();
-});
+  t.test('Introspect', t => {
+    t.equal(r.lookup('null').customName, 'null');
+    t.end();
+  });
 
-t.test('Null route', t => {
-  const plan = r.plot({method: 'GET', path: '/0', websocket: false});
-  t.same(plan.steps, [{null: 0}]);
-  t.same(plan.stops, [true]);
-  t.equal(plan.render().path, '/0');
-  t.equal(plan.endpoint.defaultName, '0');
-  t.end();
-});
+  await t.test('Null route', async t => {
+    const plan = await r.plot({method: 'GET', path: '/0', websocket: false});
+    t.same(plan.steps, [{null: 0}]);
+    t.same(plan.stops, [true]);
+    t.equal(plan.render().path, '/0');
+    t.equal(plan.endpoint.defaultName, '0');
+  });
 
-t.test('Alternatives with default', t => {
-  const plan = r.plot({method: 'GET', path: '/alternatives', websocket: false});
-  t.same(plan.steps, [{foo: 11}]);
-  t.equal(plan.render().path, '/alternatives');
-  t.equal(plan.render({ext: 'txt'}).path, '/alternatives/11.txt');
-  t.equal(plan.render({foo: 12}).path, '/alternatives/12');
-  t.equal(plan.render({foo: 12, ext: 'txt'}).path, '/alternatives/12.txt');
-  t.equal(plan.endpoint.defaultName, 'alternatives_foo');
-  t.ok(Object.is(plan.endpoint, r.lookup('alternatives_foo')), 'same object');
+  await t.test('Alternatives with default', async t => {
+    const plan = await r.plot({method: 'GET', path: '/alternatives', websocket: false});
+    t.same(plan.steps, [{foo: 11}]);
+    t.equal(plan.render().path, '/alternatives');
+    t.equal(plan.render({ext: 'txt'}).path, '/alternatives/11.txt');
+    t.equal(plan.render({foo: 12}).path, '/alternatives/12');
+    t.equal(plan.render({foo: 12, ext: 'txt'}).path, '/alternatives/12.txt');
+    t.equal(plan.endpoint.defaultName, 'alternatives_foo');
+    t.ok(Object.is(plan.endpoint, r.lookup('alternatives_foo')), 'same object');
 
-  const plan2 = r.plot({method: 'GET', path: '/alternatives/0', websocket: false});
-  t.same(plan2.steps, [{foo: 0}]);
-  t.equal(plan2.render().path, '/alternatives/0');
+    const plan2 = await r.plot({method: 'GET', path: '/alternatives/0', websocket: false});
+    t.same(plan2.steps, [{foo: 0}]);
+    t.equal(plan2.render().path, '/alternatives/0');
 
-  const plan3 = r.plot({method: 'GET', path: '/alternatives/test', websocket: false});
-  t.same(plan3.steps, [{foo: 'test'}]);
-  t.equal(plan3.render().path, '/alternatives/test');
+    const plan3 = await r.plot({method: 'GET', path: '/alternatives/test', websocket: false});
+    t.same(plan3.steps, [{foo: 'test'}]);
+    t.equal(plan3.render().path, '/alternatives/test');
 
-  const plan4 = r.plot({method: 'GET', path: '/alternatives/23', websocket: false});
-  t.same(plan4.steps, [{foo: 23}]);
-  t.equal(plan4.render().path, '/alternatives/23');
-  t.same(r.plot({method: 'GET', path: '/alternatives/24', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/alternatives/tset', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/alternatives/00', websocket: false}), null);
-  t.equal(r.lookup('alternatives_foo').render(), '/alternatives');
-  t.equal(r.lookup('alternatives_foo').render({ext: 'txt'}), '/alternatives/11.txt');
-  t.equal(r.lookup('alternatives_foo').render({foo: 12, ext: 'txt'}), '/alternatives/12.txt');
-  t.end();
-});
+    const plan4 = await r.plot({method: 'GET', path: '/alternatives/23', websocket: false});
+    t.same(plan4.steps, [{foo: 23}]);
+    t.equal(plan4.render().path, '/alternatives/23');
+    t.same(await r.plot({method: 'GET', path: '/alternatives/24', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/alternatives/tset', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/alternatives/00', websocket: false}), null);
+    t.equal(r.lookup('alternatives_foo').render(), '/alternatives');
+    t.equal(r.lookup('alternatives_foo').render({ext: 'txt'}), '/alternatives/11.txt');
+    t.equal(r.lookup('alternatives_foo').render({foo: 12, ext: 'txt'}), '/alternatives/12.txt');
+  });
 
-t.test('Alternatives without default', t => {
-  t.same(r.plot({method: 'GET', path: '/alternatives/2', websocket: false}), null);
-  const plan = r.plot({method: 'GET', path: '/alternatives2/0'});
-  t.same(plan.steps, [{foo: '0'}]);
-  t.equal(plan.render().path, '/alternatives2/0');
+  await t.test('Alternatives without default', async t => {
+    t.same(await r.plot({method: 'GET', path: '/alternatives/2', websocket: false}), null);
+    const plan = await r.plot({method: 'GET', path: '/alternatives2/0'});
+    t.same(plan.steps, [{foo: '0'}]);
+    t.equal(plan.render().path, '/alternatives2/0');
 
-  const plan2 = r.plot({method: 'GET', path: '/alternatives2/test', websocket: false});
-  t.same(plan2.steps, [{foo: 'test'}]);
-  t.same(plan2.stops, [true]);
-  t.equal(plan2.render().path, '/alternatives2/test');
+    const plan2 = await r.plot({method: 'GET', path: '/alternatives2/test', websocket: false});
+    t.same(plan2.steps, [{foo: 'test'}]);
+    t.same(plan2.stops, [true]);
+    t.equal(plan2.render().path, '/alternatives2/test');
 
-  const plan3 = r.plot({method: 'GET', path: '/alternatives2/23', websocket: false});
-  t.same(plan3.steps, [{foo: '23'}]);
-  t.equal(plan3.render().path, '/alternatives2/23');
-  t.same(r.plot({method: 'GET', path: '/alternatives2/24', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/alternatives2/tset', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/alternatives2/00', websocket: false}), null);
-  t.equal(r.lookup('alternatives2_foo').render(), '/alternatives2/');
-  t.equal(r.lookup('alternatives2_foo').render({foo: 0}), '/alternatives2/0');
-  t.end();
-});
+    const plan3 = await r.plot({method: 'GET', path: '/alternatives2/23', websocket: false});
+    t.same(plan3.steps, [{foo: '23'}]);
+    t.equal(plan3.render().path, '/alternatives2/23');
+    t.same(await r.plot({method: 'GET', path: '/alternatives2/24', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/alternatives2/tset', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/alternatives2/00', websocket: false}), null);
+    t.equal(r.lookup('alternatives2_foo').render(), '/alternatives2/');
+    t.equal(r.lookup('alternatives2_foo').render({foo: 0}), '/alternatives2/0');
+  });
 
-t.test('Alternatives with similar start', t => {
-  const plan = r.plot({method: 'GET', path: '/alternatives3/foo', websocket: false});
-  t.same(plan.steps, [{foo: 'foo'}]);
-  t.equal(plan.render().path, '/alternatives3/foo');
+  await t.test('Alternatives with similar start', async t => {
+    const plan = await r.plot({method: 'GET', path: '/alternatives3/foo', websocket: false});
+    t.same(plan.steps, [{foo: 'foo'}]);
+    t.equal(plan.render().path, '/alternatives3/foo');
 
-  const plan2 = r.plot({method: 'GET', path: '/alternatives3/foobar', websocket: false});
-  t.same(plan2.steps, [{foo: 'foobar'}]);
-  t.equal(plan2.render().path, '/alternatives3/foobar');
-  t.end();
-});
+    const plan2 = await r.plot({method: 'GET', path: '/alternatives3/foobar', websocket: false});
+    t.same(plan2.steps, [{foo: 'foobar'}]);
+    t.equal(plan2.render().path, '/alternatives3/foobar');
+  });
 
-t.test('Alternatives with special characters', t => {
-  const plan = r.plot({method: 'GET', path: '/alternatives4/foo', websocket: false});
-  t.same(plan.steps, [{foo: 'foo'}]);
-  t.equal(plan.render().path, '/alternatives4/foo');
+  await t.test('Alternatives with special characters', async t => {
+    const plan = await r.plot({method: 'GET', path: '/alternatives4/foo', websocket: false});
+    t.same(plan.steps, [{foo: 'foo'}]);
+    t.equal(plan.render().path, '/alternatives4/foo');
 
-  const plan2 = r.plot({method: 'GET', path: '/alternatives4/foo.bar', websocket: false});
-  t.same(plan2.steps, [{foo: 'foo.bar'}]);
-  t.equal(plan2.render().path, '/alternatives4/foo.bar');
-  t.same(r.plot({method: 'GET', path: '/alternatives4/foobar', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/alternatives4/bar', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/alternatives4/bar.foo', websocket: false}), null);
-  t.end();
-});
+    const plan2 = await r.plot({method: 'GET', path: '/alternatives4/foo.bar', websocket: false});
+    t.same(plan2.steps, [{foo: 'foo.bar'}]);
+    t.equal(plan2.render().path, '/alternatives4/foo.bar');
+    t.same(await r.plot({method: 'GET', path: '/alternatives4/foobar', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/alternatives4/bar', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/alternatives4/bar.foo', websocket: false}), null);
+  });
 
-t.test('Optional placeholder', t => {
-  const plan = r.plot({method: 'GET', path: '/optional/23', websocket: false});
-  t.same(plan.steps, [{foo: 23, bar: 'test', ext: null}]);
-  t.equal(plan.render().path, '/optional/23');
-  t.equal(plan.render({ext: 'txt'}).path, '/optional/23/test.txt');
-  t.equal(plan.render({foo: 12, ext: 'txt'}).path, '/optional/12/test.txt');
+  await t.test('Optional placeholder', async t => {
+    const plan = await r.plot({method: 'GET', path: '/optional/23', websocket: false});
+    t.same(plan.steps, [{foo: 23, bar: 'test', ext: null}]);
+    t.equal(plan.render().path, '/optional/23');
+    t.equal(plan.render({ext: 'txt'}).path, '/optional/23/test.txt');
+    t.equal(plan.render({foo: 12, ext: 'txt'}).path, '/optional/12/test.txt');
 
-  const plan2 = r.plot({method: 'GET', path: '/optional/23/24', websocket: false});
-  t.same(plan2.steps, [{foo: 23, bar: '24', ext: null}]);
-  t.equal(plan2.render().path, '/optional/23/24');
-  t.equal(plan2.render({ext: 'txt'}).path, '/optional/23/24.txt');
-  t.end();
-});
+    const plan2 = await r.plot({method: 'GET', path: '/optional/23/24', websocket: false});
+    t.same(plan2.steps, [{foo: 23, bar: '24', ext: null}]);
+    t.equal(plan2.render().path, '/optional/23/24');
+    t.equal(plan2.render({ext: 'txt'}).path, '/optional/23/24.txt');
+  });
 
-t.test('Optional placeholders in nested routes', t => {
-  const plan = r.plot({method: 'GET', path: '/optional2', websocket: false});
-  t.same(plan.steps, [{foo: 'one'}, {bar: 'two', ext: null}]);
-  t.same(plan.stops, [false, true]);
-  t.equal(plan.render().path, '/optional2');
+  await t.test('Optional placeholders in nested routes', async t => {
+    const plan = await r.plot({method: 'GET', path: '/optional2', websocket: false});
+    t.same(plan.steps, [{foo: 'one'}, {bar: 'two', ext: null}]);
+    t.same(plan.stops, [false, true]);
+    t.equal(plan.render().path, '/optional2');
 
-  const plan2 = r.plot({method: 'GET', path: '/optional2/three', websocket: false});
-  t.same(plan2.steps, [{foo: 'three'}, {bar: 'two', ext: null}]);
-  t.same(plan2.stops, [false, true]);
-  t.equal(plan2.render().path, '/optional2/three');
+    const plan2 = await r.plot({method: 'GET', path: '/optional2/three', websocket: false});
+    t.same(plan2.steps, [{foo: 'three'}, {bar: 'two', ext: null}]);
+    t.same(plan2.stops, [false, true]);
+    t.equal(plan2.render().path, '/optional2/three');
 
-  const plan3 = r.plot({method: 'GET', path: '/optional2/three/four', websocket: false});
-  t.same(plan3.steps, [{foo: 'three'}, {bar: 'four', ext: null}]);
-  t.equal(plan3.render().path, '/optional2/three/four');
+    const plan3 = await r.plot({method: 'GET', path: '/optional2/three/four', websocket: false});
+    t.same(plan3.steps, [{foo: 'three'}, {bar: 'four', ext: null}]);
+    t.equal(plan3.render().path, '/optional2/three/four');
 
-  const plan4 = r.plot({method: 'GET', path: '/optional2/three/four.txt', websocket: false});
-  t.same(plan4.steps, [{foo: 'three'}, {bar: 'four', ext: 'txt'}]);
-  t.equal(plan4.render().path, '/optional2/three/four.txt');
+    const plan4 = await r.plot({method: 'GET', path: '/optional2/three/four.txt', websocket: false});
+    t.same(plan4.steps, [{foo: 'three'}, {bar: 'four', ext: 'txt'}]);
+    t.equal(plan4.render().path, '/optional2/three/four.txt');
 
-  const plan5 = r.plot({method: 'GET', path: '/optional2.txt', websocket: false});
-  t.same(plan5.steps, [{foo: 'one'}, {bar: 'two', ext: 'txt'}]);
-  t.equal(plan5.render().path, '/optional2/one/two.txt');
+    const plan5 = await r.plot({method: 'GET', path: '/optional2.txt', websocket: false});
+    t.same(plan5.steps, [{foo: 'one'}, {bar: 'two', ext: 'txt'}]);
+    t.equal(plan5.render().path, '/optional2/one/two.txt');
 
-  const plan6 = r.plot({method: 'GET', path: '/optional2/three.txt', websocket: false});
-  t.same(plan6.steps, [{foo: 'three'}, {bar: 'two', ext: 'txt'}]);
-  t.equal(plan6.render().path, '/optional2/three/two.txt');
-  t.same(r.plot({method: 'GET', path: '/optional2.xml', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/optional2/three.xml', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/optional2/three/four.xml', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/optional2/three/four/five', websocket: false}), null);
-  t.end();
-});
+    const plan6 = await r.plot({method: 'GET', path: '/optional2/three.txt', websocket: false});
+    t.same(plan6.steps, [{foo: 'three'}, {bar: 'two', ext: 'txt'}]);
+    t.equal(plan6.render().path, '/optional2/three/two.txt');
+    t.same(await r.plot({method: 'GET', path: '/optional2.xml', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/optional2/three.xml', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/optional2/three/four.xml', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/optional2/three/four/five', websocket: false}), null);
+  });
 
-t.test('Root', t => {
-  const plan = r.plot({method: 'GET', path: '/', websocket: false});
-  t.same(plan.steps, [{testcase: 'hello', action: 'world'}]);
-  t.equal(plan.render().path, '');
-  t.end();
-});
+  await t.test('Root', async t => {
+    const plan = await r.plot({method: 'GET', path: '/', websocket: false});
+    t.same(plan.steps, [{testcase: 'hello', action: 'world'}]);
+    t.equal(plan.render().path, '');
+  });
 
-t.test('Path and captures', t => {
-  const plan = r.plot({method: 'GET', path: '/foo/test/edit', websocket: false});
-  t.same(plan.steps, [{testcase: 'foo', action: 'test'}, {action: 'edit'}]);
-  t.equal(plan.render().path, '/foo/test/edit');
+  await t.test('Path and captures', async t => {
+    const plan = await r.plot({method: 'GET', path: '/foo/test/edit', websocket: false});
+    t.same(plan.steps, [{testcase: 'foo', action: 'test'}, {action: 'edit'}]);
+    t.equal(plan.render().path, '/foo/test/edit');
 
-  const plan2 = r.plot({method: 'GET', path: '/foo/testedit', websocket: false});
-  t.same(plan2.steps, [{testcase: 'foo', action: 'testedit'}]);
-  t.equal(plan2.render().path, '/foo/testedit');
-  t.end();
-});
+    const plan2 = await r.plot({method: 'GET', path: '/foo/testedit', websocket: false});
+    t.same(plan2.steps, [{testcase: 'foo', action: 'testedit'}]);
+    t.equal(plan2.render().path, '/foo/testedit');
+  });
 
-t.test('Optional captures in sub route with requirement', t => {
-  const plan = r.plot({method: 'GET', path: '/bar/test/delete/22', websocket: false});
-  t.same(plan.steps, [
-    {testcase: 'bar', action: 'test'},
-    {action: 'delete', id: 22}
-  ]);
-  t.equal(plan.render().path, '/bar/test/delete/22');
-  t.end();
-});
+  await t.test('Optional captures in sub route with requirement', async t => {
+    const plan = await r.plot({method: 'GET', path: '/bar/test/delete/22', websocket: false});
+    t.same(plan.steps, [
+      {testcase: 'bar', action: 'test'},
+      {action: 'delete', id: 22}
+    ]);
+    t.equal(plan.render().path, '/bar/test/delete/22');
+  });
 
-t.test('Defaults in sub route', t => {
-  const plan = r.plot({method: 'GET', path: '/bar/test/delete', websocket: false});
-  t.same(plan.steps, [
-    {testcase: 'bar', action: 'test'},
-    {action: 'delete', id: 23}
-  ]);
-  t.equal(plan.render().path, '/bar/test/delete');
-  t.end();
-});
+  await t.test('Defaults in sub route', async t => {
+    const plan = await r.plot({method: 'GET', path: '/bar/test/delete', websocket: false});
+    t.same(plan.steps, [
+      {testcase: 'bar', action: 'test'},
+      {action: 'delete', id: 23}
+    ]);
+    t.equal(plan.render().path, '/bar/test/delete');
+  });
 
-t.test('Chained routes', t => {
-  const plan = r.plot({method: 'GET', path: '/test2/foo', websocket: false});
-  t.same(plan.steps, [{testcase: 'test2'}, {testcase: 'index'}, {testcase: 'baz'}]);
-  t.same(plan.stops, [true, true, true]);
-  t.equal(plan.render().path, '/test2/foo');
+  await t.test('Chained routes', async t => {
+    const plan = await r.plot({method: 'GET', path: '/test2/foo', websocket: false});
+    t.same(plan.steps, [{testcase: 'test2'}, {testcase: 'index'}, {testcase: 'baz'}]);
+    t.same(plan.stops, [true, true, true]);
+    t.equal(plan.render().path, '/test2/foo');
 
-  const plan2 = r.plot({method: 'GET', path: '/test2/bar', websocket: false});
-  t.same(plan2.steps, [{testcase: 'test2'}, {testcase: 'index'}, {testcase: 'lalala'}]);
-  t.same(plan2.stops, [true, true, true]);
-  t.equal(plan2.render().path, '/test2/bar');
+    const plan2 = await r.plot({method: 'GET', path: '/test2/bar', websocket: false});
+    t.same(plan2.steps, [{testcase: 'test2'}, {testcase: 'index'}, {testcase: 'lalala'}]);
+    t.same(plan2.stops, [true, true, true]);
+    t.equal(plan2.render().path, '/test2/bar');
 
-  const plan3 = r.plot({method: 'GET', path: '/test2/baz', websocket: false});
-  t.same(plan3.steps, [{testcase: 'test2'}, {controller: 'just', action: 'works'}]);
-  t.same(plan3.stops, [true, true]);
-  t.equal(plan3.render().path, '/test2/baz');
-  t.same(r.plot({method: 'GET', path: '/test2baz', websocket: false}), null);
-  t.end();
-});
+    const plan3 = await r.plot({method: 'GET', path: '/test2/baz', websocket: false});
+    t.same(plan3.steps, [{testcase: 'test2'}, {controller: 'just', action: 'works'}]);
+    t.same(plan3.stops, [true, true]);
+    t.equal(plan3.render().path, '/test2/baz');
+    t.same(await r.plot({method: 'GET', path: '/test2baz', websocket: false}), null);
+  });
 
-t.test('WebSocket', t => {
-  t.same(r.plot({method: 'GET', path: '/websocket', websocket: false}), null);
-  const plan = r.plot({method: 'GET', path: '/websocket', websocket: true});
-  t.same(plan.steps, [{testcase: 'ws'}, {action: 'just'}, {works: 1}]);
-  t.equal(plan.render().path, '/websocket');
-  t.same(plan.stops, [false, false, true]);
+  await t.test('WebSocket', async t => {
+    t.same(await r.plot({method: 'GET', path: '/websocket', websocket: false}), null);
+    const plan = await r.plot({method: 'GET', path: '/websocket', websocket: true});
+    t.same(plan.steps, [{testcase: 'ws'}, {action: 'just'}, {works: 1}]);
+    t.equal(plan.render().path, '/websocket');
+    t.same(plan.stops, [false, false, true]);
 
-  const plan2 = r.plot({method: 'GET', path: '/websocket/route/works', websocket: true});
-  t.same(plan2.steps, [{}, {}, {}]);
-  t.equal(plan2.render().path, '/websocket/route/works');
-  t.equal(r.lookup('websocket_route').render(), '/websocket/route/works');
-  t.end();
-});
+    const plan2 = await r.plot({method: 'GET', path: '/websocket/route/works', websocket: true});
+    t.same(plan2.steps, [{}, {}, {}]);
+    t.equal(plan2.render().path, '/websocket/route/works');
+    t.equal(r.lookup('websocket_route').render(), '/websocket/route/works');
+  });
 
-t.test('Wildcards', t => {
-  const plan = r.plot({method: 'GET', path: '/wildcards/1/hello/there', websocket: false});
-  t.same(plan.steps, [{testcase: 'wild', action: 'card', wildcard: 'hello/there'}]);
-  t.equal(plan.render().path, '/wildcards/1/hello/there');
-  t.equal(plan.render({wildcard: ''}).path, '/wildcards/1/');
+  await t.test('Wildcards', async t => {
+    const plan = await r.plot({method: 'GET', path: '/wildcards/1/hello/there', websocket: false});
+    t.same(plan.steps, [{testcase: 'wild', action: 'card', wildcard: 'hello/there'}]);
+    t.equal(plan.render().path, '/wildcards/1/hello/there');
+    t.equal(plan.render({wildcard: ''}).path, '/wildcards/1/');
 
-  const plan2 = r.plot({method: 'GET', path: '/wildcards/2/hello/there', websocket: false});
-  t.same(plan2.steps, [{testcase: 'card', action: 'wild', wildcard: 'hello/there'}]);
-  t.equal(plan2.render().path, '/wildcards/2/hello/there');
+    const plan2 = await r.plot({method: 'GET', path: '/wildcards/2/hello/there', websocket: false});
+    t.same(plan2.steps, [{testcase: 'card', action: 'wild', wildcard: 'hello/there'}]);
+    t.equal(plan2.render().path, '/wildcards/2/hello/there');
 
-  const plan3 = r.plot({method: 'GET', path: '/wildcards/3/hello/there/foo', websocket: false});
-  t.same(plan3.steps, [{testcase: 'very', action: 'dangerous', wildcard: 'hello/there'}]);
-  t.equal(plan3.render().path, '/wildcards/3/hello/there/foo');
+    const plan3 = await r.plot({method: 'GET', path: '/wildcards/3/hello/there/foo', websocket: false});
+    t.same(plan3.steps, [{testcase: 'very', action: 'dangerous', wildcard: 'hello/there'}]);
+    t.equal(plan3.render().path, '/wildcards/3/hello/there/foo');
 
-  const plan4 = r.plot({method: 'GET', path: '/wildcards/4/hello/there/foo', websocket: false});
-  t.same(plan4.steps, [{testcase: 'somewhat', action: 'dangerous', wildcard: 'hello/there'}]);
-  t.equal(plan4.render().path, '/wildcards/4/hello/there/foo');
-  t.end();
-});
+    const plan4 = await r.plot({method: 'GET', path: '/wildcards/4/hello/there/foo', websocket: false});
+    t.same(plan4.steps, [{testcase: 'somewhat', action: 'dangerous', wildcard: 'hello/there'}]);
+    t.equal(plan4.render().path, '/wildcards/4/hello/there/foo');
+  });
 
-t.test('Extensions', t => {
-  const plan = r.plot({method: 'GET', path: '/ext', websocket: false});
-  t.same(plan.steps, [{testcase: 'hello', action: 'you', ext: 'html'}]);
-  t.equal(plan.render().path, '/ext.html');
-  t.equal(plan.render({ext: null}).path, '/ext');
-  t.equal(plan.render({ext: 'html'}).path, '/ext.html');
+  await t.test('Extensions', async t => {
+    const plan = await r.plot({method: 'GET', path: '/ext', websocket: false});
+    t.same(plan.steps, [{testcase: 'hello', action: 'you', ext: 'html'}]);
+    t.equal(plan.render().path, '/ext.html');
+    t.equal(plan.render({ext: null}).path, '/ext');
+    t.equal(plan.render({ext: 'html'}).path, '/ext.html');
 
-  const plan2 = r.plot({method: 'GET', path: '/ext.html', websocket: false});
-  t.same(plan2.steps, [{testcase: 'hello', action: 'you', ext: 'html'}]);
-  t.equal(plan2.render().path, '/ext.html');
-  t.equal(plan2.render({ext: 'txt'}).path, '/ext.txt');
-  t.end();
-});
+    const plan2 = await r.plot({method: 'GET', path: '/ext.html', websocket: false});
+    t.same(plan2.steps, [{testcase: 'hello', action: 'you', ext: 'html'}]);
+    t.equal(plan2.render().path, '/ext.html');
+    t.equal(plan2.render({ext: 'txt'}).path, '/ext.txt');
+  });
 
-t.test('Extension with regex constraint', t => {
-  t.same(r.plot({method: 'GET', path: '/ext2', websocket: false}), null);
-  const plan = r.plot({method: 'GET', path: '/ext2.txt'});
-  t.same(plan.steps, [{testcase: 'we', action: 'howdy', ext: 'txt'}]);
-  t.equal(plan.render().path, '/ext2.txt');
-  t.same(r.plot({method: 'GET', path: '/ext2.html', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/ext2.txt.txt', websocket: false}), null);
-  t.end();
-});
+  await t.test('Extension with regex constraint', async t => {
+    t.same(await r.plot({method: 'GET', path: '/ext2', websocket: false}), null);
+    const plan = await r.plot({method: 'GET', path: '/ext2.txt'});
+    t.same(plan.steps, [{testcase: 'we', action: 'howdy', ext: 'txt'}]);
+    t.equal(plan.render().path, '/ext2.txt');
+    t.same(await r.plot({method: 'GET', path: '/ext2.html', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/ext2.txt.txt', websocket: false}), null);
+  });
 
-t.test('Extension with constraint alternatives', t => {
-  t.same(r.plot({method: 'GET', path: '/ext3', websocket: false}), null);
-  const plan = r.plot({method: 'GET', path: '/ext3.txt', websocket: false});
-  t.same(plan.steps, [{testcase: 'we', action: 'cheers', ext: 'txt'}]);
-  t.equal(plan.render().path, '/ext3.txt');
+  await t.test('Extension with constraint alternatives', async t => {
+    t.same(await r.plot({method: 'GET', path: '/ext3', websocket: false}), null);
+    const plan = await r.plot({method: 'GET', path: '/ext3.txt', websocket: false});
+    t.same(plan.steps, [{testcase: 'we', action: 'cheers', ext: 'txt'}]);
+    t.equal(plan.render().path, '/ext3.txt');
 
-  const plan2 = r.plot({method: 'GET', path: '/ext3.text', websocket: false});
-  t.same(plan2.steps, [{testcase: 'we', action: 'cheers', ext: 'text'}]);
-  t.equal(plan2.render().path, '/ext3.text');
-  t.same(r.plot({method: 'GET', path: '/ext3.html', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/ext3.txt.txt', websocket: false}), null);
-  t.end();
-});
+    const plan2 = await r.plot({method: 'GET', path: '/ext3.text', websocket: false});
+    t.same(plan2.steps, [{testcase: 'we', action: 'cheers', ext: 'text'}]);
+    t.equal(plan2.render().path, '/ext3.text');
+    t.same(await r.plot({method: 'GET', path: '/ext3.html', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/ext3.txt.txt', websocket: false}), null);
+  });
 
-t.test('Extension with constraint and default', t => {
-  const plan = r.plot({method: 'GET', path: '/ext4', websocket: false});
-  t.same(plan.steps, [{testcase: 'us', action: 'yay', ext: 'html'}]);
-  t.equal(plan.render().path, '/ext4.html');
+  await t.test('Extension with constraint and default', async t => {
+    const plan = await r.plot({method: 'GET', path: '/ext4', websocket: false});
+    t.same(plan.steps, [{testcase: 'us', action: 'yay', ext: 'html'}]);
+    t.equal(plan.render().path, '/ext4.html');
 
-  const plan2 = r.plot({method: 'GET', path: '/ext4.html', websocket: false});
-  t.same(plan2.steps, [{testcase: 'us', action: 'yay', ext: 'html'}]);
-  t.equal(plan2.render().path, '/ext4.html');
-  t.same(r.plot({method: 'GET', path: '/ext4.txt', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/ext4.txt.html', websocket: false}), null);
-  t.end();
-});
+    const plan2 = await r.plot({method: 'GET', path: '/ext4.html', websocket: false});
+    t.same(plan2.steps, [{testcase: 'us', action: 'yay', ext: 'html'}]);
+    t.equal(plan2.render().path, '/ext4.html');
+    t.same(await r.plot({method: 'GET', path: '/ext4.txt', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/ext4.txt.html', websocket: false}), null);
+  });
 
-t.test('Placeholder types', t => {
-  const plan = r.plot({method: 'GET', path: '/type/23', websocket: false});
-  t.same(plan.steps, [{controller: 'foo', action: 'bar', id: 23}]);
-  t.equal(plan.render().path, '/type/23');
+  await t.test('Placeholder types', async t => {
+    const plan = await r.plot({method: 'GET', path: '/type/23', websocket: false});
+    t.same(plan.steps, [{controller: 'foo', action: 'bar', id: 23}]);
+    t.equal(plan.render().path, '/type/23');
 
-  const plan2 = r.plot({method: 'GET', path: '/type/24', websocket: false});
-  t.same(plan2.steps, [{controller: 'foo', action: 'bar', id: 24}]);
-  t.equal(plan2.render().path, '/type/24');
-  t.same(r.plot({method: 'GET', path: '/type/25'}), null);
+    const plan2 = await r.plot({method: 'GET', path: '/type/24', websocket: false});
+    t.same(plan2.steps, [{controller: 'foo', action: 'bar', id: 24}]);
+    t.equal(plan2.render().path, '/type/24');
+    t.same(await r.plot({method: 'GET', path: '/type/25'}), null);
 
-  const plan3 = r.plot({method: 'GET', path: '/type/test', websocket: false});
-  t.same(plan3.steps, [{controller: 'baz', action: 'yada', id: 'test'}]);
-  t.equal(plan3.render().path, '/type/test');
+    const plan3 = await r.plot({method: 'GET', path: '/type/test', websocket: false});
+    t.same(plan3.steps, [{controller: 'baz', action: 'yada', id: 'test'}]);
+    t.equal(plan3.render().path, '/type/test');
 
-  const plan4 = r.plot({method: 'GET', path: '/type/t3st', websocket: false});
-  t.same(plan4.steps, [{controller: 'baz', action: 'yada', id: 't3st'}]);
-  t.equal(plan4.render().path, '/type/t3st');
-  t.same(r.plot({method: 'GET', path: '/type/t3est', websocket: false}), null);
-  t.end();
-});
+    const plan4 = await r.plot({method: 'GET', path: '/type/t3st', websocket: false});
+    t.same(plan4.steps, [{controller: 'baz', action: 'yada', id: 't3st'}]);
+    t.equal(plan4.render().path, '/type/t3st');
+    t.same(await r.plot({method: 'GET', path: '/type/t3est', websocket: false}), null);
+  });
 
-t.test('Request methods', t => {
-  const plan = r.plot({method: 'GET', path: '/method/get', websocket: false});
-  t.same(plan.steps, [{testcase: 'method', action: 'get', ext: null}]);
-  t.equal(plan.render().path, '/method/get');
-  t.same(r.plot({method: 'POST', path: '/method/get'}), null);
+  await t.test('Request methods', async t => {
+    const plan = await r.plot({method: 'GET', path: '/method/get', websocket: false});
+    t.same(plan.steps, [{testcase: 'method', action: 'get', ext: null}]);
+    t.equal(plan.render().path, '/method/get');
+    t.same(await r.plot({method: 'POST', path: '/method/get'}), null);
 
-  const plan2 = r.plot({method: 'GET', path: '/method/get.html', websocket: false});
-  t.same(plan2.steps, [{testcase: 'method', action: 'get', ext: 'html'}]);
-  t.equal(plan2.render().path, '/method/get.html');
+    const plan2 = await r.plot({method: 'GET', path: '/method/get.html', websocket: false});
+    t.same(plan2.steps, [{testcase: 'method', action: 'get', ext: 'html'}]);
+    t.equal(plan2.render().path, '/method/get.html');
 
-  const plan3 = r.plot({method: 'POST', path: '/method/post', websocket: false});
-  t.same(plan3.steps, [{testcase: 'method', action: 'post'}]);
-  t.equal(plan3.render().path, '/method/post');
-  t.same(r.plot({method: 'POST', path: '/method/post.html'}), null);
-  t.same(r.plot({method: 'GET', path: '/method/post'}), null);
+    const plan3 = await r.plot({method: 'POST', path: '/method/post', websocket: false});
+    t.same(plan3.steps, [{testcase: 'method', action: 'post'}]);
+    t.equal(plan3.render().path, '/method/post');
+    t.same(await r.plot({method: 'POST', path: '/method/post.html'}), null);
+    t.same(await r.plot({method: 'GET', path: '/method/post'}), null);
 
-  const plan4 = r.plot({method: 'POST', path: '/method/post_get', websocket: false});
-  t.same(plan4.steps, [{testcase: 'method', action: 'post_get'}]);
-  t.equal(plan4.render().path, '/method/post_get');
+    const plan4 = await r.plot({method: 'POST', path: '/method/post_get', websocket: false});
+    t.same(plan4.steps, [{testcase: 'method', action: 'post_get'}]);
+    t.equal(plan4.render().path, '/method/post_get');
 
-  const plan5 = r.plot({method: 'GET', path: '/method/post_get', websocket: false});
-  t.same(plan5.steps, [{testcase: 'method', action: 'post_get'}]);
-  t.equal(plan5.render().path, '/method/post_get');
-  t.same(r.plot({method: 'PUT', path: '/method/get_post', websocket: false}), null);
-  t.end();
-});
+    const plan5 = await r.plot({method: 'GET', path: '/method/post_get', websocket: false});
+    t.same(plan5.steps, [{testcase: 'method', action: 'post_get'}]);
+    t.equal(plan5.render().path, '/method/post_get');
+    t.same(await r.plot({method: 'PUT', path: '/method/get_post', websocket: false}), null);
+  });
 
-t.test('Route with version', t => {
-  const plan = r.plot({method: 'GET', path: '/versioned/1.0/test', websocket: false});
-  t.same(plan.steps, [{}, {testcase: 'bar'}, {action: 'baz', ext: null}]);
-  t.equal(plan.render().path, '/versioned/1.0/test');
+  await t.test('Route with version', async t => {
+    const plan = await r.plot({method: 'GET', path: '/versioned/1.0/test', websocket: false});
+    t.same(plan.steps, [{}, {testcase: 'bar'}, {action: 'baz', ext: null}]);
+    t.equal(plan.render().path, '/versioned/1.0/test');
 
-  const plan2 = r.plot({method: 'GET', path: '/versioned/1.0/test.xml', websocket: false});
-  t.same(plan2.steps, [{}, {testcase: 'bar'}, {action: 'baz', ext: 'xml'}]);
-  t.equal(plan2.render().path, '/versioned/1.0/test.xml');
+    const plan2 = await r.plot({method: 'GET', path: '/versioned/1.0/test.xml', websocket: false});
+    t.same(plan2.steps, [{}, {testcase: 'bar'}, {action: 'baz', ext: 'xml'}]);
+    t.equal(plan2.render().path, '/versioned/1.0/test.xml');
 
-  const plan3 = r.plot({method: 'GET', path: '/versioned/2.4/test', websocket: false});
-  t.same(plan3.steps, [{}, {testcase: 'foo'}, {action: 'bar', ext: null}]);
-  t.equal(plan3.render().path, '/versioned/2.4/test');
+    const plan3 = await r.plot({method: 'GET', path: '/versioned/2.4/test', websocket: false});
+    t.same(plan3.steps, [{}, {testcase: 'foo'}, {action: 'bar', ext: null}]);
+    t.equal(plan3.render().path, '/versioned/2.4/test');
 
-  const plan4 = r.plot({method: 'GET', path: '/versioned/2.4/test.xml', websocket: false});
-  t.same(plan4.steps, [{}, {testcase: 'foo'}, {action: 'bar', ext: 'xml'}]);
-  t.equal(plan4.render().path, '/versioned/2.4/test.xml');
-  t.same(r.plot({method: 'GET', path: '/versioned/3.0/test', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/versioned/3.4/test', websocket: false}), null);
-  t.same(r.plot({method: 'GET', path: '/versioned/0.3/test', websocket: false}), null);
-  t.end();
-});
+    const plan4 = await r.plot({method: 'GET', path: '/versioned/2.4/test.xml', websocket: false});
+    t.same(plan4.steps, [{}, {testcase: 'foo'}, {action: 'bar', ext: 'xml'}]);
+    t.equal(plan4.render().path, '/versioned/2.4/test.xml');
+    t.same(await r.plot({method: 'GET', path: '/versioned/3.0/test', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/versioned/3.4/test', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/versioned/0.3/test', websocket: false}), null);
+  });
 
-t.test('Route with version at the end', t => {
-  const plan = r.plot({method: 'GET', path: '/versioned/too/1.0', websocket: false});
-  t.same(plan.steps, [{controller: 'too'}, {action: 'foo'}]);
-  t.equal(plan.render().path, '/versioned/too/1.0');
+  await t.test('Route with version at the end', async t => {
+    const plan = await r.plot({method: 'GET', path: '/versioned/too/1.0', websocket: false});
+    t.same(plan.steps, [{controller: 'too'}, {action: 'foo'}]);
+    t.equal(plan.render().path, '/versioned/too/1.0');
 
-  const plan2 = r.plot({method: 'GET', path: '/versioned/too/2.0', websocket: false});
-  t.same(plan2.steps, [{controller: 'too'}, {action: 'bar'}]);
-  t.equal(plan2.render().path, '/versioned/too/2.0');
-  t.end();
-});
+    const plan2 = await r.plot({method: 'GET', path: '/versioned/too/2.0', websocket: false});
+    t.same(plan2.steps, [{controller: 'too'}, {action: 'bar'}]);
+    t.equal(plan2.render().path, '/versioned/too/2.0');
+  });
 
-t.test('Nameless placeholder', t => {
-  const plan = r.plot({method: 'GET', path: '/missing/foo/name', websocket: false});
-  t.same(plan.steps, [{controller: 'missing', action: 'placeholder', '': 'foo'}]);
-  t.equal(plan.render().path, '/missing/foo/name');
+  await t.test('Nameless placeholder', async t => {
+    const plan = await r.plot({method: 'GET', path: '/missing/foo/name', websocket: false});
+    t.same(plan.steps, [{controller: 'missing', action: 'placeholder', '': 'foo'}]);
+    t.equal(plan.render().path, '/missing/foo/name');
 
-  const plan2 = r.plot({method: 'GET', path: '/missing/foo/bar/name', websocket: false});
-  t.same(plan2.steps, [{controller: 'missing', action: 'wildcard', '': 'foo/bar'}]);
-  t.equal(plan2.render().path, '/missing/foo/bar/name');
-  t.equal(plan2.render({'': 'bar/baz'}).path, '/missing/bar/baz/name');
+    const plan2 = await r.plot({method: 'GET', path: '/missing/foo/bar/name', websocket: false});
+    t.same(plan2.steps, [{controller: 'missing', action: 'wildcard', '': 'foo/bar'}]);
+    t.equal(plan2.render().path, '/missing/foo/bar/name');
+    t.equal(plan2.render({'': 'bar/baz'}).path, '/missing/bar/baz/name');
 
-  const plan3 = r.plot({method: 'GET', path: '/missing/too/test', websocket: false});
-  t.same(plan3.steps, [{controller: 'missing', action: 'too', '': 'test'}]);
-  t.equal(plan3.render().path, '/missing/too/test');
-  t.same(r.plot({method: 'GET', path: '/missing/too/tset', websocket: false}), null);
+    const plan3 = await r.plot({method: 'GET', path: '/missing/too/test', websocket: false});
+    t.same(plan3.steps, [{controller: 'missing', action: 'too', '': 'test'}]);
+    t.equal(plan3.render().path, '/missing/too/test');
+    t.same(await r.plot({method: 'GET', path: '/missing/too/tset', websocket: false}), null);
 
-  const plan4 = r.plot({method: 'GET', path: '/missing/too', websocket: false});
-  t.same(plan4.steps, [{controller: 'missing', action: 'too', '': 'missing'}]);
-  t.equal(plan4.render().path, '/missing/too');
-  t.end();
-});
+    const plan4 = await r.plot({method: 'GET', path: '/missing/too', websocket: false});
+    t.same(plan4.steps, [{controller: 'missing', action: 'too', '': 'missing'}]);
+    t.equal(plan4.render().path, '/missing/too');
+  });
 
-t.test('Unknown type (matches nothing)', t => {
-  const r2 = new Router();
-  r2.any('/<foo:does_not_exist>').to({fail: true});
-  t.same(r2.plot({method: 'GET', path: '/', websocket: false}), null);
-  t.same(r2.plot({method: 'GET', path: '/test', websocket: false}), null);
-  t.same(r2.plot({method: 'GET', path: '/23', websocket: false}), null);
-  t.end();
+  await t.test('Unknown type (matches nothing)', async t => {
+    const r2 = new Router();
+    r2.any('/<foo:does_not_exist>').to({fail: true});
+    t.same(await r2.plot({method: 'GET', path: '/', websocket: false}), null);
+    t.same(await r2.plot({method: 'GET', path: '/test', websocket: false}), null);
+    t.same(await r2.plot({method: 'GET', path: '/23', websocket: false}), null);
+  });
 });

@@ -6,6 +6,12 @@ t.test('Condition app', async t => {
 
   if (app.mode === 'development') app.log.level = 'debug';
 
+  app.router.addCondition('asyncParam', async (ctx, name) => {
+    const params = await ctx.params();
+    if (params.get(name) !== null) return true;
+    return false;
+  });
+
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
   t.notSame(app.router.cache, null);
 
@@ -41,6 +47,12 @@ t.test('Condition app', async t => {
     .to(ctx => ctx.render({text: 'Mixed conditions'}));
   t.same(app.router.cache, null);
 
+  app
+    .any('/async')
+    .requires('asyncParam', 'foo')
+    .to(ctx => ctx.render({text: 'Async condition'}));
+  t.same(app.router.cache, null);
+
   const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Hello World', async () => {
@@ -74,6 +86,12 @@ t.test('Condition app', async t => {
     (await ua.getOk('/mixed', {headers: {Host: 'mojojs.org', 'X-Test': 'Bender'}}))
       .statusIs(200)
       .bodyIs('Mixed conditions');
+  });
+
+  await t.test('Async condition', async () => {
+    (await ua.getOk('/async')).statusIs(404);
+    (await ua.getOk('/async?foo=bar')).statusIs(200).bodyIs('Async condition');
+    (await ua.getOk('/async?bar=foo')).statusIs(404);
   });
 
   await ua.stop();
