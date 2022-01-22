@@ -59,8 +59,8 @@ export class ServerRequest extends Body {
     return this._ip ?? null;
   }
 
-  get method(): string | undefined {
-    return this.raw.method;
+  get method(): string | null {
+    return this.raw.method ?? null;
   }
 
   get path(): string | null {
