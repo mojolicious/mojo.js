@@ -130,7 +130,7 @@ export class App {
     if ((await this.hooks.runHook('router:before', ctx)) === true) return;
     if ((await this.router.dispatch(ctx)) === true) return;
 
-    await ctx.notFound();
+    if (ctx.isWebSocket !== true) await ctx.notFound();
   }
 
   get mode(): string {
