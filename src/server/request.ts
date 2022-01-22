@@ -19,7 +19,6 @@ export class ServerRequest extends Body {
   _protocol: string | undefined = undefined;
   _query: Params | undefined = undefined;
   _reverseProxy: boolean;
-  _url: URL | undefined = undefined;
   _userinfo: string | null | undefined = undefined;
 
   constructor(stream: IncomingMessage, options: ServerRequestOptions) {
