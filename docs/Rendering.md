@@ -288,9 +288,6 @@ Helpers are little functions you can use in templates as well as controller code
 const serialized = ctx.inspect([1, 2, 3]);
 ```
 
-While there can be any number of different types of helpers, we usually split them up into two categories. Generic
-helpers like  `ctx.inspect()`, which can be useful in any given context, and template specific helpers like `ctx.tag()`.
-
 #### Generic Helpers
 
 These generic helpers are currently available by default:
@@ -311,9 +308,104 @@ const serialized = ctx.inpsect({hello: 'world'});
 
 Serialize data structure for debugging.
 
-#### Template Helpers
+#### Exception Helpers
 
-These template helpers are currently available by default:
+These exception helpers are currently available by default:
+
+##### `exception`
+
+```js
+await ctx.exception(new Error('Something went wrong!'));
+```
+
+Render an exception response in the appropriate format. Uses content negotiation to delegate to more specific exception
+helpers for HTTP and WebSockets.
+
+##### `htmlException`
+
+```js
+await ctx.htmlException(new Error('Something went wrong!'));
+```
+
+Render an HTML response and set the response status to `500`.
+
+##### `htmlNotFound`
+
+```js
+await ctx.htmlNotFound();
+```
+
+Render an HTML response and set the response status to `404`.
+
+##### `httpException`
+
+```js
+await ctx.httpException(new Error('Something went wrong!'));
+```
+
+Log the exception and render an HTTP exception response in the appropriate format and set the response status to `500`.
+Uses content negotiation to delegate to more specific exception helpers for HTML, JSON and plain text rendering.
+
+##### `jsonException`
+
+```js
+await ctx.jsonException(new Error('Something went wrong!'));
+```
+
+Render a JSON response and set the response status to `500`.
+
+##### `jsonNotFound`
+
+```js
+await ctx.jsonNotFound();
+```
+
+Render a JSON response and set the response status to `404`.
+
+##### `notFound`
+
+```js
+await ctx.notFound();
+```
+
+Render a not found response in the appropriate format. Uses content negotiation to delegate to more specific exception
+helpers for HTTP and WebSockets.
+
+##### `txtException`
+
+```js
+await ctx.txtException(new Error('Something went wrong!'));
+```
+
+Render a plain text response and set the response status to `500`.
+
+##### `txtNotFound`
+
+```js
+await ctx.txtNotFound();
+```
+
+Render a plain text response and set the response status to `404`.
+
+##### `websocketException`
+
+```js
+await ctx.websocketException(new Error('Something went wrong!'));
+```
+
+Log the exception and close the WebSocket connection with an `1011` error code.
+
+#### View Helpers
+
+These view helpers are currently available by default:
+
+##### `include`
+
+```
+%= await ctx.include('_navbar')
+```
+
+Include a partial template.
 
 ##### `mojoFaviconTag`
 

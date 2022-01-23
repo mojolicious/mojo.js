@@ -19,6 +19,7 @@ import {Logger} from './logger.js';
 import {Mime} from './mime.js';
 import {MockRequest} from './mock/request.js';
 import {MockResponse} from './mock/response.js';
+import defaultHelpersPlugin from './plugins/default-helpers.js';
 import exceptionHelpersPlugin from './plugins/exception-helpers.js';
 import headerConditionsPlugin from './plugins/header-conditions.js';
 import mtEnginePlugin from './plugins/mt-engine.js';
@@ -74,9 +75,10 @@ export class App {
     const isDev = this._mode === 'development';
     this.log = new Logger({historySize: isDev ? 10 : 0, level: isDev ? 'trace' : 'info'});
 
-    this.plugin(mtEnginePlugin);
+    this.plugin(defaultHelpersPlugin);
     this.plugin(exceptionHelpersPlugin);
     this.plugin(headerConditionsPlugin);
+    this.plugin(mtEnginePlugin);
     this.plugin(viewHelpersPlugin);
   }
 
