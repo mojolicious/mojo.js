@@ -9,9 +9,19 @@ interface Command {
   usage: string;
 }
 
+/**
+ * Command line interface class.
+ */
 export class CLI {
+  /**
+   * Paths to search for commands.
+   */
   commandPaths: string[] = [Path.currentFile().sibling('cli').toString()];
+  /**
+   * Registered commands.
+   */
   commands: Record<string, Command> = {};
+
   _app: WeakRef<App>;
   _loaded: boolean | undefined = undefined;
 
@@ -19,10 +29,16 @@ export class CLI {
     this._app = new WeakRef(app);
   }
 
+  /**
+   * Add a command.
+   */
   addCommand(name: string, command: Command): void {
     this.commands[name] = command;
   }
 
+  /**
+   * Start command line interface.
+   */
   async start(command?: string, ...args: string[]): Promise<void> {
     if (this._loaded === undefined) await this._loadCommands();
 

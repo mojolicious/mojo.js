@@ -31,9 +31,19 @@ interface FileUpload {
 
 type TLSSocket = Socket & {encrypted: boolean | undefined};
 
+/**
+ * HTTP message body base class.
+ */
 export class Body {
+  /**
+   * Automatically decompress message body if necessary.
+   */
   autoDecompress = true;
+  /**
+   * Low-level HTTP message.
+   */
   raw: IncomingMessage;
+
   _form: Params | undefined = undefined;
 
   constructor(stream: IncomingMessage) {
@@ -44,10 +54,16 @@ export class Body {
     yield* this.createReadStream();
   }
 
+  /**
+   * Get message body as `Buffer` object.
+   */
   async buffer(): Promise<Buffer> {
     return Buffer.concat(await this._consumeBody());
   }
 
+  /**
+   * Get message body as a readable stream.
+   */
   createReadStream(): Readable {
     if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return this.raw;
 
@@ -56,6 +72,9 @@ export class Body {
     return gunzip;
   }
 
+  /**
+   * Get async iterator for uploaded files from message body.
+   */
   async *files(options?: UploadOptions): AsyncIterableIterator<FileUpload> {
     if (this._isForm() === false) return;
 
@@ -69,6 +88,9 @@ export class Body {
     }
   }
 
+  /**
+   * Get form parameters from message body.
+   */
   async form(options?: UploadOptions): Promise<Params> {
     if (this._form === undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -80,42 +102,69 @@ export class Body {
     return this._params;
   }
 
+  /**
+   * Get HTTP header from message.
+   */
   get(name: string): string | undefined {
     const header = this.raw.headers[name.toLowerCase()];
     return Array.isArray(header) ? header.join(',') : header;
   }
 
+  /**
+   * Get HTTP headers from message.
+   */
   get headers(): IncomingHttpHeaders {
     return this.raw.headers;
   }
 
+  /**
+   * Get HTML message body as `@mojojs/dom` object.
+   */
   async html(): Promise<DOM> {
     return new DOM(await this.text());
   }
 
+  /**
+   * Check if underlying socket was encrypted with TLS.
+   */
   get isSecure(): boolean {
     const socket = this.raw.socket as TLSSocket;
     return socket.encrypted ?? false;
   }
 
+  /**
+   * Get JSON message body as parsed data structure.
+   */
   async json(): Promise<JSONValue> {
     return JSON.parse((await this.buffer()).toString());
   }
 
+  /**
+   * Pipe message body to writable stream.
+   */
   async pipe(writer: Writable): Promise<void> {
     return await new Promise((resolve, reject) => {
       this.createReadStream().on('error', reject).pipe(writer).on('unpipe', resolve);
     });
   }
 
+  /**
+   * Get message body as string.
+   */
   async text(charset: BufferEncoding = 'utf8'): Promise<string> {
     return (await this.buffer()).toString(charset);
   }
 
+  /**
+   * Get XML message body as `@mojojs/dom` object.
+   */
   async xml(): Promise<DOM> {
     return new DOM(await this.text(), {xml: true});
   }
 
+  /**
+   * Get YAML message body as parsed data structure.
+   */
   async yaml(): Promise<unknown> {
     return yaml.load((await this.buffer()).toString());
   }
