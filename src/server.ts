@@ -30,8 +30,6 @@ export class Server {
   _workers: number;
 
   constructor(app: App, options: ServerOptions = {}) {
-    app.server = this;
-
     this.app = app;
     this.reverseProxy = options.reverseProxy ?? false;
 

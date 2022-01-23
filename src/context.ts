@@ -62,6 +62,7 @@ class Context extends EventEmitter {
    * Non-persistent data storage and exchange for the current request.
    */
   stash: Record<string, any> = {};
+
   _flash: SessionData | undefined = undefined;
   _params: Params | undefined = undefined;
   _session: Record<string, any> | undefined = undefined;
