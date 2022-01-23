@@ -26,14 +26,41 @@ declare interface Context {
 
 const ABSOLUTE = /^[a-zA-Z][a-zA-Z0-9]*:\/\//;
 
+/**
+ * Context class.
+ */
 class Context extends EventEmitter {
+  /**
+   * Application this context belongs to.
+   */
   app: App;
+  /**
+   * Format for HTTP exceptions.
+   */
   exceptionFormat: string;
+  /**
+   * WebSocket JSON mode.
+   */
   jsonMode = false;
+  /**
+   * Logger with request id.
+   */
   log: ChildLogger;
+  /**
+   * Router dispatch plan.
+   */
   plan: Plan | null = null;
+  /**
+   * HTTP request information.
+   */
   req: ServerRequest;
+  /**
+   * HTTP response information.
+   */
   res: ServerResponse;
+  /**
+   * Non-persistent data storage and exchange for the current request.
+   */
   stash: Record<string, any> = {};
   _flash: SessionData | undefined = undefined;
   _params: Params | undefined = undefined;
@@ -54,6 +81,9 @@ class Context extends EventEmitter {
     (this as MojoContext).exception(error);
   }
 
+  /**
+   * Select best possible representation for resource.
+   */
   accepts(allowed?: string[]): string[] | null {
     const formats = this.app.mime.detect(this.req.headers.accept ?? '');
     const stash = this.stash;
@@ -65,10 +95,16 @@ class Context extends EventEmitter {
     return results.length > 0 ? results : null;
   }
 
+  /**
+   * Application config shortcut.
+   */
   get config(): Record<string, any> {
     return this.app.config;
   }
 
+  /**
+   * Data storage persistent only for the next request.
+   */
   async flash(): Promise<Record<string, any>> {
     if (this._flash === undefined) {
       const session = await this.session();
@@ -89,41 +125,68 @@ class Context extends EventEmitter {
     return this._flash;
   }
 
+  /**
+   * Handle WebSocket upgrade, used by servers.
+   */
   handleUpgrade(ws: WebSocket): void {
     this._ws = new WeakRef(ws);
     this.emit('connection', ws);
     ws.on('error', error => (this as MojoContext).exception(error));
   }
 
+  /**
+   * Home directory shortcut.
+   */
   get home(): Path {
     return this.app.home;
   }
 
+  /**
+   * Check if WebSocket connection has been accepted.
+   */
   get isAccepted(): boolean {
     return this.listenerCount('connection') > 0;
   }
 
+  /**
+   * Check if WebSocket connection has been established.
+   */
   get isEstablished(): boolean {
     return this._ws !== null;
   }
 
+  /**
+   * Check if session is active.
+   */
   get isSessionActive(): boolean {
     return this._session !== undefined;
   }
 
+  /**
+   * Check if HTTP request is a WebSocket handshake.
+   */
   get isWebSocket(): boolean {
     return this.req.isWebSocket;
   }
 
+  /**
+   * Accept WebSocket connection and activate JSON mode.
+   */
   json(fn: WebSocketHandler): this {
     this.jsonMode = true;
     return this.on('connection', fn as () => void);
   }
 
+  /**
+   * Model shortcut.
+   */
   get models(): Record<string, any> {
     return this.app.models;
   }
 
+  /**
+   * GET and POST parameters.
+   */
   async params(options?: BusboyConfig): Promise<Params> {
     if (this._params === undefined) {
       const req = this.req;
@@ -136,10 +199,16 @@ class Context extends EventEmitter {
     return this._params;
   }
 
+  /**
+   * Accept WebSocket connection.
+   */
   plain(fn: WebSocketHandler): this {
     return this.on('connection', fn as () => void);
   }
 
+  /**
+   * Send `302` redirect response.
+   */
   async redirectTo(target: string, options: {status?: number; values?: Record<string, any>} = {}): Promise<void> {
     await this.res
       .status(options.status ?? 302)
@@ -147,6 +216,9 @@ class Context extends EventEmitter {
       .send();
   }
 
+  /**
+   * Render dynamic content.
+   */
   async render(options: RenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
     if (typeof options === 'string') options = {view: options};
     if (stash !== undefined) Object.assign(this.stash, stash);
@@ -161,6 +233,9 @@ class Context extends EventEmitter {
     return await app.renderer.respond(this, result, {status: options.status});
   }
 
+  /**
+   * Try to render dynamic content to string.
+   */
   async renderToString(options: RenderOptions, stash?: Record<string, any>): Promise<string | null> {
     if (typeof options === 'string') options = {view: options};
     Object.assign(this.stash, stash);
@@ -168,6 +243,9 @@ class Context extends EventEmitter {
     return result === null ? null : result.output.toString();
   }
 
+  /**
+   * Automatically select best possible representation for resource.
+   */
   async respondTo(spec: Record<string, MojoAction>): Promise<void> {
     const formats = this.accepts() ?? [];
 
@@ -185,23 +263,38 @@ class Context extends EventEmitter {
     await this.res.status(204).send();
   }
 
+  /**
+   * Send static file.
+   */
   async sendFile(file: Path): Promise<void> {
     return await this.app.static.serveFile(this, file);
   }
 
+  /**
+   * Get JSON schema for validation.
+   */
   schema(schema: Record<string, any> | string): ValidatorFunction | null {
     return this.app.validator.schema(schema);
   }
 
+  /**
+   * Persistent data storage for the next few requests.
+   */
   async session(): Promise<SessionData> {
     if (this._session === undefined) this._session = (await this.app.session.load(this)) ?? {};
     return this._session;
   }
 
+  /**
+   * HTTP/WebSocket user agent shortcut.
+   */
   get ua(): UserAgent {
     return this.app.ua;
   }
 
+  /**
+   * Generate URL for route of path.
+   */
   urlFor(target: string | undefined, values?: Record<string, any>): string | null {
     if (target === undefined || target === 'current') {
       if (this.plan === null) return null;
@@ -217,11 +310,17 @@ class Context extends EventEmitter {
     return this._urlForPath(route.render(values), route.hasWebSocket());
   }
 
+  /**
+   * Generate URL for static file.
+   */
   urlForFile(path: string): string {
     if (ABSOLUTE.test(path)) return path;
     return this.req.baseURL + this.app.static.filePath(path);
   }
 
+  /**
+   * Established WebSocket connection.
+   */
   get ws(): WebSocket | null {
     return this._ws?.deref() ?? null;
   }

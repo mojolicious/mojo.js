@@ -318,8 +318,8 @@ These exception helpers are currently available by default:
 await ctx.exception(new Error('Something went wrong!'));
 ```
 
-Render an exception response in the appropriate format. Uses content negotiation to delegate to more specific exception
-helpers for HTTP and WebSockets.
+Render an exception response in the appropriate format by delegating to more specific exception helpers for HTTP and
+WebSockets.
 
 ##### `htmlException`
 
@@ -343,8 +343,8 @@ Render an HTML response and set the response status to `404`.
 await ctx.httpException(new Error('Something went wrong!'));
 ```
 
-Log the exception and render an HTTP exception response in the appropriate format and set the response status to `500`.
-Uses content negotiation to delegate to more specific exception helpers for HTML, JSON and plain text rendering.
+Log the exception and render an HTTP exception response in the appropriate format and set the response status to `500`
+by delegating to more specific exception helpers for HTML, JSON and plain text rendering.
 
 ##### `jsonException`
 
@@ -368,8 +368,8 @@ Render a JSON response and set the response status to `404`.
 await ctx.notFound();
 ```
 
-Render a not found response in the appropriate format. Uses content negotiation to delegate to more specific exception
-helpers for HTTP and WebSockets.
+Render a not found response in the appropriate format by delegating to more specific exception helpers for HTTP and
+WebSockets.
 
 ##### `txtException`
 
