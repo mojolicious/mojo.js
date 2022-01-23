@@ -236,6 +236,12 @@ await ctx.render({text: 'Hello.', format: 'txt'});
 await ctx.render({text: Buffer.from(...), format: 'png'});
 ```
 
+While most common MIME types are supported by default, you can be easily add your own via `app.mime`.
+
+```js
+app.mime.custom.foo = 'application/foo';
+```
+
 ### Stash Data
 
 Any of the native JavaScript data types can be passed to templates as references through `ctx.stash`.
