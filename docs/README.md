@@ -18,7 +18,7 @@ Starting a single file prototype from scratch and growing it into a well-structu
 
 A more detailed introduction to the mojo.js router.
 
-* [Rendering](Rendering.md)  (Progress: 20%)
+* [Rendering](Rendering.md)  (Progress: 50%)
 
 Generating content with the mojo.js renderer.
 
