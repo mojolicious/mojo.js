@@ -441,6 +441,57 @@ Generate `<link>` tag for CSS file.
 
 Generate HTML tag.
 
+### Content Negotiation
+
+For resources with different representations and that require truly RESTful content negotiation you can also use
+`ctx.respondTo()`.
+
+```js
+// GET /hello (Accept: application/json) -> "json"
+// GET /hello (Accept: application/xml)  -> "xml"
+// GET /hello.json                       -> "json"
+// GET /hello.xml                        -> "xml"
+await ctx.respondTo({
+  json: ctx => ctx.render({json: {hello: 'world'}}),
+  xml:  ctx => ctx.render({text: '<hello>world</hello>', format: 'xml'})
+});
+```
+
+The best possible representation will be automatically selected from the `ext` stash value or `Accept` request header.
+
+```js
+// GET /hello (Accept: application/json) -> "json"
+// GET /hello (Accept: text/html)        -> "html"
+// GET /hello (Accept: image/png)        -> "any"
+// GET /hello.json                       -> "json"
+// GET /hello.html                       -> "html"
+// GET /hello.png                        -> "any"
+await ctx.respondTo({
+  json: ctx => ctx.render({json: {hello: 'world'}}),
+  html: ctx => ctx.render({template: 'hello'}, {message: 'world'}),
+  any:  ctx => ctx.render({text: '', status: 204})
+});
+```
+
+And if no viable representation could be found, the `any` fallback will be used or an empty `204` response rendered
+automatically.
+
+```js
+// GET /hello                      -> "html"
+// GET /hello (Accept: text/html)  -> "html"
+// GET /hello (Accept: text/xml)   -> "xml"
+// GET /hello (Accept: text/plain) -> null
+// GET /hello.html                 -> "html"
+// GET /hello.xml                  -> "xml"
+// GET /hello.txt                  -> null
+const format = ctx.accepts(['html', 'xml']);
+if (format !== null) {
+  ...
+}
+```
+
+For even more advanced negotiation logic you can also use `ctx.accepts()`.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
