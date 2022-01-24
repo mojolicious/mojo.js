@@ -2,6 +2,9 @@ import type {App} from '../app.js';
 import crypto from 'crypto';
 import * as util from '../util.js';
 
+/**
+ * Minimal application generator command.
+ */
 export default async function genLiteAppCommand(app: App, args: string[]): Promise<void> {
   const name = args[1] ?? 'index.js';
 

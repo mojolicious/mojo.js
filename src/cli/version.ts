@@ -1,6 +1,9 @@
 import {version} from '../core.js';
 import {tablify} from '../util.js';
 
+/**
+ * Version command.
+ */
 export default async function versionCommand(): Promise<void> {
   const table = [
     ['node', `(${process.version}, ${process.platform})`],

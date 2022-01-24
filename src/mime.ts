@@ -1,6 +1,12 @@
 import mime from 'mime-types';
 
+/**
+ * MIME class.
+ */
 export class Mime {
+  /**
+   * Custom MIME types.
+   */
   custom: Record<string, string> = {
     html: 'text/html; charset=utf-8',
     json: 'application/json; charset=utf-8',
@@ -9,6 +15,9 @@ export class Mime {
   };
   _reverseCustom: Record<string, string> | undefined = undefined;
 
+  /**
+   * Detect file extensions from `Accept` header value.
+   */
   detect(accepts: string): string[] {
     if (this._reverseCustom === undefined) {
       this._reverseCustom = {};
@@ -35,6 +44,9 @@ export class Mime {
     return exts;
   }
 
+  /**
+   * Get MIME type for file extension.
+   */
   extType(ext: string): string | null {
     return this.custom[ext] ?? mime.types[ext] ?? null;
   }

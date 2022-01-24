@@ -1,6 +1,9 @@
 import type {App} from '../app.js';
 import type {MojoContext} from '../types.js';
 
+/**
+ * Header condition plugin.
+ */
 export default function headerConditionsPlugin(app: App): void {
   const router = app.router;
   router.addCondition('headers', headerCondition);

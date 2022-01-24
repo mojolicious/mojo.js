@@ -4,6 +4,9 @@ import type {URL} from 'url';
 import https from 'https';
 import {HTTPTransport} from './http.js';
 
+/**
+ * HTTPS transport class.
+ */
 export class HTTPSTransport extends HTTPTransport {
   agent = new https.Agent();
 

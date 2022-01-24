@@ -2,6 +2,9 @@ import type {MojoApp, MojoContext} from '../types.js';
 import type {InspectOptions} from 'util';
 import {inspect} from 'util';
 
+/**
+ * Default helper plugin.
+ */
 export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('currentRoute', currentRoute);
   app.decorateContext('inspect', (object: Record<string, any>, options: InspectOptions) => inspect(object, options));

@@ -1,6 +1,9 @@
 import type {CookieOptions} from '../types.js';
 import {decodeURIComponentSafe} from '../util.js';
 
+/**
+ * Parse cookie.
+ */
 export function parseCookie(cookie: string): Record<string, string> {
   const values: Record<string, string> = {};
 
@@ -15,6 +18,9 @@ export function parseCookie(cookie: string): Record<string, string> {
   return values;
 }
 
+/**
+ * Stringify cookie.
+ */
 export function stringifyCookie(name: string, value: string, options: CookieOptions = {}): string {
   const cookie: string[] = [name + '=' + encodeURIComponent(value)];
 

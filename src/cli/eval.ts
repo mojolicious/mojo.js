@@ -1,6 +1,9 @@
 import type {MojoApp} from '../types.js';
 import nopt from 'nopt';
 
+/**
+ * Eval command.
+ */
 export default async function evalCommand(app: MojoApp, args: string[]): Promise<void> {
   const parsed = nopt({verbose: Boolean}, {v: '--verbose'}, args, 1);
   const output = await eval('(async () => (' + parsed.argv.remain[0] + '))()');

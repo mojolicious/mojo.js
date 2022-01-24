@@ -5,6 +5,9 @@ import {tablify} from '../util.js';
 import chalk from 'chalk';
 import nopt from 'nopt';
 
+/**
+ * Routes command.
+ */
 export default async function routesCommand(app: MojoApp, args: string[]): Promise<void> {
   const parsed = nopt({verbose: Boolean}, {v: '--verbose'}, args, 1);
   const table: string[][] = [];

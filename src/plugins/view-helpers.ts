@@ -1,6 +1,9 @@
 import type {MojoApp, MojoContext, RenderOptions} from '../types.js';
 import DOM, {SafeString} from '@mojojs/dom';
 
+/**
+ * View helper plugin.
+ */
 export default function viewHelpersPlugin(app: MojoApp): void {
   app.addHelper('include', include);
 

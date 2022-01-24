@@ -4,13 +4,25 @@ import http from 'http';
 import Stream from 'stream';
 import {UserAgentResponse} from '../response.js';
 
+/**
+ * HTTP transport class.
+ */
 export class HTTPTransport {
+  /**
+   * HTTP agent.
+   */
   agent = new http.Agent();
 
+  /**
+   * Destroy active keep-alive connections.
+   */
   destroy(): void {
     this.agent.destroy();
   }
 
+  /**
+   * Perform HTTP request.
+   */
   async request(config: UserAgentRequestOptions): Promise<UserAgentResponse> {
     const options = this._prepareOptions(config);
 

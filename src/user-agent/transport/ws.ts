@@ -3,7 +3,13 @@ import {WebSocket} from '../../websocket.js';
 import {UserAgentResponse} from '../response.js';
 import WS from 'ws';
 
+/**
+ * WebSocket transport class.
+ */
 export class WSTransport {
+  /**
+   * Establish WebSocket connection.
+   */
   async connect(config: UserAgentWebSocketOptions): Promise<WebSocket> {
     const ws = new WS(config.url ?? '', config.protocols, {headers: config.headers});
     return await new Promise((resolve, reject) => {

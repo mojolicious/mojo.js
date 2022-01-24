@@ -6,6 +6,9 @@ import Path from '@mojojs/path';
 import Template from '@mojojs/template';
 import LRU from 'lru-cache';
 
+/**
+ * `@mojojs/template` engine plugin.
+ */
 export default function mtEnginePlugin(app: App): void {
   app.renderer.addEngine('mt', new MTEngine());
 }

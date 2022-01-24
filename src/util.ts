@@ -5,6 +5,9 @@ import Path from '@mojojs/path';
 import Template from '@mojojs/template';
 import chalk from 'chalk';
 
+/**
+ * Capture STDOUT/STDERR output.
+ */
 export async function captureOutput(
   fn: () => Promise<void> | void,
   options: {stderr?: boolean; stdout?: boolean} = {}
@@ -40,6 +43,9 @@ export async function captureOutput(
   return output.length > 0 && Buffer.isBuffer(output[0]) ? Buffer.concat(output) : output.join('');
 }
 
+/**
+ * Create directory for generator commands.
+ */
 export async function cliCreateDir(path: string): Promise<void> {
   const dir = new Path(process.cwd(), ...path.split('/'));
   const stdout = process.stdout;
@@ -52,6 +58,9 @@ export async function cliCreateDir(path: string): Promise<void> {
   await dir.mkdir({recursive: true});
 }
 
+/**
+ * Create file for generator commands.
+ */
 export async function cliCreateFile(
   path: string,
   template: string,
@@ -73,6 +82,9 @@ export async function cliCreateFile(
   }
 }
 
+/**
+ * Fix package.json file for generator commands.
+ */
 export async function cliFixPackage(): Promise<void> {
   const file = new Path(process.cwd(), 'package.json');
 
@@ -94,6 +106,9 @@ export async function cliFixPackage(): Promise<void> {
   await file.writeFile(JSON.stringify(json, null, 2));
 }
 
+/**
+ * Decode URI component, but do not throw an exception if it fails.
+ */
 export function decodeURIComponentSafe(value: string): string | null {
   try {
     return decodeURIComponent(value);
@@ -102,6 +117,9 @@ export function decodeURIComponentSafe(value: string): string | null {
   }
 }
 
+/**
+ * Generate exception context.
+ */
 export async function exceptionContext(
   error: Error,
   options: {lines?: number} = {}
@@ -132,6 +150,9 @@ export async function exceptionContext(
   return context;
 }
 
+/**
+ * JSON pointers.
+ */
 export function jsonPointer(value: JSONValue, pointer: string): JSONValue | undefined {
   if (pointer.startsWith('/') === false) return pointer.length > 0 ? null : value;
 
@@ -151,6 +172,9 @@ export function jsonPointer(value: JSONValue, pointer: string): JSONValue | unde
   return data;
 }
 
+/**
+ * Load modules.
+ */
 export async function loadModules(dirs: string[]): Promise<Record<string, any>> {
   const modules: Record<string, any> = {};
 
@@ -171,8 +195,14 @@ export async function loadModules(dirs: string[]): Promise<Record<string, any>> 
   return modules;
 }
 
+/**
+ * Sleep asynchronously.
+ */
 export const sleep = setTimeout;
 
+/**
+ * Tablify data structure.
+ */
 export function tablify(rows: string[][] = []): string {
   const spec: number[] = [];
 

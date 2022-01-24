@@ -3,6 +3,9 @@ import type {MojoContext} from '../types.js';
 import {Logger} from '../logger.js';
 import {exceptionContext} from '../util.js';
 
+/**
+ * Exception helper plugin.
+ */
 export default function exceptionHelpersPlugin(app: App): void {
   app.addHelper('exception', exception);
   app.addHelper('htmlException', htmlException);

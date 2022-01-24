@@ -4,6 +4,9 @@ import nopt from 'nopt';
 
 const EVENTS = ['SIGINT', 'SIGTERM', 'SIGUSR2'];
 
+/**
+ * Server command.
+ */
 export default async function serverCommand(app: MojoApp, args: string[]): Promise<void> {
   const parsed = nopt(
     {

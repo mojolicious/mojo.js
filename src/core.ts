@@ -11,6 +11,9 @@ export const version = JSON.parse(
   Path.currentFile().dirname().sibling('package.json').readFileSync().toString()
 ).version;
 
+/**
+ * Create a new mojo.js application.
+ */
 export default function mojo(options?: AppOptions): App {
   const app = new App(options);
 

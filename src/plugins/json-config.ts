@@ -1,6 +1,9 @@
 import type {ConfigOptions, MojoApp} from '../types.js';
 import Path from '@mojojs/path';
 
+/**
+ * JSON config plugin.
+ */
 export default function jsonConfigPlugin(app: MojoApp, options: ConfigOptions): void {
   if (options.ext === undefined) options.ext = 'json';
   loadConfig(app, options, JSON.parse);

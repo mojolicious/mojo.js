@@ -1,6 +1,9 @@
 import type {MojoApp} from '../types.js';
 import repl from 'repl';
 
+/**
+ * Repl command.
+ */
 export default async function replCommand(app: MojoApp): Promise<void> {
   repl.start().context.app = app;
 }

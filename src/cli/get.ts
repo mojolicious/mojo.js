@@ -6,6 +6,9 @@ import nopt from 'nopt';
 type IntrospectedRequest = ClientRequest & {getRawHeaderNames: () => string[]; getHeader: (name: string) => string};
 type IntrospectedResponse = IncomingMessage & {req: IntrospectedRequest};
 
+/**
+ * Get command.
+ */
 export default async function getCommand(app: MojoApp, args: string[]): Promise<void> {
   const parsed = nopt(
     {body: String, header: [String, Array], insecure: Boolean, method: String, redirect: Boolean, verbose: Boolean},

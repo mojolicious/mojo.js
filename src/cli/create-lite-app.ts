@@ -1,6 +1,9 @@
 import type {App} from '../app.js';
 import * as util from '../util.js';
 
+/**
+ * Application generator command.
+ */
 export default async function genLiteAppCommand(app: App, args: string[]): Promise<void> {
   const stdout = process.stdout;
   stdout.write('Generating single file application:\n');

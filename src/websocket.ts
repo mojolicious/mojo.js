@@ -19,9 +19,19 @@ declare interface WebSocket {
   emit: <T extends keyof WebSocketEvents>(event: T, ...args: Parameters<WebSocketEvents[T]>) => boolean;
 }
 
+/**
+ * WebSocket connection class.
+ */
 class WebSocket extends EventEmitter {
+  /**
+   * WebSocket handshake.
+   */
   handshake: UserAgentResponse | null;
+  /**
+   * JSON mode.
+   */
   jsonMode: boolean;
+
   _raw: WS;
 
   constructor(ws: WS, handshake: UserAgentResponse | null, options: {jsonMode: boolean}) {
@@ -51,14 +61,23 @@ class WebSocket extends EventEmitter {
     }
   }
 
+  /**
+   * Close WebSocket connection.
+   */
   close(code?: number, reason?: string): void {
     this._raw.close(code, reason);
   }
 
+  /**
+   * Send WebSocket ping frame.
+   */
   async ping(data: Buffer): Promise<void> {
     return await new Promise(resolve => this._raw.ping(data, undefined, () => resolve()));
   }
 
+  /**
+   * Send WebSocket message.
+   */
   async send(message: JSONValue | Buffer): Promise<void> {
     if (this.jsonMode === false) return await new Promise(resolve => this._raw.send(message, () => resolve()));
     return new Promise(resolve => this._raw.send(JSON.stringify(message), () => resolve()));

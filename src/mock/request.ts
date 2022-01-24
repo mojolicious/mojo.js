@@ -2,6 +2,9 @@ import type {MockRequestOptions} from '../types.js';
 import {IncomingMessage} from 'http';
 import {Socket} from 'net';
 
+/**
+ * Mock request class.
+ */
 export class MockRequest extends IncomingMessage {
   constructor(options: MockRequestOptions = {}) {
     super(new Socket());

@@ -19,10 +19,23 @@ interface ServerOptions {
   workers?: number;
 }
 
+/**
+ * Server class.
+ */
 export class Server {
+  /**
+   * Application this server handles.
+   */
   app: App;
+  /**
+   * Reverse proxy mode.
+   */
   reverseProxy: boolean;
+  /**
+   * Server URLs.
+   */
   urls: URL[] = [];
+
   _cluster: boolean;
   _listen: string[];
   _servers: Array<http.Server | https.Server> = [];
@@ -40,6 +53,9 @@ export class Server {
     this._workers = options.workers ?? os.cpus().length;
   }
 
+  /**
+   * Turn URL into listen arguments.
+   */
   static listenArgsForURL(url: URL): ListenArgs {
     const listen = [];
 
@@ -59,6 +75,9 @@ export class Server {
     return listen;
   }
 
+  /**
+   * Start server.
+   */
   async start(): Promise<void> {
     await this.app.hooks.runHook('server:start', this.app);
     if (this._cluster === true && cluster.isPrimary === true) {
@@ -72,6 +91,9 @@ export class Server {
     }
   }
 
+  /**
+   * Stop server.
+   */
   async stop(): Promise<void> {
     await Promise.all(this._servers.map(async server => await new Promise(resolve => server.close(resolve))));
     await this.app.hooks.runHook('server:stop', this.app);

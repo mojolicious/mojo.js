@@ -3,13 +3,22 @@ import type {ValidateFunction} from 'ajv';
 import {ValidatorResult} from './validator/result.js';
 import Ajv from 'ajv';
 
+/**
+ * JSON schema validator class.
+ */
 export class Validator {
   _ajv = new Ajv();
 
+  /**
+   * Add JSON schema.
+   */
   addSchema(schema: JSONObject, name?: string): void {
     this._ajv.addSchema(schema, name);
   }
 
+  /**
+   * Get JSON schema validation function.
+   */
   schema(schema: JSONObject | string): ValidatorFunction | null {
     const ajv = this._ajv;
 
