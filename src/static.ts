@@ -3,8 +3,17 @@ import crypto from 'crypto';
 import path from 'path';
 import Path from '@mojojs/path';
 
+/**
+ * Static file server class.
+ */
 export class Static {
+  /**
+   * Prefix to use for all static files.
+   */
   prefix = '/public';
+  /**
+   * Directories to serve static files from, first one has the highest precedence.
+   */
   publicPaths = [Path.currentFile().sibling('..', 'vendor', 'public').toString()];
 
   async dispatch(ctx: MojoContext): Promise<boolean> {
@@ -28,11 +37,18 @@ export class Static {
     return false;
   }
 
+  /**
+   * Get static file path with prefix.
+   */
   filePath(path: string): string {
     if (path.startsWith('/') === false) path = '/' + path;
     return this.prefix + path;
   }
 
+  /**
+   * Check freshness of request by comparing the `If-None-Match` and `If-Modified-Since` request headers to the `ETag`
+   * and `Last-Modified` response headers.
+   */
   isFresh(ctx: MojoContext, options: {etag?: string; lastModified?: Date} = {}): boolean {
     const etag = options.etag;
     const lastModified = options.lastModified;
@@ -62,6 +78,9 @@ export class Static {
     return false;
   }
 
+  /**
+   * Serve a specific file.
+   */
   async serveFile(ctx: MojoContext, file: Path): Promise<void> {
     const app = ctx.app;
     if ((await app.hooks.runHook('static:before', ctx, file)) === true) return;

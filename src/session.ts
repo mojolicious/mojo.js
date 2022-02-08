@@ -7,19 +7,46 @@ import {promisify} from 'util';
 const scrypt = promisify(crypto.scrypt);
 const randomBytes = promisify(crypto.randomBytes);
 
+/**
+ * Session manager class.
+ */
 export class Session {
+  /**
+   * Name for session cookies, defaults to `mojo`.
+   */
   cookieName = 'mojo';
+  /**
+   * Path for session cookies, defaults to `/`.
+   */
   cookiePath = '/';
+  /**
+   * Default time for sessions to expire in seconds from now, defaults to `3600`. The expiration timeout gets refreshed
+   * for every request. Setting the value to `0` will allow sessions to persist until the browser window is closed,
+   * this can have security implications though.
+   */
   expiration = 3600;
+  /**
+   * Set the `HttpOnly` value on all session cookies.
+   */
   httpOnly = true;
+  /**
+   * Set the `SameSite` value on all session cookies, defaults to `lax`.
+   */
   sameSite: 'lax' | 'strict' | 'none' = 'lax';
+  /**
+   * Set the secure flag on all session cookies, so that browsers send them only over HTTPS connections.
+   */
   secure = false;
+
   _app: WeakRef<App>;
 
   constructor(app: App) {
     this._app = new WeakRef(app);
   }
 
+  /**
+   * Decrypt cookie.
+   */
   static async decrypt(secrets: string[], encrypted: string): Promise<string | null> {
     const match = encrypted.match(/^([^-]+)--([^-]+)--([^-]+)$/);
     if (match === null) return null;
@@ -44,6 +71,9 @@ export class Session {
     return null;
   }
 
+  /**
+   * Encrypt cookie.
+   */
   static async encrypt(secret: string, value: string): Promise<string> {
     const key = await scrypt(secret, 'salt', 32);
     const iv = await randomBytes(12);
@@ -53,6 +83,9 @@ export class Session {
     return encrypted + '--' + iv.toString('base64') + '--' + cipher.getAuthTag().toString('base64');
   }
 
+  /**
+   * Load session data from encrypted cookie.
+   */
   async load(ctx: Context): Promise<SessionData | null> {
     const cookie = ctx.req.getCookie(this.cookieName);
     if (cookie === null) return null;
@@ -75,6 +108,9 @@ export class Session {
     return data;
   }
 
+  /**
+   * Store session data in encrypted cookie.
+   */
   async store(ctx: Context, data: SessionData): Promise<void> {
     if (typeof data.expires !== 'number') {
       const expiration = data.expiration ?? this.expiration;
