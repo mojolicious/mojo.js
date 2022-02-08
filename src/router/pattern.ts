@@ -18,13 +18,35 @@ interface PlaceholderTypes {
 
 type ASTNode = [symbol, ...string[]];
 
+/**
+ * Route pattern class.
+ */
 export class Pattern {
+  /**
+   * Pattern constraints.
+   */
   constraints: PlaceholderTypes;
+  /**
+   * Pattern default values.
+   */
   defaults: Record<string, any>;
+  /**
+   * Placeholder names.
+   */
   placeholders: string[] = [];
+  /**
+   * Pattern in compiled regular expression form.
+   */
   regex: RegExp | undefined = undefined;
+  /**
+   * Placeholder types.
+   */
   types: PlaceholderTypes;
+  /**
+   * Raw unparsed pattern.
+   */
   unparsed = '';
+
   _ast: ASTNode[] = [];
 
   constructor(
@@ -38,12 +60,18 @@ export class Pattern {
     if (path !== undefined) this.parse(path);
   }
 
+  /**
+   * Match pattern against entire path.
+   */
   match(path: string, options: MatchOptions): Record<string, any> | null {
     const result = this.matchPartial(path, options);
     if (result === null || (result.remainder.length > 0 && result.remainder !== '/')) return null;
     return result.captures;
   }
 
+  /**
+   * Match pattern against path and return the remainder.
+   */
   matchPartial(path: string, options: MatchOptions): (Record<string, any> & {remainder: string}) | null {
     if (this.regex === undefined) this.regex = this._compile(options.isEndpoint);
     const match = path.match(this.regex);
@@ -60,12 +88,18 @@ export class Pattern {
     return {remainder: path.replace(prefix, ''), captures};
   }
 
+  /**
+   * Parse pattern.
+   */
   parse(path = ''): this {
     this.unparsed = path.replace(/^\/*|\/+/g, '/').replace(/\/$/, '');
     this._tokenize();
     return this;
   }
 
+  /**
+   * Render pattern into a path with parameters.
+   */
   render(values: Record<string, string>, options: MatchOptions): string {
     let optional = values.ext == null;
 

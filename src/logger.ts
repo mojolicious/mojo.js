@@ -23,10 +23,23 @@ const LEVEL: Record<string, number> = {
   trace: 7
 };
 
+/**
+ * A simple logger class.
+ */
 export class Logger {
+  /**
+   * Log destination stream.
+   */
   destination: NodeJS.WritableStream;
+  /**
+   * Log formatter.
+   */
   formatter: LogFormatter;
+  /**
+   * The last few logged messages.
+   */
   history: LogEvent[] = [];
+
   _historySize: number;
   _level = 7;
 
@@ -40,10 +53,16 @@ export class Logger {
     this._historySize = options.historySize ?? 0;
   }
 
+  /**
+   * Create a child logger that will include context information with every log message.
+   */
   child(context: LogContext): ChildLogger {
     return new ChildLogger(this, context);
   }
 
+  /**
+   * Log formatter with color highlighting.
+   */
   static colorFormatter(data: LogEvent): string {
     const formatted = Logger.stringFormatter(data);
     if (data.level === 'error' || data.level === 'fatal') return chalk.red(formatted);
@@ -51,36 +70,60 @@ export class Logger {
     return formatted;
   }
 
+  /**
+   * Log `debug` message.
+   */
   debug(msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.debug) this._log('debug', msg, context);
   }
 
+  /**
+   * Log formatter without color highlighting.
+   */
   static stringFormatter(data: LogEvent): string {
     if (data.requestId !== undefined) return `[${data.time}] [${data.level}] [${data.requestId}] ${data.msg}\n`;
     return `[${data.time}] [${data.level}] ${data.msg}\n`;
   }
 
+  /**
+   * Log formatter for systemd.
+   */
   static systemdFormatter(data: LogEvent): string {
     if (data.requestId === undefined) return `<${LEVEL[data.level]}>[${data.level.substring(0, 1)}] ${data.msg}\n`;
     return `<${LEVEL[data.level]}>[${data.level.substring(0, 1)}] [${data.requestId}] ${data.msg}\n`;
   }
 
+  /**
+   * Log `error` message.
+   */
   error(msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.error) this._log('error', msg, context);
   }
 
+  /**
+   * Log `fatal` message.
+   */
   fatal(msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.fatal) this._log('fatal', msg, context);
   }
 
+  /**
+   * Log `infor` message.
+   */
   info(msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.info) this._log('info', msg, context);
   }
 
+  /**
+   * JSON log formatter.
+   */
   static jsonFormatter(data: LogEvent): string {
     return JSON.stringify(data);
   }
 
+  /**
+   * Currently active log level.
+   */
   get level(): string {
     return Object.keys(LEVEL).find(key => LEVEL[key] === this._level) as string;
   }
@@ -90,10 +133,16 @@ export class Logger {
     this._level = LEVEL[level];
   }
 
+  /**
+   * Log `trace` message.
+   */
   trace(msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.trace) this._log('trace', msg, context);
   }
 
+  /**
+   * Log `warn` message.
+   */
   warn(msg: string, context?: LogContext): void {
     if (this._level >= LEVEL.warn) this._log('warn', msg, context);
   }
@@ -116,6 +165,9 @@ export class Logger {
   }
 }
 
+/**
+ * Child logger class.
+ */
 export class ChildLogger {
   parent: Logger;
   context: LogContext;
@@ -125,26 +177,44 @@ export class ChildLogger {
     this.context = context;
   }
 
+  /**
+   * Log `debug` message.
+   */
   debug(msg: string): void {
     this.parent.debug(msg, this.context);
   }
 
+  /**
+   * Log `error` message.
+   */
   error(msg: string): void {
     this.parent.error(msg, this.context);
   }
 
+  /**
+   * Log `fatal` message.
+   */
   fatal(msg: string): void {
     this.parent.fatal(msg, this.context);
   }
 
+  /**
+   * Log `info` message.
+   */
   info(msg: string): void {
     this.parent.info(msg, this.context);
   }
 
+  /**
+   * Log `trace` message.
+   */
   trace(msg: string): void {
     this.parent.trace(msg, this.context);
   }
 
+  /**
+   * Log `warn` message.
+   */
   warn(msg: string): void {
     this.parent.warn(msg, this.context);
   }
