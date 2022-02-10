@@ -16,6 +16,9 @@ export class Static {
    */
   publicPaths = [Path.currentFile().sibling('..', 'vendor', 'public').toString()];
 
+  /**
+   * Serve static files.
+   */
   async dispatch(ctx: MojoContext): Promise<boolean> {
     const req = ctx.req;
     const unsafePath = req.path;

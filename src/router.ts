@@ -17,12 +17,31 @@ type RouteCondition = (ctx: MojoContext, requirements: any) => boolean;
 
 const PLACEHOLDER = {};
 
+/**
+ * Router class.
+ */
 export class Router extends Route {
+  /**
+   * Routing cache.
+   */
   cache: LRU<string, Plan> | null = new LRU({max: 500});
+  /**
+   * Contains all available conditions.
+   */
   conditions: Record<string, RouteCondition> = {};
+  /**
+   * Directories to look for controllers in, first one has the highest precedence.
+   */
   controllerPaths: string[] = [];
+  /**
+   * Already loaded controllers.
+   */
   controllers: Record<string, any> = {};
+  /**
+   * Registered placeholder types, by default only `num` is already defined.
+   */
   types: Record<string, PlaceholderType> = {num: /[0-9]+/};
+
   _lookupIndex: RouteIndex | undefined = undefined;
 
   constructor() {
@@ -30,16 +49,25 @@ export class Router extends Route {
     this.root = this;
   }
 
+  /**
+   * Register a condition.
+   */
   addCondition(name: string, fn: RouteCondition): this {
     this.conditions[name] = fn;
     return this;
   }
 
+  /**
+   * Register a placeholder type.
+   */
   addType(name: string, value: PlaceholderType): this {
     this.types[name] = value;
     return this;
   }
 
+  /**
+   * Match routes and dispatch to actions with and without controllers.
+   */
   async dispatch(ctx: MojoContext): Promise<boolean> {
     const plan = await this._getPlan(ctx);
     if (plan === null) return false;
@@ -77,6 +105,9 @@ export class Router extends Route {
     return true;
   }
 
+  /**
+   * Find route by name and cache all results for future lookups.
+   */
   lookup(name: string): Route | null {
     if (this._lookupIndex === undefined) {
       const defaultNames: RouteIndex = {};
@@ -97,6 +128,9 @@ export class Router extends Route {
     return this._lookupIndex[name] === undefined ? null : this._lookupIndex[name];
   }
 
+  /**
+   * Plot a route.
+   */
   async plot(spec: RouteSpec): Promise<Plan | null> {
     const plan = new Plan();
     const steps = plan.steps;
@@ -111,6 +145,9 @@ export class Router extends Route {
     return plan.endpoint === undefined ? null : plan;
   }
 
+  /**
+   * Prepare controllers for routing.
+   */
   async warmup(): Promise<void> {
     Object.assign(this.controllers, await util.loadModules(this.controllerPaths));
   }

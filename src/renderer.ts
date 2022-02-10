@@ -21,20 +21,50 @@ interface ViewEngine {
   render: (ctx: MojoContext, options: RenderOptions) => Promise<Buffer>;
 }
 
+/**
+ * Renderer class.
+ */
 export class Renderer {
+  /**
+   * Try to negotiate compression for dynamically generated response content and gzip compress it automatically.
+   */
   autoCompress = true;
+  /**
+   * The default template engine to use for rendering in cases where auto-detection doesn't work, like for inline
+   * templates, defaults to `mt`.
+   */
   defaultEngine = 'mt';
+  /**
+   * The default format to render if format is not set, defaults to `html`. Note that changing the default away from
+   * `html` is not recommended, as it has the potential to break, for example, plugins with bundled templates.
+   */
   defaultFormat = 'html';
+  /**
+   * Template engines.
+   */
   engines: Record<string, ViewEngine> = {};
+  /**
+   * Minimum output size in bytes required for compression to be used if enabled, defaults to `860`.
+   */
   minCompressSize = 860;
+  /**
+   * Directories to look for templates in, first one has the highest precedence.
+   */
   viewPaths: string[] = [Path.currentFile().sibling('..', 'vendor', 'views').toString()];
+
   _viewIndex: ViewIndex | undefined = undefined;
 
+  /**
+   * Register a template engine.
+   */
   addEngine(name: string, engine: ViewEngine): this {
     this.engines[name] = engine;
     return this;
   }
 
+  /**
+   * Find a view for render parameters.
+   */
   findView(options: RenderOptions): ViewSuggestion | null {
     const view = options.view;
     const index = this._viewIndex;
@@ -54,6 +84,9 @@ export class Renderer {
     return fallback ?? views[0];
   }
 
+  /**
+   * Render output through one of the template engines.
+   */
   async render(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
     const log = ctx.log;
     if (options.text !== undefined) {
@@ -120,6 +153,9 @@ export class Renderer {
     return null;
   }
 
+  /**
+   * Finalize dynamically generated response content and compress it if possible.
+   */
   async respond(ctx: MojoContext, result: EngineResult, options: {status?: number}): Promise<boolean> {
     const res = ctx.res;
     if (res.isSent) return false;
@@ -141,6 +177,9 @@ export class Renderer {
     return true;
   }
 
+  /**
+   * Prepare views for rendering.
+   */
   async warmup(): Promise<void> {
     const viewIndex: ViewIndex = (this._viewIndex = {});
     for (const dir of this.viewPaths.map(path => new Path(path))) {
