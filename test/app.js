@@ -321,11 +321,11 @@ t.test('App', async t => {
   });
 
   await t.test('Hello World', async () => {
-    t.equal(app.router.cache.itemCount, 0);
+    t.equal(app.router.cache.size, 0);
     (await ua.getOk('/')).statusIs(200).headerIs('Content-Length', '11').bodyIs('Hello Mojo!');
-    t.equal(app.router.cache.itemCount, 1);
+    t.equal(app.router.cache.size, 1);
     (await ua.getOk('/')).statusIs(200).headerLike('Content-Length', /1/).bodyLike(/Mojo/);
-    t.equal(app.router.cache.itemCount, 1);
+    t.equal(app.router.cache.size, 1);
   });
 
   await t.test('IRI', async () => {

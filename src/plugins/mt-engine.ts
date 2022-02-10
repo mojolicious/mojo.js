@@ -14,7 +14,7 @@ export default function mtEnginePlugin(app: App): void {
 }
 
 class MTEngine {
-  cache: LRU<string, (data?: Record<string, any>) => Promise<string>> = new LRU(100);
+  cache: LRU<string, (data?: Record<string, any>) => Promise<string>> = new LRU({max: 100});
 
   async render(ctx: MojoContext, options: RenderOptions): Promise<Buffer> {
     let template;
