@@ -259,6 +259,9 @@ export class App {
     return this.router.patch(...args);
   }
 
+  /**
+   * Register plugin.
+   */
   plugin(plugin: Plugin, options: Record<string, any> = {}): any {
     return plugin(this, options);
   }
