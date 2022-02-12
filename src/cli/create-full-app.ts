@@ -70,14 +70,14 @@ const jsController = `export default class Controller {
 const mtLayout = `<!DOCTYPE html>
 <html>
   <head>
-    <%%= ctx.mojoFaviconTag() %>
+    %%= ctx.mojoFaviconTag()
     <title>Welcome</title>
   </head>
   <body><%%== view.content %></body>
 </html>
 `;
 
-const mtView = `<%% view.layout = 'default'; %>
+const mtView = `%% view.layout = 'default';
 <h2><%%= msg %></h2>
 <p>
   This page was generated from the template "views/example/welcome.html.mt" and the layout
