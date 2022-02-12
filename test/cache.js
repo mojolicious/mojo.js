@@ -7,16 +7,20 @@ t.test('Cache', t => {
     t.equal(cache.max, 100);
     cache.max = 2;
     t.same(cache.get('foo'), undefined);
+    t.equal(cache.size, 0);
 
     cache.set('foo', 'bar');
     t.equal(cache.get('foo'), 'bar');
+    t.equal(cache.size, 1);
     cache.set('bar', 'baz');
     t.equal(cache.get('foo'), 'bar');
     t.equal(cache.get('bar'), 'baz');
+    t.equal(cache.size, 2);
     cache.set('baz', 'yada');
     t.same(cache.get('foo'), undefined);
     t.equal(cache.get('bar'), 'baz');
     t.equal(cache.get('baz'), 'yada');
+    t.equal(cache.size, 2);
     cache.set('yada', '23');
     t.same(cache.get('foo'), undefined);
     t.same(cache.get('bar'), undefined);
@@ -42,6 +46,7 @@ t.test('Cache', t => {
     t.same(cache.get('foo'), undefined);
     cache.set('foo', 'bar');
     t.same(cache.get('foo'), undefined);
+    t.equal(cache.size, 0);
     t.end();
   });
 
