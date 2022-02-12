@@ -1,8 +1,8 @@
 import type {MojoContext, PlaceholderType} from './types.js';
+import {Cache} from './cache.js';
 import {Plan} from './router/plan.js';
 import {Route} from './router/route.js';
 import * as util from './util.js';
-import LRU from 'lru-cache';
 
 type RouteIndex = Record<string, Route>;
 
@@ -24,7 +24,7 @@ export class Router extends Route {
   /**
    * Routing cache.
    */
-  cache: LRU<string, Plan> | null = new LRU({max: 500});
+  cache: Cache<Plan> | null = new Cache();
   /**
    * Contains all available conditions.
    */

@@ -1,10 +1,10 @@
 import type {App} from '../app.js';
 import type {MojoContext, RenderOptions} from '../types.js';
 import {createHash} from 'crypto';
+import {Cache} from '../cache.js';
 import {xmlEscape} from '@mojojs/dom';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
-import LRU from 'lru-cache';
 
 /**
  * `@mojojs/template` engine plugin.
@@ -14,7 +14,7 @@ export default function mtEnginePlugin(app: App): void {
 }
 
 class MTEngine {
-  cache: LRU<string, (data?: Record<string, any>) => Promise<string>> = new LRU({max: 100});
+  cache: Cache<(data?: Record<string, any>) => Promise<string>> = new Cache();
 
   async render(ctx: MojoContext, options: RenderOptions): Promise<Buffer> {
     let template;
