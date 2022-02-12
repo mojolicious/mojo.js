@@ -10,6 +10,8 @@ t.test('App', async t => {
   app.config.appName = 'Test';
   app.models.test = {it: 'works'};
 
+  app.defaults.whatever = 'works';
+
   app.validator.addSchema(
     {
       type: 'object',
@@ -35,6 +37,9 @@ t.test('App', async t => {
 
   // PUT /yaml
   app.put('/yaml', async ctx => ctx.render({yaml: await ctx.req.yaml()}));
+
+  // GET /inline
+  app.get('/inline', async ctx => ctx.render({inline: '<%= whatever %>'}));
 
   // GET /nested
   // *   /nested/methods
@@ -357,6 +362,10 @@ t.test('App', async t => {
     (await ua.putOk('/yaml', {yaml: {hello: 'world'}})).statusIs(200).yamlIs({hello: 'world'});
     (await ua.putOk('/yaml', {yaml: {i: ['♥ mojo']}})).statusIs(200).yamlIs({i: ['♥ mojo']});
     (await ua.putOk('/yaml', {yaml: {i: ['♥ mojo']}})).statusIs(200).yamlIs('♥ mojo', '/i/0');
+  });
+
+  await t.test('Inline view', async () => {
+    (await ua.getOk('/inline')).statusIs(200).bodyIs('works');
   });
 
   await t.test('Not found', async () => {
@@ -827,11 +836,15 @@ t.test('App', async t => {
   });
 
   await t.test('Mock context', async () => {
+    app.defaults.test = 'works';
     const ctx = app.newMockContext();
     t.same(ctx.req.raw.method, 'GET');
     t.same(ctx.req.raw.url, '/');
     t.same(ctx.req.raw.headers, {});
     t.same(ctx.currentRoute(), null);
+    t.equal(ctx.stash.test, 'works');
+    ctx.stash.test = null;
+    t.equal(app.defaults.test, 'works');
 
     ctx.stash.hello = 'mojo';
     t.equal(ctx.stash.hello, 'mojo');

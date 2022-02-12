@@ -55,6 +55,10 @@ export class App {
    */
   config: Record<string, any>;
   /**
+   * Default stash values.
+   */
+  defaults: Record<string, any> = {};
+  /**
    * Detect if the application has been imported and disable the command line interface if it has.
    */
   detectImport: boolean;
@@ -220,7 +224,9 @@ export class App {
    * Create a context for application.
    */
   newContext(req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): MojoContext {
-    return new this._contextClass(this, req, res, options);
+    const ctx = new this._contextClass(this, req, res, options);
+    Object.assign(ctx.stash, this.defaults);
+    return ctx;
   }
 
   /**
@@ -228,7 +234,9 @@ export class App {
    */
   newMockContext(options?: MockRequestOptions): MojoContext {
     const req = new MockRequest(options);
-    return new this._contextClass(this, req, new MockResponse(req), {isReverseProxy: false, isWebSocket: false});
+    const ctx = new this._contextClass(this, req, new MockResponse(req), {isReverseProxy: false, isWebSocket: false});
+    Object.assign(ctx.stash, this.defaults);
+    return ctx;
   }
 
   /**
