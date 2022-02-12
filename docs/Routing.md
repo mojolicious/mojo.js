@@ -679,7 +679,7 @@ route with an optional wildcard placeholder.
 ```js
 // * /*
 router.any('/*whatever').to({whatever: '', fn: async ctx => {
-  const params = await ctx.params;
+  const params = await ctx.params();
   const whatever = params.whatever;
   await ctx.render({text: `/${whatever} did not match.`, status: 404});
 }});

@@ -498,6 +498,124 @@ if (format !== null) {
 
 For even more advanced negotiation logic you can also use `ctx.accepts()`.
 
+### Rendering exception and not_found Pages
+
+By now you've probably already encountered the built-in `404` (Not Found) and `500` (Server Error) pages, that get
+rendered automatically when you make a mistake. Those are fallbacks for when your own exception handling fails, which
+can be especially helpful during development. You can also render them manually with the helpers `ctx.exception` and
+`ctx.notFound`.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/divide/:dividend/by/:divisor', async ctx => {
+  const params = await ctx.params();
+  const dividend = parseInt(params.dividend);
+  const divisor = parseInt(params.divisor);
+
+  // 404
+  if (isNaN(dividend) || isNaN(divisor)) return ctx.notFound();
+
+  // 500
+  if (divisor === 0) return ctx.exception(new Error('Division by zero!'));
+
+  // 200
+  return ctx.render({text: `${dividend / divisor}`});
+});
+
+app.start();
+```
+
+You can also change the templates of those pages, since you most likely want to show your users something more closely
+related to your application in production. The renderer will always try to find `exception.${mode}.${format}.*` or
+`not_found.${mode}.${format}.*` before falling back to the built-in default templates.
+
+```
+%# views/exception.production.html.mt
+<!DOCTYPE html>
+<html>
+  <head><title>Server error</title></head>
+  <body>
+    <h1>Exception</h1>
+    <p><%= exception %></p>
+    <h1>Stash</h1>
+    <pre><%= ctx.inspect(ctx.stash) %></pre>
+  </body>
+</html>
+```
+
+### Layouts
+
+Most of the time when using `mt` templates you will want to wrap your generated content in an HTML skeleton, thanks to
+layouts that's absolutely trivial.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  await ctx.render({view: 'foo/bar'});
+});
+
+app.start();
+```
+```
+%# views/foo/bar.html.mt
+% view.layout = 'mylayout';
+Hello World!
+```
+```
+%# views/layouts/mylayout.html.mt
+<!DOCTYPE html>
+<html>
+  <head><title>MyApp</title></head>
+  <body><%== view.content %></body>
+</html>
+```
+
+You just select the right layout with `view.layout` and position the rendered content of the main template in the
+layout with `view.content`.
+
+```js
+await ctx.render({view: 'mytemplate', layout: 'mylayout'});
+```
+
+Instead of using `view.layout` you can also pass the layout directly to `ctx.render`.
+
+### Partial Views
+
+You can break up bigger templates into smaller, more manageable chunks. These partial views can also be shared with
+other templates. Just use `ctx.include` to include one view into another.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  await ctx.render({view: 'foo/bar'});
+});
+
+app.start();
+```
+```
+%# views/foo/bar.html.mt
+<!DOCTYPE html>
+<html>
+  %= ctx.include({view: '_header'}, {title: 'Howdy'})
+  <body>Bar</body>
+</html>
+```
+```
+%# views/_header.html.mt
+<head><title><%= title %></title></head>
+```
+
+You can name partial views however you like, but a leading underscore is a commonly used naming convention.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
