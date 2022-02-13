@@ -616,6 +616,50 @@ app.start();
 
 You can name partial views however you like, but a leading underscore is a commonly used naming convention.
 
+### Reusable Template Blocks
+
+It's never fun to repeat yourself, that's why you can create reusable template blocks in `mt` that work very similar to
+normal `async` JavaScript functions, with the `<{blockName}>` and `<{/blockName}>` tags.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  await ctx.render({view: 'welcome'});
+});
+
+app.start();
+```
+```
+%# views/welcome.html.mt
+<{helloBlock(name)}>
+  Hello <%= name %>.
+<{/blockName}>
+<%= await helloBlock('Wolfgang') %>
+<%= await helloBlock('Baerbel') %>
+```
+
+A naive translation of the template to JavaScript code could look like this.
+
+```js
+let __output = '';
+const helloBlock = async name => {
+  let __output = '';
+  __output += 'Hello ';
+  __output += __escape(name);
+  __output += '.\n';
+  return __output;
+};
+__output += __escape(await helloBlock('Wolfgang'));
+__output += __escape(await helloBlock('Baerbel'));
+return __output;
+```
+
+While template blocks cannot be shared between templates, they are most commonly used to pass parts of a template to
+helpers.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
