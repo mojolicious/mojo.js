@@ -1,5 +1,6 @@
 import type {MojoApp, MojoContext, RenderOptions} from '../types.js';
-import DOM, {SafeString} from '@mojojs/dom';
+import DOM from '@mojojs/dom';
+import {SafeString} from '@mojojs/template';
 
 /**
  * View helper plugin.
