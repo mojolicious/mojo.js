@@ -635,7 +635,7 @@ app.start();
 %# views/welcome.html.mt
 <{helloBlock(name)}>
   Hello <%= name %>.
-<{/blockName}>
+<{/helloBlock}>
 <%= await helloBlock('Wolfgang') %>
 <%= await helloBlock('Baerbel') %>
 ```
@@ -649,7 +649,7 @@ const helloBlock = async name => {
   __output += 'Hello ';
   __output += __escape(name);
   __output += '.\n';
-  return __output;
+  return new SafeString(__output);
 };
 __output += __escape(await helloBlock('Wolfgang'));
 __output += __escape(await helloBlock('Baerbel'));
@@ -658,6 +658,92 @@ return __output;
 
 While template blocks cannot be shared between templates, they are most commonly used to pass parts of a template to
 helpers.
+
+### Adding Helpers
+
+You should always try to keep your actions small and reuse as much code as possible. Helpers make this very easy, they
+get passed the context object as first argument, and you can use them to do pretty much anything an action could do.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.addHelper('debug', (ctx, str) => {
+  ctx.app.log.debug(str);
+});
+
+app.get('/', async ctx => {
+  ctx.log('Hello from an action!');
+  await ctx.render({view: 'index'});
+});
+
+app.start();
+```
+```
+%# views/index.html.mt
+% ctx.debug('Hello from a template!');
+```
+
+Helpers can also accept template blocks, this for example, allows pleasant to use tag helpers and filters. Wrapping the
+helper result into a `SafeString` object can prevent accidental double escaping.
+
+```js
+import mojo from '@mojojs/core';
+import {SafeString} from '@mojojs/template';
+
+const app = mojo();
+
+app.addHelper('trimNewline', async (ctx, block) => {
+  const blockResult = await block();
+  const trimmedResult = blockRsult.toString().replaceAll('\n', '');
+  return new SafeString(trimmedResult);
+});
+
+app.get('/', async ctx => {
+  await ctx.render({view: 'index'});
+});
+
+app.start();
+```
+```
+%# views/index.html.mt
+<{someBlock}>
+  Some text.
+  %= 1 + 1
+  More text.
+<{/someBlock}>
+%= trimNewline(someBlock)
+```
+Of course helpers can also be specific to a single use case, such as adding headers in actions.
+
+```js
+import mojo from '@mojojs/core';
+import {SafeString} from '@mojojs/template';
+
+const app = mojo();
+
+app.addHelper('cacheControlNoCaching', ctx => {
+  ctx.res.set('Cache-Control', 'private, max-age=0, no-cache');
+});
+app.addHelper('cacheControlFiveMinutes', ctx => {
+  ctx.res.set('Cache-Control', 'public, max-age=300');
+});
+
+app.get('/news', async ctx => {
+  ctx.cacheControlNoCaching();
+  await ctx.render({text: 'Always up to date.'});
+});
+
+app.get('/some_older_story', async ctx => {
+  ctx.cacheControlFiveMinutes();
+  await ctx.render({text: 'This one can be cached for a bit.'});
+});
+
+app.start();
+```
+
+While helpers can also be redefined, this should only be done very carefully to avoid conflicts.
 
 ## Support
 
