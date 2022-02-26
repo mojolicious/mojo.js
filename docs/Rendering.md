@@ -674,7 +674,7 @@ app.addHelper('debug', (ctx, str) => {
 });
 
 app.get('/', async ctx => {
-  ctx.log('Hello from an action!');
+  ctx.debug('Hello from an action!');
   await ctx.render({view: 'index'});
 });
 
