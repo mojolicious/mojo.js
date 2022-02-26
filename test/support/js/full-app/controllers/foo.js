@@ -9,6 +9,7 @@ export default class FooController {
   }
 
   withView(ctx) {
+    if (ctx.stash.layout !== undefined) return ctx.render({view: 'foo/hello', layout: ctx.stash.layout});
     return ctx.render('foo/hello');
   }
 

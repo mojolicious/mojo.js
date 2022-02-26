@@ -880,6 +880,25 @@ t.test('App', async t => {
     t.equal(ctx2.req.baseURL, 'http://mojolicious.org');
   });
 
+  await t.test('Partial content', t => {
+    const ctx = app.newMockContext();
+    t.equal(ctx.content.foo.toString(), '');
+    ctx.content.foo = 'Works!';
+    t.equal(ctx.content.foo.toString(), 'Works!');
+    delete ctx.content.foo;
+    t.equal(ctx.content.foo.toString(), '');
+
+    ctx.contentFor('bar', '<p>Test</p>');
+    t.equal(ctx.content.bar.toString(), '<p>Test</p>');
+    ctx.content.header = 'Hello ';
+    ctx.content.header += 'Mojo!';
+    t.equal(ctx.content.header.toString(), 'Hello Mojo!');
+    ctx.contentFor('header', '!!');
+    t.equal(ctx.content.header.toString(), 'Hello Mojo!!!');
+
+    t.end();
+  });
+
   t.test('Forbidden helpers', t => {
     let result;
     try {

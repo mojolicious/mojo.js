@@ -1,3 +1,4 @@
+%= ctx.content.header
 Header
-<%== view.content %>
+<%= ctx.content.main %>
 Footer

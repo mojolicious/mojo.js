@@ -1,1 +1,1 @@
-Another variant: <%= view.content %>
+Another variant: <%= ctx.content.main %>

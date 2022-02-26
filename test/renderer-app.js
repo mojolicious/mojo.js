@@ -57,6 +57,6 @@ this <%= what %>
 
 const inlineLayout = `
 Header: <%= title %>
-<%== view.content %>
+<%= ctx.content.main %>
 Footer
 `;

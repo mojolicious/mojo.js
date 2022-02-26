@@ -40,8 +40,18 @@ t.test('Full app', async t => {
     (await ua.getOk('/renderer/inline/foo')).statusIs(200).bodyIs('Hello foo');
     (await ua.getOk('/renderer/inline/bar')).statusIs(200).bodyIs('Hello bar');
 
-    (await ua.getOk('/renderer/hello/foo')).statusIs(200).bodyLike(/Hey foo\r?\n/);
-    (await ua.getOk('/renderer/hello/bar')).statusIs(200).bodyLike(/Hey bar\r?\n/);
+    (await ua.getOk('/renderer/hello/foo'))
+      .statusIs(200)
+      .bodyUnlike(/<style>/)
+      .bodyLike(/Hey foo\r?\n/);
+    (await ua.getOk('/renderer/hello/bar'))
+      .statusIs(200)
+      .bodyUnlike(/<style>/)
+      .bodyLike(/Hey bar\r?\n/);
+    (await ua.getOk('/renderer/hello/layout/bar'))
+      .statusIs(200)
+      .bodyLike(/<style>/)
+      .bodyLike(/Hey bar\r?\n/);
 
     (await ua.putOk('/renderer/another.view')).statusIs(200).bodyLike(/User sri\r?\nis an admin\r?\n/);
 

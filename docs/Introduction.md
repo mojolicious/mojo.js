@@ -314,9 +314,9 @@ const inlineTemplate = `
 
 ## Layouts
 
-Layouts are special views that wrap around the result of another view, which is made available as `view.content` in the
-layout. Here we use the inline variant again for out single file app, but layouts are usually kept as separate files in
-a `views/layouts` directory.
+Layouts are special views that wrap around the result of another view, which is made available as `ctx.content.main` in
+the layout. Here we use the inline variant again for out single file app, but layouts are usually kept as separate
+files in a `views/layouts` directory.
 
 ```js
 import mojo from '@mojojs/core';
@@ -338,7 +338,7 @@ const defaultLayout = `
   <head>
     <title><%= title %></title>
   </head>
-  <body><%== view.content %></body>
+  <body><%= ctx.content.main %></body>
 </html>
 `;
 ```
@@ -734,7 +734,7 @@ Hello <%= name %>!
   <head>
     <title><%= title %></title>
   </head>
-  <body><%== view.content %></body>
+  <body><%= ctx.content.main %></body>
 </html>
 ```
 

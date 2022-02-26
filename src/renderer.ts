@@ -121,7 +121,7 @@ export class Renderer {
 
       if (options.inlineLayout !== undefined) {
         options.inline = options.inlineLayout;
-        options.content = result.output;
+        ctx.content.main = result.output.toString();
         log.trace('Rendering inline layout');
         return await this._renderInline(ctx, options);
       }
@@ -142,7 +142,7 @@ export class Renderer {
 
       if (options.layout !== undefined) {
         options.view = `layouts/${options.layout}`;
-        options.content = result.output;
+        ctx.content.main = result.output.toString();
         log.trace(`Rendering layout "${options.view}"`);
         return await this._renderView(ctx, options);
       }

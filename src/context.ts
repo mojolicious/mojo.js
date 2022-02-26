@@ -12,6 +12,7 @@ import EventEmitter from 'events';
 import {Params} from './body/params.js';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
+import {SafeString} from '@mojojs/template';
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
@@ -34,6 +35,17 @@ class Context extends EventEmitter {
    * Application this context belongs to.
    */
   app: App;
+  /**
+   * Partial content.
+   */
+  content: Record<string, string> = new Proxy(
+    {},
+    {
+      get: function (target: Record<string, string>, name: string): SafeString {
+        return new SafeString(target[name] ?? '');
+      }
+    }
+  );
   /**
    * Format for HTTP exceptions.
    */
@@ -101,6 +113,13 @@ class Context extends EventEmitter {
    */
   get config(): Record<string, any> {
     return this.app.config;
+  }
+
+  /**
+   * Append partial content to `ctx.content` buffers.
+   */
+  async contentFor(name: string, content: string | SafeString): Promise<void> {
+    this.content[name] += content;
   }
 
   /**

@@ -24,6 +24,7 @@ app.get('/variants').to('foo#variants');
 
 const renderer = app.any('/renderer');
 renderer.get('/hello/:name').to('foo#withView');
+renderer.get('/hello/layout/:name').to('foo#withView', {layout: 'default'});
 renderer.get('/inline/:name').to('foo#withInlineView');
 renderer.put('/another.view').to('foo#anotherView');
 

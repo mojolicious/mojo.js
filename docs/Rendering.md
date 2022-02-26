@@ -571,12 +571,12 @@ Hello World!
 <!DOCTYPE html>
 <html>
   <head><title>MyApp</title></head>
-  <body><%== view.content %></body>
+  <body><%== ctx.content.main %></body>
 </html>
 ```
 
 You just select the right layout with `view.layout` and position the rendered content of the main template in the
-layout with `view.content`.
+layout with `ctx.content.main`.
 
 ```js
 await ctx.render({view: 'mytemplate', layout: 'mylayout'});
@@ -744,6 +744,42 @@ app.start();
 ```
 
 While helpers can also be redefined, this should only be done very carefully to avoid conflicts.
+
+### Content Blocks
+
+The method `ctx.contentFor` allows you to pass whole blocks of content from one template to another. This can be very
+useful when your layout has distinct sections, such as sidebars, where content should be inserted by the template.
+
+```js
+import mojo from '@mojojs/core';
+import {SafeString} from '@mojojs/template';
+
+const app = mojo();
+
+app.get('/', async ctx => ctx.render({view: 'foo', layout: 'mylayout'}));
+
+app.start();
+```
+```
+%# views/foo.html.mt
+<{typeBlock}>
+  <meta http-equiv="Content-Type" content="text/html">
+<{/typeBlock}>
+% ctx.contentFor('header', await typeBlock());
+<div>Hello World!</div>
+<{pragmaBlock}>
+  <meta http-equiv="Pragma" content="no-cache">
+<{/pragmaBlock}>
+% ctx.contentFor('header', await pragmaBlock());
+```
+```
+%# views/layouts/mylayout.html.mt
+<!DOCTYPE html>
+<html>
+  <head><%= ctx.content.header %></head>
+  <body><%= ctx.content.main %></body>
+</html>
+```
 
 ### Forms
 

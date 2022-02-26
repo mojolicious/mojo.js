@@ -73,7 +73,7 @@ const mtLayout = `<!DOCTYPE html>
     %%= ctx.mojoFaviconTag()
     <title>Welcome</title>
   </head>
-  <body><%%== view.content %></body>
+  <body><%%= ctx.content.main %></body>
 </html>
 `;
 

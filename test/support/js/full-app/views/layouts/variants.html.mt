@@ -1,1 +1,1 @@
-Variant: <%= view.content %>
+Variant: <%= ctx.content.main %>
