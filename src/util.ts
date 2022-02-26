@@ -4,6 +4,7 @@ import {setTimeout} from 'timers/promises';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
 import chalk from 'chalk';
+export {SafeString} from '@mojojs/template';
 
 /**
  * Capture STDOUT/STDERR output.

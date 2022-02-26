@@ -689,8 +689,7 @@ Helpers can also accept template blocks, this for example, allows pleasant to us
 helper result into a `SafeString` object can prevent accidental double escaping.
 
 ```js
-import mojo from '@mojojs/core';
-import {SafeString} from '@mojojs/template';
+import mojo, {SafeString} from '@mojojs/core';
 
 const app = mojo();
 
@@ -719,7 +718,6 @@ Of course helpers can also be specific to a single use case, such as adding head
 
 ```js
 import mojo from '@mojojs/core';
-import {SafeString} from '@mojojs/template';
 
 const app = mojo();
 
@@ -752,7 +750,6 @@ useful when your layout has distinct sections, such as sidebars, where content s
 
 ```js
 import mojo from '@mojojs/core';
-import {SafeString} from '@mojojs/template';
 
 const app = mojo();
 

@@ -12,7 +12,7 @@ import EventEmitter from 'events';
 import {Params} from './body/params.js';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
-import {SafeString} from '@mojojs/template';
+import {SafeString} from './util.js';
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
