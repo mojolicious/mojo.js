@@ -713,7 +713,7 @@ app.start();
   %= 1 + 1
   More text.
 <{/someBlock}>
-%= trimNewline(someBlock)
+%= await trimNewline(someBlock)
 ```
 Of course helpers can also be specific to a single use case, such as adding headers in actions.
 
