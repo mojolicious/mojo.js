@@ -745,6 +745,50 @@ app.start();
 
 While helpers can also be redefined, this should only be done very carefully to avoid conflicts.
 
+### Forms
+
+Since most browsers only allow forms to be submitted with `GET` and `POST`, but not request methods like `PUT` or
+`DELETE`, they can be spoofed with an `_method` query parameter.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/', ctx => ctx.render({view: 'form'})).name('index');
+
+// PUT  /nothing
+// POST /nothing?_method=PUT
+app.put('/nothing', async ctx => {
+  const params = await ctx.params();
+  const value = params.whatever ?? '';
+  const flash = await ctx.flash();
+  flash.confirmation = `We did nothing with your value (${value}).`;
+  await ctx.redirectTo('index');
+});
+
+app.start();
+```
+```
+%# views/form.html.mt
+<!DOCTYPE html>
+<html>
+  <body>
+    % const flash = await ctx.flash();
+    % if (flash.confirmation !== null) {
+      <p><%= flash.confirmation %></p>
+    % }
+    <form method="POST" action="<%= ctx.urlFor('nothing') %>?_method=PUT">
+      <input type="text" name="whatever" value="I ♥ Mojolicious!" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>
+```
+
+`ctx.flash` and `ctx.redirectTo` are often used together to prevent double form submission, allowing users to receive a
+confirmation message that will vanish if they decide to reload the page they've been redirected to.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the

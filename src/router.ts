@@ -156,7 +156,15 @@ export class Router extends Route {
     const req = ctx.req;
     const realMethod = req.method;
     if (realMethod === null) return null;
-    const method = realMethod === 'HEAD' ? 'GET' : realMethod;
+    let method = realMethod;
+
+    if (realMethod === 'POST') {
+      const params = req.query;
+      const override = params.get('_method');
+      if (override !== null) method = override.toUpperCase();
+    }
+    if (method === 'HEAD') method = 'GET';
+
     const path = req.path;
     if (path === null) return null;
     const isWebSocket = ctx.isWebSocket;

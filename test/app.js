@@ -32,6 +32,12 @@ t.test('App', async t => {
   // * /methods
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
+  // * /method/override
+  const override = app.any('/method/override');
+  override.put(ctx => ctx.render({text: 'PUT'}));
+  override.post(ctx => ctx.render({text: 'POST'}));
+  override.any(ctx => ctx.render({text: 'Unhandled'}));
+
   // PUT /json
   app.put('/json', async ctx => ctx.render({json: await ctx.req.json()}));
 
@@ -350,6 +356,19 @@ t.test('App', async t => {
     (await ua.patchOk('/')).statusIs(200).bodyIs('Patch');
     (await ua.optionsOk('/')).statusIs(200).bodyIs('Options');
     (await ua.postOk('/')).statusIs(200).bodyIs('Post');
+  });
+
+  await t.test('Method overrides', async () => {
+    (await ua.getOk('/method/override?_method=POST')).statusIs(200).bodyIs('Unhandled');
+    (await ua.getOk('/method/override?_method=PUT')).statusIs(200).bodyIs('Unhandled');
+    (await ua.deleteOk('/method/override?_method=PUT')).statusIs(200).bodyIs('Unhandled');
+    (await ua.postOk('/method/override?_method=DELETE')).statusIs(200).bodyIs('Unhandled');
+
+    (await ua.postOk('/method/override?_method=PUT')).statusIs(200).bodyIs('PUT');
+    (await ua.postOk('/method/override?_method=POST')).statusIs(200).bodyIs('POST');
+    (await ua.postOk('/method/override')).statusIs(200).bodyIs('POST');
+
+    (await ua.putOk('/method/override?_method=DELETE')).statusIs(200).bodyIs('PUT');
   });
 
   await t.test('JSON', async () => {

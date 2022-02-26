@@ -84,8 +84,13 @@ export class ServerRequest extends Body {
 
   get query(): Params {
     if (this._query === undefined) {
-      const match = (this.raw.url as string).match(URL_RE);
-      this._query = match === null ? new Params() : new Params(match[7]);
+      const url = this.raw.url as string;
+      if (url.includes('?') === true) {
+        const match = url.match(URL_RE);
+        this._query = match !== null ? new Params(match[7]) : new Params();
+      } else {
+        this._query = new Params();
+      }
     }
     return this._query;
   }
