@@ -811,7 +811,7 @@ app.start();
     % if (flash.confirmation !== null) {
       <p><%= flash.confirmation %></p>
     % }
-    <form method="POST" action="<%= ctx.urlFor('nothing') %>?_method=PUT">
+    <form method="POST" action="<%= ctx.urlFor('nothing', {}, {query: {_method: 'PUT'}}) %>">
       <input type="text" name="whatever" value="I ♥ Mojolicious!" />
       <input type="submit" />
     </form>

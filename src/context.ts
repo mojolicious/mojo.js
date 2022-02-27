@@ -14,6 +14,8 @@ import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
 import {SafeString} from './util.js';
 
+type URLOptions = {query?: Record<string, string>};
+
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
 interface ContextEvents {
@@ -315,19 +317,19 @@ class Context extends EventEmitter {
   /**
    * Generate URL for route of path.
    */
-  urlFor(target: string | undefined, values?: Record<string, any>): string | null {
+  urlFor(target: string | undefined, values?: Record<string, any>, options: URLOptions = {}): string | null {
     if (target === undefined || target === 'current') {
       if (this.plan === null) return null;
       const result = this.plan.render(values);
-      return this._urlForPath(result.path, result.websocket);
+      return this._urlForPath(result.path, result.websocket, options);
     }
 
-    if (target.startsWith('/')) return this.req.baseURL + target;
+    if (target.startsWith('/')) return this._urlForPath(target, false, options);
     if (ABSOLUTE.test(target)) return target;
 
     const route = this.app.router.lookup(target);
     if (route === null) return null;
-    return this._urlForPath(route.render(values), route.hasWebSocket());
+    return this._urlForPath(route.render(values), route.hasWebSocket(), options);
   }
 
   /**
@@ -345,8 +347,9 @@ class Context extends EventEmitter {
     return this._ws?.deref() ?? null;
   }
 
-  _urlForPath(path: string, isWebSocket: boolean): string {
-    const url = this.req.baseURL + path;
+  _urlForPath(path: string, isWebSocket: boolean, options: URLOptions): string {
+    const query = options.query === undefined ? '' : '?' + new Params(options.query).toString();
+    const url = this.req.baseURL + path + query;
     return isWebSocket ? url.replace(/^http/, 'ws') : url;
   }
 }

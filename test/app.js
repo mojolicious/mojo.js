@@ -872,6 +872,8 @@ t.test('App', async t => {
 
     ctx.req.raw.headers.host = 'example.com';
     t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
+    t.equal(ctx.urlFor('methods', {}, {query: {_method: 'PUT'}}), 'http://example.com/methods?_method=PUT');
+    t.equal(ctx.urlFor('methods', {}, {query: {b: 'B', a: 'A', c: 'C'}}), 'http://example.com/methods?b=B&a=A&c=C');
 
     const ctx2 = app.newMockContext({method: 'POST', url: '/test', headers: {host: 'mojolicious.org'}});
     t.same(ctx2.req.raw.method, 'POST');
