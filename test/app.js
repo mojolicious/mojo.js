@@ -870,16 +870,27 @@ t.test('App', async t => {
     t.equal(await ctx.renderToString({inline: 'Test: <%= hello %>'}), 'Test: mojo');
     t.equal(app.newMockContext().tag('p', {class: 'test'}, 'Hello!').toString(), '<p class="test">Hello!</p>');
 
-    ctx.req.raw.headers.host = 'example.com';
-    t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
-    t.equal(ctx.urlFor('methods', {}, {query: {_method: 'PUT'}}), 'http://example.com/methods?_method=PUT');
-    t.equal(ctx.urlFor('methods', {}, {query: {b: 'B', a: 'A', c: 'C'}}), 'http://example.com/methods?b=B&a=A&c=C');
-
     const ctx2 = app.newMockContext({method: 'POST', url: '/test', headers: {host: 'mojolicious.org'}});
     t.same(ctx2.req.raw.method, 'POST');
     t.same(ctx2.req.raw.url, '/test');
     t.same(ctx2.req.raw.headers, {host: 'mojolicious.org'});
     t.equal(ctx2.req.baseURL, 'http://mojolicious.org');
+  });
+
+  await t.test('URL generation', t => {
+    const ctx = app.newMockContext();
+    ctx.req.raw.headers.host = 'example.com';
+
+    t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
+    t.equal(ctx.urlFor('methods', {}, {query: {_method: 'PUT'}}), 'http://example.com/methods?_method=PUT');
+    t.equal(ctx.urlFor('/what/ever', {}, {query: {_method: 'PUT'}}), 'http://example.com/what/ever?_method=PUT');
+    t.equal(ctx.urlFor('methods', {}, {query: {b: 'B', a: 'A', c: 'C'}}), 'http://example.com/methods?b=B&a=A&c=C');
+    t.equal(
+      ctx.urlFor('exception', {msg: 'test'}, {query: {_method: 'QUERY'}}),
+      'http://example.com/exception/test?_method=QUERY'
+    );
+
+    t.end();
   });
 
   await t.test('Partial content', t => {
