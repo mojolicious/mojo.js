@@ -822,6 +822,72 @@ app.start();
 `ctx.flash` and `ctx.redirectTo` are often used together to prevent double form submission, allowing users to receive a
 confirmation message that will vanish if they decide to reload the page they've been redirected to.
 
+## Advanced
+
+Less commonly used and more powerful features.
+
+### Serving Static Files
+
+Static files are automatically served from the `public` directories of the application, which can be customized with
+`app.static.publicPaths`. And if that's not enough you can also serve them manually with `ctx.sendFile`.
+
+```js
+import mojo from '@mojojs/core';
+import Path from '@mojojs/path';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  await ctx.sendFile(ctx.home.child('public', 'index.html'));
+});
+
+app.get('/some_download', async ctx => {
+  ctx.res.set('Content-Disposition', 'attachment; filename=bar.png;');
+  await ctx.sendFile(ctx.home.child('public', 'foo', 'bar.png'));
+});
+
+app.get('/leak', async ctx => {
+  await ctx.sendFile(new Path('/etc/passwd'));
+});
+
+app.start();
+```
+
+### Custom Responses
+
+For dynamic content that does not use the renderer you can use `ctx.res.send` directly.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  ctx.res.statusCode = 200;
+  ctx.res.set('Content-Type', 'text/plain');
+  await ctx.res.send('Hello World!');
+});
+
+app.start();
+```
+
+This also works for readable streams.
+
+```js
+import mojo from '@mojojs/core';
+import Path from '@mojojs/path';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  const readable = new Path('/etc/passwd').createReadStream();
+  ctx.res.set('Content-Type', 'text/plain');
+  await ctx.res.send(readable);
+});
+
+app.start();
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
