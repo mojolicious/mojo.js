@@ -7,7 +7,7 @@ import Ajv from 'ajv';
  * JSON schema validator class.
  */
 export class Validator {
-  _ajv = new Ajv();
+  _ajv = new Ajv({coerceTypes: 'array'});
 
   /**
    * Add JSON schema.

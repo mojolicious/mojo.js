@@ -311,6 +311,22 @@ t.test('App', async t => {
     await ctx.render({json: {valid: result.isValid, errors: result.errors}});
   });
 
+  // PUT /schema/array
+  app.put('/schema/array', async ctx => {
+    const validate = ctx.schema({
+      type: 'object',
+      properties: {
+        test: {type: 'array'}
+      },
+      required: ['test']
+    });
+
+    const data = await ctx.req.json();
+    const result = validate(data);
+
+    await ctx.render({json: {valid: result.isValid, errors: result.errors, data: data}});
+  });
+
   // GET /gzip
   app.get('/gzip', ctx => ctx.render({text: 'a'.repeat(2048)}));
 
@@ -797,8 +813,10 @@ t.test('App', async t => {
 
     t.notOk(app.validator.schema('test123'));
     (await ua.putOk('/schema/dynamic', {json: {test: 123}})).statusIs(200).jsonIs({valid: true, errors: []});
+    (await ua.putOk('/schema/dynamic', {json: {test: '123'}})).statusIs(200).jsonIs({valid: true, errors: []});
+    (await ua.putOk('/schema/dynamic', {json: {test: ' 123'}})).statusIs(200).jsonIs({valid: true, errors: []});
     t.ok(app.validator.schema('test123'));
-    (await ua.putOk('/schema/dynamic', {json: {test: '123'}})).statusIs(200).jsonIs({
+    (await ua.putOk('/schema/dynamic', {json: {test: 'a123'}})).statusIs(200).jsonIs({
       valid: false,
       errors: [
         {
@@ -820,6 +838,24 @@ t.test('App', async t => {
 
     (await ua.putOk('/schema/form?test=works')).statusIs(200).jsonIs({valid: true});
     (await ua.putOk('/schema/form?test2=fails')).statusIs(200).jsonIs({valid: false});
+
+    (await ua.putOk('/schema/array', {json: {test: ['works', 'fine']}}))
+      .statusIs(200)
+      .jsonIs({valid: true, errors: [], data: {test: ['works', 'fine']}});
+    (await ua.putOk('/schema/array', {json: {test: 'also works'}}))
+      .statusIs(200)
+      .jsonIs({valid: true, errors: [], data: {test: ['also works']}});
+    (await ua.putOk('/schema/array', {json: {test: {this: 'fails'}}})).statusIs(200).jsonIs({
+      valid: false,
+      errors: [
+        {
+          instancePath: '/test',
+          schemaPath: '#/properties/test/type',
+          message: 'must be array'
+        }
+      ],
+      data: {test: {this: 'fails'}}
+    });
   });
 
   await t.test('Compression', async () => {
