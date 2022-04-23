@@ -526,7 +526,7 @@ $ node myapp.js routes -v
 /yada       *     yada     /^\/yada\/([^/.]+)/s
 ```
 
-### #Under
+### Under
 
 To share code with multiple nested routes you can use `app.router.under`, because unlike normal nested routes, the
 routes generated with it have their own intermediate destination and result in additional dispatch cycles when they

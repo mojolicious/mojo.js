@@ -211,7 +211,7 @@ $ npm install nodemon
 $ npx nodemon myapp.js server
 ```
 
-## A bird's-eye view
+## A Bird's-Eye View
 
 It all starts with an HTTP request like this, sent by your browser.
 
@@ -377,7 +377,7 @@ Connection: close
 Welcome sebastian.
 ```
 
-# State keeping
+# State Keeping
 
 Sessions in mojo.js pretty much just work out-of-the-box once you await the `session` method, there is no setup
 required, but we suggest setting a more secure passphrase with `app.secrets`
@@ -422,7 +422,7 @@ await ctx.redirectTo('goodbye');
 Just remember that all session data gets serialized to JSON and stored in encrypted cookies, which usually have a `4096`
 byte (4KiB) limit, depending on browser.
 
-## Final prototype
+## Final Prototype
 
 A final `myapp.js` prototype passing all of the tests above could look like this.
 
@@ -440,17 +440,17 @@ app.any('/', async ctx => {
 
   // Query or POST parameters
   const params = await ctx.params();
-  ctx.stash.user = params.get('user');
+  const user = params.get('user');
   const pass = params.get('pass');
 
   // Check password and render the index inline template if necessary
-  if (ctx.models.users.check(ctx.stash.user, pass) === false) { 
+  if (ctx.models.users.check(user, pass) === false) {
     return await ctx.render({inline: indexTemplate, inlineLayout: defaultLayout});
   }
 
   // Store username in session
   const session = await ctx.session();
-  session.user = ctx.stash.user;
+  session.user = user;
 
   // Store a friendly message for the next page in flash
   const flash = await ctx.flash();
@@ -461,7 +461,7 @@ app.any('/', async ctx => {
 }).name('index');
 
 // Make sure user is logged in for actions in this action
-const protectedArea = app.under('/protected').to(async ctx => {
+const loggedIn = app.under('/').to(async ctx => {
 
   // Redirect to main page with a 302 response if user is not logged in
   const session = await ctx.session();
@@ -471,7 +471,7 @@ const protectedArea = app.under('/protected').to(async ctx => {
 });
 
 // A protected page auto rendering the protected inline template"
-protectedArea.get('/').to(async ctx => {
+loggedIn.get('/protected').to(async ctx => {
   await ctx.render({inline: protectedTemplate, inlineLayout: defaultLayout});
 });
 
@@ -489,10 +489,11 @@ app.get('/logout', async ctx => {
 app.start();
 
 const indexTemplate = `
+% const params = await ctx.params();
 <form method="post">
-% if (ctx.stash.user !== null) {
-  <b>Wrong name or password, please try again.</b><br>
-% }
+  % if (params.user !== null) {
+    <b>Wrong name or password, please try again.</b><br>
+  % }
   User:<br>
   <input name="user">
   <br>Password:<br>
@@ -503,9 +504,9 @@ const indexTemplate = `
 `;
 
 const protectedTemplate = `
-% const flash = await ctx.flash()
+% const flash = await ctx.flash();
 % if (flash.message != null) {
-<b><%= flash.message %></b><br>
+  <b><%= flash.message %></b><br>
 % }
 Welcome <%= ctx.stash.session.user %>.<br>
 <a href="/logout">Logout</a>
@@ -533,6 +534,95 @@ myapp
 
 Our templates are using quite a few features of the renderer, the [Rendering](Rendering.md) guide explains them all in
 great detail.
+
+# Well-Structured Application
+
+Due to the flexibility of mojo.js, there are many variations of the actual growing process, but this should give you a
+good overview of the possibilities.
+
+## Moving Templates
+
+While inline templates are great for prototyping, later on it is much easier to manage a growing number of templates as
+separate files in the `views` directory.
+
+```
+$ mkdir -p views/layouts
+$ touch views/layouts/default.html.mt
+$ touch views/index.html.mt
+$ touch views/protected.html.mt
+```
+
+Just move the content of the `indexTemplate`, `protectedTemplate` and `defaultLayout` constants into those template
+files.
+
+## Simplified Application
+
+Next we need to update all `ctx.render` calls and remove the inline templates from out application.
+
+```js
+import mojo from '@mojojs/core';
+import Users from './models/users.js';
+
+export const app = mojo({secrets: ['Mojolicious rocks']});
+
+app.models.users = new Users();
+
+app.any('/', async ctx => {
+
+  const params = await ctx.params();
+  const user = params.get('user');
+  const pass = params.get('pass');
+
+  if (ctx.models.users.check(user, pass) === false) return await ctx.render({view: 'index', layout: 'default'});
+
+  const session = await ctx.session();
+  session.user = user;
+
+  const flash = await ctx.flash();
+  flash.message = 'Thanks for logging in.';
+
+  await ctx.redirectTo('protected');
+}).name('index');
+
+const loggedIn = app.under('/').to(async ctx => {
+  const session = await ctx.session();
+  if (session.user !== undefined) return;
+  await ctx.redirectTo('index');
+  return false;
+});
+
+loggedIn.get('/protected').to(async ctx => {
+  await ctx.render({view: 'protected', layout: 'default'});
+});
+
+app.get('/logout', async ctx => {
+  const session = await ctx.session();
+  session.expires = 1;
+  await ctx.redirectTo('index');
+});
+
+app.start();
+```
+
+And the directory structure of our hybrid application should be looking like this.
+
+```
+myapp
+|- myapp.js
+|- models
+|  +- users.js
+|- tests
+|  +- login.js
++- views
+   |- layouts
+   |  +- default.html.mt
+   |- index.html.mt
+   +- protected.html.mt
+```
+
+The tests will work again now.
+
+...TO BE CONTINUED...
 
 ## Support
 
