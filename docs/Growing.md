@@ -130,9 +130,9 @@ why mojo.js applications don't need more than a single JavaScript file (in addit
 ```
 myapp                         // Application directory (created manually)
 |- node_modules/
-|   |- *lots of node files*
+|  +- *lots of node files*
 |- package.json               // Will be generated when you install mojo.js
-|- myapp.js                   // Templates can be inlined in the file
++- myapp.js                   // Templates can be inlined in the file
 ```
 
 Full mojo.js applications on the other hand follow the MVC pattern more closely and separate concerns into different
@@ -143,20 +143,20 @@ myapp                        // Application directory (created manually)
 |- config.yml                // Configuration file
 |- index.js                  // Application script
 |- node_modules
-|   |- *lots of node files*
+|  +- *lots of node files*
 |- package.json              // Node package information and settings
 |- test                      // Test directory
-|   |- example.js            // Random test
+|  +- example.js            // Random test
 |- controllers               // Controller directory
-|   |- example.js            // Controller class
+|  +- example.js            // Controller class
 |- models                    // Model directory
 |- public                    // Static file directory (served automatically)
-|   |- index.html            // Static HTML file
-|- views                     // Views directory
-|   |- example               // View directory for "Example" controller
-|   |   |- welcome.html.mt   // Template for "welcome" action
-|   |- layouts               // View directory for layout templates
-|   |   |- default.html.mt   // Layout template
+|  +- index.html            // Static HTML file
++- views                     // Views directory
+   +- example               // View directory for "Example" controller
+   |  +- welcome.html.mt   // Template for "welcome" action
+   +- layouts               // View directory for layout templates
+      +- default.html.mt   // Layout template
 ```
 
 Both application skeletons can be automatically generated with the commands `npx mojo create-lite-app` and
@@ -285,6 +285,7 @@ export const app = mojo();
 app.models.users = new Users();
 
 app.any('/', async ctx => {
+
   // Query or POST parameters
   const params = await ctx.params();
   const user = params.get('user')
@@ -436,6 +437,7 @@ app.models.users = new Users();
 
 // Main login action
 app.any('/', async ctx => {
+
   // Query or POST parameters
   const params = await ctx.params();
   ctx.stash.user = params.get('user');
@@ -456,13 +458,15 @@ app.any('/', async ctx => {
 
   // Redirect to protected page with a 302 response
   await ctx.redirectTo('protected');
-}); 
+}).name('index');
 
 // Make sure user is logged in for actions in this action
 const protectedArea = app.under('/protected').to(async ctx => {
+
+  // Redirect to main page with a 302 response if user is not logged in
   const session = await ctx.session();
   if (session.user !== undefined) return;
-  await ctx.redirectTo('/');
+  await ctx.redirectTo('index');
   return false;
 });
 
@@ -473,11 +477,13 @@ protectedArea.get('/').to(async ctx => {
 
 // Logout action
 app.get('/logout', async ctx => {
+
   // Expire and in turn clear session automatically
   const session = await ctx.session();
   session.expires = 1;
+
   // Redirect to main page with a 302 response
-  await ctx.redirectTo('/');
+  await ctx.redirectTo('index');
 });
 
 app.start();
