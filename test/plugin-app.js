@@ -21,22 +21,26 @@ t.test('Plugin app', async t => {
 
   app.get('/method', ctx => ctx.render({text: ctx.testMethod('test')}));
 
-  app.websocket('/websocket/mixed').to(ctx => {
-    ctx.on('connection', ws => {
-      const before = ctx.testProp;
-      ctx.testProp = 'works too';
-      const after = ctx.testProp;
-      const also = ctx.testHelper('test');
-      ws.send(`before: ${before}, after: ${after}, also: ${also}`);
-      ws.close();
-    });
-  });
+  app
+    .websocket('/websocket/mixed')
+    .to(ctx => {
+      ctx.on('connection', ws => {
+        const before = ctx.testProp;
+        ctx.testProp = 'works too';
+        const after = ctx.testProp;
+        const also = ctx.testHelper('test');
+        ws.send(`before: ${before}, after: ${after}, also: ${also}`);
+        ws.close();
+      });
+    })
+    .name('mix');
 
   const ua = await app.newTestUserAgent({tap: t});
 
   await t.test('Tag helpers', async () => {
-    const baseURL = ua.server.urls[0] + app.static.prefix.substring(1) + '/';
-    (await ua.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL));
+    const baseURL = ua.server.urls[0].toString();
+    const publicPath = app.static.prefix.substring(1) + '/';
+    (await ua.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL, publicPath));
   });
 
   await t.test('Helper', async () => {
@@ -67,18 +71,23 @@ Relative script: <%= ctx.scriptTag('/foo/bar.js') %>
 Relative style: <%= ctx.styleTag('/foo/bar.css') %>
 Absolute script: <%= ctx.scriptTag('https://mojojs.org/public/foo/bar.js') %>
 Absolute style: <%= ctx.styleTag('https://mojojs.org/public/foo/bar.css') %>
+Link1: <%= ctx.linkTo('getter_setter', {class: 'foo'}, 'Getter & Setter') %>
+Link2: <%= ctx.linkTo('mix', {}, 'WebSocket link') %>
 Tag1: <%= ctx.tag('div', 'Hello Mojo!') %>
 Tag2: <%== ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
 `;
 
-function tagHelperPluginResult(baseURL) {
+function tagHelperPluginResult(baseURL, publicPath) {
+  const wsURL = baseURL.replace('http', 'ws');
   return `
 Route: tag_helpers
-Favicon: <link rel="icon" href="${baseURL}mojo/favicon.ico">
-Relative script: <script src="${baseURL}foo/bar.js"></script>
-Relative style: <link rel="stylesheet" href="${baseURL}foo/bar.css">
+Favicon: <link rel="icon" href="${baseURL}${publicPath}mojo/favicon.ico">
+Relative script: <script src="${baseURL}${publicPath}foo/bar.js"></script>
+Relative style: <link rel="stylesheet" href="${baseURL}${publicPath}foo/bar.css">
 Absolute script: <script src="https://mojojs.org/public/foo/bar.js"></script>
 Absolute style: <link rel="stylesheet" href="https://mojojs.org/public/foo/bar.css">
+Link1: <a href="${baseURL}getter/setter" class="foo">Getter &amp; Setter</a>
+Link2: <a href="${wsURL}websocket/mixed">WebSocket link</a>
 Tag1: <div>Hello Mojo!</div>
 Tag2: <div class="test">Hello Mojo!</div>
 `;

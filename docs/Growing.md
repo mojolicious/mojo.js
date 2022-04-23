@@ -509,7 +509,7 @@ const protectedTemplate = `
   <b><%= flash.message %></b><br>
 % }
 Welcome <%= ctx.stash.session.user %>.<br>
-<a href="/logout">Logout</a>
+%= ctx.linkTo('logout', {}, 'Logout')
 `;
 
 const defaultLayout = `

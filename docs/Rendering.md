@@ -412,6 +412,14 @@ These view helpers are currently available by default:
 
 Include a partial template.
 
+##### `linkTo`
+
+```
+%= ctx.linkTo('some_route', {class: 'foo'}, 'Link to some route');
+```
+
+Generate portable `a` tag with `ctx.urlFor`.
+
 ##### `mojoFaviconTag`
 
 ```

@@ -8,6 +8,7 @@ import DOM from '@mojojs/dom';
 export default function viewHelpersPlugin(app: MojoApp): void {
   app.addHelper('include', include);
 
+  app.addHelper('linkTo', linkTo);
   app.addHelper('mojoFaviconTag', mojoFaviconTag);
   app.addHelper('scriptTag', scriptTag);
   app.addHelper('styleTag', styleTag);
@@ -16,6 +17,16 @@ export default function viewHelpersPlugin(app: MojoApp): void {
 
 async function include(ctx: MojoContext, options: RenderOptions, stash: Record<string, any>): Promise<string | null> {
   return await ctx.renderToString(options, stash);
+}
+
+function linkTo(
+  ctx: MojoContext,
+  target: string,
+  attrs: Record<string, string>,
+  content: string | SafeString
+): SafeString {
+  const href = ctx.urlFor(target);
+  return ctx.tag('a', {href, ...attrs}, content);
 }
 
 function mojoFaviconTag(ctx: MojoContext): SafeString {
