@@ -138,14 +138,6 @@ const isServerError = res.isServerError;
 const isError = res.isError;
 ```
 
-The original [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) object is also
-available under the name `raw`.
-
-```js
-// HTTP protocol version
-const version = res.raw.httpVersion;
-```
-
 ## Response Body
 
 The reponse body can be received in various formats. Most of them will result once again in a new `Promise`, resolving

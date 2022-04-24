@@ -58,6 +58,7 @@ export interface CookieOptions {
 
 export interface MockRequestOptions {
   headers?: Record<string, string>;
+  httpVersion?: string;
   method?: string;
   url?: string;
 }

@@ -7,14 +7,14 @@ import {stringifyCookie} from './cookie.js';
 export class ServerResponse {
   headers: Record<string, string | string[]> = {};
   isSent = false;
-  raw: http.ServerResponse;
   statusCode = 200;
+
   _ctx: WeakRef<Context>;
+  _raw: http.ServerResponse;
 
   constructor(res: http.ServerResponse, ctx: Context) {
-    this.raw = res;
-
     this._ctx = new WeakRef(ctx);
+    this._raw = res;
   }
 
   append(name: string, value: string) {
@@ -49,14 +49,14 @@ export class ServerResponse {
 
     if (ctx.isSessionActive === true) await app.session.store(ctx, await ctx.session());
 
-    const raw = this.raw;
+    const raw = this._raw;
     if (typeof body === 'string' || Buffer.isBuffer(body)) {
       this.length(Buffer.byteLength(body));
       raw.writeHead(this.statusCode, this.headers);
       raw.end(body);
     } else if (body instanceof Stream) {
       raw.writeHead(this.statusCode, this.headers);
-      body.pipe(this.raw);
+      body.pipe(this._raw);
     } else {
       raw.writeHead(this.statusCode, this.headers);
       raw.end();

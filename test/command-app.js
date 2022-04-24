@@ -168,7 +168,7 @@ t.test('Command app', async t => {
 
     const app2 = mojo({mode: 'production'});
     app2.get('/', async ctx => {
-      ctx.res.raw.on('finish', () => process.emit('SIGUSR2', 'SIGUSR2'));
+      ctx.res._raw.on('finish', () => process.emit('SIGUSR2', 'SIGUSR2'));
       await ctx.render({text: 'Stopping server'});
     });
     const hookPromise = new Promise(resolve => app2.addAppHook('server:stop', () => resolve(true)));

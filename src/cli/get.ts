@@ -31,14 +31,14 @@ export default async function getCommand(app: MojoApp, args: string[]): Promise<
 
   if (parsed.verbose === true) {
     const stderr = process.stderr;
-    const raw = res.raw as IntrospectedResponse;
+    const raw = res._raw as IntrospectedResponse;
     const req = raw.req;
     const method = chalk.blue(req.method);
     const reqVersion = chalk.blue('HTTP') + '/' + chalk.blue('1.1');
     stderr.write(`${method} ${req.path} ${reqVersion}\n`);
     writeHeaders(getHeaders(req));
 
-    const resVersion = chalk.blue('HTTP') + '/' + chalk.blue(raw.httpVersion);
+    const resVersion = chalk.blue('HTTP') + '/' + chalk.blue(res.httpVersion);
     const status = res.status;
     const statusMessage = chalk.blue(res.statusMessage);
     stderr.write(`${resVersion} ${status} ${statusMessage}\n`);

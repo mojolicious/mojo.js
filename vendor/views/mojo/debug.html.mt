@@ -163,7 +163,7 @@
                 % keyValue('Base URL', ctx.req.baseURL);
                 % keyValue('Parameters', ctx.inspect((await ctx.params()).toObject()));
                 % keyValue('Stash', ctx.inspect(ctx.stash));
-                % const rawHeaders = ctx.req.raw.rawHeaders;
+                % const rawHeaders = ctx.req._raw.rawHeaders;
                 % for (let i = 0; i < rawHeaders.length; i += 2) {
                   % keyValue(rawHeaders[i], rawHeaders[i + 1]);
                 % }

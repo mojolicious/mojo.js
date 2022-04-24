@@ -39,15 +39,12 @@ export class Body {
    * Automatically decompress message body if necessary.
    */
   autoDecompress = true;
-  /**
-   * Low-level HTTP message.
-   */
-  raw: IncomingMessage;
 
   _form: Params | undefined = undefined;
+  _raw: IncomingMessage;
 
   constructor(stream: IncomingMessage) {
-    this.raw = stream;
+    this._raw = stream;
   }
 
   async *[Symbol.asyncIterator](): AsyncIterable<Buffer> {
@@ -65,10 +62,10 @@ export class Body {
    * Get message body as a readable stream.
    */
   createReadStream(): Readable {
-    if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return this.raw;
+    if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return this._raw;
 
     const gunzip = zlib.createGunzip();
-    this.raw.pipe(gunzip);
+    this._raw.pipe(gunzip);
     return gunzip;
   }
 
@@ -106,7 +103,7 @@ export class Body {
    * Get HTTP header from message.
    */
   get(name: string): string | undefined {
-    const header = this.raw.headers[name.toLowerCase()];
+    const header = this._raw.headers[name.toLowerCase()];
     return Array.isArray(header) ? header.join(',') : header;
   }
 
@@ -114,7 +111,7 @@ export class Body {
    * Get HTTP headers from message.
    */
   get headers(): IncomingHttpHeaders {
-    return this.raw.headers;
+    return this._raw.headers;
   }
 
   /**
@@ -125,10 +122,17 @@ export class Body {
   }
 
   /**
+   * Get HTTP version.
+   */
+  get httpVersion(): string {
+    return this._raw.httpVersion;
+  }
+
+  /**
    * Check if underlying socket was encrypted with TLS.
    */
   get isSecure(): boolean {
-    const socket = this.raw.socket as TLSSocket;
+    const socket = this._raw.socket as TLSSocket;
     return socket.encrypted ?? false;
   }
 
@@ -182,7 +186,7 @@ export class Body {
   _formIterator(options?: UploadOptions): AsyncIterableIterator<[string, Readable, string, string, string]> {
     const ac = new AbortController();
 
-    const raw = this.raw;
+    const raw = this._raw;
     const headers = raw.headers;
     const type = headers['content-type'] ?? '';
     const params = this._params;
@@ -197,7 +201,7 @@ export class Body {
   }
 
   _isForm(): boolean {
-    const type = this.raw.headers['content-type'];
+    const type = this._raw.headers['content-type'];
     if (type === undefined) return false;
     return type.startsWith('application/x-www-form-urlencoded') || type.startsWith('multipart/form-data');
   }

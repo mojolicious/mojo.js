@@ -19,7 +19,7 @@ export class WSTransport {
 
       ws.on('open', () => {
         // Workaround for a race condition where the first message arrives before the promise resolves
-        const socket = handshake.raw.socket;
+        const socket = handshake._raw.socket;
         socket.pause();
         queueMicrotask(() => socket.resume());
         resolve(new WebSocket(ws, handshake, {jsonMode: config.json ?? false}));

@@ -13,6 +13,7 @@ let requestId = 0;
 export class ServerRequest extends Body {
   isWebSocket: boolean;
   requestId: string;
+
   _cookies: Record<string, string> | undefined = undefined;
   _ip: string | undefined = undefined;
   _path: string | null | undefined = undefined;
@@ -32,7 +33,7 @@ export class ServerRequest extends Body {
   }
 
   get baseURL(): string {
-    return `${this.protocol}://${this.raw.headers.host ?? ''}`;
+    return `${this.protocol}://${this._raw.headers.host ?? ''}`;
   }
 
   getCookie(name: string): string | null {
@@ -45,7 +46,7 @@ export class ServerRequest extends Body {
 
   get ip(): string | null {
     if (this._ip === undefined) {
-      this._ip = this.raw.socket.remoteAddress;
+      this._ip = this._raw.socket.remoteAddress;
       if (this._reverseProxy) {
         const forwarded = this.get('X-Forwarded-For');
         if (forwarded !== undefined) {
@@ -59,12 +60,12 @@ export class ServerRequest extends Body {
   }
 
   get method(): string | null {
-    return this.raw.method ?? null;
+    return this._raw.method ?? null;
   }
 
   get path(): string | null {
     if (this._path === undefined) {
-      const match = (this.raw.url as string).match(URL_RE);
+      const match = (this._raw.url as string).match(URL_RE);
       this._path = match === null ? null : decodeURIComponentSafe(match[5]);
     }
     return this._path;
@@ -84,7 +85,7 @@ export class ServerRequest extends Body {
 
   get query(): Params {
     if (this._query === undefined) {
-      const url = this.raw.url as string;
+      const url = this._raw.url as string;
       if (url.includes('?') === true) {
         const match = url.match(URL_RE);
         this._query = match !== null ? new Params(match[7]) : new Params();

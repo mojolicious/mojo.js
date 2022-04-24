@@ -47,14 +47,14 @@ export class UserAgentResponse extends Body {
    * Response status code.
    */
   get status(): number {
-    return this.raw.statusCode as number;
+    return this._raw.statusCode as number;
   }
 
   /**
    * Get response message.
    */
   get statusMessage(): string | undefined {
-    return this.raw.statusMessage;
+    return this._raw.statusMessage;
   }
 
   /**

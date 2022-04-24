@@ -163,14 +163,6 @@ for await (const chunk of ctx.req) {
 const buffer = Buffer.concat(parts);
 ```
 
-The `ctx.req.raw` property contains an
-[http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) object.
-
-```js
-// Get HTTP version
-const version = ctx.req.raw.httpVersion;
-```
-
 ### Response
 
 The `ctx.res` property of the [context](#Context) object.
@@ -203,14 +195,6 @@ await ctx.res.status(200).type('text/plain').length(12).send('Hello World!');
 
 // Send response without a body
 await ctx.res.status(204).send();
-```
-
-The `ctx.res.raw` property contains an
-[http.ServerResponse](https://nodejs.org/api/http.html#http_class_http_serverresponse) object.
-
-```js
-// Check if a response has already been sent
-const isFinished = ctx.res.raw.writableFinished;
 ```
 
 ## Support
