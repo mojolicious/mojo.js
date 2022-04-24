@@ -4,9 +4,21 @@ import type http from 'http';
 import {Stream} from 'stream';
 import {stringifyCookie} from './cookie.js';
 
+/**
+ * Server response class.
+ */
 export class ServerResponse {
+  /**
+   * Response headers.
+   */
   headers: Record<string, string | string[]> = {};
+  /**
+   * Response has already been sent.
+   */
   isSent = false;
+  /**
+   * Response status.
+   */
   statusCode = 200;
 
   _ctx: WeakRef<Context>;
@@ -17,6 +29,9 @@ export class ServerResponse {
     this._raw = res;
   }
 
+  /**
+   * Append header value.
+   */
   append(name: string, value: string) {
     const headers = this.headers;
     const old = headers[name];
@@ -32,11 +47,17 @@ export class ServerResponse {
     return this;
   }
 
+  /**
+   * Set response content length.
+   */
   length(len: number): this {
     this.headers['Content-Length'] = len.toString();
     return this;
   }
 
+  /**
+   * Send response.
+   */
   async send(body?: string | Buffer | Stream): Promise<void> {
     this.isSent = true;
 
@@ -63,6 +84,9 @@ export class ServerResponse {
     }
   }
 
+  /**
+   * Set HTTP header for response.
+   */
   set(name: string, value: string): this {
     if (this.headers[name] !== undefined && name === 'Set-Cookie') {
       let header = this.headers[name];
@@ -74,15 +98,24 @@ export class ServerResponse {
     return this;
   }
 
+  /**
+   * Set cookie value.
+   */
   setCookie(name: string, value: string, options: CookieOptions): this {
     return this.set('Set-Cookie', stringifyCookie(name, value, options));
   }
 
+  /**
+   * Set response status.
+   */
   status(code: number): this {
     this.statusCode = code;
     return this;
   }
 
+  /**
+   * Set response content type.
+   */
   type(type: string): this {
     this.headers['Content-Type'] = type;
     return this;

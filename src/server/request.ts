@@ -10,8 +10,17 @@ const URL_RE = /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
 
 let requestId = 0;
 
+/**
+ * Server request class.
+ */
 export class ServerRequest extends Body {
+  /**
+   * Request is a WebSocket handshake.
+   */
   isWebSocket: boolean;
+  /**
+   * Request ID.
+   */
   requestId: string;
 
   _cookies: Record<string, string> | undefined = undefined;
@@ -32,10 +41,16 @@ export class ServerRequest extends Body {
     this._reverseProxy = options.reverseProxy;
   }
 
+  /**
+   * Server base URL.
+   */
   get baseURL(): string {
     return `${this.protocol}://${this._raw.headers.host ?? ''}`;
   }
 
+  /**
+   * Get cookie value.
+   */
   getCookie(name: string): string | null {
     if (this._cookies === undefined) {
       const header = this.headers.cookie;
@@ -44,6 +59,9 @@ export class ServerRequest extends Body {
     return this._cookies[name] ?? null;
   }
 
+  /**
+   * Remote IP address.
+   */
   get ip(): string | null {
     if (this._ip === undefined) {
       this._ip = this._raw.socket.remoteAddress;
@@ -59,10 +77,16 @@ export class ServerRequest extends Body {
     return this._ip ?? null;
   }
 
+  /**
+   * Request method.
+   */
   get method(): string | null {
     return this._raw.method ?? null;
   }
 
+  /**
+   * Request path.
+   */
   get path(): string | null {
     if (this._path === undefined) {
       const match = (this._raw.url as string).match(URL_RE);
@@ -71,6 +95,9 @@ export class ServerRequest extends Body {
     return this._path;
   }
 
+  /**
+   * Request protocol.
+   */
   get protocol(): string {
     if (this._protocol === undefined) {
       this._protocol = this.isSecure ? 'https' : 'http';
@@ -83,6 +110,9 @@ export class ServerRequest extends Body {
     return this._protocol;
   }
 
+  /**
+   * Query parameters.
+   */
   get query(): Params {
     if (this._query === undefined) {
       const url = this._raw.url as string;
@@ -96,6 +126,9 @@ export class ServerRequest extends Body {
     return this._query;
   }
 
+  /**
+   * User info.
+   */
   get userinfo(): string | null {
     if (this._userinfo === undefined) {
       this._userinfo = null;
