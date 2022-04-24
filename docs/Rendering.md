@@ -896,6 +896,41 @@ app.get('/', async ctx => {
 app.start();
 ```
 
+### Chunked Transfer Encoding
+
+For very dynamic content you might not know the response content length in advance, that's where the chunked transfer
+encoding comes in handy.
+
+```js
+import mojo from '@mojojs/core';
+import {Stream} from 'stream';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  ctx.res.set('Transfer-Encoding', 'chunked');
+  const stream = Stream.Readable.from(['Hello', 'World!']);
+  await ctx.res.send(stream);
+});
+
+app.start();
+```
+
+Just set the `Transfer-Encoding` header to `chunked` and send the response content in chunks via `Readable` stream.
+
+```
+HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Date: Sun, 24 Apr 2022 02:43:21 GMT
+Connection: close
+
+5
+Hello
+6
+World!
+0
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
