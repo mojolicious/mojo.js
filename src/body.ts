@@ -1,6 +1,5 @@
 import type {JSONValue} from './types.js';
 import type {IncomingHttpHeaders, IncomingMessage} from 'http';
-import type {Socket} from 'net';
 import type {Readable, Writable} from 'stream';
 import {on} from 'events';
 import zlib from 'zlib';
@@ -28,8 +27,6 @@ interface FileUpload {
   encoding: string;
   mimetype: string;
 }
-
-type TLSSocket = Socket & {encrypted: boolean | undefined};
 
 /**
  * HTTP message body base class.
@@ -126,14 +123,6 @@ export class Body {
    */
   get httpVersion(): string {
     return this._raw.httpVersion;
-  }
-
-  /**
-   * Check if underlying socket was encrypted with TLS.
-   */
-  get isSecure(): boolean {
-    const socket = this._raw.socket as TLSSocket;
-    return socket.encrypted ?? false;
   }
 
   /**

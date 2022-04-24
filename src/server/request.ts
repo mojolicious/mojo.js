@@ -1,9 +1,12 @@
 import type {ServerRequestOptions} from '../types.js';
 import type {IncomingMessage} from 'http';
+import type {Socket} from 'net';
 import {Body} from '../body.js';
 import {Params} from '../body/params.js';
 import {parseCookie} from '../server/cookie.js';
 import {decodeURIComponentSafe} from '../util.js';
+
+type TLSSocket = Socket & {encrypted: boolean | undefined};
 
 // Official regex from RFC 3986
 const URL_RE = /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
@@ -75,6 +78,14 @@ export class ServerRequest extends Body {
     }
 
     return this._ip ?? null;
+  }
+
+  /**
+   * Check if underlying socket was encrypted with TLS.
+   */
+  get isSecure(): boolean {
+    const socket = this._raw.socket as TLSSocket;
+    return socket.encrypted ?? false;
   }
 
   /**
