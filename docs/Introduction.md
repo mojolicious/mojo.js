@@ -11,22 +11,22 @@ cleanly separate the parts of your web application into Models, Views and Contro
 reflected as separate directories and files for different concerns.
 
 ```
-`-- blog
-    |-- controllers
-    |   |-- users.js
-    |   `-- posts.js
-    |-- models
-    |   |-- users.js
-    |   `-- posts.js
-    |-- public
-    |   `-- app.css
-    |-- views
-    |   |--layouts
-    |   |  `-- default.html.mt
-    |   `-- posts
-    |       `-- list.html.mt
-    |-- config.json
-    `-- index.js
+`--blog
+   |-- controllers
+   |   |-- users.js
+   |   `-- posts.js
+   |-- models
+   |   |-- users.js
+   |   `-- posts.js
+   |-- public
+   |   `-- app.css
+   |-- views
+   |   |--layouts
+   |   |  `-- default.html.mt
+   |   `-- posts
+   |       `-- list.html.mt
+   |-- config.json
+   `-- index.js
 ```
 
 The `.js` files (or `.ts` if you're using [TypeScript](https://www.typescriptlang.org)) can also be moved into a `src`

@@ -130,6 +130,9 @@ const userinfo = ctx.req.userinfo;
 // requestId: reasonably unique request id
 const requestId = ctx.req.requestId;
 
+// gttpVersion: HTTP version
+const version = ctx.req.httpVersion;
+
 // get: request headers
 const accept = ctx.req.get('Accept');
 

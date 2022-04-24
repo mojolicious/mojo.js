@@ -128,35 +128,35 @@ You likely know the feeling, you've got a really cool idea and want to try it as
 why mojo.js applications don't need more than a single JavaScript file (in addition to `package.json`).
 
 ```
-myapp                         // Application directory (created manually)
-|- node_modules/
-|  +- *lots of node files*
-|- package.json               // Will be generated when you install mojo.js
-+- myapp.js                   // Templates can be inlined in the file
+myapp                          // Application directory (created manually)
+|-- node_modules/
+|   `-- *lots of node files*
+|-- package.json               // Will be generated when you install mojo.js
+`-- myapp.js                   // Templates can be inlined in the file
 ```
 
 Full mojo.js applications on the other hand follow the MVC pattern more closely and separate concerns into different
 files to maximize maintainability:
 
 ```
-myapp                        // Application directory (created manually)
-|- config.yml                // Configuration file
-|- index.js                  // Application script
-|- node_modules
-|  +- *lots of node files*
-|- package.json              // Node package information and settings
-|- test                      // Test directory
-|  +- example.js            // Random test
-|- controllers               // Controller directory
-|  +- example.js            // Controller class
-|- models                    // Model directory
-|- public                    // Static file directory (served automatically)
-|  +- index.html            // Static HTML file
-+- views                     // Views directory
-   +- example               // View directory for "Example" controller
-   |  +- welcome.html.mt   // Template for "welcome" action
-   +- layouts               // View directory for layout templates
-      +- default.html.mt   // Layout template
+myapp                          // Application directory (created manually)
+|-- config.yml                 // Configuration file
+|-- index.js                   // Application script
+|-- node_modules
+|   `-- *lots of node files*
+|-- package.json               // Node package information and settings
+|-- test                       // Test directory
+|   `-- example.js             // Random test
+|-- controllers                // Controller directory
+|   `-- example.js             // Controller class
+|-- models                     // Model directory
+|-- public                     // Static file directory (served automatically)
+|   `-- index.html             // Static HTML file
+`-- views                      // Views directory
+    |-- example                // View directory for "Example" controller
+    |    `-- welcome.html.mt   // Template for "welcome" action
+    `-- layouts                // View directory for layout templates
+        `-- default.html.mt    // Layout template
 ```
 
 Both application skeletons can be automatically generated with the commands `npx mojo create-lite-app` and
@@ -525,11 +525,11 @@ And the directory structure should be looking like this now.
 
 ```
 myapp
-|- myapp.js
-|- models
-|  +- users.js
-+- tests
-   +- login.js
+|-- myapp.js
+|-- models
+|   `-- users.js
+`-- tests
+    `-- login.js
 ```
 
 Our templates are using quite a few features of the renderer, the [Rendering](Rendering.md) guide explains them all in
@@ -612,16 +612,16 @@ And the directory structure of our hybrid application should be looking like thi
 
 ```
 myapp
-|- myapp.js
-|- models
-|  +- users.js
-|- tests
-|  +- login.js
-+- views
-   |- layouts
-   |  +- default.html.mt
-   |- index.html.mt
-   +- protected.html.mt
+|-- myapp.js
+|-- models
+|   `-- users.js
+|-- tests
+|   `-- login.js
+`-- views
+    |-- layouts
+    |   `-- default.html.mt
+    |-- index.html.mt
+    `-- protected.html.mt
 ```
 
 The tests will work again now.
@@ -715,19 +715,19 @@ Now the tests will work again and our final directory structure should be lookin
 
 ```
 myapp
-|- myapp.js
-|- controllers
-|  +- login.js
-|- models
-|  +- users.js
-|- tests
-|  +- login.js
-+- views
-   |- layouts
-   |  +- default.html.mt
-   +- login
-      |- index.html.mt
-      +- protected.html.mt
+|-- myapp.js
+|-- controllers
+|   `-- login.js
+|-- models
+|   `-- users.js
+|-- tests
+|   `-- login.js
+`-- views
+    |-- layouts
+    |   `-- default.html.mt
+    `-- login
+        |-- index.html.mt
+        `-- protected.html.mt
 ```
 
 Test-driven development takes a little getting used to, but can be a very powerful tool.
