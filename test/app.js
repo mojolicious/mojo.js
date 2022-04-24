@@ -1,3 +1,4 @@
+import {Stream} from 'stream';
 import mojo, {Session} from '../lib/core.js';
 import t from 'tap';
 
@@ -165,6 +166,12 @@ t.test('App', async t => {
     const second = flash.second ?? 'nothing';
 
     await ctx.render({text: `first: ${first}, second: ${second}`});
+  });
+
+  // GET /chunked
+  app.get('/chunked', async ctx => {
+    ctx.res.set('Transfer-Encoding', 'chunked');
+    await ctx.res.send(Stream.Readable.from(['Hello', ' World!']));
   });
 
   // GET /ua
@@ -442,6 +449,10 @@ t.test('App', async t => {
     (await ua.getOk('/cookie')).statusIs(200).bodyIs('Cookie: not present');
     (await ua.getOk('/cookie')).statusIs(200).bodyIs('Cookie: present');
     (await ua.getOk('/cookie')).statusIs(200).bodyIs('Cookie: present');
+  });
+
+  await t.test('Chunked transfer encoding', async () => {
+    (await ua.getOk('/chunked')).headerExistsNot('Content-Length').statusIs(200).bodyIs('Hello World!');
   });
 
   await t.test('UserAgent', async () => {
