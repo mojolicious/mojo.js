@@ -119,13 +119,6 @@ export class Body {
   }
 
   /**
-   * Get HTTP version.
-   */
-  get httpVersion(): string {
-    return this._raw.httpVersion;
-  }
-
-  /**
    * Get JSON message body as parsed data structure.
    */
   async json(): Promise<JSONValue> {

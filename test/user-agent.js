@@ -99,6 +99,7 @@ t.test('UserAgent', async t => {
 
   await t.test('Hello World', async t => {
     const res = await ua.get('/hello');
+    t.equal(res.httpVersion, '1.1');
     t.equal(res.status, 200);
     t.equal(res.statusMessage, 'OK');
     t.equal(await res.text(), 'Hello World!');

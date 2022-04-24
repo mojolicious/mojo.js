@@ -5,6 +5,13 @@ import {Body} from '../body.js';
  */
 export class UserAgentResponse extends Body {
   /**
+   * Get HTTP version.
+   */
+  get httpVersion(): string {
+    return this._raw.httpVersion;
+  }
+
+  /**
    * Check if response has a `4xx` response status code.
    */
   get isClientError(): boolean {

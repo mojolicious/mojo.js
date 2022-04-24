@@ -30,9 +30,6 @@ t.test('App', async t => {
   // GET /☃
   app.get('/☃', ctx => ctx.render({text: 'Hello Snowman!'}));
 
-  // * /version
-  app.any('/version', ctx => ctx.render({text: ctx.req.httpVersion}));
-
   // * /methods
   app.any('/methods', ctx => ctx.render({text: ctx.req.method}));
 
@@ -367,10 +364,6 @@ t.test('App', async t => {
 
   await t.test('IRI', async () => {
     (await ua.getOk('/☃')).statusIs(200).bodyIs('Hello Snowman!');
-  });
-
-  await t.test('HTTP version', async () => {
-    (await ua.getOk('/version')).statusIs(200).bodyIs('1.1');
   });
 
   await t.test('Methods', async () => {
@@ -911,7 +904,6 @@ t.test('App', async t => {
   await t.test('Mock context', async () => {
     app.defaults.test = 'works';
     const ctx = app.newMockContext();
-    t.same(ctx.req.httpVersion, '1.1');
     t.same(ctx.req.method, 'GET');
     t.same(ctx.req.path, '/');
     t.same(ctx.req.headers, {});
@@ -925,13 +917,7 @@ t.test('App', async t => {
     t.equal(await ctx.renderToString({inline: 'Test: <%= hello %>'}), 'Test: mojo');
     t.equal(app.newMockContext().tag('p', {class: 'test'}, 'Hello!').toString(), '<p class="test">Hello!</p>');
 
-    const ctx2 = app.newMockContext({
-      httpVersion: '1.0',
-      method: 'POST',
-      url: '/test',
-      headers: {host: 'mojolicious.org'}
-    });
-    t.same(ctx2.req.httpVersion, '1.0');
+    const ctx2 = app.newMockContext({method: 'POST', url: '/test', headers: {host: 'mojolicious.org'}});
     t.same(ctx2.req.method, 'POST');
     t.same(ctx2.req.path, '/test');
     t.same(ctx2.req.headers, {host: 'mojolicious.org'});
