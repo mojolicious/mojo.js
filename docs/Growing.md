@@ -562,7 +562,7 @@ files. Instead of selecting a layout in the `ctx.render` call, from now on we wi
 
 ## Simplified Application
 
-Next we need to update all `ctx.render` calls and remove the inline templates from out application.
+Next we need to update all `ctx.render` calls and remove the inline templates from our application.
 
 ```js
 import mojo from '@mojojs/core';
@@ -691,11 +691,10 @@ export const app = mojo({secrets: ['Mojolicious rocks']});
 app.models.users = new Users();
 
 app.any('/').to('login#index').name('index');
+app.get('/logout').to('login#logout');
 
 const loggedIn = app.under('/').to('login#loggedIn');
 loggedIn.get('/protected').to('login#protected');
-
-app.get('/logout').to('login#logout');
 
 app.start();
 ```
