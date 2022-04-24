@@ -553,7 +553,12 @@ $ touch views/protected.html.mt
 ```
 
 Just move the content of the `indexTemplate`, `protectedTemplate` and `defaultLayout` constants into those template
-files.
+files. Instead of selecting a layout in the `ctx.render` call, from now on we will let each template select it for themselves, so we have to add a `view.layout` statement (as first line) to each of them.
+
+```
+% view.layout = 'default';
+...rest of the template...
+```
 
 ## Simplified Application
 
@@ -573,14 +578,13 @@ app.any('/', async ctx => {
   const user = params.get('user');
   const pass = params.get('pass');
 
-  if (ctx.models.users.check(user, pass) === false) return await ctx.render({view: 'index', layout: 'default'});
+  if (ctx.models.users.check(user, pass) === false) return await ctx.render({view: 'index'});
 
   const session = await ctx.session();
   session.user = user;
 
   const flash = await ctx.flash();
   flash.message = 'Thanks for logging in.';
-
   await ctx.redirectTo('protected');
 }).name('index');
 
@@ -592,7 +596,7 @@ const loggedIn = app.under('/').to(async ctx => {
 });
 
 loggedIn.get('/protected').to(async ctx => {
-  await ctx.render({view: 'protected', layout: 'default'});
+  await ctx.render({view: 'protected'});
 });
 
 app.get('/logout', async ctx => {
@@ -622,7 +626,112 @@ myapp
 
 The tests will work again now.
 
-...TO BE CONTINUED...
+## Controller Class
+
+Hybrid routes with separate template files are a nice intermediate step, but to maximize maintainability it makes sense
+to split our action code from its routing information.
+
+```js
+$ mkdir controllers
+$ touch controlers/login.js
+```
+
+Once again the actual action code does not need to change much, we just turn them into methods and remove the arguments
+from the `ctx.render` calls (because from now on we will rely on default `controller/action` template names).
+
+```js
+export default class LoginController {
+
+  async index(ctx) {
+    const params = await ctx.params();
+    const user = params.get('user');
+    const pass = params.get('pass');
+
+    if (ctx.models.users.check(user, pass) === false) return await ctx.render();
+
+    const session = await ctx.session();
+    session.user = user;
+
+    const flash = await ctx.flash();
+    flash.message = 'Thanks for logging in.';
+    await ctx.redirectTo('protected');
+  }
+
+  async loggedIn(ctx) {
+    const session = await ctx.session();
+    if (session.user !== undefined) return;
+    await ctx.redirectTo('index');
+    return false;
+  }
+
+  async protected(ctx) {
+    await ctx.render();
+  }
+
+  async logout(ctx) {
+    const session = await ctx.session();
+    session.expires = 1;
+    await ctx.redirectTo('index');
+  }
+}
+```
+
+All mojo.js controllers are just ES6 classes and get instantiated on demand by the router.
+
+## Final Application
+
+The application script `myapp.js` can now be reduced to model and routing information.
+
+```js
+import mojo from '@mojojs/core';
+import Users from './models/users.js';
+
+export const app = mojo({secrets: ['Mojolicious rocks']});
+
+app.models.users = new Users();
+
+app.any('/').to('login#index').name('index');
+
+const loggedIn = app.under('/').to('login#loggedIn');
+loggedIn.get('/protected').to('login#protected');
+
+app.get('/logout').to('login#logout');
+
+app.start();
+```
+
+The router allows many different route variations, the [Routing](Routing.md) guide explains them all in great detail.
+
+## Templates
+
+Templates are our views, and usually bound to controllers, so they need to be moved into the appropriate directories.
+
+```
+$ mkdir views/login
+$ mv views/index.html.mt views/login/index.html.mt
+$ mv views/protected.html.mt views/login/protected.html.mt
+```
+
+Now the tests will work again and our final directory structure should be looking like this.
+
+```
+myapp
+|- myapp.js
+|- controllers
+|  +- login.js
+|- models
+|  +- users.js
+|- tests
+|  +- login.js
++- views
+   |- layouts
+   |  +- default.html.mt
+   +- login
+      |- index.html.mt
+      +- protected.html.mt
+```
+
+Test-driven development takes a little getting used to, but can be a very powerful tool.
 
 ## Support
 

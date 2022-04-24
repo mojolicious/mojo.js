@@ -1,3 +1,11 @@
+<p align="center">
+  <a href="https://mojojs.org">
+    <picture>
+      <source srcset="https://github.com/mojolicious/mojo.js/blob/main/docs/images/logo-dark.png?raw=true" media="(prefers-color-scheme: dark)">
+      <img src="https://github.com/mojolicious/mojo.js/blob/main/docs/images/logo.png?raw=true" style="margin: 0 auto;">
+    </picture>
+  </a>
+</p>
 
 # The mojo.js Documentation
 
@@ -10,7 +18,7 @@ The guides are still a **work in progress**. But we are aiming for the same leve
 
 A quick example driven introduction to the basic concepts of [mojo.js](https://mojojs.org).
 
-* [Growing](Growing.md) (Progress: 90%)
+* [Growing](Growing.md) (Progress: 100%)
 
 Starting a single file prototype from scratch and growing it into a well-structured mojo.js application.
 
