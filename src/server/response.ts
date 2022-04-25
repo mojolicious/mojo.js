@@ -9,10 +9,6 @@ import {stringifyCookie} from './cookie.js';
  */
 export class ServerResponse {
   /**
-   * Response headers.
-   */
-  headers: Record<string, string | string[]> = {};
-  /**
    * Response has already been sent.
    */
   isSent = false;
@@ -22,6 +18,7 @@ export class ServerResponse {
   statusCode = 200;
 
   _ctx: WeakRef<Context>;
+  _headers: Record<string, string | string[]> = {};
   _raw: http.ServerResponse;
 
   constructor(res: http.ServerResponse, ctx: Context) {
@@ -33,7 +30,7 @@ export class ServerResponse {
    * Append header value.
    */
   append(name: string, value: string) {
-    const headers = this.headers;
+    const headers = this._headers;
     const old = headers[name];
 
     if (old === undefined) {
@@ -51,7 +48,7 @@ export class ServerResponse {
    * Set response content length.
    */
   length(len: number): this {
-    this.headers['Content-Length'] = len.toString();
+    this._headers['Content-Length'] = len.toString();
     return this;
   }
 
@@ -73,13 +70,13 @@ export class ServerResponse {
     const raw = this._raw;
     if (typeof body === 'string' || Buffer.isBuffer(body)) {
       this.length(Buffer.byteLength(body));
-      raw.writeHead(this.statusCode, this.headers);
+      raw.writeHead(this.statusCode, this._headers);
       raw.end(body);
     } else if (body instanceof Stream) {
-      raw.writeHead(this.statusCode, this.headers);
+      raw.writeHead(this.statusCode, this._headers);
       body.pipe(this._raw);
     } else {
-      raw.writeHead(this.statusCode, this.headers);
+      raw.writeHead(this.statusCode, this._headers);
       raw.end();
     }
   }
@@ -88,12 +85,12 @@ export class ServerResponse {
    * Set HTTP header for response.
    */
   set(name: string, value: string): this {
-    if (this.headers[name] !== undefined && name === 'Set-Cookie') {
-      let header = this.headers[name];
-      if (typeof header === 'string') header = this.headers[name] = [header];
+    if (this._headers[name] !== undefined && name === 'Set-Cookie') {
+      let header = this._headers[name];
+      if (typeof header === 'string') header = this._headers[name] = [header];
       header.push(value);
     } else {
-      this.headers[name] = value;
+      this._headers[name] = value;
     }
     return this;
   }
@@ -117,7 +114,7 @@ export class ServerResponse {
    * Set response content type.
    */
   type(type: string): this {
-    this.headers['Content-Type'] = type;
+    this._headers['Content-Type'] = type;
     return this;
   }
 }
