@@ -19,10 +19,8 @@ import {Mime} from './mime.js';
 import {MockRequest} from './mock/request.js';
 import {MockResponse} from './mock/response.js';
 import defaultHelpersPlugin from './plugins/default-helpers.js';
-import exceptionHelpersPlugin from './plugins/exception-helpers.js';
-import headerConditionsPlugin from './plugins/header-conditions.js';
+import defaultConditionsPlugin from './plugins/default-conditions.js';
 import mtEnginePlugin from './plugins/mt-engine.js';
-import viewHelpersPlugin from './plugins/view-helpers.js';
 import {Renderer} from './renderer.js';
 import {Router} from './router.js';
 import {Session} from './session.js';
@@ -130,10 +128,8 @@ export class App {
     this.log = new Logger({historySize: isDev ? 10 : 0, level: isDev ? 'trace' : 'info'});
 
     this.plugin(defaultHelpersPlugin);
-    this.plugin(exceptionHelpersPlugin);
-    this.plugin(headerConditionsPlugin);
+    this.plugin(defaultConditionsPlugin);
     this.plugin(mtEnginePlugin);
-    this.plugin(viewHelpersPlugin);
   }
 
   /**
