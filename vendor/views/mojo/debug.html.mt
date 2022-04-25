@@ -42,7 +42,8 @@
                 Community
               </a>
               <div class="dropdown-menu" aria-labelledby="communityDropdown">
-                <a class="dropdown-item" href="https://web.libera.chat/#mojo">Chat</a>
+                <a class="dropdown-item" href="https://matrix.to/#/#mojo:matrix.org">Matrix</a>
+                <a class="dropdown-item" href="https://web.libera.chat/#mojo">IRC</a>
                 <a class="dropdown-item" href="https://github.com/mojolicious/mojo.js/discussions">Forum</a>
                 <a class="dropdown-item" href="https://twitter.com/mojolicious_org">Twitter</a>
                 <a class="dropdown-item" href="https://blogs.mojolicious.org">Blogs</a>
