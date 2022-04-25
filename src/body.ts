@@ -1,5 +1,5 @@
 import type {JSONValue} from './types.js';
-import type {IncomingHttpHeaders, IncomingMessage} from 'http';
+import type {IncomingMessage} from 'http';
 import type {Readable, Writable} from 'stream';
 import {on} from 'events';
 import zlib from 'zlib';
