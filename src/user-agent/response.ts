@@ -68,6 +68,6 @@ export class UserAgentResponse extends Body {
    * Get `Content-Type` header value.
    */
   get type(): string | undefined {
-    return this.headers['content-type'];
+    return this.get('Content-Type');
   }
 }

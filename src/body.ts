@@ -105,13 +105,6 @@ export class Body {
   }
 
   /**
-   * Get HTTP headers from message.
-   */
-  get headers(): IncomingHttpHeaders {
-    return this._raw.headers;
-  }
-
-  /**
    * Get HTML message body as `@mojojs/dom` object.
    */
   async html(): Promise<DOM> {
@@ -132,6 +125,14 @@ export class Body {
     return await new Promise((resolve, reject) => {
       this.createReadStream().on('error', reject).pipe(writer).on('unpipe', resolve);
     });
+  }
+
+  /**
+   * Set HTTP header for request.
+   */
+  set(name: string, value: string): this {
+    this._raw.headers[name.toLowerCase()] = value;
+    return this;
   }
 
   /**

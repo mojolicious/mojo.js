@@ -906,7 +906,6 @@ t.test('App', async t => {
     const ctx = app.newMockContext();
     t.same(ctx.req.method, 'GET');
     t.same(ctx.req.path, '/');
-    t.same(ctx.req.headers, {});
     t.same(ctx.currentRoute(), null);
     t.equal(ctx.stash.test, 'works');
     ctx.stash.test = null;
@@ -917,16 +916,14 @@ t.test('App', async t => {
     t.equal(await ctx.renderToString({inline: 'Test: <%= hello %>'}), 'Test: mojo');
     t.equal(app.newMockContext().tag('p', {class: 'test'}, 'Hello!').toString(), '<p class="test">Hello!</p>');
 
-    const ctx2 = app.newMockContext({method: 'POST', url: '/test', headers: {host: 'mojolicious.org'}});
+    const ctx2 = app.newMockContext({method: 'POST', url: '/test'});
     t.same(ctx2.req.method, 'POST');
     t.same(ctx2.req.path, '/test');
-    t.same(ctx2.req.headers, {host: 'mojolicious.org'});
-    t.equal(ctx2.req.baseURL, 'http://mojolicious.org');
   });
 
   await t.test('URL generation', t => {
     const ctx = app.newMockContext();
-    ctx.req.headers.host = 'example.com';
+    ctx.req.set('Host', 'example.com');
 
     t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
     t.equal(ctx.urlFor('methods', {}, {query: {_method: 'PUT'}}), 'http://example.com/methods?_method=PUT');

@@ -61,8 +61,8 @@ export class Static {
     if (lastModified !== undefined) res.set('Last-Modified', lastModified.toUTCString());
 
     // If-None-Match
-    const headers = ctx.req.headers;
-    const ifNoneMatch = headers['if-none-match'];
+    const req = ctx.req;
+    const ifNoneMatch = req.get('If-None-Match');
     if (etag !== undefined && ifNoneMatch !== undefined) {
       const etags = ifNoneMatch.split(/,\s+/).map(value => value.replaceAll('"', ''));
       for (const match of etags) {
@@ -71,7 +71,7 @@ export class Static {
     }
 
     // If-Modified-Since
-    const ifModifiedSince = headers['if-modified-since'];
+    const ifModifiedSince = req.get('If-Modified-Since');
     if (options.lastModified !== undefined && ifModifiedSince !== undefined) {
       const epoch = Date.parse(ifModifiedSince);
       if (isNaN(epoch)) return false;
@@ -92,7 +92,7 @@ export class Static {
     const length = stat.size;
     if (typeof length !== 'number') return await this._rangeNotSatisfiable(ctx);
     const type = app.mime.extType(file.extname().replace('.', '')) ?? 'application/octet-stream';
-    const range = ctx.req.headers.range;
+    const range = ctx.req.get('Range');
 
     // Last-Modified and Etag
     const res = ctx.res;

@@ -56,7 +56,7 @@ export class ServerRequest extends Body {
    */
   getCookie(name: string): string | null {
     if (this._cookies === undefined) {
-      const header = this.headers.cookie;
+      const header = this.get('Cookie');
       this._cookies = header === undefined ? {} : parseCookie(header);
     }
     return this._cookies[name] ?? null;
@@ -143,7 +143,7 @@ export class ServerRequest extends Body {
   get userinfo(): string | null {
     if (this._userinfo === undefined) {
       this._userinfo = null;
-      const auth = this.headers.authorization;
+      const auth = this.get('Authorization');
       if (auth !== undefined) {
         const match = auth.match(/Basic (.+)$/);
         if (match !== null) this._userinfo = Buffer.from(match[1], 'base64').toString();

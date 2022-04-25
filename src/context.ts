@@ -100,7 +100,7 @@ class Context extends EventEmitter {
    * Select best possible representation for resource.
    */
   accepts(allowed?: string[]): string[] | null {
-    const formats = this.app.mime.detect(this.req.headers.accept ?? '');
+    const formats = this.app.mime.detect(this.req.get('Accept') ?? '');
     const stash = this.stash;
     if (typeof stash.ext === 'string') formats.unshift(stash.ext);
 
