@@ -200,5 +200,5 @@ await ctx.res.status(204).send();
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
-[Forum](https://github.com/mojolicious/mojo.js/discussions), on [Matrix](https://matrix.to/#/#mojo:libera.chat), or
+[Forum](https://github.com/mojolicious/mojo.js/discussions), on [Matrix](https://matrix.to/#/#mojo:matrix.org), or
 [IRC](https://web.libera.chat/#mojo).
