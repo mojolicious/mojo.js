@@ -97,7 +97,7 @@ t.test('Command app', async t => {
       },
       {stderr: true}
     );
-    t.match(output2.toString(), /GET.*Host.*Content-Length.*Hello Mojo!/s);
+    t.match(output2.toString(), /Content-Length.*Hello Mojo!/s);
 
     const output3 = await captureOutput(
       async () => {
@@ -105,7 +105,7 @@ t.test('Command app', async t => {
       },
       {stderr: true}
     );
-    t.match(output3.toString(), /GET.*Accept.*Content-Length.*Hello Mojo!/s);
+    t.match(output3.toString(), /Content-Length.*Hello Mojo!/s);
 
     const output4 = await captureOutput(
       async () => {
@@ -113,7 +113,7 @@ t.test('Command app', async t => {
       },
       {stderr: true}
     );
-    t.match(output4.toString(), /GET.*Content-Length.*Content-Length.*Hello Mojo!/s);
+    t.match(output4.toString(), /Content-Length.*Hello Mojo!/s);
 
     const output5 = await captureOutput(
       async () => {
@@ -121,7 +121,7 @@ t.test('Command app', async t => {
       },
       {stderr: true}
     );
-    t.match(output5.toString(), /GET.*\/.*Content-Length.*Hello Mojo!/s);
+    t.match(output5.toString(), /Content-Length.*Hello Mojo!/s);
 
     const output6 = await captureOutput(
       async () => {
@@ -168,7 +168,7 @@ t.test('Command app', async t => {
 
     const app2 = mojo({mode: 'production'});
     app2.get('/', async ctx => {
-      ctx.res._raw.on('finish', () => process.emit('SIGUSR2', 'SIGUSR2'));
+      ctx.on('finish', () => process.emit('SIGUSR2', 'SIGUSR2'));
       await ctx.render({text: 'Stopping server'});
     });
     const hookPromise = new Promise(resolve => app2.addAppHook('server:stop', () => resolve(true)));

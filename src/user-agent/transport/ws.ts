@@ -1,4 +1,5 @@
 import type {UserAgentWebSocketOptions} from '../../types.js';
+import type {Socket} from 'net';
 import {WebSocket} from '../../websocket.js';
 import {UserAgentResponse} from '../response.js';
 import WS from 'ws';
@@ -14,12 +15,21 @@ export class WSTransport {
     const ws = new WS(config.url ?? '', config.protocols, {headers: config.headers});
     return await new Promise((resolve, reject) => {
       let handshake: UserAgentResponse;
-      ws.on('upgrade', res => (handshake = new UserAgentResponse(res)));
+      let socket: Socket;
+
+      ws.on('upgrade', res => {
+        handshake = new UserAgentResponse(res, {
+          headers: res.rawHeaders,
+          httpVersion: res.httpVersion,
+          status: res.statusCode ?? 200,
+          statusMessage: res.statusMessage ?? 'OK'
+        });
+        socket = res.socket;
+      });
       ws.on('error', reject);
 
       ws.on('open', () => {
         // Workaround for a race condition where the first message arrives before the promise resolves
-        const socket = handshake._raw.socket;
         socket.pause();
         queueMicrotask(() => socket.resume());
         resolve(new WebSocket(ws, handshake, {jsonMode: config.json ?? false}));

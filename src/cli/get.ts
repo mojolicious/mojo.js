@@ -1,10 +1,6 @@
 import type {MojoApp} from '../types.js';
-import type {ClientRequest, IncomingMessage} from 'http';
 import chalk from 'chalk';
 import nopt from 'nopt';
-
-type IntrospectedRequest = ClientRequest & {getRawHeaderNames: () => string[]; getHeader: (name: string) => string};
-type IntrospectedResponse = IncomingMessage & {req: IntrospectedRequest};
 
 /**
  * Get command.
@@ -31,18 +27,12 @@ export default async function getCommand(app: MojoApp, args: string[]): Promise<
 
   if (parsed.verbose === true) {
     const stderr = process.stderr;
-    const raw = res._raw as IntrospectedResponse;
-    const req = raw.req;
-    const method = chalk.blue(req.method);
-    const reqVersion = chalk.blue('HTTP') + '/' + chalk.blue('1.1');
-    stderr.write(`${method} ${req.path} ${reqVersion}\n`);
-    writeHeaders(getHeaders(req));
 
     const resVersion = chalk.blue('HTTP') + '/' + chalk.blue(res.httpVersion);
     const status = res.status;
     const statusMessage = chalk.blue(res.statusMessage);
     stderr.write(`${resVersion} ${status} ${statusMessage}\n`);
-    writeHeaders(raw.rawHeaders);
+    writeHeaders(res.headers.toArray());
   }
 
   if (argv.remain[1] !== undefined) {
@@ -79,23 +69,6 @@ Options:
   -X, --method <method>       HTTP method to use, defaults to "GET"
   -v, --verbose               Print response headers to STDERR
 `;
-
-function getHeaders(req: IntrospectedRequest): string[] {
-  const headers = [];
-
-  for (const name of req.getRawHeaderNames()) {
-    const header = req.getHeader(name);
-    if (typeof header === 'string') {
-      headers.push(name, header);
-    } else if (typeof header === 'number') {
-      headers.push(name, header.toString());
-    } else if (Array.isArray(header)) {
-      header.forEach(value => headers.push(name, value));
-    }
-  }
-
-  return headers;
-}
 
 function parseHeaders(list: string[] = []): Record<string, string> {
   const headers: Record<string, string> = {};

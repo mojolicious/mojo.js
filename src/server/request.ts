@@ -1,12 +1,8 @@
 import type {ServerRequestOptions} from '../types.js';
-import type {IncomingMessage} from 'http';
-import type {Socket} from 'net';
 import {Body} from '../body.js';
 import {Params} from '../body/params.js';
 import {parseCookie} from '../server/cookie.js';
 import {decodeURIComponentSafe} from '../util.js';
-
-type TLSSocket = Socket & {encrypted: boolean | undefined};
 
 // Official regex from RFC 3986
 const URL_RE = /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
@@ -18,29 +14,48 @@ let requestId = 0;
  */
 export class ServerRequest extends Body {
   /**
+   * Check if underlying socket was encrypted with TLS.
+   */
+  isSecure: boolean;
+  /**
    * Request is a WebSocket handshake.
    */
   isWebSocket: boolean;
   /**
+   * Request method.
+   */
+  method: string | null;
+  /**
    * Request ID.
    */
   requestId: string;
+  /**
+   * Request URL.
+   */
+  url: string | null;
 
   _cookies: Record<string, string> | undefined = undefined;
   _ip: string | undefined = undefined;
   _path: string | null | undefined = undefined;
   _protocol: string | undefined = undefined;
   _query: Params | undefined = undefined;
+  _remoteAddress: string | undefined;
   _reverseProxy: boolean;
   _userinfo: string | null | undefined = undefined;
 
-  constructor(stream: IncomingMessage, options: ServerRequestOptions) {
-    super(stream);
+  constructor(options: ServerRequestOptions) {
+    super(options.headers, options.body);
+
+    this.method = options.method ?? null;
+    this.url = options.url ?? null;
 
     this.isWebSocket = options.isWebSocket;
+    this.isSecure = options.isSecure;
+
     requestId = (requestId + 1) & 2147483647;
     this.requestId = `${process.pid}-${requestId.toString(36).padStart(6, '0')}`;
 
+    this._remoteAddress = options.remoteAddress;
     this._reverseProxy = options.reverseProxy;
   }
 
@@ -48,7 +63,7 @@ export class ServerRequest extends Body {
    * Server base URL.
    */
   get baseURL(): string {
-    return `${this.protocol}://${this._raw.headers.host ?? ''}`;
+    return `${this.protocol}://${this.get('Host') ?? ''}`;
   }
 
   /**
@@ -57,7 +72,7 @@ export class ServerRequest extends Body {
   getCookie(name: string): string | null {
     if (this._cookies === undefined) {
       const header = this.get('Cookie');
-      this._cookies = header === undefined ? {} : parseCookie(header);
+      this._cookies = header === null ? {} : parseCookie(header);
     }
     return this._cookies[name] ?? null;
   }
@@ -67,10 +82,10 @@ export class ServerRequest extends Body {
    */
   get ip(): string | null {
     if (this._ip === undefined) {
-      this._ip = this._raw.socket.remoteAddress;
+      this._ip = this._remoteAddress;
       if (this._reverseProxy) {
         const forwarded = this.get('X-Forwarded-For');
-        if (forwarded !== undefined) {
+        if (forwarded !== null) {
           const match = forwarded.match(/([^,\s]+)$/);
           if (match !== null) this._ip = match[1];
         }
@@ -81,26 +96,11 @@ export class ServerRequest extends Body {
   }
 
   /**
-   * Check if underlying socket was encrypted with TLS.
-   */
-  get isSecure(): boolean {
-    const socket = this._raw.socket as TLSSocket;
-    return socket.encrypted ?? false;
-  }
-
-  /**
-   * Request method.
-   */
-  get method(): string | null {
-    return this._raw.method ?? null;
-  }
-
-  /**
    * Request path.
    */
   get path(): string | null {
     if (this._path === undefined) {
-      const match = (this._raw.url as string).match(URL_RE);
+      const match = (this.url ?? '').match(URL_RE);
       this._path = match === null ? null : decodeURIComponentSafe(match[5]);
     }
     return this._path;
@@ -114,7 +114,7 @@ export class ServerRequest extends Body {
       this._protocol = this.isSecure ? 'https' : 'http';
       if (this._reverseProxy === true) {
         const forwarded = this.get('X-Forwarded-Proto');
-        if (forwarded !== undefined) this._protocol = forwarded;
+        if (forwarded !== null) this._protocol = forwarded;
       }
     }
 
@@ -126,7 +126,7 @@ export class ServerRequest extends Body {
    */
   get query(): Params {
     if (this._query === undefined) {
-      const url = this._raw.url as string;
+      const url = this.url ?? '';
       if (url.includes('?') === true) {
         const match = url.match(URL_RE);
         this._query = match !== null ? new Params(match[7]) : new Params();
@@ -144,7 +144,7 @@ export class ServerRequest extends Body {
     if (this._userinfo === undefined) {
       this._userinfo = null;
       const auth = this.get('Authorization');
-      if (auth !== undefined) {
+      if (auth !== null) {
         const match = auth.match(/Basic (.+)$/);
         if (match !== null) this._userinfo = Buffer.from(match[1], 'base64').toString();
       }

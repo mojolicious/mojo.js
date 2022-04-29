@@ -3,26 +3,24 @@ import type {
   AnyArguments,
   AppOptions,
   UserAgentOptions,
-  MockRequestOptions,
   MojoAction,
   MojoContext,
   RouteArguments,
-  ServerRequestOptions,
   TestUserAgentOptions
 } from './types.js';
-import type {IncomingMessage, ServerResponse} from 'http';
+import {Readable} from 'stream';
 import {CLI} from './cli.js';
 import {Context} from './context.js';
 import {Hooks} from './hooks.js';
 import {Logger} from './logger.js';
 import {Mime} from './mime.js';
-import {MockRequest} from './mock/request.js';
-import {MockResponse} from './mock/response.js';
 import defaultConditionsPlugin from './plugins/default-conditions.js';
 import defaultHelpersPlugin from './plugins/default-helpers.js';
 import mtEnginePlugin from './plugins/mt-engine.js';
 import {Renderer} from './renderer.js';
 import {Router} from './router.js';
+import {ServerRequest} from './server/request.js';
+import {ServerResponse} from './server/response.js';
 import {Session} from './session.js';
 import {Static} from './static.js';
 import {UserAgent} from './user-agent.js';
@@ -219,8 +217,8 @@ export class App {
   /**
    * Create a context for application.
    */
-  newContext(req: IncomingMessage, res: ServerResponse, options: ServerRequestOptions): MojoContext {
-    const ctx = new this._contextClass(this, req, res, options);
+  newContext(req: ServerRequest, res: ServerResponse): MojoContext {
+    const ctx = new this._contextClass(this, req, res);
     Object.assign(ctx.stash, this.defaults);
     return ctx;
   }
@@ -228,9 +226,23 @@ export class App {
   /**
    * Create a mock context for application. Very useful for testing helpers.
    */
-  newMockContext(options?: MockRequestOptions): MojoContext {
-    const req = new MockRequest(options);
-    const ctx = new this._contextClass(this, req, new MockResponse(req), {isReverseProxy: false, isWebSocket: false});
+  newMockContext(options: {headers?: string[]; method?: string; url?: string} = {}): MojoContext {
+    const ctx = new this._contextClass(
+      this,
+      new ServerRequest({
+        body: new Readable(),
+        headers: options.headers ?? [],
+        isSecure: false,
+        isWebSocket: false,
+        method: options.method ?? 'GET',
+        remoteAddress: '127.0.0.1',
+        reverseProxy: false,
+        url: options.url ?? '/'
+      }),
+      new ServerResponse(() => {
+        // Do nothing
+      })
+    );
     Object.assign(ctx.stash, this.defaults);
     return ctx;
   }

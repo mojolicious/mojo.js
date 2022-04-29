@@ -1,14 +1,35 @@
+import type {IncomingMessage} from 'http';
 import {Body} from '../body.js';
+
+interface UserAgentResponseOptions {
+  headers: string[];
+  httpVersion: string;
+  status: number;
+  statusMessage: string;
+}
 
 /**
  * User agent response class.
  */
 export class UserAgentResponse extends Body {
   /**
-   * Get HTTP version.
+   * HTTP version.
    */
-  get httpVersion(): string {
-    return this._raw.httpVersion;
+  httpVersion: string;
+  /**
+   * Response status code.
+   */
+  status: number;
+  /**
+   * Response message.
+   */
+  statusMessage: string;
+
+  constructor(stream: IncomingMessage, options: UserAgentResponseOptions) {
+    super(options.headers, stream);
+    this.httpVersion = options.httpVersion;
+    this.status = options.status;
+    this.statusMessage = options.statusMessage;
   }
 
   /**
@@ -51,23 +72,9 @@ export class UserAgentResponse extends Body {
   }
 
   /**
-   * Response status code.
-   */
-  get status(): number {
-    return this._raw.statusCode as number;
-  }
-
-  /**
-   * Get response message.
-   */
-  get statusMessage(): string | undefined {
-    return this._raw.statusMessage;
-  }
-
-  /**
    * Get `Content-Type` header value.
    */
-  get type(): string | undefined {
+  get type(): string | null {
     return this.get('Content-Type');
   }
 }

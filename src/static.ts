@@ -63,7 +63,7 @@ export class Static {
     // If-None-Match
     const req = ctx.req;
     const ifNoneMatch = req.get('If-None-Match');
-    if (etag !== undefined && ifNoneMatch !== undefined) {
+    if (etag !== undefined && ifNoneMatch !== null) {
       const etags = ifNoneMatch.split(/,\s+/).map(value => value.replaceAll('"', ''));
       for (const match of etags) {
         if (match === etag) return true;
@@ -72,7 +72,7 @@ export class Static {
 
     // If-Modified-Since
     const ifModifiedSince = req.get('If-Modified-Since');
-    if (options.lastModified !== undefined && ifModifiedSince !== undefined) {
+    if (options.lastModified !== undefined && ifModifiedSince !== null) {
       const epoch = Date.parse(ifModifiedSince);
       if (isNaN(epoch)) return false;
       if (epoch > options.lastModified.getTime()) return true;
@@ -105,7 +105,7 @@ export class Static {
     }
 
     // Entire file
-    if (range === undefined) {
+    if (range === null) {
       await res.status(200).length(length).type(type).send(file.createReadStream());
       return;
     }

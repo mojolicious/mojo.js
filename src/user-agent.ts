@@ -138,7 +138,7 @@ class UserAgent extends EventEmitter {
     const transport = filtered.url.protocol === 'https:' ? this.httpsTransport : this.httpTransport;
     let res = await transport.request(filtered);
 
-    if (this.cookieJar !== null) await this.cookieJar.storeCookies(filtered.url, res._raw.headers['set-cookie']);
+    if (this.cookieJar !== null) await this.cookieJar.storeCookies(filtered.url, res.headers.getAll('Set-Cookie'));
     if (this.maxRedirects > 0) res = await this._handleRedirect(config, res);
     return res;
   }
@@ -227,7 +227,7 @@ class UserAgent extends EventEmitter {
     if (redirected >= this.maxRedirects) return res;
 
     const location = res.get('Location');
-    if (location === undefined) return res;
+    if (location === null) return res;
     const url = new URL(location, config.url);
 
     // New followup request

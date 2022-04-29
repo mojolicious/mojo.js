@@ -32,7 +32,7 @@ class WebSocket extends EventEmitter {
    */
   jsonMode: boolean;
 
-  _raw: WS;
+  _ws: WS;
 
   constructor(ws: WS, handshake: UserAgentResponse | null, options: {jsonMode: boolean}) {
     super({captureRejections: true});
@@ -40,7 +40,7 @@ class WebSocket extends EventEmitter {
     this.handshake = handshake;
     this.jsonMode = options.jsonMode ?? false;
 
-    this._raw = ws;
+    this._ws = ws;
 
     ws.on('error', error => this.emit('error', error));
     ws.on('message', this._safeMessageHandler.bind(this));
@@ -65,28 +65,28 @@ class WebSocket extends EventEmitter {
    * Close WebSocket connection.
    */
   close(code?: number, reason?: string): void {
-    this._raw.close(code, reason);
+    this._ws.close(code, reason);
   }
 
   /**
    * Send WebSocket ping frame.
    */
   async ping(data: Buffer): Promise<void> {
-    return await new Promise(resolve => this._raw.ping(data, undefined, () => resolve()));
+    return await new Promise(resolve => this._ws.ping(data, undefined, () => resolve()));
   }
 
   /**
    * Send WebSocket message.
    */
   async send(message: JSONValue | Buffer): Promise<void> {
-    if (this.jsonMode === false) return await new Promise(resolve => this._raw.send(message, () => resolve()));
-    return new Promise(resolve => this._raw.send(JSON.stringify(message), () => resolve()));
+    if (this.jsonMode === false) return await new Promise(resolve => this._ws.send(message, () => resolve()));
+    return new Promise(resolve => this._ws.send(JSON.stringify(message), () => resolve()));
   }
 
   _messageIterator(): AsyncIterableIterator<Array<JSONValue | Buffer>> {
     const ac = new AbortController();
 
-    this._raw.on('close', () => ac.abort());
+    this._ws.on('close', () => ac.abort());
     return on(this, 'message', {signal: ac.signal});
   }
 

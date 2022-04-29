@@ -2,6 +2,7 @@ import type {App} from './app.js';
 import type {Context} from './context.js';
 import type {ValidatorResult} from './validator/result.js';
 import type {Agent} from 'http';
+import type {Readable} from 'stream';
 import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';
 
@@ -56,12 +57,6 @@ export interface CookieOptions {
   secure?: boolean;
 }
 
-export interface MockRequestOptions {
-  headers?: Record<string, string>;
-  method?: string;
-  url?: string;
-}
-
 export interface RenderOptions {
   engine?: string;
   format?: string;
@@ -79,8 +74,14 @@ export interface RenderOptions {
 }
 
 export interface ServerRequestOptions {
+  body: Readable;
+  headers: string[];
+  isSecure: boolean;
   isWebSocket: boolean;
+  method?: string;
+  remoteAddress?: string;
   reverseProxy: boolean;
+  url?: string;
 }
 
 export interface UserAgentOptions {

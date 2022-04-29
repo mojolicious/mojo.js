@@ -136,7 +136,7 @@ export class TestUserAgent extends MockUserAgent {
    * Check if response header exists.
    */
   headerExists(name: string): this {
-    this.assert('ok', [this.res.get(name) !== undefined], `header "${name}" exists`, this.headerExists);
+    this.assert('ok', [this.res.get(name) !== null], `header "${name}" exists`, this.headerExists);
     return this;
   }
 
@@ -144,7 +144,7 @@ export class TestUserAgent extends MockUserAgent {
    * Opposite of `headerExists`.
    */
   headerExistsNot(name: string): this {
-    this.assert('notOk', [this.res.get(name) !== undefined], `no "${name}" header`, this.headerExistsNot);
+    this.assert('notOk', [this.res.get(name) !== null], `no "${name}" header`, this.headerExistsNot);
     return this;
   }
 

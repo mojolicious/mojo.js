@@ -1,13 +1,20 @@
 import type {Context} from '../context.js';
 import type {CookieOptions} from '../types.js';
-import type http from 'http';
-import {Stream} from 'stream';
+import type {Stream} from 'stream';
+import EventEmitter from 'events';
+import {Headers} from '../headers.js';
 import {stringifyCookie} from './cookie.js';
+
+type SendResponse = (res: ServerResponse, body?: string | Buffer | Stream) => void;
 
 /**
  * Server response class.
  */
-export class ServerResponse {
+export class ServerResponse extends EventEmitter {
+  /**
+   * Response headers.
+   */
+  headers = new Headers();
   /**
    * Response has already been sent.
    */
@@ -17,39 +24,34 @@ export class ServerResponse {
    */
   statusCode = 200;
 
-  _ctx: WeakRef<Context>;
-  _headers: Record<string, string | string[]> = {};
-  _raw: http.ServerResponse;
+  _ctx: WeakRef<Context> | undefined = undefined;
+  _sendResponse: SendResponse;
 
-  constructor(res: http.ServerResponse, ctx: Context) {
-    this._ctx = new WeakRef(ctx);
-    this._raw = res;
+  constructor(sendResponse: SendResponse) {
+    super();
+    this._sendResponse = sendResponse;
   }
 
   /**
    * Append header value.
    */
   append(name: string, value: string) {
-    const headers = this._headers;
-    const old = headers[name];
-
-    if (old === undefined) {
-      headers[name] = value;
-    } else if (Array.isArray(old)) {
-      old.push(value);
-    } else {
-      headers[name] = [old, value];
-    }
-
+    this.headers.append(name, value);
     return this;
+  }
+
+  /**
+   * Bind context to response.
+   */
+  bindContext(ctx: Context): void {
+    this._ctx = new WeakRef(ctx);
   }
 
   /**
    * Set response content length.
    */
   length(len: number): this {
-    this._headers['Content-Length'] = len.toString();
-    return this;
+    return this.set('Content-Length', len.toString());
   }
 
   /**
@@ -58,7 +60,9 @@ export class ServerResponse {
   async send(body?: string | Buffer | Stream): Promise<void> {
     this.isSent = true;
 
-    const ctx = this._ctx.deref();
+    const ctxRef = this._ctx;
+    if (ctxRef === undefined) return;
+    const ctx = ctxRef.deref();
     if (ctx === undefined) return;
 
     const app = ctx.app;
@@ -67,31 +71,14 @@ export class ServerResponse {
 
     if (ctx.isSessionActive === true) await app.session.store(ctx, await ctx.session());
 
-    const raw = this._raw;
-    if (typeof body === 'string' || Buffer.isBuffer(body)) {
-      this.length(Buffer.byteLength(body));
-      raw.writeHead(this.statusCode, this._headers);
-      raw.end(body);
-    } else if (body instanceof Stream) {
-      raw.writeHead(this.statusCode, this._headers);
-      body.pipe(this._raw);
-    } else {
-      raw.writeHead(this.statusCode, this._headers);
-      raw.end();
-    }
+    this._sendResponse(this, body);
   }
 
   /**
    * Set HTTP header for response.
    */
   set(name: string, value: string): this {
-    if (this._headers[name] !== undefined && name === 'Set-Cookie') {
-      let header = this._headers[name];
-      if (typeof header === 'string') header = this._headers[name] = [header];
-      header.push(value);
-    } else {
-      this._headers[name] = value;
-    }
+    this.headers.set(name, value);
     return this;
   }
 
@@ -99,7 +86,7 @@ export class ServerResponse {
    * Set cookie value.
    */
   setCookie(name: string, value: string, options: CookieOptions): this {
-    return this.set('Set-Cookie', stringifyCookie(name, value, options));
+    return this.append('Set-Cookie', stringifyCookie(name, value, options));
   }
 
   /**
@@ -114,7 +101,6 @@ export class ServerResponse {
    * Set response content type.
    */
   type(type: string): this {
-    this._headers['Content-Type'] = type;
-    return this;
+    return this.set('Content-Type', type);
   }
 }

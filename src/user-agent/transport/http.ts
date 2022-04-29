@@ -27,7 +27,16 @@ export class HTTPTransport {
     const options = this._prepareOptions(config);
 
     return await new Promise((resolve, reject) => {
-      const req = this._sendRequest(config.url as URL, options, res => resolve(new UserAgentResponse(res)));
+      const req = this._sendRequest(config.url as URL, options, res => {
+        resolve(
+          new UserAgentResponse(res, {
+            headers: res.rawHeaders,
+            httpVersion: res.httpVersion,
+            status: res.statusCode ?? 200,
+            statusMessage: res.statusMessage ?? 'OK'
+          })
+        );
+      });
       req.once('error', reject);
       req.once('close', reject);
 

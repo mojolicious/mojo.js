@@ -904,8 +904,8 @@ t.test('App', async t => {
   await t.test('Mock context', async () => {
     app.defaults.test = 'works';
     const ctx = app.newMockContext();
-    t.same(ctx.req.method, 'GET');
-    t.same(ctx.req.path, '/');
+    t.equal(ctx.req.method, 'GET');
+    t.equal(ctx.req.path, '/');
     t.same(ctx.currentRoute(), null);
     t.equal(ctx.stash.test, 'works');
     ctx.stash.test = null;
@@ -916,9 +916,10 @@ t.test('App', async t => {
     t.equal(await ctx.renderToString({inline: 'Test: <%= hello %>'}), 'Test: mojo');
     t.equal(app.newMockContext().tag('p', {class: 'test'}, 'Hello!').toString(), '<p class="test">Hello!</p>');
 
-    const ctx2 = app.newMockContext({method: 'POST', url: '/test'});
-    t.same(ctx2.req.method, 'POST');
-    t.same(ctx2.req.path, '/test');
+    const ctx2 = app.newMockContext({method: 'POST', url: '/test', headers: ['Host', 'localhost']});
+    t.equal(ctx2.req.method, 'POST');
+    t.equal(ctx2.req.path, '/test');
+    t.equal(ctx2.req.headers.get('Host'), 'localhost');
   });
 
   await t.test('URL generation', t => {

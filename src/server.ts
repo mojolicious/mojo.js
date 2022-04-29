@@ -4,12 +4,17 @@ import cluster from 'cluster';
 import http from 'http';
 import https from 'https';
 import os from 'os';
+import {Stream} from 'stream';
 import {URL} from 'url';
+import {ServerRequest} from './server/request.js';
+import {ServerResponse} from './server/response.js';
 import {WebSocket} from './websocket.js';
 import Path from '@mojojs/path';
 import {WebSocketServer} from 'ws';
 
 type ListenArgs = any[];
+
+type ResponseBody = string | Buffer | Stream | undefined;
 
 interface ServerOptions {
   cluster?: boolean;
@@ -153,15 +158,27 @@ export class Server {
     });
   }
 
-  _handleRequest(req: http.IncomingMessage, res: http.ServerResponse): void {
+  _handleRequest(req: http.IncomingMessage, raw: http.ServerResponse): void {
     const app = this.app;
-    const ctx = app.newContext(req, res, {isWebSocket: false, reverseProxy: this.reverseProxy});
+    const socket = req.socket;
+    const ctx = app.newContext(
+      this._prepareRequest(req, socket, false),
+      new ServerResponse(function (res: ServerResponse, body: ResponseBody) {
+        _sendResponse(res, body, raw);
+      })
+    );
+    raw.on('finish', () => ctx.emit('finish'));
     app.handleRequest(ctx).catch(error => ctx.exception(error));
   }
 
   _handleUpgrade(wss: WebSocketServer, req: http.IncomingMessage, socket: Socket, head: Buffer): void {
     const app = this.app;
-    const ctx = app.newContext(req, new http.ServerResponse(req), {isWebSocket: true, reverseProxy: this.reverseProxy});
+    const ctx = app.newContext(
+      this._prepareRequest(req, socket, true),
+      new ServerResponse(function (res: ServerResponse, body: ResponseBody) {
+        _sendResponse(res, body, new http.ServerResponse(req));
+      })
+    );
 
     app
       .handleRequest(ctx)
@@ -178,5 +195,32 @@ export class Server {
         if (ctx.isAccepted === false) socket.destroy();
         return ctx.exception(error);
       });
+  }
+
+  _prepareRequest(req: http.IncomingMessage, socket: Socket, isWebSocket: boolean): ServerRequest {
+    return new ServerRequest({
+      body: req,
+      headers: req.rawHeaders,
+      isSecure: (socket as any).encrypted ?? false,
+      isWebSocket: isWebSocket,
+      method: req.method,
+      remoteAddress: socket.remoteAddress,
+      reverseProxy: this.reverseProxy,
+      url: req.url
+    });
+  }
+}
+
+function _sendResponse(res: ServerResponse, body: ResponseBody, raw: http.ServerResponse): void {
+  if (typeof body === 'string' || Buffer.isBuffer(body)) {
+    res.length(Buffer.byteLength(body));
+    raw.writeHead(res.statusCode, res.headers.toArray());
+    raw.end(body);
+  } else if (body instanceof Stream) {
+    raw.writeHead(res.statusCode, res.headers.toArray());
+    body.pipe(raw);
+  } else {
+    raw.writeHead(res.statusCode, res.headers.toArray());
+    raw.end();
   }
 }

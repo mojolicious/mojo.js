@@ -77,11 +77,11 @@ t.test('UserAgent', async t => {
         json: {
           method: ctx.req.method,
           headers: {
-            authorization: ctx.req.get('Authorization'),
-            content: ctx.req.get('Content-Disposition'),
-            cookie: ctx.req.get('Cookie'),
-            referer: ctx.req.get('Referer'),
-            test: ctx.req.get('X-Test')
+            authorization: ctx.req.get('Authorization') ?? undefined,
+            content: ctx.req.get('Content-Disposition') ?? undefined,
+            cookie: ctx.req.get('Cookie') ?? undefined,
+            referer: ctx.req.get('Referer') ?? undefined,
+            test: ctx.req.get('X-Test') ?? undefined
           },
           body: await ctx.req.text()
         }

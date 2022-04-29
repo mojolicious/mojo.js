@@ -164,7 +164,7 @@ export class Renderer {
     if (this.autoCompress === true && Buffer.byteLength(output) >= this.minCompressSize) {
       res.append('Vary', 'Accept-Encoding');
       const accept = ctx.req.get('accept-encoding');
-      if (accept !== undefined && /gzip/i.test(accept)) {
+      if (accept !== null && /gzip/i.test(accept)) {
         res.set('Content-Encoding', 'gzip');
         output = await gzipPromise(output);
       }

@@ -1,9 +1,9 @@
 import type {JSONValue} from './types.js';
-import type {IncomingMessage} from 'http';
 import type {Readable, Writable} from 'stream';
 import {on} from 'events';
 import zlib from 'zlib';
 import {Params} from './body/params.js';
+import {Headers} from './headers.js';
 import DOM from '@mojojs/dom';
 import busboy from 'busboy';
 import yaml from 'js-yaml';
@@ -36,12 +36,17 @@ export class Body {
    * Automatically decompress message body if necessary.
    */
   autoDecompress = true;
+  /**
+   * HTTP headers.
+   */
+  headers: Headers;
 
   _form: Params | undefined = undefined;
-  _raw: IncomingMessage;
+  _stream: Readable;
 
-  constructor(stream: IncomingMessage) {
-    this._raw = stream;
+  constructor(headers: string[], stream: Readable) {
+    this._stream = stream;
+    this.headers = new Headers(headers);
   }
 
   async *[Symbol.asyncIterator](): AsyncIterable<Buffer> {
@@ -59,10 +64,10 @@ export class Body {
    * Get message body as a readable stream.
    */
   createReadStream(): Readable {
-    if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return this._raw;
+    if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return this._stream;
 
     const gunzip = zlib.createGunzip();
-    this._raw.pipe(gunzip);
+    this._stream.pipe(gunzip);
     return gunzip;
   }
 
@@ -99,9 +104,8 @@ export class Body {
   /**
    * Get HTTP header from message.
    */
-  get(name: string): string | undefined {
-    const header = this._raw.headers[name.toLowerCase()];
-    return Array.isArray(header) ? header.join(',') : header;
+  get(name: string): string | null {
+    return this.headers.get(name);
   }
 
   /**
@@ -131,7 +135,7 @@ export class Body {
    * Set HTTP header for request.
    */
   set(name: string, value: string): this {
-    this._raw.headers[name.toLowerCase()] = value;
+    this.headers.set(name, value);
     return this;
   }
 
@@ -169,23 +173,21 @@ export class Body {
   _formIterator(options?: UploadOptions): AsyncIterableIterator<[string, Readable, string, string, string]> {
     const ac = new AbortController();
 
-    const raw = this._raw;
-    const headers = raw.headers;
-    const type = headers['content-type'] ?? '';
+    const type = this.get('Content-Type') ?? '';
     const params = this._params;
 
-    const bb = busboy({headers: {'content-type': type, ...headers}, ...options});
+    const bb = busboy({headers: {'content-type': type, ...this.headers.toObject()}, ...options});
     bb.on('field', (fieldname, val) => params.append(fieldname, val));
     bb.on('end', () => ac.abort()).on('close', () => ac.abort());
     const files = on(bb, 'file', {signal: ac.signal});
-    raw.pipe(bb);
+    this._stream.pipe(bb);
 
     return files;
   }
 
   _isForm(): boolean {
-    const type = this._raw.headers['content-type'];
-    if (type === undefined) return false;
+    const type = this.get('Content-Type');
+    if (type === null) return false;
     return type.startsWith('application/x-www-form-urlencoded') || type.startsWith('multipart/form-data');
   }
 

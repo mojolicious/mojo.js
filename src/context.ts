@@ -1,17 +1,16 @@
 import type {App} from './app.js';
 import type {ChildLogger} from './logger.js';
 import type {Plan} from './router/plan.js';
+import type {ServerRequest} from './server/request.js';
+import type {ServerResponse} from './server/response.js';
 import type {SessionData} from './types.js';
-import type {MojoAction, MojoContext, RenderOptions, ServerRequestOptions, ValidatorFunction} from './types.js';
+import type {MojoAction, MojoContext, RenderOptions, ValidatorFunction} from './types.js';
 import type {UserAgent} from './user-agent.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
 import type {BusboyConfig} from 'busboy';
-import type http from 'http';
 import EventEmitter from 'events';
 import {Params} from './body/params.js';
-import {ServerRequest} from './server/request.js';
-import {ServerResponse} from './server/response.js';
 import {SafeString} from './util.js';
 
 type URLOptions = {query?: Record<string, string>};
@@ -20,6 +19,7 @@ type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
 interface ContextEvents {
   connection: (ws: WebSocket) => void;
+  finish: () => void;
 }
 
 declare interface Context {
@@ -82,13 +82,14 @@ class Context extends EventEmitter {
   _session: Record<string, any> | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;
 
-  constructor(app: App, req: http.IncomingMessage, res: http.ServerResponse, options: ServerRequestOptions) {
+  constructor(app: App, req: ServerRequest, res: ServerResponse) {
     super({captureRejections: true});
 
     this.app = app;
     this.exceptionFormat = app.exceptionFormat;
-    this.req = new ServerRequest(req, options);
-    this.res = new ServerResponse(res, this);
+    this.req = req;
+    this.res = res;
+    this.res.bindContext(this);
     this.log = app.log.child({requestId: this.req.requestId});
   }
 
