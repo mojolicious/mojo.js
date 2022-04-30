@@ -132,7 +132,7 @@ export class Body {
   }
 
   /**
-   * Set HTTP header for request.
+   * Set HTTP header for message.
    */
   set(name: string, value: string): this {
     this.headers.set(name, value);

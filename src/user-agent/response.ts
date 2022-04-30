@@ -21,7 +21,7 @@ export class UserAgentResponse extends Body {
    */
   status: number;
   /**
-   * Response message.
+   * Response status message.
    */
   statusMessage: string;
 

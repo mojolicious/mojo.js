@@ -24,5 +24,22 @@ t.test('Headers', t => {
 
     t.end();
   });
+
+  t.test('Cookies', t => {
+    const headers = new Headers();
+    headers.append('Set-Cookie', 'one=foo');
+    t.equal(headers.get('Set-Cookie'), 'one=foo');
+    t.same(headers.getAll('Set-Cookie'), ['one=foo']);
+    t.same(headers.toArray(), ['Set-Cookie', 'one=foo']);
+    t.same(headers.toObject(), {'Set-Cookie': 'one=foo'});
+    headers.append('Set-Cookie', 'two=bar');
+    t.equal(headers.get('Set-Cookie'), 'one=foo, two=bar');
+    t.same(headers.getAll('Set-Cookie'), ['one=foo', 'two=bar']);
+    t.same(headers.toArray(), ['Set-Cookie', 'one=foo', 'Set-Cookie', 'two=bar']);
+    t.same(headers.toObject(), {'Set-Cookie': 'one=foo, two=bar'});
+
+    t.end();
+  });
+
   t.end();
 });
