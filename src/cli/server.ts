@@ -16,10 +16,11 @@ export default async function serverCommand(app: MojoApp, args: string[]): Promi
       level: String,
       listen: [String, Array],
       proxy: Boolean,
+      requests: Number,
       'request-timeout': Number,
       workers: Number
     },
-    {c: '--cluster', L: '--level', l: '--listen', p: '--proxy', w: '--workers'},
+    {c: '--cluster', L: '--level', l: '--listen', p: '--proxy', r: '--requests', w: '--workers'},
     args,
     1
   );
@@ -31,6 +32,7 @@ export default async function serverCommand(app: MojoApp, args: string[]): Promi
     headersTimeout: parsed['headers-timeout'],
     keepAliveTimeout: parsed['keep-alive-timeout'],
     listen: parsed.listen,
+    maxRequestsPerSocket: parsed.requests,
     requestTimeout: parsed['request-timeout'],
     reverseProxy: parsed.proxy,
     workers: parsed.workers
@@ -51,7 +53,7 @@ serverCommand.usage = `Usage: APPLICATION server [OPTIONS]
   node index.js server
   node index.js server --level trace
   node index.js server --cluster
-  node index.js server --keep-alive-timeout 30000
+  node index.js server --requests 10 --keep-alive-timeout 30000
   node index.js server -l http://[::1]:3000
   node index.js server -l http://*:8080 -l http://*:8081
   node index.js server -l 'https://*:443?cert=./server.crt&key=./server.key'
@@ -72,6 +74,8 @@ Options:
   -l, --listen <location>         One or more locations you want to listen on,
                                   defaults to "http://*:3000"
   -p, --proxy                     Activate reverse proxy support
+  -r, --requests <num>            Maximum number of requests socket can handle
+                                  before closing keep alive connection
       --request-timeout <ms>      Limit the amount of time for receiving the
                                   entire request from the client
   -w, --workers <num>             Number of workers to spawn in cluster mode,

@@ -1,5 +1,11 @@
 import type {App} from '../app.js';
-import type {JSONValue, TestUserAgentOptions, UserAgentRequestOptions, UserAgentWebSocketOptions} from '../types.js';
+import type {
+  JSONValue,
+  ServerOptions,
+  TestUserAgentOptions,
+  UserAgentRequestOptions,
+  UserAgentWebSocketOptions
+} from '../types.js';
 import type {WebSocket} from '../websocket.js';
 import type {UserAgentResponse} from './response.js';
 import type {URL} from 'url';
@@ -204,9 +210,13 @@ export class TestUserAgent extends MockUserAgent {
   /**
    * Create a new test user agent.
    */
-  static async newTestUserAgent(app: App, options?: TestUserAgentOptions): Promise<TestUserAgent> {
+  static async newTestUserAgent(
+    app: App,
+    options?: TestUserAgentOptions,
+    serverOptions?: ServerOptions
+  ): Promise<TestUserAgent> {
     app.exceptionFormat = 'txt';
-    return await new TestUserAgent(options).start(app);
+    return await new TestUserAgent(options).start(app, serverOptions);
   }
 
   /**

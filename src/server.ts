@@ -1,4 +1,5 @@
 import type {App} from './app.js';
+import type {ServerOptions} from './types.js';
 import type {Socket} from 'net';
 import cluster from 'cluster';
 import http from 'http';
@@ -15,17 +16,6 @@ import {WebSocketServer} from 'ws';
 type ListenArgs = any[];
 
 type ResponseBody = string | Buffer | Stream | undefined;
-
-interface ServerOptions {
-  cluster?: boolean;
-  headersTimeout?: number;
-  keepAliveTimeout?: number;
-  listen?: string[];
-  quiet?: boolean;
-  requestTimeout?: number;
-  reverseProxy?: boolean;
-  workers?: number;
-}
 
 /**
  * Server class.
@@ -44,6 +34,10 @@ export class Server {
    * writing the last response, before a socket will be destroyed.
    */
   keepAliveTimeout: number | undefined;
+  /**
+   * Maximum number of requests socket can handle before closing keep alive connection.
+   */
+  maxRequestsPerSocket: number | undefined;
   /**
    * Limit the amount of time for receiving the entire request from the client.
    */
@@ -67,6 +61,7 @@ export class Server {
     this.app = app;
     this.headersTimeout = options.headersTimeout;
     this.keepAliveTimeout = options.keepAliveTimeout;
+    this.maxRequestsPerSocket = options.maxRequestsPerSocket;
     this.requestTimeout = options.requestTimeout;
     this.reverseProxy = options.reverseProxy ?? false;
 
@@ -141,6 +136,7 @@ export class Server {
     const server = (isHttps ? https : http).createServer(options, this._handleRequest.bind(this));
     this._servers.push(server);
 
+    if (this.maxRequestsPerSocket !== undefined) server.maxRequestsPerSocket = this.maxRequestsPerSocket;
     if (this.headersTimeout !== undefined) server.headersTimeout = this.headersTimeout;
     if (this.keepAliveTimeout !== undefined) server.keepAliveTimeout = this.keepAliveTimeout;
     if (this.requestTimeout !== undefined) server.requestTimeout = this.requestTimeout;

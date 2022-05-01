@@ -6,6 +6,7 @@ import type {
   MojoAction,
   MojoContext,
   RouteArguments,
+  ServerOptions,
   TestUserAgentOptions
 } from './types.js';
 import {Readable} from 'stream';
@@ -250,15 +251,15 @@ export class App {
   /**
    * Create a new mock user agent for application.
    */
-  async newMockUserAgent(options?: UserAgentOptions): Promise<MockUserAgent> {
-    return await MockUserAgent.newMockUserAgent(this, options);
+  async newMockUserAgent(options?: UserAgentOptions, serverOptons?: ServerOptions): Promise<MockUserAgent> {
+    return await MockUserAgent.newMockUserAgent(this, options, serverOptons);
   }
 
   /**
    * Create a new test user agent for application.
    */
-  async newTestUserAgent(options?: TestUserAgentOptions): Promise<TestUserAgent> {
-    return await TestUserAgent.newTestUserAgent(this, options);
+  async newTestUserAgent(options?: TestUserAgentOptions, serverOptions?: ServerOptions): Promise<TestUserAgent> {
+    return await TestUserAgent.newTestUserAgent(this, options, serverOptions);
   }
 
   /**

@@ -184,6 +184,8 @@ t.test('Command app', async t => {
         '30000',
         '--request-timeout',
         '30000',
+        '-r',
+        '10',
         '-L',
         'error',
         '-l',

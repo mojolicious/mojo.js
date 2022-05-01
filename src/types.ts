@@ -73,6 +73,18 @@ export interface RenderOptions {
   [key: string]: any;
 }
 
+export interface ServerOptions {
+  cluster?: boolean;
+  headersTimeout?: number;
+  keepAliveTimeout?: number;
+  listen?: string[];
+  maxRequestsPerSocket?: number;
+  quiet?: boolean;
+  requestTimeout?: number;
+  reverseProxy?: boolean;
+  workers?: number;
+}
+
 export interface ServerRequestOptions {
   body: Readable;
   headers: string[];

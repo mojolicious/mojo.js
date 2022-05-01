@@ -355,6 +355,23 @@ t.test('UserAgent', async t => {
     t.equal(await res4.text(), 'Hello World!');
   });
 
+  await t.test('Keep-alive', async t => {
+    const ua = await app.newMockUserAgent({}, {maxRequestsPerSocket: 2});
+    const keepAlive = new http.Agent({keepAlive: true});
+
+    const res = await ua.get('/hello', {agent: keepAlive});
+    t.equal(res.statusCode, 200);
+    t.equal(res.get('Connection'), 'keep-alive');
+    t.equal(await res.text(), 'Hello World!');
+    const res2 = await ua.get('/hello', {agent: keepAlive});
+    t.equal(res2.statusCode, 200);
+    t.equal(res2.get('Connection'), 'close');
+    t.equal(await res2.text(), 'Hello World!');
+
+    keepAlive.destroy();
+    await ua.stop();
+  });
+
   await t.test('Redirect', async t => {
     const hello = new URL('/hello', ua.baseURL);
     const res = await ua.post('/redirect/301', {query: {location: hello.toString()}});

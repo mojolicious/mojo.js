@@ -1,5 +1,5 @@
 import type {App} from '../app.js';
-import type {UserAgentOptions} from '../types.js';
+import type {ServerOptions, UserAgentOptions} from '../types.js';
 import {Server} from '../server.js';
 import {UserAgent} from '../user-agent.js';
 
@@ -21,15 +21,19 @@ export class MockUserAgent extends UserAgent {
   /**
    * Create a new mock user agent.
    */
-  static async newMockUserAgent(app: App, options?: UserAgentOptions): Promise<MockUserAgent> {
-    return await new MockUserAgent(options).start(app);
+  static async newMockUserAgent(
+    app: App,
+    options?: UserAgentOptions,
+    serverOptions?: ServerOptions
+  ): Promise<MockUserAgent> {
+    return await new MockUserAgent(options).start(app, serverOptions);
   }
 
   /**
    * Start mock server.
    */
-  async start(app: App): Promise<this> {
-    const server = (this.server = new Server(app, {listen: ['http://*'], quiet: true}));
+  async start(app: App, options: ServerOptions = {}): Promise<this> {
+    const server = (this.server = new Server(app, {...options, listen: ['http://*'], quiet: true}));
     await server.start();
     if (this.baseURL === undefined) this.baseURL = server.urls[0];
     return this;
