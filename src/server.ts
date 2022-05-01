@@ -211,20 +211,28 @@ export class Server {
   }
 }
 
-function _sendResponse(res: ServerResponse, body: ResponseBody, raw: http.ServerResponse): void {
+function _sendHeaders(res: ServerResponse, raw: http.ServerResponse): void {
   const statusCode = res.statusCode;
   const statusMessage = res.statusMessage;
-  const status: [number, string?] = statusMessage === null ? [statusCode] : [statusCode, statusMessage];
+  const headers = res.headers.toArray();
 
+  if (statusMessage === null) {
+    raw.writeHead(statusCode, headers);
+  } else {
+    raw.writeHead(statusCode, statusMessage, headers);
+  }
+}
+
+function _sendResponse(res: ServerResponse, body: ResponseBody, raw: http.ServerResponse): void {
   if (typeof body === 'string' || Buffer.isBuffer(body)) {
     res.length(Buffer.byteLength(body));
-    raw.writeHead(...status, res.headers.toArray());
+    _sendHeaders(res, raw);
     raw.end(body);
   } else if (body instanceof Stream) {
-    raw.writeHead(...status, res.headers.toArray());
+    _sendHeaders(res, raw);
     body.pipe(raw);
   } else {
-    raw.writeHead(...status, res.headers.toArray());
+    _sendHeaders(res, raw);
     raw.end();
   }
 }
