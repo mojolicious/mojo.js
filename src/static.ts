@@ -1,6 +1,5 @@
 import type {MojoContext} from './types.js';
 import crypto from 'crypto';
-import path from 'path';
 import Path from '@mojojs/path';
 
 /**
@@ -27,11 +26,12 @@ export class Static {
     const method = req.method;
     if (method !== 'GET' && method !== 'HEAD') return false;
 
-    const relative = unsafePath.replace(this.prefix, '').split('/').join(path.sep);
-    if (relative !== path.normalize(relative) || relative.startsWith('..')) return false;
+    const relative = new Path(...unsafePath.replace(this.prefix, '').split('/'));
+    const relativePath = relative.toString();
+    if (relativePath !== relative.normalize().toString() || relativePath.startsWith('..')) return false;
 
     for (const dir of this.publicPaths) {
-      const file = new Path(dir, relative);
+      const file = new Path(dir, relativePath);
       if ((await file.isReadable()) !== true || (await file.stat()).isDirectory() === true) continue;
       await this.serveFile(ctx, file);
       return true;

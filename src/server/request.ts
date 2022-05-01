@@ -26,21 +26,27 @@ export class ServerRequest extends Body {
    */
   method: string | null;
   /**
+   * Peer address.
+   */
+  remoteAddress: string | null;
+  /**
    * Request ID.
    */
   requestId: string;
+  /**
+   * Reverse proxy support is activated.
+   */
+  reverseProxy: boolean;
   /**
    * Request URL.
    */
   url: string | null;
 
   _cookies: Record<string, string> | undefined = undefined;
-  _ip: string | undefined = undefined;
+  _ip: string | null | undefined = undefined;
   _path: string | null | undefined = undefined;
   _protocol: string | undefined = undefined;
   _query: Params | undefined = undefined;
-  _remoteAddress: string | undefined;
-  _reverseProxy: boolean;
   _userinfo: string | null | undefined = undefined;
 
   constructor(options: ServerRequestOptions) {
@@ -55,8 +61,8 @@ export class ServerRequest extends Body {
     requestId = (requestId + 1) & 2147483647;
     this.requestId = `${process.pid}-${requestId.toString(36).padStart(6, '0')}`;
 
-    this._remoteAddress = options.remoteAddress;
-    this._reverseProxy = options.reverseProxy;
+    this.remoteAddress = options.remoteAddress ?? null;
+    this.reverseProxy = options.reverseProxy;
   }
 
   /**
@@ -78,12 +84,12 @@ export class ServerRequest extends Body {
   }
 
   /**
-   * Remote IP address.
+   * Remote IP address. Uses he `X-Forwarded-For` header value if reverse proxy support is activated.
    */
   get ip(): string | null {
     if (this._ip === undefined) {
-      this._ip = this._remoteAddress;
-      if (this._reverseProxy) {
+      this._ip = this.remoteAddress;
+      if (this.reverseProxy === true) {
         const forwarded = this.get('X-Forwarded-For');
         if (forwarded !== null) {
           const match = forwarded.match(/([^,\s]+)$/);
@@ -92,7 +98,7 @@ export class ServerRequest extends Body {
       }
     }
 
-    return this._ip ?? null;
+    return this._ip;
   }
 
   /**
@@ -107,12 +113,12 @@ export class ServerRequest extends Body {
   }
 
   /**
-   * Request protocol.
+   * Request protocol. Uses the `X-Forwarded-Proto` header value if reverse proxy support is activated.
    */
   get protocol(): string {
     if (this._protocol === undefined) {
       this._protocol = this.isSecure ? 'https' : 'http';
-      if (this._reverseProxy === true) {
+      if (this.reverseProxy === true) {
         const forwarded = this.get('X-Forwarded-Proto');
         if (forwarded !== null) this._protocol = forwarded;
       }
