@@ -64,20 +64,24 @@ serverCommand.usage = `Usage: APPLICATION server [OPTIONS]
 Options:
   -c, --cluster                   Run in cluster mode with multiple processes
       --headers-timeout <ms>      Limit the amount of time the parser will
-                                  wait to receive the complete HTTP headers
+                                  wait to receive the complete HTTP headers,
+                                  defaults to 60000
   -h, --help                      Show this summary of available options
       --keep-alive-timeout <ms>   Limit the amount of time of inactivity a
                                   server needs to wait for additional incoming
                                   data, after it has finished writing the last
-                                  response, before a socket will be destroyed
+                                  response, before a socket will be destroyed,
+                                  defaults to 5000
   -L, --level <level>             Log level for application
   -l, --listen <location>         One or more locations you want to listen on,
                                   defaults to "http://*:3000"
   -p, --proxy                     Activate reverse proxy support
   -r, --requests <num>            Maximum number of requests socket can handle
-                                  before closing keep alive connection
+                                  before closing keep alive connection,
+                                  defaults to 0
       --request-timeout <ms>      Limit the amount of time for receiving the
-                                  entire request from the client
+                                  entire request from the client, defaults to
+                                  300000
   -w, --workers <num>             Number of workers to spawn in cluster mode,
                                   defaults to the number of available CPUs
 `;

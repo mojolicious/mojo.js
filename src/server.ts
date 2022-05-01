@@ -26,20 +26,21 @@ export class Server {
    */
   app: App;
   /**
-   * Limit the amount of time the parser will wait to receive the complete HTTP headers.
+   * Limit the amount of time the parser will wait to receive the complete HTTP headers, defaults to `60000`
+   * (60 seconds).
    */
   headersTimeout: number | undefined;
   /**
    * Limit the amount of time of inactivity a server needs to wait for additional incoming data, after it has finished
-   * writing the last response, before a socket will be destroyed.
+   * writing the last response, before a socket will be destroyed, defaults to `5000` (5 seconds).
    */
   keepAliveTimeout: number | undefined;
   /**
-   * Maximum number of requests socket can handle before closing keep alive connection.
+   * Maximum number of requests socket can handle before closing keep alive connection, defaults to `0`.
    */
   maxRequestsPerSocket: number | undefined;
   /**
-   * Limit the amount of time for receiving the entire request from the client.
+   * Limit the amount of time for receiving the entire request from the client, defaults to `300000` (300 seconds).
    */
   requestTimeout: number | undefined;
   /**
