@@ -176,7 +176,19 @@ t.test('Command app', async t => {
     const termBefore = process.listenerCount('SIGTERM');
     const usr2Before = process.listenerCount('SIGUSR2');
     const output2 = await captureOutput(async () => {
-      await app2.cli.start('server', '-L', 'error', '-l', 'http://*');
+      await app2.cli.start(
+        'server',
+        '--headers-timeout',
+        '30000',
+        '--keep-alive-timeout',
+        '30000',
+        '--request-timeout',
+        '30000',
+        '-L',
+        'error',
+        '-l',
+        'http://*'
+      );
     });
     t.equal(process.listenerCount('SIGINT'), intBefore + 1);
     t.equal(process.listenerCount('SIGTERM'), termBefore + 1);

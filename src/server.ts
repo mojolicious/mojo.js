@@ -18,8 +18,11 @@ type ResponseBody = string | Buffer | Stream | undefined;
 
 interface ServerOptions {
   cluster?: boolean;
+  headersTimeout?: number;
+  keepAliveTimeout?: number;
   listen?: string[];
   quiet?: boolean;
+  requestTimeout?: number;
   reverseProxy?: boolean;
   workers?: number;
 }
@@ -32,6 +35,19 @@ export class Server {
    * Application this server handles.
    */
   app: App;
+  /**
+   * Limit the amount of time the parser will wait to receive the complete HTTP headers.
+   */
+  headersTimeout: number | undefined;
+  /**
+   * Limit the amount of time of inactivity a server needs to wait for additional incoming data, after it has finished
+   * writing the last response, before a socket will be destroyed.
+   */
+  keepAliveTimeout: number | undefined;
+  /**
+   * Limit the amount of time for receiving the entire request from the client.
+   */
+  requestTimeout: number | undefined;
   /**
    * Reverse proxy mode.
    */
@@ -49,6 +65,9 @@ export class Server {
 
   constructor(app: App, options: ServerOptions = {}) {
     this.app = app;
+    this.headersTimeout = options.headersTimeout;
+    this.keepAliveTimeout = options.keepAliveTimeout;
+    this.requestTimeout = options.requestTimeout;
     this.reverseProxy = options.reverseProxy ?? false;
 
     this._cluster = options.cluster ?? false;
@@ -121,6 +140,10 @@ export class Server {
     const wss = new WebSocketServer({noServer: true});
     const server = (isHttps ? https : http).createServer(options, this._handleRequest.bind(this));
     this._servers.push(server);
+
+    if (this.headersTimeout !== undefined) server.headersTimeout = this.headersTimeout;
+    if (this.keepAliveTimeout !== undefined) server.keepAliveTimeout = this.keepAliveTimeout;
+    if (this.requestTimeout !== undefined) server.requestTimeout = this.requestTimeout;
 
     server.on('upgrade', this._handleUpgrade.bind(this, wss));
 
