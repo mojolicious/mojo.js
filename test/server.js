@@ -31,7 +31,7 @@ t.test('Server', async t => {
       },
       {stderr: true, stdout: false}
     );
-    t.equal(res.status, 200);
+    t.equal(res.statusCode, 200);
     t.equal(await res.text(), 'Hello World!');
     t.match(output, /Server <<< Client/);
     t.match(output, /GET \//);

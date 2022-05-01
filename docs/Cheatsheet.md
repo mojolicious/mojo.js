@@ -168,8 +168,9 @@ const buffer = Buffer.concat(parts);
 The `ctx.res` property of the [context](#Context) object.
 
 ```js
-// status: set response code
+// status: set response code and message
 ctx.res.status(200);
+ctx.res.status(289, 'Custom Status');
 
 // set: set response headers
 ctx.res.set('Server', 'Mojo/1.0');

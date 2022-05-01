@@ -258,7 +258,7 @@ export class TestUserAgent extends MockUserAgent {
    * Check response status for exact match.
    */
   statusIs(status: number): this {
-    this.assert('equal', [this.res.status, status], `response status is ${status}`, this.statusIs);
+    this.assert('equal', [this.res.statusCode, status], `response status is ${status}`, this.statusIs);
     return this;
   }
 

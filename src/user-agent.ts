@@ -232,11 +232,11 @@ class UserAgent extends EventEmitter {
 
     // New followup request
     const remove = ['Authorization', 'Cookie', 'Host', 'Referer'];
-    if (res.status === 301 || res.status === 302 || res.status === 303) {
+    if (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 303) {
       const newConfig = {
         headers: config.headers,
         insecure: config.insecure,
-        method: res.status === 303 || config.method === 'POST' ? 'GET' : config.method,
+        method: res.statusCode === 303 || config.method === 'POST' ? 'GET' : config.method,
         redirected: redirected + 1,
         url
       };
@@ -247,7 +247,7 @@ class UserAgent extends EventEmitter {
       return this.request(newConfig);
 
       // Same request again
-    } else if (res.status === 307 || res.status === 308) {
+    } else if (res.statusCode === 307 || res.statusCode === 308) {
       config.url = url;
       config.redirected = redirected + 1;
       remove.forEach(name => delete config.headers[name]);

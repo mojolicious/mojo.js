@@ -4,7 +4,7 @@ import {Body} from '../body.js';
 interface UserAgentResponseOptions {
   headers: string[];
   httpVersion: string;
-  status: number;
+  statusCode: number;
   statusMessage: string;
 }
 
@@ -19,7 +19,7 @@ export class UserAgentResponse extends Body {
   /**
    * Response status code.
    */
-  status: number;
+  statusCode: number;
   /**
    * Response status message.
    */
@@ -28,7 +28,7 @@ export class UserAgentResponse extends Body {
   constructor(stream: IncomingMessage, options: UserAgentResponseOptions) {
     super(options.headers, stream);
     this.httpVersion = options.httpVersion;
-    this.status = options.status;
+    this.statusCode = options.statusCode;
     this.statusMessage = options.statusMessage;
   }
 
@@ -36,7 +36,7 @@ export class UserAgentResponse extends Body {
    * Check if response has a `4xx` response status code.
    */
   get isClientError(): boolean {
-    const statusCode = this.status;
+    const statusCode = this.statusCode;
     return statusCode >= 400 && statusCode <= 499;
   }
 
@@ -51,7 +51,7 @@ export class UserAgentResponse extends Body {
    * Check if response has a `3xx` response status code.
    */
   get isRedirect(): boolean {
-    const statusCode = this.status;
+    const statusCode = this.statusCode;
     return statusCode >= 300 && statusCode <= 399;
   }
 
@@ -59,7 +59,7 @@ export class UserAgentResponse extends Body {
    * Check if response has a `5xx` response status code.
    */
   get isServerError(): boolean {
-    const statusCode = this.status;
+    const statusCode = this.statusCode;
     return statusCode >= 500 && statusCode <= 599;
   }
 
@@ -67,7 +67,7 @@ export class UserAgentResponse extends Body {
    * Check if response has a `2xx` response status code.
    */
   get isSuccess(): boolean {
-    const statusCode = this.status;
+    const statusCode = this.statusCode;
     return statusCode >= 200 && statusCode <= 299;
   }
 

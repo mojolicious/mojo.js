@@ -20,9 +20,13 @@ export class ServerResponse extends EventEmitter {
    */
   isSent = false;
   /**
-   * Response status.
+   * Response status code.
    */
   statusCode = 200;
+  /**
+   * Response status message.
+   */
+  statusMessage: string | null = null;
 
   _ctx: WeakRef<Context> | undefined = undefined;
   _sendResponse: SendResponse;
@@ -92,8 +96,9 @@ export class ServerResponse extends EventEmitter {
   /**
    * Set response status.
    */
-  status(code: number): this {
+  status(code: number, message?: string): this {
     this.statusCode = code;
+    if (message !== undefined) this.statusMessage = message;
     return this;
   }
 

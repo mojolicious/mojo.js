@@ -116,7 +116,7 @@ Status line information and response headers are available right away with the r
 
 ```js
 // Status code and message
-const statusCode = res.status;
+const statusCode = res.statusCode;
 const statusMessage = res.statusMessage;
 
 // Headers

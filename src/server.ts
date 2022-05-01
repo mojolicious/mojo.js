@@ -212,15 +212,19 @@ export class Server {
 }
 
 function _sendResponse(res: ServerResponse, body: ResponseBody, raw: http.ServerResponse): void {
+  const statusCode = res.statusCode;
+  const statusMessage = res.statusMessage;
+  const status: [number, string?] = statusMessage === null ? [statusCode] : [statusCode, statusMessage];
+
   if (typeof body === 'string' || Buffer.isBuffer(body)) {
     res.length(Buffer.byteLength(body));
-    raw.writeHead(res.statusCode, res.headers.toArray());
+    raw.writeHead(...status, res.headers.toArray());
     raw.end(body);
   } else if (body instanceof Stream) {
-    raw.writeHead(res.statusCode, res.headers.toArray());
+    raw.writeHead(...status, res.headers.toArray());
     body.pipe(raw);
   } else {
-    raw.writeHead(res.statusCode, res.headers.toArray());
+    raw.writeHead(...status, res.headers.toArray());
     raw.end();
   }
 }

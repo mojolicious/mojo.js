@@ -59,6 +59,11 @@ t.test('App', async t => {
   const test = nested.any('/test').to({prefix: 'X:'});
   test.any('/methods').to(ctx => ctx.render({text: ctx.stash.prefix + ctx.req.method}));
 
+  // * /status
+  app.any('/status', async ctx => {
+    await ctx.res.status(289, 'Whatever').send('Custom status');
+  });
+
   // * /exception/*
   app
     .any('/exception/:msg', ctx => {
@@ -427,6 +432,11 @@ t.test('App', async t => {
     (await ua.getOk('/nested/test/methods?auth=0')).statusIs(200).bodyIs('Permission denied');
     (await ua.getOk('/nested/test?auth=1')).statusIs(404);
     (await ua.getOk('/nested/test/foo?auth=1')).statusIs(404);
+  });
+
+  await t.test('Custom status', async () => {
+    (await ua.getOk('/status')).statusIs(289).bodyIs('Custom status');
+    t.equal(ua.res.statusMessage, 'Whatever');
   });
 
   await t.test('Config and models', async () => {

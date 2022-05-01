@@ -29,9 +29,9 @@ export default async function getCommand(app: MojoApp, args: string[]): Promise<
     const stderr = process.stderr;
 
     const resVersion = chalk.blue('HTTP') + '/' + chalk.blue(res.httpVersion);
-    const status = res.status;
+    const statusCode = res.statusCode;
     const statusMessage = chalk.blue(res.statusMessage);
-    stderr.write(`${resVersion} ${status} ${statusMessage}\n`);
+    stderr.write(`${resVersion} ${statusCode} ${statusMessage}\n`);
     writeHeaders(res.headers.toArray());
   }
 

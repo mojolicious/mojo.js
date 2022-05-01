@@ -21,7 +21,7 @@ export class WSTransport {
         handshake = new UserAgentResponse(res, {
           headers: res.rawHeaders,
           httpVersion: res.httpVersion,
-          status: res.statusCode ?? 200,
+          statusCode: res.statusCode ?? 200,
           statusMessage: res.statusMessage ?? 'OK'
         });
         socket = res.socket;
