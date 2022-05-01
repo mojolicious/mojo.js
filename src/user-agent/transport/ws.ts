@@ -18,7 +18,8 @@ export class WSTransport {
       let socket: Socket;
 
       ws.on('upgrade', res => {
-        handshake = new UserAgentResponse(res, {
+        handshake = new UserAgentResponse({
+          body: res,
           headers: res.rawHeaders,
           httpVersion: res.httpVersion,
           statusCode: res.statusCode ?? 200,

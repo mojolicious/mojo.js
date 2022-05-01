@@ -1,7 +1,8 @@
-import type {IncomingMessage} from 'http';
+import type {Readable} from 'stream';
 import {Body} from '../body.js';
 
 interface UserAgentResponseOptions {
+  body: Readable;
   headers: string[];
   httpVersion: string;
   statusCode: number;
@@ -25,8 +26,8 @@ export class UserAgentResponse extends Body {
    */
   statusMessage: string;
 
-  constructor(stream: IncomingMessage, options: UserAgentResponseOptions) {
-    super(options.headers, stream);
+  constructor(options: UserAgentResponseOptions) {
+    super(options.headers, options.body);
     this.httpVersion = options.httpVersion;
     this.statusCode = options.statusCode;
     this.statusMessage = options.statusMessage;

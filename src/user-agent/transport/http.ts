@@ -29,7 +29,8 @@ export class HTTPTransport {
     return await new Promise((resolve, reject) => {
       const req = this._sendRequest(config.url as URL, options, res => {
         resolve(
-          new UserAgentResponse(res, {
+          new UserAgentResponse({
+            body: res,
             headers: res.rawHeaders,
             httpVersion: res.httpVersion,
             statusCode: res.statusCode ?? 200,
