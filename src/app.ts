@@ -251,8 +251,8 @@ export class App {
   /**
    * Create a new mock user agent for application.
    */
-  async newMockUserAgent(options?: UserAgentOptions, serverOptons?: ServerOptions): Promise<MockUserAgent> {
-    return await MockUserAgent.newMockUserAgent(this, options, serverOptons);
+  async newMockUserAgent(options?: UserAgentOptions, serverOptions?: ServerOptions): Promise<MockUserAgent> {
+    return await MockUserAgent.newMockUserAgent(this, options, serverOptions);
   }
 
   /**
