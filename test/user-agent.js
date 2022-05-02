@@ -2,6 +2,7 @@ import http from 'http';
 import mojo from '../lib/core.js';
 import {Server} from '../lib/server.js';
 import {UserAgent} from '../lib/user-agent.js';
+import {captureOutput} from '../lib/util.js';
 import Path from '@mojojs/path';
 import t from 'tap';
 
@@ -529,6 +530,29 @@ t.test('UserAgent', async t => {
       parts.push(chunk);
     }
     t.equal(Buffer.concat(parts).toString(), 'a'.repeat(2048));
+  });
+
+  await t.test('MOJO_CLIENT_DEBUG', async t => {
+    process.env.MOJO_CLIENT_DEBUG = 1;
+    const ua = await app.newMockUserAgent();
+
+    let res;
+    const output = await captureOutput(
+      async () => {
+        res = await ua.get('/hello');
+      },
+      {stderr: true, stdout: false}
+    );
+    t.equal(res.statusCode, 200);
+    t.equal(await res.text(), 'Hello World!');
+    t.match(output, /Client <<< Server/);
+    t.match(output, /GET \/hello/);
+    t.match(output, /Host: /);
+    t.match(output, /Client >>> Server/);
+    t.match(output, /Content-Length: /);
+    t.match(output, /Hello World!/);
+
+    await ua.stop();
   });
 
   await server.stop();

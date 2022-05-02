@@ -1,7 +1,9 @@
 import type {UserAgentRequestOptions} from '../../types.js';
+import type {Socket} from 'net';
 import type {URL} from 'url';
 import http from 'http';
 import Stream from 'stream';
+import {termEscape} from '../../util.js';
 import {UserAgentResponse} from '../response.js';
 
 /**
@@ -40,6 +42,18 @@ export class HTTPTransport {
       });
       req.once('error', reject);
       req.once('close', reject);
+
+      if (process.env.MOJO_CLIENT_DEBUG === '1') {
+        req.on('socket', (socket: Socket) => {
+          const stderr = process.stderr;
+          socket.on('data', (chunk: string) => stderr.write(termEscape(`-- Client <<< Server\n${chunk}`)));
+          const write = socket.write;
+          socket.write = (chunk: any, cb: any) => {
+            stderr.write(termEscape(`-- Client >>> Server\n${chunk}`));
+            return write.apply(socket, [chunk, cb]);
+          };
+        });
+      }
 
       if (config.body instanceof Buffer) {
         req.end(config.body);

@@ -146,7 +146,7 @@ export class Server {
     server.on('upgrade', this._handleUpgrade.bind(this, wss));
 
     if (process.env.MOJO_SERVER_DEBUG === '1') {
-      server.on('connection', socket => {
+      server.on('connection', (socket: Socket) => {
         const stderr = process.stderr;
         socket.on('data', (chunk: string) => stderr.write(termEscape(`-- Server <<< Client\n${chunk}`)));
         const write = socket.write;
