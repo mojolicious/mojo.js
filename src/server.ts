@@ -9,6 +9,7 @@ import {Stream} from 'stream';
 import {URL} from 'url';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
+import {termEscape} from './util.js';
 import {WebSocket} from './websocket.js';
 import Path from '@mojojs/path';
 import {WebSocketServer} from 'ws';
@@ -147,10 +148,10 @@ export class Server {
     if (process.env.MOJO_SERVER_DEBUG === '1') {
       server.on('connection', socket => {
         const stderr = process.stderr;
-        socket.on('data', (chunk: string) => stderr.write(`-- Server <<< Client\n${chunk}`));
+        socket.on('data', (chunk: string) => stderr.write(termEscape(`-- Server <<< Client\n${chunk}`)));
         const write = socket.write;
         socket.write = (chunk: any, cb: any) => {
-          stderr.write(`-- Server >>> Client\n${chunk}`);
+          stderr.write(termEscape(`-- Server >>> Client\n${chunk}`));
           return write.apply(socket, [chunk, cb]);
         };
       });

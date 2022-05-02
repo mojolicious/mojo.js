@@ -119,6 +119,18 @@ export function decodeURIComponentSafe(value: string): string | null {
 }
 
 /**
+ * Escape all POSIX control characters except for `\n`.
+ */
+export function termEscape(value: string): string {
+  return [...value]
+    .map(char =>
+      // eslint-disable-next-line no-control-regex
+      /^[\x00-\x09\x0b-\x1f\x7f\x80-\x9f]$/.test(char) ? '\\x' + char.charCodeAt(0).toString(16).padStart(2, '0') : char
+    )
+    .join('');
+}
+
+/**
  * Generate exception context.
  */
 export async function exceptionContext(

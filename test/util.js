@@ -206,4 +206,13 @@ t.test('Util', async t => {
     t.equal(tablify([[1], [], [2, 3]]), '1\n\n2  3\n');
     t.end();
   });
+
+  t.test('termEscape', t => {
+    const termEscape = util.termEscape;
+    t.equal(typeof termEscape, 'function');
+    t.equal(termEscape('Accept: */*\x0d\x0a'), 'Accept: */*\\x0d\x0a');
+    t.equal(termEscape('\t\b\r\n\f'), '\\x09\\x08\\x0d\n\\x0c');
+    t.equal(termEscape('\x00\x09\x0b\x1f\x7f\x80\x9f'), '\\x00\\x09\\x0b\\x1f\\x7f\\x80\\x9f');
+    t.end();
+  });
 });
