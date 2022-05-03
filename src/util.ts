@@ -119,18 +119,6 @@ export function decodeURIComponentSafe(value: string): string | null {
 }
 
 /**
- * Escape all POSIX control characters except for `\n`.
- */
-export function termEscape(value: string): string {
-  return [...value]
-    .map(char =>
-      // eslint-disable-next-line no-control-regex
-      /^[\x00-\x09\x0b-\x1f\x7f\x80-\x9f]$/.test(char) ? '\\x' + char.charCodeAt(0).toString(16).padStart(2, '0') : char
-    )
-    .join('');
-}
-
-/**
  * Generate exception context.
  */
 export async function exceptionContext(
@@ -229,4 +217,16 @@ export function tablify(rows: string[][] = []): string {
 
   const lines = table.map(row => row.map((col, i) => (i === row.length - 1 ? col : col.padEnd(spec[i]))).join('  '));
   return lines.join('\n') + '\n';
+}
+
+/**
+ * Escape all POSIX control characters except for `\n`.
+ */
+export function termEscape(value: string): string {
+  return [...value]
+    .map(char =>
+      // eslint-disable-next-line no-control-regex
+      /^[\x00-\x09\x0b-\x1f\x7f\x80-\x9f]$/.test(char) ? '\\x' + char.charCodeAt(0).toString(16).padStart(2, '0') : char
+    )
+    .join('');
 }
