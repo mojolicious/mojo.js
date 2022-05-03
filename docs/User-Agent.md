@@ -363,21 +363,23 @@ combining it with [playwright](https://www.npmjs.com/package/playwright).
 You can set the `MOJO_CLIENT_DEBUG` environment variable to get some advanced diagnostics information printed to
 `STDERR`.
 
-  $ MOJO_CLIENT_DEBUG=1 node myapp.js
-  -- Client >>> Server
-  GET / HTTP/1.1\x0d
-  Accept-Encoding: gzip\x0d
-  Host: 127.0.0.1:3000\x0d
-  Connection: close\x0d
-  \x0d
-  -- Client <<< Server
-  HTTP/1.1 200 OK\x0d
-  Content-Type: text/plain; charset=utf-8\x0d
-  Content-Length: 12\x0d
-  Date: Mon, 02 May 2022 23:32:34 GMT\x0d
-  Connection: close\x0d
-  \x0d
-  Hello World!
+```
+$ MOJO_CLIENT_DEBUG=1 node myapp.js
+-- Client >>> Server
+GET / HTTP/1.1\x0d
+Accept-Encoding: gzip\x0d
+Host: 127.0.0.1:3000\x0d
+Connection: close\x0d
+\x0d
+-- Client <<< Server
+HTTP/1.1 200 OK\x0d
+Content-Type: text/plain; charset=utf-8\x0d
+Content-Length: 12\x0d
+Date: Mon, 02 May 2022 23:32:34 GMT\x0d
+Connection: close\x0d
+\x0d
+Hello World!
+```
 
 ## Support
 
