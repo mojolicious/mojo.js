@@ -65,6 +65,20 @@ test2.any('/baz').to('just#works');
 // * /
 r.any('/').to({testcase: 'hello', action: 'world'});
 
+// * /target/first
+// * /target/second
+// * /target/second.xml
+// * /source/third
+// * /source/third.xml
+const source = r.any('/source').to('source#');
+const first = source.any('/').any('/first').to('#first');
+source.any('/second', {ext: ['xml']}).to({action: 'second', ext: null});
+source.any('/third', {ext: ['xml']}).to({action: 'third', ext: null});
+const target = r.remove().any('/target').to('target#');
+const second = r.find('second');
+target.addChild(first);
+target.addChild(second.remove());
+
 // * /websocket
 r.websocket('/websocket').to({testcase: 'ws'}).any('/').to({action: 'just'}).any().to({works: 1});
 
@@ -330,6 +344,40 @@ t.test('Router', async t => {
     t.same(plan3.stops, [true, true]);
     t.equal(plan3.render().path, '/test2/baz');
     t.same(await r.plot({method: 'GET', path: '/test2baz', websocket: false}), null);
+  });
+
+  await t.test('Removed routes', async t => {
+    const plan = await r.plot({method: 'GET', path: '/target/first', websocket: false});
+    t.same(plan.steps, [{controller: 'target'}, {action: 'first'}]);
+    t.same(plan.stops, [false, true]);
+    t.equal(plan.render().path, '/target/first');
+
+    t.same(await r.plot({method: 'GET', path: '/target/first.xml', websocket: false}), null);
+    t.same(await r.plot({method: 'GET', path: '/source/first', websocket: false}), null);
+
+    const plan2 = await r.plot({method: 'GET', path: '/target/second', websocket: false});
+    t.same(plan2.steps, [{controller: 'target'}, {action: 'second', ext: null}]);
+    t.same(plan2.stops, [false, true]);
+    t.equal(plan2.render().path, '/target/second');
+
+    const plan3 = await r.plot({method: 'GET', path: '/target/second.xml', websocket: false});
+    t.same(plan3.steps, [{controller: 'target'}, {action: 'second', ext: 'xml'}]);
+    t.same(plan3.stops, [false, true]);
+    t.equal(plan3.render().path, '/target/second.xml');
+
+    t.same(await r.plot({method: 'GET', path: '/source/second', websocket: false}), null);
+
+    const plan4 = await r.plot({method: 'GET', path: '/source/third', websocket: false});
+    t.same(plan4.steps, [{controller: 'source'}, {action: 'third', ext: null}]);
+    t.same(plan4.stops, [false, true]);
+    t.equal(plan4.render().path, '/source/third');
+
+    const plan5 = await r.plot({method: 'GET', path: '/source/third.xml', websocket: false});
+    t.same(plan5.steps, [{controller: 'source'}, {action: 'third', ext: 'xml'}]);
+    t.same(plan5.stops, [false, true]);
+    t.equal(plan5.render().path, '/source/third.xml');
+
+    t.same(await r.plot({method: 'GET', path: '/target/third', websocket: false}), null);
   });
 
   await t.test('WebSocket', async t => {

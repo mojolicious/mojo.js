@@ -47,7 +47,7 @@ export class Route {
    */
   addChild(child: Route): Route {
     this.children.push(child);
-    child.parent = this;
+    child.remove().parent = this;
     child.root = this.root;
     return child;
   }
@@ -152,6 +152,17 @@ export class Route {
    */
   put(...args: RouteArguments): Route {
     return this.any(['PUT'], ...args);
+  }
+
+  /**
+   * Remove route from parent.
+   */
+  remove(): this {
+    const parent = this.parent;
+    if (parent === undefined) return this;
+    this._parent = undefined;
+    parent.children = parent.children.filter(route => route !== this);
+    return this;
   }
 
   /**

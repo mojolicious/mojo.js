@@ -847,6 +847,25 @@ content. Can return an arbitrary value to replace the dynamic content.
 
 Less commonly used and more powerful features.
 
+### Rearranging Routes
+
+From application startup until the first request has arrived, all routes can still be moved around or even removed with
+methods like `route.addChild()` and `route.remove()`.
+
+```js
+// GET /show         -> null
+// GET /example/show -> {controller: 'example', action: 'show'}
+const show = router.get('/show').to('example#show');
+router.any('/example').addChild(show);
+
+// Nothing
+router.get('/secrets/show').to('secrets#show').name('show_secrets');
+router.find('show_secrets').remove();
+```
+
+Especially for rearranging routes created by plugins this can be very useful, to find routes by their name you can use
+`router.find()`.
+
 ### Adding Conditions
 
 You can also add your own conditions with `router.addCondition()`. All conditions are basically router plugins that

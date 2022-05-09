@@ -106,26 +106,18 @@ export class Router extends Route {
   }
 
   /**
+   * Find child route by name, custom names have precedence over automatically generated ones.
+   */
+  find(name: string): Route | null {
+    return this._getLookupIndex()[name] ?? null;
+  }
+
+  /**
    * Find route by name and cache all results for future lookups.
    */
   lookup(name: string): Route | null {
-    if (this._lookupIndex === undefined) {
-      const defaultNames: RouteIndex = {};
-      const customNames: RouteIndex = {};
-      const children = [...this.children];
-      for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        if (child.customName !== undefined && customNames[child.customName] === undefined) {
-          customNames[child.customName] = child;
-        } else if (child.defaultName !== undefined && defaultNames[child.defaultName] === undefined) {
-          defaultNames[child.defaultName] = child;
-        }
-        children.push(...child.children);
-      }
-      this._lookupIndex = {...defaultNames, ...customNames};
-    }
-
-    return this._lookupIndex[name] === undefined ? null : this._lookupIndex[name];
+    if (this._lookupIndex === undefined) this._lookupIndex = this._getLookupIndex();
+    return this._lookupIndex[name] ?? null;
   }
 
   /**
@@ -184,6 +176,24 @@ export class Router extends Route {
     if (plan === null) return null;
     cache.set(cacheKey, plan);
     return plan;
+  }
+
+  _getLookupIndex(): RouteIndex {
+    const defaultNames: RouteIndex = {};
+    const customNames: RouteIndex = {};
+
+    const children = [...this.children];
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      if (child.customName !== undefined && customNames[child.customName] === undefined) {
+        customNames[child.customName] = child;
+      } else if (child.defaultName !== undefined && defaultNames[child.defaultName] === undefined) {
+        defaultNames[child.defaultName] = child;
+      }
+      children.push(...child.children);
+    }
+
+    return {...defaultNames, ...customNames};
   }
 
   async _walk(plan: Plan, route: Route, spec: RouteSpec): Promise<boolean> {
