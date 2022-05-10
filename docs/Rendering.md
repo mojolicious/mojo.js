@@ -939,7 +939,7 @@ and there is not already a plugin on npm for your favorite one. All you have to 
 `renderer.addHandler()` from your own plugin.
 
 ```js
-// my_engine.js
+// my-engine.js
 export default function myEnginePlugin (app) {
   app.renderer.addEngine('mine', {
     async render(ctx, options) {
@@ -968,7 +968,7 @@ An inline template, if provided by the user, will be passed along with the optio
 ```js
 // myapp.js
 import mojo from '@mojojs/core';
-import myEnginePlugin from './my_engine.js';
+import myEnginePlugin from './my-engine.js';
 
 const app = mojo();
 app.plugin(myEnginePlugin);
