@@ -318,7 +318,7 @@ class Context extends EventEmitter {
   /**
    * Generate URL for route of path.
    */
-  urlFor(target: string | undefined, values?: Record<string, any>, options: URLOptions = {}): string | null {
+  urlFor(target?: string, values?: Record<string, any>, options: URLOptions = {}): string | null {
     if (target === undefined || target === 'current') {
       if (this.plan === null) return null;
       const result = this.plan.render(values);
