@@ -66,6 +66,59 @@ it with the `--proxy` option.
 $ node myapp.js server --proxy
 ```
 
+## Deployment
+
+Getting mojo.js applications running on different platforms.
+
+### Built-in Web Server
+
+mojo.js contains a very portable Node.js based HTTP and WebSocket server. It can be used for web applications of any
+size and scales very well.
+
+```
+$ node myapp.js server
+Web application available at http://0.0.0.0:3000/
+```
+
+It is available to every application through the `server` command, which has many configuration options and is known to
+work on every platform Node.js works on.
+
+```
+$ node myapp.js server -h
+...List of available options...
+```
+
+To manage the web server with systemd, you can use a unit configuration file like this.
+
+```
+[Unit]
+Description=My mojo.js application
+After=network.target
+
+[Service]
+Type=simple
+User=sri
+ExecStart=NODE_ENV=production node /home/sri/myapp/myapp.js server -l http://*:8080
+
+[Install]
+WantedBy=multi-user.target
+```
+
+## Reloading
+
+After reading the [Introduction](Introduction.md) you should already be familiar with
+[nodemon](https://www.npmjs.com/package/nodemon). It is a restarter that starts a new web server process whenever a
+file in your project changes, and should therefore only be used during development.
+
+```
+$ npm install nodemon
+...
+
+$ npx nodemon myapp.js server
+...
+[39248] Web application available at http://127.0.0.1:3000/
+```
+
 ## Application
 
 Fun mojo.js application hacks for all occasions.
