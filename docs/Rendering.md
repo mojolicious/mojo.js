@@ -931,6 +931,61 @@ World!
 0
 ```
 
+### Adding Your Favorite Template System
+
+Maybe you would prefer a different template system than
+[@mojojs/template](https://www.npmjs.com/package/@mojojs/template), which is included with mojo.js under the name `mt`,
+and there is not already a plugin on npm for your favorite one. All you have to do, is to add a new handler with
+`renderer.addHandler()` from your own plugin.
+
+```js
+// my_engine.js
+export default function myEnginePlugin (app) {
+  app.renderer.addEngine('mine', {
+    async render(ctx, options) {
+
+      // Check for one-time use inline template
+      const inline = options.inline;
+
+      // Check for appropriate template in "views" directories
+      const viewPath = options.viewPath;
+
+      // This part is up to you and your template system :)
+      ...
+
+      // Pass the rendered result back to the renderer as a `Buffer` object
+      return Buffer.from('Hello World!');
+
+      // Or just throw and exception if an error occurs
+      throw new Error('Something went wrong with the template');
+    }
+  });
+}
+```
+
+An inline template, if provided by the user, will be passed along with the options.
+
+```js
+// myapp.js
+import mojo from '@mojojs/core';
+import myEnginePlugin from './my_engine.js';
+
+const app = mojo();
+app.plugin(myEnginePlugin);
+
+// Render an inline template
+app.get('/inline', async ctx => {
+  await ctx.render({inline: '...', engine: 'mine'});
+});
+
+// Render template file "views/test.html.mine"
+app.get('/template', async ctx => {
+  await ctx.render({view: 'test'});
+});
+
+app.start();
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
