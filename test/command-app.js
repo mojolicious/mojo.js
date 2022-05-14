@@ -234,7 +234,7 @@ t.test('Command app', async t => {
     t.match(output2.toString(), /\[write\].+myapp\.js/);
     t.same(await file.exists(), true);
     t.match(await file.readFile('utf8'), /import mojo from '@mojojs\/core'/);
-    t.match(output2.toString(), /\[write\].+package\.json/);
+    t.match(output2.toString(), /\[fixed\].+package\.json/);
     t.same(await dir.child('package.json').exists(), true);
     t.match(await dir.child('package.json').readFile('utf8'), /module/);
 
@@ -250,6 +250,7 @@ t.test('Command app', async t => {
     t.match(output4.toString(), /\[write\].+index\.js/);
     t.same(await file2.exists(), true);
     t.match(await file2.readFile('utf8'), /import mojo from '@mojojs\/core'/);
+
     process.chdir(cwd);
   });
 
@@ -286,7 +287,7 @@ t.test('Command app', async t => {
     t.match(output2.toString(), /\[write\].+test.+example\.js/);
     t.same(await dir.child('test', 'example.js').exists(), true);
     t.match(await dir.child('test', 'example.js').readFile('utf8'), /getOk/);
-    t.match(output2.toString(), /\[write\].+package\.json/);
+    t.match(output2.toString(), /\[fixed\].+package\.json/);
     t.same(await dir.child('package.json').exists(), true);
     t.match(await dir.child('package.json').readFile('utf8'), /module/);
 
@@ -309,6 +310,59 @@ t.test('Command app', async t => {
     t.match(output4.toString(), /\[write\].+test-app.+myapp\.js/);
     t.same(await dir2.child('myapp.js').exists(), true);
     t.match(await dir2.child('myapp.js').readFile('utf8'), /import mojo.+from '@mojojs\/core'/);
+
+    process.chdir(cwd);
+  });
+
+  await t.test('create-plugin', async t => {
+    const dir = await Path.tempDir();
+
+    const output = await captureOutput(async () => {
+      await app.cli.start('create-plugin', '-h');
+    });
+    t.match(output.toString(), /Usage: APPLICATION create-plugin/);
+    t.match(app.cli.commands['create-plugin'].description, /Create plugin/);
+    t.match(app.cli.commands['create-plugin'].usage, /Usage: APPLICATION create-plugin/);
+
+    const cwd = process.cwd();
+    process.chdir(dir.toString());
+    const output2 = await captureOutput(async () => {
+      await app.cli.start('create-plugin');
+    });
+    t.match(output2.toString(), /\[write\].+lib.+mojo-plugin-myplugin\.js/);
+    t.same(await dir.child('lib', 'mojo-plugin-myplugin.js').exists(), true);
+    t.match(await dir.child('lib', 'mojo-plugin-myplugin.js').readFile('utf8'), /export default/);
+    t.match(output2.toString(), /\[write\].+test.+basic\.js/);
+    t.same(await dir.child('test', 'basic.js').exists(), true);
+    t.match(await dir.child('test', 'basic.js').readFile('utf8'), /import mojo/);
+    t.match(output2.toString(), /\[write\].+README\.md/);
+    t.same(await dir.child('README.md').exists(), true);
+    t.match(await dir.child('README.md').readFile('utf8'), /npm install mojo-plugin-myplugin/);
+    t.match(output2.toString(), /\[fixed\].+package\.json/);
+    t.same(await dir.child('package.json').exists(), true);
+    t.match(await dir.child('package.json').readFile('utf8'), /module/);
+
+    const output3 = await captureOutput(async () => {
+      await app.cli.start('create-plugin');
+    });
+    t.match(output3.toString(), /\[exists\].+lib.+mojo-plugin-myplugin\.js/);
+    t.match(output3.toString(), /\[exists\].+test.+basic\.js/);
+    t.match(output3.toString(), /\[exists\].+README\.md/);
+    t.match(output3.toString(), /\[fixed\].+package\.json/);
+
+    const dir2 = dir.child('test-plugin');
+    await dir2.mkdir();
+    process.chdir(dir2.toString());
+    const output4 = await captureOutput(async () => {
+      await app.cli.start('create-plugin', 'mojo-plugin-test-helpers');
+    });
+    t.match(output4.toString(), /\[write\].+lib.+mojo-plugin-test-helpers\.js/);
+    t.same(await dir2.child('lib', 'mojo-plugin-test-helpers.js').exists(), true);
+    t.match(await dir2.child('lib', 'mojo-plugin-test-helpers.js').readFile('utf8'), /export default/);
+    t.match(output4.toString(), /\[write\].+README\.md/);
+    t.same(await dir2.child('README.md').exists(), true);
+    t.match(await dir2.child('README.md').readFile('utf8'), /npm install mojo-plugin-test-helpers/);
+
     process.chdir(cwd);
   });
 

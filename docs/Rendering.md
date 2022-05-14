@@ -896,6 +896,67 @@ app.get('/', async ctx => {
 app.start();
 ```
 
+### Helper Plugins
+
+Some helpers might be useful enough for you to share them between multiple applications, plugins make that very simple.
+
+```js
+export default function cachingHelperPlugin (app) {
+  app.addHelper('noCaching', ctx => {
+    ctx.res.set('Cache-Control', 'private, max-age=0, no-cache');
+  });
+  app.addHelper('fiveMinutesCaching', ctx => {
+    ctx.res.set('Cache-Control', 'public, max-age=300');
+  });
+}
+```
+
+The exported plugin function will be called by the mojo.js application during startup and may contain any code that
+could also appear in the main application script itself.
+
+```js
+import mojo from '@mojojs/core';
+import cachingHelperPlugin from './plugin.js';
+
+const app = mojo();
+app.plugin(cachingHelperPlugin);
+
+app.get('/', async ctx => {
+  ctx.fiveMinutesCaching();
+  await ctx.render({text: 'Hello Caching!'});
+});
+
+app.start();
+```
+
+A skeleton for a full [npm](https://npmjs.org) compatible plugin can also be generated with the `create-plugin`
+command. We recommend the use of a `mojo-plugin-*` naming prefix to make the package easier to identify.
+
+```
+$ mkdir mojo-plugin-caching-helpers
+$ cd mojo-plugin-caching-helpers
+$ npm install @mojojs/core
+$ npx mojo create-plugin mojo-plugin-caching-helpers
+```
+
+The generated test file `test/basic.js` uses [tap](https://www.npmjs.com/package/tap) by default and contains enough
+integration tests to get you started in no time.
+
+```
+$ npm install
+$ npm run test
+```
+
+Once you are happy with your plugin you can share it with the community, all you need is an [npm](https://npmjs.org)
+account.
+
+```
+$ npm version major
+$ npm publish
+```
+
+And don't forget to update the metadata in your `package.json` file.
+
 ### Chunked Transfer Encoding
 
 For very dynamic content you might not know the response content length in advance, that's where the chunked transfer

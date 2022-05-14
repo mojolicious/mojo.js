@@ -55,9 +55,64 @@ t.test('Util', async t => {
       await util.cliFixPackage();
       await util.cliFixPackage();
     });
-    t.match(output2.toString(), /\[write\].+package\.json/);
-    t.match(output2.toString(), /\[exists\].+package\.json/);
+    t.match(output2.toString(), /\[fixed\].+package\.json/);
     t.same(JSON.parse(await dir2.child('package.json').readFile('utf8')), {type: 'module'});
+
+    process.chdir(cwd);
+  });
+
+  await t.test('cliFixPackage', async t => {
+    const cwd = process.cwd();
+
+    const dir = await Path.tempDir();
+    process.chdir(dir.toString());
+    const pkg = dir.child('package.json');
+
+    const output = await util.captureOutput(async () => {
+      await util.cliFixPackage({
+        author: 'Somebody',
+        dependencies: {foo: '1.0.0'},
+        devDependencies: {bar: '1.0.0'},
+        exports: './test.js',
+        files: ['lib'],
+        license: 'MIT',
+        name: 'mojo-test',
+        scripts: {test: 'prove test/*.t'},
+        version: '0.0.2'
+      });
+    });
+    t.match(output.toString(), /\[fixed\].+package\.json/);
+    t.same(JSON.parse(await pkg.readFile('utf8')), {
+      author: 'Somebody',
+      dependencies: {foo: '1.0.0'},
+      devDependencies: {bar: '1.0.0'},
+      exports: './test.js',
+      files: ['lib'],
+      license: 'MIT',
+      name: 'mojo-test',
+      scripts: {test: 'prove test/*.t'},
+      type: 'module',
+      version: '0.0.2'
+    });
+
+    await pkg.rm();
+    await pkg.writeFile('{"name":"yada","dependencies":{"foo":"0.0.1"},"files":["test"]}');
+    const output2 = await util.captureOutput(async () => {
+      await util.cliFixPackage({
+        author: 'Somebody',
+        dependencies: {foo: '2.0.0', bar: '1.0.0'},
+        name: 'fail',
+        files: ['lib']
+      });
+    });
+    t.match(output2.toString(), /\[fixed\].+package\.json/);
+    t.same(JSON.parse(await pkg.readFile('utf8')), {
+      author: 'Somebody',
+      dependencies: {foo: '0.0.1', bar: '1.0.0'},
+      files: ['test', 'lib'],
+      name: 'yada',
+      type: 'module'
+    });
 
     process.chdir(cwd);
   });
@@ -78,29 +133,30 @@ t.test('Util', async t => {
     } catch (error) {
       result = error;
     }
+    const line = 132;
     t.same(await exceptionContext(result, {lines: 2}), {
       file: Path.currentFile().toString(),
-      line: 77,
+      line,
       column: 13,
       source: [
         {
-          num: 75,
+          num: line - 2,
           code: '    let result;'
         },
         {
-          num: 76,
+          num: line - 1,
           code: '    try {'
         },
         {
-          num: 77,
+          num: line,
           code: "      throw new Error('Test');"
         },
         {
-          num: 78,
+          num: line + 1,
           code: '    } catch (error) {'
         },
         {
-          num: 79,
+          num: line + 2,
           code: '      result = error;'
         }
       ]

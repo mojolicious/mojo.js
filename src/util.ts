@@ -6,6 +6,19 @@ import Template from '@mojojs/template';
 import chalk from 'chalk';
 export {SafeString} from '@mojojs/template';
 
+type FixOptions = {
+  author?: string;
+  dependencies?: Record<string, string>;
+  description?: string;
+  devDependencies?: Record<string, string>;
+  exports?: string;
+  files?: string[];
+  license?: string;
+  name?: string;
+  scripts?: Record<string, string>;
+  version?: string;
+};
+
 /**
  * Capture STDOUT/STDERR output.
  */
@@ -86,25 +99,40 @@ export async function cliCreateFile(
 /**
  * Fix package.json file for generator commands.
  */
-export async function cliFixPackage(): Promise<void> {
+export async function cliFixPackage(options: FixOptions = {}): Promise<void> {
   const file = new Path(process.cwd(), 'package.json');
 
   const stdout = process.stdout;
+  let pkg: Record<string, any>;
   if ((await file.exists()) === false) {
-    stdout.write(chalk.green(' [write]') + ` ${file.toString()}\n`);
-    await file.writeFile(JSON.stringify({type: 'module'}, null, 2));
-    return;
+    pkg = {};
+  } else {
+    pkg = JSON.parse((await file.readFile()).toString());
   }
 
-  const json = JSON.parse((await file.readFile()).toString());
-  if (json.type === 'module') {
-    stdout.write(chalk.green(' [exists]') + ` ${file.toString()}\n`);
-    return;
+  // All mojo.js applications are ESM
+  pkg.type = 'module';
+
+  for (const [name, value] of Object.entries(options)) {
+    // String
+    if (typeof value === 'string') {
+      if (pkg[name] === undefined) pkg[name] = value;
+    }
+    // Array
+    else if (Array.isArray(value)) {
+      pkg[name] = [...new Set([...(pkg[name] ?? []), ...value])];
+    }
+    // Object
+    else {
+      if (pkg[name] === undefined) pkg[name] = {};
+      for (const [key, val] of Object.entries(value)) {
+        if (pkg[name][key] === undefined) pkg[name][key] = val;
+      }
+    }
   }
 
-  json.type = 'module';
   stdout.write(chalk.green(' [fixed]') + ` ${file.toString()}\n`);
-  await file.writeFile(JSON.stringify(json, null, 2));
+  await file.writeFile(JSON.stringify(pkg, null, 2));
 }
 
 /**
