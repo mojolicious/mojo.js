@@ -11,7 +11,7 @@
 [![npm](https://img.shields.io/npm/v/@mojojs/core.svg)](https://www.npmjs.com/package/@mojojs/core)
 
 The [Mojolicious](https://mojolicious.org) real-time web framework for [Node.js](https://nodejs.org/). Written in
-TypeScript. Meticulously designed for high performance backend web services using bleeding edge JavaScript features.
+TypeScript. Meticulously designed for hypermedia-driven backend web services using all the latest JavaScript features.
 
 If you want to stay up to date on the latest developments join us on [Matrix](https://matrix.to/#/#mojo:matrix.org) or
 [IRC](https://web.libera.chat/#mojo).
@@ -21,12 +21,12 @@ If you want to stay up to date on the latest developments join us on [Matrix](ht
 * A real-time web framework, allowing you to easily grow single file prototypes into well-structured MVC web
   applications.
   * Powerful out of the box with RESTful routes, WebSockets, plugins, commands, logging, templates, content negotiation,
-    session management, form validation, testing framework, static file server, cluster mode, first class Unicode
-    support and much more for you to discover.
+    session management, form and JSON validation, testing framework, static file server, cluster mode, first class
+    Unicode support and much more for you to discover.
 
 * A powerful web development toolkit, that you can use for all kinds of applications, independently of the web
   framework.
-  * Full featured HTTP and WebSocket user agent with support for HTTPS/WSS, cookies, redirects,
+  * High performance HTTP and WebSocket client/server implementation with support for HTTPS/WSS, cookies, redirects,
     urlencoded/multi-part forms, file uploads, JSON/YAML, HTML/XML, mocking, API testing, HTTP/SOCKS proxies, and gzip
     compression.
   * HTML/XML parser with CSS selector support.
