@@ -9,36 +9,36 @@
 
 # The mojo.js Documentation
 
-The guides are still a **work in progress**. But we are aiming for the same level of quality and coverage as the
-[Mojolicious documentation](https://docs.mojolicious.org). Have fun!
+Some parts of the documentation only use simplified single file web applications for examples, but that's merely a
+convenience for the reader. Almost all features are exactly the same for full well-structured mojo.js applications.
 
 ## Guides
 
-* [Introduction](Introduction.md) (Progress: 100%)
+* [Introduction](Introduction.md)
 
 A quick example driven introduction to the basic concepts of [mojo.js](https://mojojs.org).
 
-* [Growing](Growing.md) (Progress: 100%)
+* [Growing](Growing.md)
 
 Starting a single file prototype from scratch and growing it into a well-structured mojo.js application.
 
-* [Routing](Routing.md) (Progress: 100%)
+* [Routing](Routing.md)
 
 A more detailed introduction to the mojo.js router.
 
-* [Rendering](Rendering.md)  (Progress: 100%)
+* [Rendering](Rendering.md)
 
 Generating content with the mojo.js renderer.
 
-* [User-Agent](User-Agent.md)  (Progress: 100%)
+* [User-Agent](User-Agent.md)
 
 How to use the full featured HTTP and WebSocket user agent that ships with the mojo.js framework.
 
-* [Cookbook](Cookbook.md)  (Progress: 10%)
+* [Cookbook](Cookbook.md)
 
 Cooking with mojo.js, recipes for every taste.
 
-* [Cheatsheet](Cheatsheet.md)  (Progress: 50%)
+* [Cheatsheet](Cheatsheet.md)
 
 An overview of the most commonly encountered mojo.js objects.
 
