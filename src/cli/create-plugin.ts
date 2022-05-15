@@ -62,7 +62,7 @@ t.test('myPlugin', async t => {
 
   const ua = await app.newTestUserAgent({tap: t});
 
-  t.test('Basics', async () => {
+  await t.test('Basics', async () => {
     (await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
   });
 
