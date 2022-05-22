@@ -516,7 +516,7 @@ const defaultLayout = `
 <!DOCTYPE html>
 <html>
   <head><title>Login Manager</title></head>
-  <body><%== view.content %></body>
+  <body><%== ctx.content.main %></body>
 </html>
 `;
 ```
