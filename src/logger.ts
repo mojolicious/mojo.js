@@ -41,7 +41,7 @@ export class Logger {
   history: LogEvent[] = [];
 
   _capture: CapturedLogs | undefined = undefined;
-  _historySize: number;
+  _historySize: number | undefined;
   _level = 7;
 
   constructor(
@@ -51,7 +51,7 @@ export class Logger {
     this.formatter = options.formatter ?? Logger.colorFormatter;
     this.level = process.env.MOJO_LOG_LEVEL ?? options.level ?? 'trace';
 
-    this._historySize = options.historySize ?? 0;
+    this._historySize = options.historySize ?? undefined;
   }
 
   /**
@@ -168,14 +168,12 @@ export class Logger {
   _log(level: string, msg: string, context?: LogContext): void {
     const data: LogEvent = {...context, time: new Date().toISOString(), msg, level};
 
-    if (this._historySize !== 0) {
+    if (this._historySize !== undefined) {
       const history = this.history;
       history.push(data);
-
-      const historySize = this._historySize;
-      while (history.length > historySize) {
-        history.shift();
-      }
+      const maxHistorySize = this._historySize;
+      const historySize = history.length;
+      if (historySize > maxHistorySize) history.splice(0, historySize - maxHistorySize);
     }
 
     const formatted = this.formatter(data);
