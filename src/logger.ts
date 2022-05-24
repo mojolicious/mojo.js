@@ -40,6 +40,7 @@ export class Logger {
    */
   history: LogEvent[] = [];
 
+  _capture: CapturedLogs | undefined = undefined;
   _historySize: number;
   _level = 7;
 
@@ -51,6 +52,23 @@ export class Logger {
     this.level = process.env.MOJO_LOG_LEVEL ?? options.level ?? 'trace';
 
     this._historySize = options.historySize ?? 0;
+  }
+
+  /**
+   * Capture log messages for as long as the returned object has not been stopped, useful for testing log messages.
+   */
+  capture(level: string = this.level): CapturedLogs {
+    if (this._capture !== undefined) throw new Error('Log messages are already being captured');
+
+    const original = this.level;
+    this.level = level;
+
+    this._capture = new CapturedLogs(() => {
+      this.level = original;
+      this._capture = undefined;
+    });
+
+    return this._capture;
   }
 
   /**
@@ -149,19 +167,52 @@ export class Logger {
 
   _log(level: string, msg: string, context?: LogContext): void {
     const data: LogEvent = {...context, time: new Date().toISOString(), msg, level};
-    if (this._historySize === 0) {
-      this.destination.write(this.formatter(data));
-    } else {
-      const history = this.history;
-      const historySize = this._historySize;
 
+    if (this._historySize !== 0) {
+      const history = this.history;
       history.push(data);
+
+      const historySize = this._historySize;
       while (history.length > historySize) {
         history.shift();
       }
-
-      this.destination.write(this.formatter(data));
     }
+
+    const formatted = this.formatter(data);
+    if (this._capture === undefined) {
+      this.destination.write(formatted);
+    } else {
+      this._capture.push(formatted);
+    }
+  }
+}
+
+/**
+ * Captured log message class.
+ */
+class CapturedLogs extends Array<string> {
+  _cb: () => void;
+  _stopped = false;
+
+  constructor(cb: () => void) {
+    super();
+    this._cb = cb;
+  }
+
+  /**
+   * Stop capturing log messages.
+   */
+  stop(): void {
+    if (this._stopped === true) return;
+    this._cb();
+    this._stopped = true;
+  }
+
+  /**
+   * Turn log messages into a string.
+   */
+  toString(): string {
+    return this.join('');
   }
 }
 

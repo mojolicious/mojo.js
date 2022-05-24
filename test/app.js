@@ -368,7 +368,12 @@ t.test('App', async t => {
   });
 
   await t.test('IRI', async () => {
+    const logs = app.log.capture('trace');
     (await ua.getOk('/☃')).statusIs(200).bodyIs('Hello Snowman!');
+    logs.stop();
+    t.match(logs.toString(), /[trace].+GET "\/☃"/);
+    t.match(logs.toString(), /[trace].+Routing to function/);
+    t.match(logs.toString(), /[trace].+Rendering text response/);
   });
 
   await t.test('Methods', async () => {

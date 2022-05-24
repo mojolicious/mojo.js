@@ -109,6 +109,55 @@ t.test('Logger', async t => {
     t.end();
   });
 
+  t.test('Capturing', t => {
+    const logger = new Logger({formatter: Logger.stringFormatter});
+    t.equal(logger.level, 'trace');
+
+    const logs = logger.capture();
+    t.equal(logger.level, 'trace');
+    logs.stop();
+    t.equal(logger.level, 'trace');
+
+    const logs2 = logger.capture('info');
+    t.equal(logger.level, 'info');
+    logs2.stop();
+    t.equal(logger.level, 'trace');
+
+    const logs3 = logger.capture();
+    logger.trace('First');
+    logger.debug('Second');
+    logger.fatal('Third');
+    t.match(logs3.toString(), /\[trace\].+First\n.+\[debug\].+Second\n.+\[fatal\].+Third\n/);
+    logs3.stop();
+    logs3.stop();
+    t.match(logs3[0], /First/);
+    t.match(logs3[1], /Second/);
+    t.match(logs3[2], /Third/);
+    t.same(logs3[3], undefined);
+
+    const logs4 = logger.capture('info');
+    logger.trace('First');
+    logger.debug('Second');
+    logger.fatal('Third');
+    t.notMatch(logs4.toString(), /First/);
+    t.notMatch(logs4.toString(), /Second/);
+    t.match(logs4.toString(), /.+Third\n/);
+    t.match(logs4[0], /Third/);
+    t.same(logs4[1], undefined);
+    logs4.stop();
+
+    const logs5 = logger.capture();
+    t.throws(
+      () => {
+        logger.capture();
+      },
+      {message: 'Log messages are already being captured'}
+    );
+    logs5.stop();
+
+    t.end();
+  });
+
   await t.test('trace', async t => {
     const file = dir.child('trace.log');
     const stream = (await file.touch()).createWriteStream();
