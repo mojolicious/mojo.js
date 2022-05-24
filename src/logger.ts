@@ -51,7 +51,7 @@ export class Logger {
     this.formatter = options.formatter ?? Logger.colorFormatter;
     this.level = process.env.MOJO_LOG_LEVEL ?? options.level ?? 'trace';
 
-    this._historySize = options.historySize ?? undefined;
+    this._historySize = options.historySize;
   }
 
   /**
