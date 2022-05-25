@@ -18,6 +18,15 @@ type ListenArgs = any[];
 
 type ResponseBody = string | Buffer | Stream | undefined;
 
+/*
+To regenerate the certificate run this command:
+openssl req -x509 -newkey rsa:4096 -nodes -sha256 -out development.crt -keyout development.key -days 7300
+  -subj '/CN=localhost'
+*/
+const certs = Path.currentFile().dirname().sibling('vendor', 'certs');
+const devCert = certs.child('development.crt').toString();
+const devKey = certs.child('development.key').toString();
+
 /**
  * Server class.
  */
@@ -127,8 +136,8 @@ export class Server {
     const options: https.ServerOptions = {};
     if (url.protocol === 'https:') {
       const params = url.searchParams;
-      options.cert = await new Path(params.get('cert') ?? '').readFile();
-      options.key = await new Path(params.get('key') ?? '').readFile();
+      options.cert = await new Path(params.get('cert') ?? devCert).readFile();
+      options.key = await new Path(params.get('key') ?? devKey).readFile();
       isHttps = true;
     }
 

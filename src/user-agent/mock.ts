@@ -32,8 +32,9 @@ export class MockUserAgent extends UserAgent {
   /**
    * Start mock server.
    */
-  async start(app: App, options: ServerOptions = {}): Promise<this> {
-    const server = (this.server = new Server(app, {...options, listen: ['http://*'], quiet: true}));
+  async start(app: App, options: ServerOptions & {https?: boolean} = {}): Promise<this> {
+    const listen = [options.https === true ? 'https://*' : 'http://*'];
+    const server = (this.server = new Server(app, {...options, listen, quiet: true}));
     await server.start();
     if (this.baseURL === undefined) this.baseURL = server.urls[0];
     return this;

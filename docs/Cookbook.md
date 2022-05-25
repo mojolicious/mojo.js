@@ -88,6 +88,14 @@ $ node myapp.js server -h
 ...List of available options...
 ```
 
+Another huge advantage is that it supports TLS and WebSockets out of the box, a self-signed development certificate for
+testing purposes is built right in, so it just works.
+
+```
+$ node myapp.js server -l https://127.0.0.1:3000
+Web application available at https://127.0.0.1:3000/
+```
+
 To manage the web server with systemd, you can use a unit configuration file like this.
 
 ```

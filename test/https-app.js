@@ -54,4 +54,20 @@ t.test('HTTPS app', async t => {
 
   await server.stop();
   await ua.stop();
+
+  await t.test('Built-in development certificate', async t => {
+    const ua = await app.newTestUserAgent({tap: t}, {https: true});
+
+    (await ua.getOk('/', {insecure: true})).statusIs(200).bodyIs('HTTPS: true');
+
+    let result;
+    try {
+      await ua.get('/');
+    } catch (error) {
+      result = error;
+    }
+    t.equal(result.code, 'DEPTH_ZERO_SELF_SIGNED_CERT');
+
+    await ua.stop();
+  });
 });
