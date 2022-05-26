@@ -3,6 +3,7 @@ import type {Context} from './context.js';
 import type {ValidatorResult} from './validator/result.js';
 import type {Agent} from 'http';
 import type {Readable} from 'stream';
+import type {Stream} from 'stream';
 import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';
 
@@ -95,6 +96,8 @@ export interface ServerRequestOptions {
   reverseProxy: boolean;
   url?: string;
 }
+
+export type ServerResponseBody = string | Buffer | Stream | undefined;
 
 export interface UserAgentOptions {
   baseURL?: string | URL;

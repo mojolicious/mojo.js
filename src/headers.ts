@@ -56,6 +56,7 @@ export class Headers {
    */
   toArray(): string[] {
     const array = [];
+
     const headers = this._getHeaders();
     const normalCase = this._normalCase;
     for (const [name, values] of Object.entries(headers)) {
@@ -64,6 +65,7 @@ export class Headers {
         array.push(normal, value);
       }
     }
+
     return array;
   }
 
@@ -72,12 +74,32 @@ export class Headers {
    */
   toObject(): Record<string, string> {
     const object: Record<string, string> = {};
+
     const headers = this._getHeaders();
     const normalCase = this._normalCase;
     for (const [name, values] of Object.entries(headers)) {
       object[normalCase[name]] = values.join(', ');
     }
+
     return object;
+  }
+
+  /**
+   * Convert headers to string.
+   */
+  toString(): string {
+    const lines: string[] = [];
+
+    const headers = this._getHeaders();
+    const normalCase = this._normalCase;
+    for (const [name, values] of Object.entries(headers)) {
+      const normal = normalCase[name];
+      for (const value of values) {
+        lines.push(`${normal}: ${value}\r\n`);
+      }
+    }
+
+    return lines.join('') + '\r\n';
   }
 
   _getHeaders(): Record<string, string[]> {

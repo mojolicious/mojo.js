@@ -163,7 +163,7 @@ t.test('Command app', async t => {
       await app.cli.start('server', '-h');
     });
     t.match(output.toString(), /Usage: APPLICATION server/);
-    t.match(app.cli.commands.server.description, /Start application with HTTP server/);
+    t.match(app.cli.commands.server.description, /Start application with HTTP and WebSocket server/);
     t.match(app.cli.commands.server.usage, /Usage: APPLICATION server/);
 
     const app2 = mojo({mode: 'production'});
@@ -204,6 +204,32 @@ t.test('Command app', async t => {
     t.equal(process.listenerCount('SIGINT'), intBefore);
     t.equal(process.listenerCount('SIGTERM'), termBefore);
     t.equal(process.listenerCount('SIGUSR2'), usr2Before);
+  });
+
+  await t.test('cgi', async t => {
+    const env = process.env;
+    process.env = {PATH_INFO: '/'};
+    const output = await captureOutput(async () => {
+      await app.cli.start('cgi');
+    });
+
+    t.match(output.toString(), /Content-Type: text\/plain; charset=utf-8/);
+    t.match(output.toString(), /Status: 200 OK/);
+    t.match(output.toString(), /Content-Length: 11/);
+    t.match(output.toString(), /Hello Mojo!/);
+    t.match(app.cli.commands.cgi.description, /Start application with CGI/);
+    t.match(app.cli.commands.cgi.usage, /Usage: APPLICATION cgi/);
+
+    process.env = {PATH_INFO: '/'};
+    const output2 = await captureOutput(async () => {
+      await app.cli.start();
+    });
+    process.env = env;
+
+    t.match(output2.toString(), /Content-Type: text\/plain; charset=utf-8/);
+    t.match(output2.toString(), /Status: 200 OK/);
+    t.match(output2.toString(), /Content-Length: 11/);
+    t.match(output2.toString(), /Hello Mojo!/);
   });
 
   await t.test('version', async t => {

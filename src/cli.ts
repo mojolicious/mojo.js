@@ -37,12 +37,28 @@ export class CLI {
   }
 
   /**
+   * Detect command from environment.
+   */
+  detectCommand(): string | null {
+    const env = process.env;
+    if (env.MOJO_NO_DETECT === '1') return null;
+
+    // CGI detection
+    if (env.PATH_INFO !== undefined || env.GATEWAY_INTERFACE !== undefined) return 'cgi';
+
+    return null;
+  }
+
+  /**
    * Start command line interface.
    */
   async start(command?: string, ...args: string[]): Promise<void> {
     if (this._loaded === undefined) await this._loadCommands();
 
-    const commandArgs = command === undefined ? process.argv : ['', '', command, ...args];
+    const detected = this.detectCommand();
+    const commandArgs =
+      detected !== null ? ['', '', detected] : command === undefined ? process.argv : ['', '', command, ...args];
+
     const app = this._app.deref();
     if (app === undefined) return;
     await app.hooks.runHook('command:before', app, commandArgs);

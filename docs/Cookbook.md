@@ -127,6 +127,17 @@ $ npx nodemon myapp.js server
 [39248] Web application available at http://127.0.0.1:3000/
 ```
 
+## Apache/CGI
+
+CGI is supported out of the box and your mojo.js application will automatically detect that it is executed as a CGI
+script. Its use in production environments is discouraged though, because as a result of how CGI works, it is very slow
+and many web servers are making it exceptionally hard to configure properly. Additionally, many real-time web features,
+such as WebSockets, are not available.
+
+```
+ScriptAlias / /home/sri/myapp/index.js/
+```
+
 ## Application
 
 Fun mojo.js application hacks for all occasions.

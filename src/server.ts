@@ -1,5 +1,4 @@
-import type {App} from './app.js';
-import type {ServerOptions} from './types.js';
+import type {MojoApp, ServerOptions, ServerResponseBody} from './types.js';
 import type {Socket} from 'net';
 import cluster from 'cluster';
 import http from 'http';
@@ -16,8 +15,6 @@ import {WebSocketServer} from 'ws';
 
 type ListenArgs = any[];
 
-type ResponseBody = string | Buffer | Stream | undefined;
-
 /*
 To regenerate the certificate run this command:
 openssl req -x509 -newkey rsa:4096 -nodes -sha256 -out development.crt -keyout development.key -days 7300
@@ -28,13 +25,13 @@ const devCert = certs.child('development.crt').toString();
 const devKey = certs.child('development.key').toString();
 
 /**
- * Server class.
+ * HTTP and WebSocket server class.
  */
 export class Server {
   /**
    * Application this server handles.
    */
-  app: App;
+  app: MojoApp;
   /**
    * Limit the amount of time the parser will wait to receive the complete HTTP headers, defaults to `60000`
    * (60 seconds).
@@ -68,7 +65,7 @@ export class Server {
   _quiet: boolean;
   _workers: number;
 
-  constructor(app: App, options: ServerOptions = {}) {
+  constructor(app: MojoApp, options: ServerOptions = {}) {
     this.app = app;
     this.headersTimeout = options.headersTimeout;
     this.keepAliveTimeout = options.keepAliveTimeout;
@@ -193,7 +190,7 @@ export class Server {
     const socket = req.socket;
     const ctx = app.newContext(
       this._prepareRequest(req, socket, false),
-      new ServerResponse(function (res: ServerResponse, body: ResponseBody) {
+      new ServerResponse((res: ServerResponse, body: ServerResponseBody) => {
         _sendResponse(res, body, raw);
       })
     );
@@ -205,7 +202,7 @@ export class Server {
     const app = this.app;
     const ctx = app.newContext(
       this._prepareRequest(req, socket, true),
-      new ServerResponse(function (res: ServerResponse, body: ResponseBody) {
+      new ServerResponse((res: ServerResponse, body: ServerResponseBody) => {
         _sendResponse(res, body, new http.ServerResponse(req));
       })
     );
@@ -253,7 +250,7 @@ function _sendHeaders(res: ServerResponse, raw: http.ServerResponse): void {
   }
 }
 
-function _sendResponse(res: ServerResponse, body: ResponseBody, raw: http.ServerResponse): void {
+function _sendResponse(res: ServerResponse, body: ServerResponseBody, raw: http.ServerResponse): void {
   if (typeof body === 'string' || Buffer.isBuffer(body)) {
     res.length(Buffer.byteLength(body));
     _sendHeaders(res, raw);

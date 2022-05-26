@@ -3,9 +3,11 @@ import {captureOutput} from '../lib/util.js';
 import t from 'tap';
 
 t.test('Server', async t => {
-  const app = mojo();
+  const app = mojo({mode: 'production'});
 
   app.get('/', ctx => ctx.render({text: 'Hello World!'}));
+
+  app.get('/teapod', ctx => ctx.render({text: 'Teapod!', status: 418}));
 
   t.test('listenArgsforURL', t => {
     t.same(Server.listenArgsForURL(new URL('http://*')), [null, '0.0.0.0']);
@@ -18,6 +20,15 @@ t.test('Server', async t => {
     t.same(Server.listenArgsForURL(new URL('http://[::1]:5000')), [5000, '::1']);
 
     t.end();
+  });
+
+  await t.test('Teapot', async t => {
+    const ua = await app.newTestUserAgent({tap: t});
+
+    (await ua.getOk('/teapod')).statusIs(418);
+    t.equal(ua.res.statusMessage, "I'm a Teapot");
+
+    await ua.stop();
   });
 
   await t.test('MOJO_SERVER_DEBUG', async t => {

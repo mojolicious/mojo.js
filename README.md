@@ -21,8 +21,8 @@ If you want to stay up to date on the latest developments join us on [Matrix](ht
 * A real-time web framework, allowing you to easily grow single file prototypes into well-structured MVC web
   applications.
   * Powerful out of the box with RESTful routes, WebSockets, plugins, commands, logging, templates, content negotiation,
-    session management, form and JSON validation, testing framework, static file server, cluster mode, first class
-    Unicode support and much more for you to discover.
+    session management, form and JSON validation, testing framework, static file server, cluster mode, CGI detection,
+    first class Unicode support and much more for you to discover.
 
 * A powerful web development toolkit, that you can use for all kinds of applications, independently of the web
   framework.

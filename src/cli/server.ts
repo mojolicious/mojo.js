@@ -47,7 +47,7 @@ export default async function serverCommand(app: MojoApp, args: string[]): Promi
   await server.start();
 }
 
-serverCommand.description = 'Start application with HTTP server';
+serverCommand.description = 'Start application with HTTP and WebSocket server';
 serverCommand.usage = `Usage: APPLICATION server [OPTIONS]
 
   node index.js server

@@ -163,6 +163,15 @@ t.test('Util', async t => {
     });
   });
 
+  t.test('httpStatusMessages', t => {
+    const messages = util.httpStatusMessages;
+    t.same(messages[200], 'OK');
+    t.same(messages[404], 'Not Found');
+    t.same(messages[418], "I'm a teapot");
+    t.same(messages[500], 'Internal Server Error');
+    t.end();
+  });
+
   t.test('jsonPointer (RFC 6901)', t => {
     const jsonPointer = util.jsonPointer;
 
