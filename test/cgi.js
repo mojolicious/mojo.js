@@ -28,7 +28,7 @@ t.test('CGI', async t => {
 
     const output = await captureOutput(
       async () => {
-        await new CGI(app).process();
+        await new CGI(app).run();
       },
       {stderr: true, stdout: true}
     );

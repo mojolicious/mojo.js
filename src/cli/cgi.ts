@@ -5,7 +5,7 @@ import {CGI} from '../cgi.js';
  * CGI command.
  */
 export default async function cgiCommand(app: MojoApp): Promise<void> {
-  await new CGI(app).process();
+  await new CGI(app).run();
 }
 
 cgiCommand.description = 'Start application with CGI';

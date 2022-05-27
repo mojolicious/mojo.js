@@ -18,7 +18,7 @@ export class CGI {
   /**
    * Create a request object for a CGI environment.
    */
-  static envToRequest(env: NodeJS.ProcessEnv, stdin: Readable): ServerRequest {
+  static envToRequest(env: NodeJS.ProcessEnv, body: Readable): ServerRequest {
     // Method
     const method = env.REQUEST_METHOD ?? 'GET';
 
@@ -45,8 +45,8 @@ export class CGI {
     const isSecure = (env.HTTPS ?? '').toUpperCase() === 'ON';
 
     return new ServerRequest({
-      body: stdin,
-      headers: headers,
+      body,
+      headers,
       isSecure,
       isWebSocket: false,
       method,
@@ -56,9 +56,9 @@ export class CGI {
   }
 
   /**
-   * Process CGI request.
+   * Run CGI application.
    */
-  async process(): Promise<void> {
+  async run(): Promise<void> {
     const app = this.app;
     await app.hooks.runHook('server:start', app);
 
