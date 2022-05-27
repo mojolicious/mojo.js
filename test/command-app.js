@@ -197,7 +197,7 @@ t.test('Command app', async t => {
     t.equal(process.listenerCount('SIGUSR2'), usr2Before + 1);
     t.match(output2.toString(), /Web application available at http:/);
     const ua = new TestUserAgent({tap: t});
-    const match = output2.match(/(http:\/\/.+)$/s);
+    const match = output2.toString().match(/(http:\/\/.+)$/s);
     t.notSame(match, null);
     (await ua.getOk(match[1])).statusIs(200).bodyIs('Stopping server');
     t.same(await hookPromise, true);

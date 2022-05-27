@@ -1,5 +1,6 @@
 import type {JSONValue} from './types.js';
 import type {Mode} from 'fs';
+import stream from 'stream';
 import {setTimeout} from 'timers/promises';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
@@ -95,32 +96,25 @@ export async function captureOutput(
 ): Promise<string | Buffer> {
   if (options.stdout === undefined) options.stdout = true;
 
-  const output: Uint8Array[] = [];
-  const stdout = process.stdout;
-  const stderr = process.stderr;
-  const stdoutWrite = stdout.write;
-  const stderrWrite = stderr.write;
+  const stream = new CaptureStream();
+  const stdoutWrite = process.stdout.write;
+  const stderrWrite = process.stderr.write;
 
   if (options.stdout === true) {
-    stdout.write = (buffer: Uint8Array): boolean => {
-      output.push(buffer);
-      return true;
-    };
+    process.stdout.write = stdoutWrite.bind(stream);
   }
   if (options.stderr === true) {
-    stderr.write = (buffer: Uint8Array) => {
-      output.push(buffer);
-      return true;
-    };
+    process.stderr.write = stderrWrite.bind(stream);
   }
 
   try {
     await fn();
   } finally {
-    stdout.write = stdoutWrite;
-    stderr.write = stderrWrite;
+    process.stdout.write = stdoutWrite;
+    process.stderr.write = stderrWrite;
   }
 
+  const output = stream.output;
   return output.length > 0 && Buffer.isBuffer(output[0]) ? Buffer.concat(output) : output.join('');
 }
 
@@ -324,4 +318,13 @@ export function termEscape(value: string): string {
       /^[\x00-\x09\x0b-\x1f\x7f\x80-\x9f]$/.test(char) ? '\\x' + char.charCodeAt(0).toString(16).padStart(2, '0') : char
     )
     .join('');
+}
+
+class CaptureStream extends stream.Writable {
+  output: Uint8Array[] = [];
+
+  _write(chunk: Uint8Array, enc: string, next: () => void) {
+    this.output.push(chunk);
+    next();
+  }
 }
