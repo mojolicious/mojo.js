@@ -1,10 +1,11 @@
+type HeaderBuffer = Record<string, {normalCase: string; values: string[]}>;
+
 /**
  * HTTP header class.
  */
 export class Headers {
-  _headers?: Record<string, string[]>;
+  _headers?: HeaderBuffer;
   _init: string[];
-  _normalCase: Record<string, string> = {};
 
   constructor(init: string[] = []) {
     this._init = init;
@@ -19,9 +20,9 @@ export class Headers {
     if (headers[lowerCase] === undefined) return this.set(name, value);
 
     if (lowerCase === 'set-cookie') {
-      headers[lowerCase].push(value);
+      headers[lowerCase].values.push(value);
     } else {
-      headers[lowerCase] = [[...headers[lowerCase], value].join(', ')];
+      headers[lowerCase].values = [[...headers[lowerCase].values, value].join(', ')];
     }
   }
 
@@ -29,16 +30,16 @@ export class Headers {
    * Get header value.
    */
   get(name: string): string | null {
-    const values = this._getHeaders()[name.toLowerCase()];
-    if (values === undefined) return null;
-    return values.join(', ');
+    const header = this._getHeaders()[name.toLowerCase()];
+    if (header === undefined) return null;
+    return header.values.join(', ');
   }
 
   /**
    * Get all headers values individually.
    */
   getAll(name: string): string[] {
-    const values = this._getHeaders()[name.toLowerCase()] ?? [];
+    const values = this._getHeaders()[name.toLowerCase()]?.values ?? [];
     return [...values];
   }
 
@@ -47,8 +48,7 @@ export class Headers {
    */
   set(name: string, value: string): void {
     const lowerCase = name.toLowerCase();
-    if (this._normalCase[lowerCase] === undefined) this._normalCase[lowerCase] = name;
-    this._getHeaders()[lowerCase] = [value];
+    this._getHeaders()[lowerCase] = {normalCase: name, values: [value]};
   }
 
   /**
@@ -57,9 +57,9 @@ export class Headers {
   toArray(): string[] {
     const array = [];
 
-    for (const [name, values] of this._all()) {
-      for (const value of values) {
-        array.push(name, value);
+    for (const header of Object.values(this._getHeaders())) {
+      for (const value of header.values) {
+        array.push(header.normalCase, value);
       }
     }
 
@@ -71,8 +71,8 @@ export class Headers {
    */
   toObject(): Record<string, string> {
     const object: Record<string, string> = {};
-    for (const [name, values] of this._all()) {
-      object[name] = values.join(', ');
+    for (const header of Object.values(this._getHeaders())) {
+      object[header.normalCase] = header.values.join(', ');
     }
     return object;
   }
@@ -83,41 +83,27 @@ export class Headers {
   toString(): string {
     const lines: string[] = [];
 
-    for (const [name, values] of this._all()) {
-      for (const value of values) {
-        lines.push(`${name}: ${value}\r\n`);
+    for (const header of Object.values(this._getHeaders())) {
+      for (const value of header.values) {
+        lines.push(`${header.normalCase}: ${value}\r\n`);
       }
     }
 
     return lines.join('') + '\r\n';
   }
 
-  _all(): [string, string[]][] {
-    const all: [string, string[]][] = [];
-
-    const headers = this._getHeaders();
-    const normalCase = this._normalCase;
-    for (const [name, values] of Object.entries(headers)) {
-      all.push([normalCase[name], values]);
-    }
-
-    return all;
-  }
-
-  _getHeaders(): Record<string, string[]> {
+  _getHeaders(): HeaderBuffer {
     if (this._headers === undefined) {
-      const headers: Record<string, string[]> = (this._headers = {});
-      const normalCase = this._normalCase;
+      const headers: HeaderBuffer = (this._headers = {});
       const init = this._init;
       for (let i = 0; i < init.length; i += 2) {
         const name = init[i];
         const value = init[i + 1];
         const lowerCase = name.toLowerCase();
-        normalCase[lowerCase] = name;
         if (headers[lowerCase] === undefined) {
-          headers[lowerCase] = [value];
+          headers[lowerCase] = {normalCase: name, values: [value]};
         } else {
-          headers[lowerCase].push(value);
+          headers[lowerCase].values.push(value);
         }
       }
     }
