@@ -7,7 +7,7 @@ t.test('Server', async t => {
 
   app.get('/', ctx => ctx.render({text: 'Hello World!'}));
 
-  app.get('/teapod', ctx => ctx.render({text: 'Teapod!', status: 418}));
+  app.get('/teapot', ctx => ctx.render({text: 'Teapot!', status: 418}));
 
   t.test('listenArgsforURL', t => {
     t.same(Server.listenArgsForURL(new URL('http://*')), [null, '0.0.0.0']);
@@ -25,7 +25,7 @@ t.test('Server', async t => {
   await t.test('Teapot', async t => {
     const ua = await app.newTestUserAgent({tap: t});
 
-    (await ua.getOk('/teapod')).statusIs(418);
+    (await ua.getOk('/teapot')).statusIs(418);
     t.equal(ua.res.statusMessage, "I'm a Teapot");
 
     await ua.stop();

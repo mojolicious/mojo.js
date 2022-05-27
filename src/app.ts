@@ -240,7 +240,7 @@ export class App {
         reverseProxy: false,
         url: options.url ?? '/'
       }),
-      new ServerResponse(async () => {
+      new ServerResponse(() => {
         // Do nothing
       })
     );
