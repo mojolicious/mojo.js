@@ -138,6 +138,102 @@ such as WebSockets, are not available.
 ScriptAlias / /home/sri/myapp/index.js/
 ```
 
+### Nginx
+
+One of the most popular setups these days is web applications behind an [Nginx](https://nginx.org/) reverse proxy,
+which even supports WebSockets in newer versions.
+
+```
+upstream myapp {
+  server 127.0.0.1:8080;
+}
+server {
+  listen 80;
+  server_name localhost;
+  location / {
+    proxy_pass http://myapp;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+}
+```
+
+### Apache/mod_proxy
+
+Another good reverse proxy is [Apache](https://httpd.apache.org/) with `mod_proxy`, the configuration looks quite
+similar to the Nginx one above. And if you need WebSocket support, newer versions come with `mod_proxy_wstunnel`.
+
+```
+<VirtualHost *:80>
+  ServerName localhost
+  <Proxy *>
+    Require all granted
+  </Proxy>
+  ProxyRequests Off
+  ProxyPreserveHost On
+  ProxyPass /echo ws://localhost:8080/echo
+  ProxyPass / http://localhost:8080/ keepalive=On
+  ProxyPassReverse / http://localhost:8080/
+  RequestHeader set X-Forwarded-Proto "http"
+</VirtualHost>
+```
+
+### Envoy
+
+mojo.js applications can be deployed on cloud-native environments that use [Envoy](https://www.envoyproxy.io/), such as
+with this reverse proxy configuration similar to the Apache and Nginx ones above.
+
+```
+static_resources:
+  listeners:
+  - name: listener_0
+    address:
+      socket_address: { address: 0.0.0.0, port_value: 80 }
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.http_connection_manager
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          codec_type: auto
+          stat_prefix: index_http
+          route_config:
+            name: local_route
+            virtual_hosts:
+            - name: service
+              domains: ["*"]
+              routes:
+              - match:
+                  prefix: "/"
+                route:
+                  cluster: local_service
+          upgrade_configs:
+          - upgrade_type: websocket
+          http_filters:
+          - name: envoy.filters.http.router
+            typed_config:
+  clusters:
+  - name: local_service
+    connect_timeout: 0.25s
+    type: strict_dns
+    lb_policy: round_robin
+    load_assignment:
+      cluster_name: local_service
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address: { address: mojo, port_value: 8080 }
+```
+
+While this configuration works for simple applications, Envoy's typical use case is for implementing proxies of
+applications as a "service mesh" providing advanced filtering, load balancing, and observability features, such as seen
+in [Istio](https://istio.io/latest/docs/ops/deployment/architecture/). For more examples, visit the
+[Envoy documentation](https://www.envoyproxy.io/docs/envoy/latest/start/start).
+
 ## Application
 
 Fun mojo.js application hacks for all occasions.
