@@ -1,12 +1,11 @@
-import type {JSONValue} from './types.js';
+import type {JSONValue, WebSocketBackend} from './types.js';
 import type {UserAgentResponse} from './user-agent/response.js';
-import type WS from 'ws';
 import EventEmitter, {on} from 'events';
 
 interface WebSocketControlEvents {
-  close: (...args: any[]) => void;
-  ping: (...args: any[]) => void;
-  pong: (...args: any[]) => void;
+  close: (this: WebSocket, ...args: any[]) => void;
+  ping: (this: WebSocket, ...args: any[]) => void;
+  pong: (this: WebSocket, ...args: any[]) => void;
 }
 
 interface WebSocketEvents extends WebSocketControlEvents {
@@ -32,9 +31,9 @@ class WebSocket extends EventEmitter {
    */
   jsonMode: boolean;
 
-  _ws: WS;
+  _ws: WebSocketBackend;
 
-  constructor(ws: WS, handshake: UserAgentResponse | null, options: {jsonMode: boolean}) {
+  constructor(ws: WebSocketBackend, handshake: UserAgentResponse | null, options: {jsonMode: boolean}) {
     super({captureRejections: true});
 
     this.handshake = handshake;

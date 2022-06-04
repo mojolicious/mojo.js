@@ -136,3 +136,18 @@ export interface ValidationError {
 }
 
 export type ValidatorFunction = (data: JSONObject) => ValidatorResult;
+
+interface WebSocketBackendEvents {
+  close: () => void;
+  error: (this: WebSocketBackend, error: Error) => void;
+  message: (this: WebSocketBackend, message: Buffer, isBinary: boolean) => void;
+  ping: () => void;
+  pong: () => void;
+}
+
+export interface WebSocketBackend {
+  close: (code?: number, reason?: string | Buffer) => void;
+  on: <T extends keyof WebSocketBackendEvents>(event: T, listener: WebSocketBackendEvents[T]) => this;
+  ping: (data?: any, mask?: boolean, cb?: (err: Error) => void) => void;
+  send: (data: any, cb?: (err?: Error) => void) => void;
+}
