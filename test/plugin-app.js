@@ -67,8 +67,11 @@ t.test('Plugin app', async t => {
 const tagHelperPlugin = `
 Route: <%= ctx.currentRoute() %>
 Favicon: <%= ctx.mojoFaviconTag() %>
+Relative image1: <%= ctx.imageTag('/foo/bar.png') %>
+Relative image2: <%= ctx.imageTag('/foo/bar.png', {alt: 'Bar'}) %>
 Relative script: <%= ctx.scriptTag('/foo/bar.js') %>
 Relative style: <%= ctx.styleTag('/foo/bar.css') %>
+Absolute image: <%= ctx.imageTag('https://mojojs.org/public/foo/bar.png') %>
 Absolute script: <%= ctx.scriptTag('https://mojojs.org/public/foo/bar.js') %>
 Absolute style: <%= ctx.styleTag('https://mojojs.org/public/foo/bar.css') %>
 Link1: <%= ctx.linkTo('getter_setter', {class: 'foo'}, 'Getter & Setter') %>
@@ -82,8 +85,11 @@ function tagHelperPluginResult(baseURL, publicPath) {
   return `
 Route: tag_helpers
 Favicon: <link rel="icon" href="${baseURL}${publicPath}mojo/favicon.ico">
+Relative image1: <img src="${baseURL}${publicPath}foo/bar.png">
+Relative image2: <img src="${baseURL}${publicPath}foo/bar.png" alt="Bar">
 Relative script: <script src="${baseURL}${publicPath}foo/bar.js"></script>
 Relative style: <link rel="stylesheet" href="${baseURL}${publicPath}foo/bar.css">
+Absolute image: <img src="https://mojojs.org/public/foo/bar.png">
 Absolute script: <script src="https://mojojs.org/public/foo/bar.js"></script>
 Absolute style: <link rel="stylesheet" href="https://mojojs.org/public/foo/bar.css">
 Link1: <a href="${baseURL}getter/setter" class="foo">Getter &amp; Setter</a>

@@ -25,6 +25,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 
   app.addHelper('include', include);
 
+  app.addHelper('imageTag', imageTag);
   app.addHelper('linkTo', linkTo);
   app.addHelper('mojoFaviconTag', mojoFaviconTag);
   app.addHelper('scriptTag', scriptTag);
@@ -77,6 +78,10 @@ async function httpException(ctx: MojoContext, error: any): Promise<boolean> {
   if (exceptionFormat === 'txt') return ctx.txtException(error);
   if (exceptionFormat === 'json') return ctx.jsonException(error);
   return ctx.htmlException(error);
+}
+
+function imageTag(ctx: MojoContext, target: string, attrs: Record<string, string> = {}): SafeString {
+  return ctx.tag('img', {src: ctx.urlForFile(target), ...attrs});
 }
 
 async function include(
