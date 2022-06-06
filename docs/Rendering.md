@@ -1047,6 +1047,8 @@ app.get('/template', async ctx => {
 app.start();
 ```
 
+See [mojo-plugin-ejs](https://github.com/mojolicious/mojo-plugin-ejs) for a full example plugin you can fork.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
