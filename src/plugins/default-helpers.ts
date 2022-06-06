@@ -79,8 +79,13 @@ async function httpException(ctx: MojoContext, error: any): Promise<boolean> {
   return ctx.htmlException(error);
 }
 
-async function include(ctx: MojoContext, options: RenderOptions, stash: Record<string, any>): Promise<string | null> {
-  return await ctx.renderToString(options, stash);
+async function include(
+  ctx: MojoContext,
+  options: RenderOptions,
+  stash: Record<string, any>
+): Promise<SafeString | null> {
+  const str = await ctx.renderToString(options, stash);
+  return str === null ? null : new SafeString(str);
 }
 
 async function jsonException(ctx: MojoContext, error: Error): Promise<boolean> {

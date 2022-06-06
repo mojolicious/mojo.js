@@ -53,7 +53,7 @@ t.test('Full app', async t => {
       .bodyLike(/<style>/)
       .bodyLike(/Hey bar\r?\n/);
 
-    (await ua.putOk('/renderer/another.view')).statusIs(200).bodyLike(/User sri\r?\nis an admin\r?\n/);
+    (await ua.putOk('/renderer/another.view')).statusIs(200).bodyLike(/User sri\r?\nis an admin<br>\r?\n/);
 
     (await ua.getOk('/default/view')).statusIs(200).bodyLike(/Header.*Default for foo and defaultView.*Footer/s);
   });
