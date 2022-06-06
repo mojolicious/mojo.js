@@ -30,14 +30,14 @@ import {TestUserAgent} from './user-agent/test.js';
 import {Validator} from './validator.js';
 import Path from '@mojojs/path';
 
-const ContextWrapper = class extends Context {};
-
 type AppHook = (app: App, ...args: any[]) => any;
 type ContextHook = (app: MojoContext, ...args: any[]) => any;
 
 type Decoration = ((...args: any[]) => any) | {get?: () => any; set?: (value: any) => any};
 
 type Plugin = (app: App, options: Record<string, any>) => any;
+
+const ContextWrapper = class extends Context {};
 
 /**
  * Application class.

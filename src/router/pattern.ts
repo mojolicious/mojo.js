@@ -1,14 +1,6 @@
 import type {PlaceholderType} from '../types.js';
 import {escapeRegExp} from '@mojojs/dom';
 
-const OP = {
-  placeholder: Symbol('placeholder'),
-  relaxed: Symbol('relaxed'),
-  slash: Symbol('slash'),
-  text: Symbol('text'),
-  wildcard: Symbol('wildcard')
-};
-
 interface MatchOptions {
   isEndpoint: boolean;
 }
@@ -17,6 +9,14 @@ interface PlaceholderTypes {
 }
 
 type ASTNode = [symbol, ...string[]];
+
+const OP = {
+  placeholder: Symbol('placeholder'),
+  relaxed: Symbol('relaxed'),
+  slash: Symbol('slash'),
+  text: Symbol('text'),
+  wildcard: Symbol('wildcard')
+};
 
 /**
  * Route pattern class.

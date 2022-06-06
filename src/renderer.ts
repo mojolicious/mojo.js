@@ -4,8 +4,6 @@ import {gzip} from 'zlib';
 import Path from '@mojojs/path';
 import yaml from 'js-yaml';
 
-const gzipPromise = promisify(gzip);
-
 interface EngineResult {
   format: string;
   output: string | Buffer;
@@ -20,6 +18,8 @@ type ViewIndex = Record<string, ViewSuggestion[]>;
 interface ViewEngine {
   render: (ctx: MojoContext, options: RenderOptions) => Promise<Buffer>;
 }
+
+const gzipPromise = promisify(gzip);
 
 /**
  * Renderer class.
