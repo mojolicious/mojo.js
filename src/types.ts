@@ -1,11 +1,13 @@
 import type {App} from './app.js';
 import type {Context} from './context.js';
+import type {SafeString} from './util.js';
 import type {ValidatorResult} from './validator/result.js';
 import type {Agent} from 'http';
 import type {Readable} from 'stream';
 import type {Stream} from 'stream';
 import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';
+import type {InspectOptions} from 'util';
 
 // Helper types for debugging
 export type Expand<T> = T extends infer O ? {[K in keyof O]: O[K]} : never;
@@ -17,7 +19,27 @@ export type JSONObject = {[key: string]: JSONValue};
 
 export type MojoApp = App;
 
+// With default helpers from plugins
 export interface MojoContext extends Context {
+  currentRoute: () => string | null;
+  exception: (error: Error) => Promise<boolean>;
+  htmlException: (error: Error) => Promise<boolean>;
+  htmlNotFound: () => Promise<boolean>;
+  httpException: (error: any) => Promise<boolean>;
+  imageTag: (target: string, attrs?: Record<string, string>) => SafeString;
+  include: (options: RenderOptions, stash: Record<string, any>) => Promise<SafeString | null>;
+  inpsect: (object: Record<string, any>, options: InspectOptions) => string;
+  jsonException: (error: Error) => Promise<boolean>;
+  jsonNotFound: () => Promise<boolean>;
+  linkTo: (target: string, attrs: Record<string, string>, content: string | SafeString) => SafeString;
+  mojoFaviconTag: () => SafeString;
+  scriptTag: (target: string) => SafeString;
+  styleTag: (target: string) => SafeString;
+  tag: (name: string, attrs?: Record<string, string>, content?: string | SafeString) => SafeString;
+  txtException: (error: Error) => Promise<boolean>;
+  txtNotFound: () => Promise<boolean>;
+  notFound: () => Promise<boolean>;
+  websocketException: (error: any) => Promise<boolean>;
   [key: string]: any;
 }
 

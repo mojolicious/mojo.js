@@ -94,7 +94,7 @@ class Context extends EventEmitter {
   }
 
   [EventEmitter.captureRejectionSymbol](error: Error): void {
-    (this as MojoContext).exception(error);
+    (this as unknown as MojoContext).exception(error);
   }
 
   /**
@@ -154,7 +154,7 @@ class Context extends EventEmitter {
   handleUpgrade(ws: WebSocket): void {
     this._ws = new WeakRef(ws);
     this.emit('connection', ws);
-    ws.on('error', error => (this as MojoContext).exception(error));
+    ws.on('error', error => (this as unknown as MojoContext).exception(error));
   }
 
   /**
@@ -247,13 +247,13 @@ class Context extends EventEmitter {
     if (stash !== undefined) Object.assign(this.stash, stash);
 
     const app = this.app;
-    const result = await app.renderer.render(this, options);
+    const result = await app.renderer.render(this as unknown as MojoContext, options);
     if (result === null) {
       if (options.maybe !== true) throw new Error('Nothing could be rendered');
       return false;
     }
 
-    return await app.renderer.respond(this, result, {status: options.status});
+    return await app.renderer.respond(this as unknown as MojoContext, result, {status: options.status});
   }
 
   /**
@@ -262,7 +262,7 @@ class Context extends EventEmitter {
   async renderToString(options: RenderOptions, stash?: Record<string, any>): Promise<string | null> {
     if (typeof options === 'string') options = {view: options};
     Object.assign(this.stash, stash);
-    const result = await this.app.renderer.render(this, options);
+    const result = await this.app.renderer.render(this as unknown as MojoContext, options);
     return result === null ? null : result.output.toString();
   }
 
@@ -274,12 +274,12 @@ class Context extends EventEmitter {
 
     for (const format of formats) {
       if (spec[format] === undefined) continue;
-      await spec[format](this);
+      await spec[format](this as unknown as MojoContext);
       return;
     }
 
     if (spec.any !== undefined) {
-      await spec.any(this);
+      await spec.any(this as unknown as MojoContext);
       return;
     }
 
@@ -290,7 +290,7 @@ class Context extends EventEmitter {
    * Send static file.
    */
   async sendFile(file: Path): Promise<void> {
-    return await this.app.static.serveFile(this, file);
+    return await this.app.static.serveFile(this as unknown as MojoContext, file);
   }
 
   /**

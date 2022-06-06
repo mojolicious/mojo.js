@@ -167,7 +167,7 @@ export class App {
    * Decorate context class with a method or getter/setter.
    */
   decorateContext(name: string, fn: Decoration): this {
-    const proto: MojoContext = Context.prototype;
+    const proto: MojoContext = Context.prototype as MojoContext;
     if (Object.getOwnPropertyDescriptor(proto, name) != null) {
       throw new Error(`The name "${name}" is already used in the prototype chain`);
     }

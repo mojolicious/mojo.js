@@ -10,6 +10,7 @@ import DOM from '@mojojs/dom';
  * Default helper plugin.
  */
 export default function defaultHelpersPlugin(app: MojoApp): void {
+  // The types for all helpers are in "types.ts"
   app.addHelper('exception', exception);
   app.addHelper('htmlException', htmlException);
   app.addHelper('htmlNotFound', htmlNotFound);
@@ -121,7 +122,7 @@ function linkTo(
   attrs: Record<string, string>,
   content: string | SafeString
 ): SafeString {
-  const href = ctx.urlFor(target);
+  const href = ctx.urlFor(target) ?? '';
   return ctx.tag('a', {href, ...attrs}, content);
 }
 
