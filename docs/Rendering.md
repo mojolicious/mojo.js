@@ -963,7 +963,8 @@ $ npm version major
 $ npm publish
 ```
 
-And if you're writing your plugin in TypeScript, make sure to use
+See [mojo-plugin-ejs](https://github.com/mojolicious/mojo-plugin-ejs) for a full example plugin you can fork. And if
+you're writing your plugin in TypeScript, make sure to use
 [declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html) to add your helpers to the
 `MojoContext` interface.
 
