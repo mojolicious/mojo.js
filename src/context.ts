@@ -13,7 +13,7 @@ import EventEmitter from 'events';
 import {Params} from './body/params.js';
 import {SafeString} from './util.js';
 
-type URLOptions = {query?: Record<string, string>};
+type URLOptions = {absolute?: boolean; query?: Record<string, string>};
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
@@ -235,7 +235,7 @@ class Context extends EventEmitter {
   async redirectTo(target: string, options: {status?: number; values?: Record<string, any>} = {}): Promise<void> {
     await this.res
       .status(options.status ?? 302)
-      .set('Location', this.urlFor(target, options.values) ?? '')
+      .set('Location', this.urlFor(target, options.values, {absolute: true}) ?? '')
       .send();
   }
 
@@ -338,7 +338,7 @@ class Context extends EventEmitter {
    */
   urlForFile(path: string): string {
     if (ABSOLUTE.test(path)) return path;
-    return this.req.baseURL + this.app.static.filePath(path);
+    return this.app.static.filePath(path);
   }
 
   /**
@@ -350,6 +350,7 @@ class Context extends EventEmitter {
 
   _urlForPath(path: string, isWebSocket: boolean, options: URLOptions): string {
     const query = options.query === undefined ? '' : '?' + new Params(options.query).toString();
+    if (options.absolute !== true && isWebSocket === false) return path + query;
     const url = this.req.baseURL + path + query;
     return isWebSocket ? url.replace(/^http/, 'ws') : url;
   }

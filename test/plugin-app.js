@@ -84,15 +84,15 @@ function tagHelperPluginResult(baseURL, publicPath) {
   const wsURL = baseURL.replace('http', 'ws');
   return `
 Route: tag_helpers
-Favicon: <link rel="icon" href="${baseURL}${publicPath}mojo/favicon.ico">
-Relative image1: <img src="${baseURL}${publicPath}foo/bar.png">
-Relative image2: <img src="${baseURL}${publicPath}foo/bar.png" alt="Bar">
-Relative script: <script src="${baseURL}${publicPath}foo/bar.js"></script>
-Relative style: <link rel="stylesheet" href="${baseURL}${publicPath}foo/bar.css">
+Favicon: <link rel="icon" href="/${publicPath}mojo/favicon.ico">
+Relative image1: <img src="/${publicPath}foo/bar.png">
+Relative image2: <img src="/${publicPath}foo/bar.png" alt="Bar">
+Relative script: <script src="/${publicPath}foo/bar.js"></script>
+Relative style: <link rel="stylesheet" href="/${publicPath}foo/bar.css">
 Absolute image: <img src="https://mojojs.org/public/foo/bar.png">
 Absolute script: <script src="https://mojojs.org/public/foo/bar.js"></script>
 Absolute style: <link rel="stylesheet" href="https://mojojs.org/public/foo/bar.css">
-Link1: <a href="${baseURL}getter/setter" class="foo">Getter &amp; Setter</a>
+Link1: <a href="/getter/setter" class="foo">Getter &amp; Setter</a>
 Link2: <a href="${wsURL}websocket/mixed">WebSocket link</a>
 Tag1: <div>Hello Mojo!</div>
 Tag2: <div class="test">Hello Mojo!</div>

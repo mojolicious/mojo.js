@@ -469,21 +469,17 @@ t.test('App', async t => {
 
   await t.test('urlFor', async () => {
     const baseURL = ua.server.urls[0];
-    (await ua.postOk('/url_for', {form: {target: '/foo'}})).statusIs(200).bodyIs(`${baseURL}foo`);
-    (await ua.postOk('/url_for', {form: {target: '/foo/bar.txt'}})).statusIs(200).bodyIs(`${baseURL}foo/bar.txt`);
-    (await ua.postOk('/url_for', {form: {target: 'current'}})).statusIs(200).bodyIs(`${baseURL}url_for`);
-    (await ua.postOk('/url_for', {form: {target: 'current', msg: 'test'}}))
-      .statusIs(200)
-      .bodyIs(`${baseURL}url_for/test`);
+    (await ua.postOk('/url_for', {form: {target: '/foo'}})).statusIs(200).bodyIs('/foo');
+    (await ua.postOk('/url_for', {form: {target: '/foo/bar.txt'}})).statusIs(200).bodyIs('/foo/bar.txt');
+    (await ua.postOk('/url_for', {form: {target: 'current'}})).statusIs(200).bodyIs('/url_for');
+    (await ua.postOk('/url_for', {form: {target: 'current', msg: 'test'}})).statusIs(200).bodyIs('/url_for/test');
     (await ua.postOk('/url_for', {form: {target: 'https://mojolicious.org'}}))
       .statusIs(200)
       .bodyIs('https://mojolicious.org');
     (await ua.postOk('/url_for', {form: {target: 'websocket_route'}}))
       .statusIs(200)
       .bodyIs(`${baseURL}websocket/route/works`.replace(/^http/, 'ws'));
-    (await ua.postOk('/url_for', {form: {target: 'exception', msg: 'test'}}))
-      .statusIs(200)
-      .bodyIs(`${baseURL}exception/test`);
+    (await ua.postOk('/url_for', {form: {target: 'exception', msg: 'test'}})).statusIs(200).bodyIs('/exception/test');
   });
 
   await t.test('redirectTo', async () => {
@@ -942,13 +938,14 @@ t.test('App', async t => {
     ctx.req.set('Host', 'example.com');
 
     t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
-    t.equal(ctx.urlFor('methods', {}, {query: {_method: 'PUT'}}), 'http://example.com/methods?_method=PUT');
-    t.equal(ctx.urlFor('/what/ever', {}, {query: {_method: 'PUT'}}), 'http://example.com/what/ever?_method=PUT');
-    t.equal(ctx.urlFor('methods', {}, {query: {b: 'B', a: 'A', c: 'C'}}), 'http://example.com/methods?b=B&a=A&c=C');
+    t.equal(ctx.urlFor('methods', {}, {query: {_method: 'PUT'}}), '/methods?_method=PUT');
     t.equal(
-      ctx.urlFor('exception', {msg: 'test'}, {query: {_method: 'QUERY'}}),
-      'http://example.com/exception/test?_method=QUERY'
+      ctx.urlFor('methods', {}, {absolute: true, query: {_method: 'PUT'}}),
+      'http://example.com/methods?_method=PUT'
     );
+    t.equal(ctx.urlFor('/what/ever', {}, {query: {_method: 'PUT'}}), '/what/ever?_method=PUT');
+    t.equal(ctx.urlFor('methods', {}, {query: {b: 'B', a: 'A', c: 'C'}}), '/methods?b=B&a=A&c=C');
+    t.equal(ctx.urlFor('exception', {msg: 'test'}, {query: {_method: 'QUERY'}}), '/exception/test?_method=QUERY');
 
     t.end();
   });
