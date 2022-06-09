@@ -17,7 +17,7 @@ import {Logger} from './logger.js';
 import {Mime} from './mime.js';
 import defaultConditionsPlugin from './plugins/default-conditions.js';
 import defaultHelpersPlugin from './plugins/default-helpers.js';
-import mtEnginePlugin from './plugins/mt-engine.js';
+import tmplEnginePlugin from './plugins/tmpl-engine.js';
 import {Renderer} from './renderer.js';
 import {Router} from './router.js';
 import {ServerRequest} from './server/request.js';
@@ -128,7 +128,7 @@ export class App {
 
     this.plugin(defaultHelpersPlugin);
     this.plugin(defaultConditionsPlugin);
-    this.plugin(mtEnginePlugin);
+    this.plugin(tmplEnginePlugin);
   }
 
   /**

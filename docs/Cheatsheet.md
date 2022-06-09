@@ -18,7 +18,7 @@ const foo = app.config.foo;
 
 // home: a `Path` object with the path of the application home directory
 const path = app.home.child('config.json').toString();
-const content = app.home.child('views', 'foo.html.mt').readFile('utf8');
+const content = app.home.child('views', 'foo.html.tmpl').readFile('utf8');
 
 // models: plain object, use it to store arbitray models
 app.models.frameworks = [{name: 'Catalyst'}, {name: 'Mojolicious'}, {name: 'mojo.js'}];
@@ -98,7 +98,7 @@ await ctx.render({yaml: {hello: 'world'}});
 // Create a response by rendering the view "views/foo/bar.*.*"
 await ctx.render({view: 'foo/bar'});
 
-// Create a response by rendering an inline view (mt by default)
+// Create a response by rendering an inline view (tmpl by default)
 await ctx.render({inline: 'Hello <%= name %>'}, {name: 'Mojo'});
 
 // Render something, but return it as a string

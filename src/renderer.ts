@@ -31,9 +31,9 @@ export class Renderer {
   autoCompress = true;
   /**
    * The default template engine to use for rendering in cases where auto-detection doesn't work, like for inline
-   * templates, defaults to `mt`.
+   * templates, defaults to `tmpl`.
    */
-  defaultEngine = 'mt';
+  defaultEngine = 'tmpl';
   /**
    * The default format to render if format is not set, defaults to `html`. Note that changing the default away from
    * `html` is not recommended, as it has the potential to break, for example, plugins with bundled templates.

@@ -139,24 +139,24 @@ Full mojo.js applications on the other hand follow the MVC pattern more closely 
 files to maximize maintainability:
 
 ```
-myapp                          // Application directory (created manually)
-|-- config.yml                 // Configuration file
-|-- index.js                   // Application script
+myapp                            // Application directory (created manually)
+|-- config.yml                   // Configuration file
+|-- index.js                     // Application script
 |-- node_modules
 |   `-- *lots of node files*
-|-- package.json               // Node package information and settings
-|-- test                       // Test directory
-|   `-- example.js             // Random test
-|-- controllers                // Controller directory
-|   `-- example.js             // Controller class
-|-- models                     // Model directory
-|-- public                     // Static file directory (served automatically)
-|   `-- index.html             // Static HTML file
-`-- views                      // Views directory
-    |-- example                // View directory for "Example" controller
-    |    `-- welcome.html.mt   // Template for "welcome" action
-    `-- layouts                // View directory for layout templates
-        `-- default.html.mt    // Layout template
+|-- package.json                 // Node package information and settings
+|-- test                         // Test directory
+|   `-- example.js               // Random test
+|-- controllers                  // Controller directory
+|   `-- example.js               // Controller class
+|-- models                       // Model directory
+|-- public                       // Static file directory (served automatically)
+|   `-- index.html               // Static HTML file
+`-- views                        // Views directory
+    |-- example                  // View directory for "Example" controller
+    |    `-- welcome.html.tmpl   // Template for "welcome" action
+    `-- layouts                  // View directory for layout templates
+        `-- default.html.tmpl    // Layout template
 ```
 
 Both application skeletons can be automatically generated with the commands `npx mojo create-lite-app` and
@@ -547,9 +547,9 @@ separate files in the `views` directory.
 
 ```
 $ mkdir -p views/layouts
-$ touch views/layouts/default.html.mt
-$ touch views/index.html.mt
-$ touch views/protected.html.mt
+$ touch views/layouts/default.html.tmpl
+$ touch views/index.html.tmpl
+$ touch views/protected.html.tmpl
 ```
 
 Just move the content of the `indexTemplate`, `protectedTemplate` and `defaultLayout` constants into those template
@@ -619,9 +619,9 @@ myapp
 |   `-- login.js
 `-- views
     |-- layouts
-    |   `-- default.html.mt
-    |-- index.html.mt
-    `-- protected.html.mt
+    |   `-- default.html.tmpl
+    |-- index.html.tmpl
+    `-- protected.html.tmpl
 ```
 
 The tests will work again now.
@@ -707,8 +707,8 @@ Templates are our views, and usually bound to controllers, so they need to be mo
 
 ```
 $ mkdir views/login
-$ mv views/index.html.mt views/login/index.html.mt
-$ mv views/protected.html.mt views/login/protected.html.mt
+$ mv views/index.html.tmpl views/login/index.html.tmpl
+$ mv views/protected.html.tmpl views/login/protected.html.tmpl
 ```
 
 Now the tests will work again and our final directory structure should be looking like this.
@@ -724,10 +724,10 @@ myapp
 |   `-- login.js
 `-- views
     |-- layouts
-    |   `-- default.html.mt
+    |   `-- default.html.tmpl
     `-- login
-        |-- index.html.mt
-        `-- protected.html.mt
+        |-- index.html.tmpl
+        `-- protected.html.tmpl
 ```
 
 Test-driven development takes a little getting used to, but can be a very powerful tool.

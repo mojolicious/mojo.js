@@ -304,12 +304,12 @@ t.test('Command app', async t => {
     t.match(output2.toString(), /\[write\].+controllers.+example\.js/);
     t.same(await dir.child('controllers', 'example.js').exists(), true);
     t.match(await dir.child('controllers', 'example.js').readFile('utf8'), /export default class Controller/);
-    t.match(output2.toString(), /\[write\].+default\.html\.mt/);
-    t.same(await dir.child('views', 'layouts', 'default.html.mt').exists(), true);
-    t.match(await dir.child('views', 'layouts', 'default.html.mt').readFile('utf8'), /Welcome/);
-    t.match(output2.toString(), /\[write\].+welcome\.html\.mt/);
-    t.same(await dir.child('views', 'example', 'welcome.html.mt').exists(), true);
-    t.match(await dir.child('views', 'example', 'welcome.html.mt').readFile('utf8'), /This page/);
+    t.match(output2.toString(), /\[write\].+default\.html\.tmpl/);
+    t.same(await dir.child('views', 'layouts', 'default.html.tmpl').exists(), true);
+    t.match(await dir.child('views', 'layouts', 'default.html.tmpl').readFile('utf8'), /Welcome/);
+    t.match(output2.toString(), /\[write\].+welcome\.html\.tmpl/);
+    t.same(await dir.child('views', 'example', 'welcome.html.tmpl').exists(), true);
+    t.match(await dir.child('views', 'example', 'welcome.html.tmpl').readFile('utf8'), /This page/);
     t.match(output2.toString(), /\[write\].+test.+example\.js/);
     t.same(await dir.child('test', 'example.js').exists(), true);
     t.match(await dir.child('test', 'example.js').readFile('utf8'), /getOk/);
@@ -323,8 +323,8 @@ t.test('Command app', async t => {
     t.match(output3.toString(), /\[exists\].+config\.yml/);
     t.match(output3.toString(), /\[exists\].+index\.js/);
     t.match(output3.toString(), /\[exists\].+controllers.+example\.js/);
-    t.match(output3.toString(), /\[exists\].+default\.html\.mt/);
-    t.match(output3.toString(), /\[exists\].+welcome\.html\.mt/);
+    t.match(output3.toString(), /\[exists\].+default\.html\.tmpl/);
+    t.match(output3.toString(), /\[exists\].+welcome\.html\.tmpl/);
     t.match(output3.toString(), /\[exists\].+test.+example\.js/);
 
     const dir2 = dir.child('test-app');

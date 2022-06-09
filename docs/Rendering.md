@@ -19,11 +19,11 @@ encoding modules.
 
 Views can be automatically detected if enough information is provided by the developer or routes. View names are
 expected to follow the `view.format.engine` scheme, with `view` defaulting to `controller/action` or the route name,
-`format` defaulting to `html` and `engine` to `mt`.
+`format` defaulting to `html` and `engine` to `tmpl`.
 
 ```
-{controller: 'users', action: 'list'} -> 'users/list.html.mt'
-{view: 'foo', format: 'txt'}          -> 'foo.txt.mt'
+{controller: 'users', action: 'list'} -> 'users/list.html.tmpl'
+{view: 'foo', format: 'txt'}          -> 'foo.txt.tmpl'
 {view: 'foo', engine => 'haml'}       -> 'foo.html.haml'
 ```
 
@@ -148,8 +148,8 @@ await ctx.render({view: 'foo/bar/baz'});
 Choosing a specific `format` and `handler` is just as easy.
 
 ```js
-// views/foo/bar/baz.txt.mt
-await ctx.render({view: 'foo/bar/baz', format: 'txt', handler: 'mt'});
+// views/foo/bar/baz.txt.tmpl
+await ctx.render({view: 'foo/bar/baz', format: 'txt', handler: 'tmpl'});
 ```
 
 If you're not sure in advance if a template actually exists, you can also use `maybe` render option to try multiple
@@ -176,8 +176,8 @@ To make your application look great on many different devices you can also use t
 between different variants of your templates.
 
 ```js
-// views/foo/bar/baz.html+phone.mt
-// views/foo/bar/baz.html.mt
+// views/foo/bar/baz.html+phone.tmpl
+// views/foo/bar/baz.html.tmpl
 await ctx.render({view: 'foo/bar/baz', variant: 'phone'});
 ```
 
@@ -186,7 +186,7 @@ back to the generic one otherwise.
 
 ### Rendering Inline Templates
 
-Some engines such as `mt` allow templates to be passed inline.
+Some engines such as `tmpl` allow templates to be passed inline.
 
 ```js
 await ctx.render({inline: 'The result is <%= 1 + 1 %>.'});
@@ -548,7 +548,7 @@ related to your application in production. The renderer will always try to find 
 `not_found.${mode}.${format}.*` before falling back to the built-in default templates.
 
 ```
-%# views/exception.production.html.mt
+%# views/exception.production.html.tmpl
 <!DOCTYPE html>
 <html>
   <head><title>Server error</title></head>
@@ -563,8 +563,8 @@ related to your application in production. The renderer will always try to find 
 
 ### Layouts
 
-Most of the time when using `mt` templates you will want to wrap your generated content in an HTML skeleton, thanks to
-layouts that's absolutely trivial.
+Most of the time when using `tmpl` templates you will want to wrap your generated content in an HTML skeleton, thanks
+to layouts that's absolutely trivial.
 
 ```js
 import mojo from '@mojojs/core';
@@ -578,12 +578,12 @@ app.get('/', async ctx => {
 app.start();
 ```
 ```
-%# views/foo/bar.html.mt
+%# views/foo/bar.html.tmpl
 % view.layout = 'mylayout';
 Hello World!
 ```
 ```
-%# views/layouts/mylayout.html.mt
+%# views/layouts/mylayout.html.tmpl
 <!DOCTYPE html>
 <html>
   <head><title>MyApp</title></head>
@@ -617,7 +617,7 @@ app.get('/', async ctx => {
 app.start();
 ```
 ```
-%# views/foo/bar.html.mt
+%# views/foo/bar.html.tmpl
 <!DOCTYPE html>
 <html>
   %= ctx.include({view: '_header'}, {title: 'Howdy'})
@@ -625,7 +625,7 @@ app.start();
 </html>
 ```
 ```
-%# views/_header.html.mt
+%# views/_header.html.tmpl
 <head><title><%= title %></title></head>
 ```
 
@@ -633,8 +633,8 @@ You can name partial views however you like, but a leading underscore is a commo
 
 ### Reusable Template Blocks
 
-It's never fun to repeat yourself, that's why you can create reusable template blocks in `mt` that work very similar to
-normal `async` JavaScript functions, with the `<{blockName}>` and `<{/blockName}>` tags.
+It's never fun to repeat yourself, that's why you can create reusable template blocks in `tmpl` that work very similar
+to normal `async` JavaScript functions, with the `<{blockName}>` and `<{/blockName}>` tags.
 
 ```js
 import mojo from '@mojojs/core';
@@ -648,7 +648,7 @@ app.get('/', async ctx => {
 app.start();
 ```
 ```
-%# views/welcome.html.mt
+%# views/welcome.html.tmpl
 <{helloBlock(name)}>
   Hello <%= name %>.
 <{/helloBlock}>
@@ -697,7 +697,7 @@ app.get('/', async ctx => {
 app.start();
 ```
 ```
-%# views/index.html.mt
+%# views/index.html.tmpl
 % ctx.debug('Hello from a template!');
 ```
 
@@ -722,7 +722,7 @@ app.get('/', async ctx => {
 app.start();
 ```
 ```
-%# views/index.html.mt
+%# views/index.html.tmpl
 <{someBlock}>
   Some text.
   %= 1 + 1
@@ -774,7 +774,7 @@ app.get('/', async ctx => ctx.render({view: 'foo', layout: 'mylayout'}));
 app.start();
 ```
 ```
-%# views/foo.html.mt
+%# views/foo.html.tmpl
 <{typeBlock}>
   <meta http-equiv="Content-Type" content="text/html">
 <{/typeBlock}>
@@ -786,7 +786,7 @@ app.start();
 % ctx.contentFor('header', await pragmaBlock());
 ```
 ```
-%# views/layouts/mylayout.html.mt
+%# views/layouts/mylayout.html.tmpl
 <!DOCTYPE html>
 <html>
   <head><%= ctx.content.header %></head>
@@ -819,7 +819,7 @@ app.put('/nothing', async ctx => {
 app.start();
 ```
 ```
-%# views/form.html.mt
+%# views/form.html.tmpl
 <!DOCTYPE html>
 <html>
   <body>
@@ -1015,9 +1015,9 @@ World!
 ### Adding Your Favorite Template System
 
 Maybe you would prefer a different template system than
-[@mojojs/template](https://www.npmjs.com/package/@mojojs/template), which is included with mojo.js under the name `mt`,
-and there is not already a plugin on npm for your favorite one. All you have to do, is to add a new handler with
-`renderer.addHandler()` from your own plugin.
+[@mojojs/template](https://www.npmjs.com/package/@mojojs/template), which is included with mojo.js under the name
+`tmpl`, and there is not already a plugin on npm for your favorite one. All you have to do, is to add a new handler
+with `renderer.addHandler()` from your own plugin.
 
 ```js
 // my-engine.js

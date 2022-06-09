@@ -22,9 +22,9 @@ reflected as separate directories and files for different concerns.
    |   `-- app.css
    |-- views
    |   |--layouts
-   |   |  `-- default.html.mt
+   |   |  `-- default.html.tmpl
    |   `-- posts
-   |       `-- list.html.mt
+   |       `-- list.html.tmpl
    |-- config.json
    `-- index.js
 ```
@@ -724,11 +724,11 @@ The renderer will seach for views in the `views` directory of your application i
 $ mkdir -p views/layouts
 ```
 ```
-<%# views/hello.html.mt %>
+<%# views/hello.html.tmpl %>
 Hello <%= name %>!
 ```
 ```
-<%# views/layouts/default.html.mt %>
+<%# views/layouts/default.html.tmpl %>
 <!DOCTYPE html>
 <html>
   <head>
@@ -738,7 +738,7 @@ Hello <%= name %>!
 </html>
 ```
 
-All views are expected to be in the format `name.format.engine`, such as `list.html.mt`. The `format` and `engine`
+All views are expected to be in the format `name.format.engine`, such as `list.html.tmpl`. The `format` and `engine`
 values are used to select the correct MIME type and template engine.
 
 ```js
@@ -746,7 +746,7 @@ import mojo from '@mojojs/core';
 
 const app = mojo();
 
-// Render a view "views/hello.html.mt" with layout "views/layouts/default.html.mt"
+// Render a view "views/hello.html.tmpl" with layout "views/layouts/default.html.tmpl"
 app.get('/', async ctx => {
   await ctx.render({view: 'hello', layout: 'default'}, {title: 'Hello', name: 'Isabell'});
 });

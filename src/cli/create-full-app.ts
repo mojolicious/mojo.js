@@ -18,9 +18,9 @@ export default async function genLiteAppCommand(app: App, args: string[]): Promi
   await util.cliCreateDir('models');
 
   await util.cliCreateDir('views/layouts');
-  await util.cliCreateFile('views/layouts/default.html.mt', mtLayout);
+  await util.cliCreateFile('views/layouts/default.html.tmpl', tmplLayout);
   await util.cliCreateDir('views/example');
-  await util.cliCreateFile('views/example/welcome.html.mt', mtView);
+  await util.cliCreateFile('views/example/welcome.html.tmpl', tmplView);
 
   await util.cliCreateDir('public');
   await util.cliCreateFile('public/index.html', staticFile);
@@ -59,7 +59,7 @@ app.start();
 `;
 
 const jsController = `export default class Controller {
-  // Render template "example/welcome.html.mt" with message
+  // Render template "example/welcome.html.tmpl" with message
   async welcome (ctx) {
     ctx.stash.msg = 'Welcome to the mojo.js real-time web framework!';
     await ctx.render();
@@ -67,7 +67,7 @@ const jsController = `export default class Controller {
 }
 `;
 
-const mtLayout = `<!DOCTYPE html>
+const tmplLayout = `<!DOCTYPE html>
 <html>
   <head>
     %%= ctx.mojoFaviconTag()
@@ -77,11 +77,11 @@ const mtLayout = `<!DOCTYPE html>
 </html>
 `;
 
-const mtView = `%% view.layout = 'default';
+const tmplView = `%% view.layout = 'default';
 <h2><%%= msg %></h2>
 <p>
-  This page was generated from the template "views/example/welcome.html.mt" and the layout
-  "views/layouts/default.html.mt", <a href="<%%= ctx.urlFor() %>">click here</a> to reload the page or
+  This page was generated from the template "views/example/welcome.html.tmpl" and the layout
+  "views/layouts/default.html.tmpl", <a href="<%%= ctx.urlFor() %>">click here</a> to reload the page or
   <a href="<%%= ctx.urlFor('/public/index.html') %>">here</a> to move forward to a static page.
 </p>
 `;

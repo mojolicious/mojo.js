@@ -8,11 +8,11 @@ import Template from '@mojojs/template';
 /**
  * `@mojojs/template` engine plugin.
  */
-export default function mtEnginePlugin(app: App): void {
-  app.renderer.addEngine('mt', new MTEngine());
+export default function tmplEnginePlugin(app: App): void {
+  app.renderer.addEngine('tmpl', new TmplEngine());
 }
 
-class MTEngine {
+class TmplEngine {
   cache: Cache<(data?: Record<string, any>) => Promise<string>> = new Cache();
 
   async render(ctx: MojoContext, options: RenderOptions): Promise<Buffer> {
@@ -30,7 +30,7 @@ class MTEngine {
       template = this.cache.get(options.viewPath);
 
       if (template === undefined) {
-        if (options.viewPath === undefined) throw new Error('viewPath is not defined for mtEngine');
+        if (options.viewPath === undefined) throw new Error('viewPath is not defined for tmplEngine');
         const source = await new Path(options.viewPath).readFile('utf8');
         template = new Template(source.toString(), {name: options.viewPath}).compile();
         this.cache.set(options.viewPath, template);
