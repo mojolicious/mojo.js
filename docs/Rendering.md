@@ -145,7 +145,7 @@ template.
 await ctx.render({view: 'foo/bar/baz'});
 ```
 
-Choosing a specific `format` and `handler` is just as easy.
+Choosing a specific `format` and `engine` is just as easy.
 
 ```js
 // views/foo/bar/baz.txt.tmpl
@@ -1016,8 +1016,8 @@ World!
 
 Maybe you would prefer a different template system than
 [@mojojs/template](https://www.npmjs.com/package/@mojojs/template), which is included with mojo.js under the name
-`tmpl`, and there is not already a plugin on npm for your favorite one. All you have to do, is to add a new handler
-with `renderer.addHandler()` from your own plugin.
+`tmpl`, and there is not already a plugin on npm for your favorite one. All you have to do, is to add a new template
+engine with `renderer.addEngine()` from your own plugin.
 
 ```js
 // my-engine.js
