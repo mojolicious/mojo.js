@@ -149,7 +149,7 @@ Choosing a specific `format` and `handler` is just as easy.
 
 ```js
 // views/foo/bar/baz.txt.tmpl
-await ctx.render({view: 'foo/bar/baz', format: 'txt', handler: 'tmpl'});
+await ctx.render({view: 'foo/bar/baz', format: 'txt', engine: 'tmpl'});
 ```
 
 If you're not sure in advance if a template actually exists, you can also use `maybe` render option to try multiple
