@@ -1,3 +1,4 @@
+
 # Rendering
 
 This document explains content generation with the [mojo.js](https://mojojs.org) renderer.

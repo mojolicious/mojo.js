@@ -1,3 +1,4 @@
+
 # Cookbook
 
 This document contains many fun recipes for cooking with[mojo.js](https://mojojs.org).

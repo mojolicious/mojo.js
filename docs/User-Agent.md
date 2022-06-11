@@ -1,5 +1,5 @@
 
-# The mojo.js HTTP and WebSocket User-Agent
+# User-Agent
 
 The [mojo.js](https://mojojs.org) toolkit contains a full featured HTTP and WebSocket user agent. And while its primary
 purpose is integration testing of web applications, it can also be used for many other things.

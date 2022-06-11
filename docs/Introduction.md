@@ -1,5 +1,5 @@
 
-# Introduction to mojo.js
+# Introduction
 
 A quick example-driven introduction to the wonders of [mojo.js](https://mojojs.org).
 
