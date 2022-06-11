@@ -1,5 +1,5 @@
 
-# Welcome to the mojo.js Documentation
+# mojo.js Documentation
 
 Some parts of the documentation only use simplified single file web applications for examples, but that's merely a
 convenience for the reader. Almost all features are exactly the same for full well-structured mojo.js applications.
