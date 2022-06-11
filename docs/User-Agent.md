@@ -15,7 +15,7 @@ const content = await res.text();
 The API is heavily inspired by the [Fetch Standard](https://fetch.spec.whatwg.org) and should feel familar if you've
 used `fetch` before.
 
-## User-Agent Options
+### User-Agent Options
 
 The user agent can be initialized with a few options, but none of them are required.
 
@@ -33,7 +33,7 @@ const ua = new UserAgent({
 });
 ```
 
-## Request Config
+### Request Config
 
 Every request is represented by a config object that contains various properties to describe every part of the HTTP
 request.
@@ -89,7 +89,7 @@ The `request` method returns a `Promise` that resolves with a response object, r
 status line and headers have been received. But before any data from the response body has been read, which can be
 handled in a separate step later on.
 
-## Request Shortcuts
+### Request Shortcuts
 
 Since every request includes at least `method` and `url` values, there are HTTP method specific shortcuts you can use
 instead of `request`.
@@ -110,7 +110,7 @@ All remaining config values can be passed with a second argument to any one of t
 const res = await ua.post('/search', {form: {q: 'mojo'}});
 ```
 
-## Response Headers
+### Response Headers
 
 Status line information and response headers are available right away with the response object.
 
@@ -138,7 +138,7 @@ const isServerError = res.isServerError;
 const isError = res.isError;
 ```
 
-## Response Body
+### Response Body
 
 The reponse body can be received in various formats. Most of them will result once again in a new `Promise`, resolving
 to different results however.
@@ -177,7 +177,7 @@ const buffer = Buffer.concat(parts);
 For HTML and XML parsing [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom) will be used. Making it very easy to
 extract information from documents with just a CSS selector and almost no code at all.
 
-## Cookies
+### Cookies
 
 By default a [tough-cookie](https://www.npmjs.com/package/tough-cookie) based cookie jar will be used for state keeping,
 and you can reconfigure it however you like.
@@ -192,7 +192,7 @@ Of course you can also just disable cookies completely.
 const ua = new UserAgent({cookieJar: null});
 ```
 
-## WebSockets
+### WebSockets
 
 For WebSocket handshakes there are also quite a few options available.
 
@@ -247,7 +247,7 @@ ws.on('ping', data => {
 Cookies from the cookie jar will of course also be available for the handshake, so you can rely on them for things like
 authentication.
 
-## Testing
+### Testing
 
 For web application testing there is also a more specialised subclass available that adds various test methods using
 [assert](https://nodejs.org/api/assert.html) to integrate seamlessly into most testing frameworks.
@@ -358,7 +358,7 @@ await ua.closedOk(4000);
 And while the test user agent is very efficient for testing backend services, for frontend testing we recommend
 combining it with [playwright](https://www.npmjs.com/package/playwright).
 
-## Introspection
+### Introspection
 
 You can set the `MOJO_CLIENT_DEBUG` environment variable to get some advanced diagnostics information printed to
 `STDERR`.

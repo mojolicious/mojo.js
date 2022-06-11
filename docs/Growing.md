@@ -211,7 +211,7 @@ $ npm install nodemon
 $ npx nodemon myapp.js server
 ```
 
-## A Bird's-Eye View
+### A Bird's-Eye View
 
 It all starts with an HTTP request like this, sent by your browser.
 
@@ -244,7 +244,7 @@ Keep-Alive: timeout=5
 Hello World!
 ```
 
-## Model
+### Model
 
 In mojo.js we consider web applications simple frontends for existing business logic. That means mojo.js is by design
 entirely _model_ layer agnostic, and you just use whatever JavaScript modules you like most.
@@ -304,7 +304,7 @@ app.start();
 The method `params` is used to access both query parameters and `POST` parameters. It returns a `Promise` that resolves
 with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) object.
 
-## Testing
+### Testing
 
 In mojo.js we take testing very seriously and try to make it a pleasant experience.
 
@@ -377,7 +377,7 @@ Connection: close
 Welcome sebastian.
 ```
 
-# State Keeping
+### State Keeping
 
 Sessions in mojo.js pretty much just work out-of-the-box once you await the `session` method, there is no setup
 required, but we suggest setting a more secure passphrase with `app.secrets`
@@ -422,7 +422,7 @@ await ctx.redirectTo('goodbye');
 Just remember that all session data gets serialized to JSON and stored in encrypted cookies, which usually have a `4096`
 byte (4KiB) limit, depending on browser.
 
-## Final Prototype
+### Final Prototype
 
 A final `myapp.js` prototype passing all of the tests above could look like this.
 
@@ -540,7 +540,7 @@ great detail.
 Due to the flexibility of mojo.js, there are many variations of the actual growing process, but this should give you a
 good overview of the possibilities.
 
-## Moving Templates
+### Moving Templates
 
 While inline templates are great for prototyping, later on it is much easier to manage a growing number of templates as
 separate files in the `views` directory.
@@ -560,7 +560,7 @@ files. Instead of selecting a layout in the `ctx.render` call, from now on we wi
 ...rest of the template...
 ```
 
-## Simplified Application
+### Simplified Application
 
 Next we need to update all `ctx.render` calls and remove the inline templates from our application.
 
@@ -626,7 +626,7 @@ myapp
 
 The tests will work again now.
 
-## Controller Class
+### Controller Class
 
 Hybrid routes with separate template files are a nice intermediate step, but to maximize maintainability it makes sense
 to split our action code from its routing information.
@@ -701,7 +701,7 @@ app.start();
 
 The router allows many different route variations, the [Routing](Routing.md) guide explains them all in great detail.
 
-## Templates
+### Templates
 
 Templates are our views, and usually bound to controllers, so they need to be moved into the appropriate directories.
 
