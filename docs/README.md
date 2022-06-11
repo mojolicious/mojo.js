@@ -1,13 +1,5 @@
-<p align="center">
-  <a href="https://mojojs.org">
-    <picture>
-      <source srcset="https://github.com/mojolicious/mojo.js/blob/main/docs/images/logo-dark.png?raw=true" media="(prefers-color-scheme: dark)">
-      <img src="https://github.com/mojolicious/mojo.js/blob/main/docs/images/logo.png?raw=true" style="margin: 0 auto;">
-    </picture>
-  </a>
-</p>
 
-# The mojo.js Documentation
+# Welcome to the mojo.js Documentation
 
 Some parts of the documentation only use simplified single file web applications for examples, but that's merely a
 convenience for the reader. Almost all features are exactly the same for full well-structured mojo.js applications.
