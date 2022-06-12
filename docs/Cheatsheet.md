@@ -1,9 +1,11 @@
 
 # Cheatsheet
 
-A quick overview of the most important [mojo.js](https://mojojs.org) objects.
+A quick overview of the most important [mojo.js](https://mojojs.org) classes and helpers.
 
-## App
+## Classes
+
+### App
 
 The mojo.js application object, usually called `app`.
 
@@ -250,6 +252,175 @@ await ctx.res.status(200).type('text/plain').length(12).send('Hello World!');
 // Send response without a body
 await ctx.res.status(204).send();
 ```
+
+## Helpers
+
+These generic helpers are currently available by default:
+
+### `currentRoute`
+
+```js
+const name = ctx.currentRoute();
+```
+
+Get the current route name.
+
+### `inspect`
+
+```js
+const serialized = ctx.inpsect({hello: 'world'});
+```
+
+Serialize data structure for debugging.
+
+## Exception Helpers
+
+These exception helpers are currently available by default:
+
+### `exception`
+
+```js
+await ctx.exception(new Error('Something went wrong!'));
+```
+
+Render an exception response in the appropriate format by delegating to more specific exception helpers for HTTP and
+WebSockets.
+
+### `htmlException`
+
+```js
+await ctx.htmlException(new Error('Something went wrong!'));
+```
+
+Render an HTML response and set the response status to `500`.
+
+### `htmlNotFound`
+
+```js
+await ctx.htmlNotFound();
+```
+
+Render an HTML response and set the response status to `404`.
+
+### `httpException`
+
+```js
+await ctx.httpException(new Error('Something went wrong!'));
+```
+
+Log the exception and render an HTTP exception response in the appropriate format and set the response status to `500`
+by delegating to more specific exception helpers for HTML, JSON and plain text rendering.
+
+### `jsonException`
+
+```js
+await ctx.jsonException(new Error('Something went wrong!'));
+```
+
+Render a JSON response and set the response status to `500`.
+
+### `jsonNotFound`
+
+```js
+await ctx.jsonNotFound();
+```
+
+Render a JSON response and set the response status to `404`.
+
+### `notFound`
+
+```js
+await ctx.notFound();
+```
+
+Render a not found response in the appropriate format by delegating to more specific exception helpers for HTTP and
+WebSockets.
+
+### `txtException`
+
+```js
+await ctx.txtException(new Error('Something went wrong!'));
+```
+
+Render a plain text response and set the response status to `500`.
+
+### `txtNotFound`
+
+```js
+await ctx.txtNotFound();
+```
+
+Render a plain text response and set the response status to `404`.
+
+### `websocketException`
+
+```js
+await ctx.websocketException(new Error('Something went wrong!'));
+```
+
+Log the exception and close the WebSocket connection with an `1011` error code.
+
+## View Helpers
+
+These view helpers are currently available by default:
+
+### `imageTag`
+
+```
+%= ctx.imageTag('/myapp/logo.png')
+```
+
+Generate `<img>` tag for image file.
+
+### `include`
+
+```
+%= await ctx.include('_navbar')
+```
+
+Include a partial template.
+
+### `linkTo`
+
+```
+%= ctx.linkTo('some_route', {class: 'foo'}, 'Link to some route');
+```
+
+Generate portable `a` tag with `ctx.urlFor`.
+
+### `mojoFaviconTag`
+
+```
+%= ctx.mojoFaviconTag()
+```
+
+Generate `<link>` tag for the default mojo.js favicon.
+
+### `scriptTag`
+
+```
+%= ctx.scriptTag('/bootstrap/bootstrap.bundle.min.js')
+```
+
+Generate `<script>` tag for JavaScript file.
+
+### `styleTag`
+
+```
+%= ctx.styleTag('/bootstrap/bootstrap.min.css')
+```
+
+Generate `<link>` tag for CSS file.
+
+### `tag`
+
+```
+%= tag 'div'
+%= tag 'div', {class: 'wrapper'}
+%= tag 'div', {class: 'wrapper'}, 'Hello World!'
+```
+
+Generate HTML tag.
 
 ## Support
 
