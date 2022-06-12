@@ -1,4 +1,4 @@
-import * as util from '../lib/util.js';
+import {util} from '../lib/core.js';
 import Path from '@mojojs/path';
 import t from 'tap';
 

@@ -253,7 +253,9 @@ For web application testing there is also a more specialised subclass available 
 [assert](https://nodejs.org/api/assert.html) to integrate seamlessly into most testing frameworks.
 
 ```js
-const ua = TestUserAgent({baseURL: 'https://mojolicious.org'});
+import {TestUserAgent} from '@mojojs/core';
+
+const ua = new TestUserAgent({baseURL: 'https://mojolicious.org'});
 (await ua.getOk('/')).statusIs(200).headerLike('Content-Type', /html/).bodyLike(/Mojolicious/);
 ```
 

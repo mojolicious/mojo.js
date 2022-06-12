@@ -1,6 +1,5 @@
 import {Stream} from 'stream';
-import {CGI} from '../lib/cgi.js';
-import mojo from '../lib/core.js';
+import mojo, {CGI} from '../lib/core.js';
 import {captureOutput} from '../lib/util.js';
 import * as util from '../lib/util.js';
 import t from 'tap';
