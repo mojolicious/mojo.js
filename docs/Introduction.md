@@ -724,11 +724,11 @@ The renderer will seach for views in the `views` directory of your application i
 $ mkdir -p views/layouts
 ```
 ```
-<%# views/hello.html.tmpl %>
+%# views/hello.html.tmpl
 Hello <%= name %>!
 ```
 ```
-<%# views/layouts/default.html.tmpl %>
+%# views/layouts/default.html.tmpl
 <!DOCTYPE html>
 <html>
   <head>
