@@ -21,7 +21,7 @@ convenience for the reader. Almost all features are exactly the same for full we
 * Variable names
 
   For brevity and clarity, example variables will reflect the type of data the API uses. For instance, `ctx` to denote
-  a [Context](Cheatsheet.md#Context) object, and `app` to denote the [App](Cheatsheet.md#App) object.
+  a [Context](Cheatsheet.md#context) object, and `app` to denote the [App](Cheatsheet.md#app) object.
 
 ### Tutorial
 

@@ -255,7 +255,7 @@ await ctx.res.status(204).send();
 
 ## Helpers
 
-These generic helpers are currently available by default:
+These generic utility helpers are currently available by default:
 
 #### currentRoute
 
@@ -275,7 +275,7 @@ Serialize data structure for debugging.
 
 ## Exception Helpers
 
-These exception helpers are currently available by default:
+These exception helpers are currently available by default, they can be overloaded to change framework behavior:
 
 #### exception
 

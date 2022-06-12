@@ -301,7 +301,7 @@ const ctx = app.newMockContext();
 const serialized = ctx.inspect([1, 2, 3]);
 ```
 
-See the [Cheatsheet](Cheatsheet.md#Helpers) for a full list of helpers that are currently available by default.
+See the [Cheatsheet](Cheatsheet.md#helpers) for a full list of helpers that are currently available by default.
 
 ### Content Negotiation
 
@@ -401,6 +401,29 @@ related to your application in production. The renderer will always try to find 
   </body>
 </html>
 ```
+
+The default exception format is `html`, but that can be changed at application and context level. By default there are
+handlers for `html`, `txt` and `json` available.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo({exceptionFormat: 'json'});
+
+app.get('/json', ctx => {
+  throw new Error('Just a test');
+});
+
+app.get('/txt', ctx => {
+  ctx.exceptionFormat = 'txt';
+  throw new Error('Just a test');
+});
+
+app.start();
+```
+
+There are also various [exception helpers](Cheatsheet.md#exception-helpers) for you to overload to change the default
+behavior.
 
 ### Layouts
 
