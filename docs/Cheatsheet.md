@@ -188,17 +188,17 @@ const buffer = await ctx.req.buffer();
 const params = await ctx.req.form();
 const foo = params.get('foo');
 
-// Retrieve request body as a JSON data structure
+// Retrieve request body as parsed JSON
 const data = await ctx.req.json();
 
-// Retrieve request body as a YAML data structure
+// Retrieve request body as parsed YAML
 const data = await ctx.req.yaml();
 
-// Retrieve request body as an XML `DOM` object
+// Retrieve request body as parsed XML via `@mojojs/dom`
 const dom = await ctx.req.xml();
 const title = dom.at('foo > title').text();
 
-// Retrieve request body as an HTML `DOM` object
+// Retrieve request body as parsed HTML via `@mojojs/dom`
 const dom = await ctx.req.html();
 const title = dom.at('head > title').text();
 
