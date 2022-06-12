@@ -55,7 +55,7 @@ const defaultLayout = \`
 <!DOCTYPE html>
 <html>
   <head>
-    <%%= ctx.mojoFaviconTag() %>
+    <%%= ctx.faviconTag() %>
     <title><%%= title %></title>
   </head>
   <body><%%= ctx.content.main %></body>

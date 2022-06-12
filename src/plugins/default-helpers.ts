@@ -26,9 +26,9 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 
   app.addHelper('include', include);
 
+  app.addHelper('faviconTag', faviconTag);
   app.addHelper('imageTag', imageTag);
   app.addHelper('linkTo', linkTo);
-  app.addHelper('mojoFaviconTag', mojoFaviconTag);
   app.addHelper('scriptTag', scriptTag);
   app.addHelper('styleTag', styleTag);
   app.addHelper('tag', tag);
@@ -47,6 +47,10 @@ function currentRoute(ctx: MojoContext): string | null {
 async function exception(ctx: MojoContext, error: Error): Promise<boolean> {
   if (ctx.isWebSocket) return ctx.websocketException(error);
   return ctx.httpException(error);
+}
+
+function faviconTag(ctx: MojoContext, file?: string): SafeString {
+  return ctx.tag('link', {rel: 'icon', href: ctx.urlForFile(file ?? '/mojo/favicon.ico')});
 }
 
 async function htmlException(ctx: MojoContext, error: Error): Promise<boolean> {
@@ -124,10 +128,6 @@ function linkTo(
 ): SafeString {
   const href = ctx.urlFor(target) ?? '';
   return ctx.tag('a', {href, ...attrs}, content);
-}
-
-function mojoFaviconTag(ctx: MojoContext): SafeString {
-  return ctx.tag('link', {rel: 'icon', href: ctx.urlForFile('/mojo/favicon.ico')});
 }
 
 async function notFound(ctx: MojoContext): Promise<boolean> {

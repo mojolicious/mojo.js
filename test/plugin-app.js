@@ -66,7 +66,8 @@ t.test('Plugin app', async t => {
 
 const tagHelperPlugin = `
 Route: <%= ctx.currentRoute() %>
-Favicon: <%= ctx.mojoFaviconTag() %>
+Favicon: <%= ctx.faviconTag() %>
+Favicon2: <%= ctx.faviconTag('/favicon.ico') %>
 Relative image1: <%= ctx.imageTag('/foo/bar.png') %>
 Relative image2: <%= ctx.imageTag('/foo/bar.png', {alt: 'Bar'}) %>
 Relative script: <%= ctx.scriptTag('/foo/bar.js') %>
@@ -85,6 +86,7 @@ function tagHelperPluginResult(baseURL, publicPath) {
   return `
 Route: tag_helpers
 Favicon: <link rel="icon" href="/${publicPath}mojo/favicon.ico">
+Favicon2: <link rel="icon" href="/${publicPath}favicon.ico">
 Relative image1: <img src="/${publicPath}foo/bar.png">
 Relative image2: <img src="/${publicPath}foo/bar.png" alt="Bar">
 Relative script: <script src="/${publicPath}foo/bar.js"></script>

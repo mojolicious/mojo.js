@@ -70,7 +70,7 @@ const jsController = `export default class Controller {
 const tmplLayout = `<!DOCTYPE html>
 <html>
   <head>
-    %%= ctx.mojoFaviconTag()
+    %%= ctx.faviconTag()
     <title>Welcome</title>
   </head>
   <body><%%= ctx.content.main %></body>

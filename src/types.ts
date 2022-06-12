@@ -23,6 +23,7 @@ export type MojoApp = App;
 export interface MojoContext extends Context {
   currentRoute: () => string | null;
   exception: (error: Error) => Promise<boolean>;
+  faviconTag: () => SafeString;
   htmlException: (error: Error) => Promise<boolean>;
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;
@@ -32,7 +33,6 @@ export interface MojoContext extends Context {
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
   linkTo: (target: string, attrs: Record<string, string>, content: string | SafeString) => SafeString;
-  mojoFaviconTag: () => SafeString;
   scriptTag: (target: string) => SafeString;
   styleTag: (target: string) => SafeString;
   tag: (name: string, attrs?: Record<string, string>, content?: string | SafeString) => SafeString;

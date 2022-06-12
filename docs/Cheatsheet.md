@@ -364,6 +364,15 @@ Log the exception and close the WebSocket connection with an `1011` error code.
 
 These view helpers are currently available by default:
 
+#### faviconTag
+
+```
+%= ctx.faviconTag()
+%= ctx.faviconTag('/favicon.ico')
+```
+
+Generate `<link>` tag for a favison, defaults to the mojo.js favicon.
+
 #### imageTag
 
 ```
@@ -387,14 +396,6 @@ Include a partial template.
 ```
 
 Generate portable `a` tag with `ctx.urlFor`.
-
-#### mojoFaviconTag
-
-```
-%= ctx.mojoFaviconTag()
-```
-
-Generate `<link>` tag for the default mojo.js favicon.
 
 #### scriptTag
 
