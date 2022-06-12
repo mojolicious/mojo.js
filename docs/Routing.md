@@ -111,7 +111,7 @@ Standard placeholders are the simplest form of placeholders, they use a colon pr
 /sebastian 23/hello -> /:name/hello -> {name: 'sebastian 23'}
 ```
 
-All placeholders can be surrounded by < and > to separate them from the surrounding text.
+All placeholders can be surrounded by `<` and `>` to separate them from the surrounding text.
 
 ```
 /hello             -> /<:name>hello -> null

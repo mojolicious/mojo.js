@@ -8,14 +8,12 @@ A quick overview of the most important [mojo.js](https://mojojs.org) objects.
 The mojo.js application object, usually called `app`.
 
 ```js
-// ua: a `UserAgent` object for use inside the application
-const res = await app.ua.get('https://mojolicious.org');
-const dom = await res.html();
-const title = dom.at('title').text();
-
 // config: plain configuration object, filled with data by config plugins, use it to to store arbitrary information
 app.config.foo = 'bar';
 const foo = app.config.foo;
+
+// secrets: rotating secret passphrases used for signed cookies and the like
+app.secrets = ['s3cret pa$$phrase'];
 
 // home: a `Path` object with the path of the application home directory
 const path = app.home.child('config.json').toString();
@@ -27,6 +25,37 @@ app.models.frameworks = [{name: 'Catalyst'}, {name: 'Mojolicious'}, {name: 'mojo
 // log: the application logger
 const child = app.log.child({someContextValue: 123, anotherContextValue: 'test'});
 child.debug('Shut up and take my money!');
+
+// validator: general purpose JSON schema validator
+app.validator.addSchema({type: 'object'}, 'testForm');
+const validate = app.validator.schema('testForm');
+
+// ua: a `UserAgent` object for use inside the application
+const res = await app.ua.get('https://mojolicious.org');
+const dom = await res.html();
+const title = dom.at('title').text();
+
+// session: the encrypted cookie based session manager
+app.session.cookieName = 'myapp';
+app.session.sameSite = 'strict';
+
+// mime: manage MIME types
+app.mime.custom['foo'] = 'text/foo; charset=utf-8';
+
+// hooks: extend the framework with hooks
+app.addAppHook('server:start', async app => {
+  app.mode = 'production';
+});
+app.addContextHook('dispatch:before', async ctx => {
+  ctx.res.set('Server', 'MyServer 1.0');
+});
+
+// renderer: the application renderer, use it to add template engines and view directories
+app.renderer.addEngine('foo', fooEngine);
+app.renderer.viewPaths.push(app.home.child('templates').toString());
+
+// cli: the command line interface, use it to add your own custom commands
+app.cli.commandPaths.push(app.home.child('cli').toString());
 ```
 
 The `router` is the most commonly used application property and there are various shortcut methods for it.
@@ -79,6 +108,11 @@ const foo = ctx.config.foo;
 
 // models: access application models
 const users = ctx.models.users;
+
+// schema: access validation function for JSON schema
+const validate = ctx.schema({$id: 'testForm', type: 'object'});
+const result = validate(await ctx.req.json());
+const valid = result.isValid;
 
 // app: the mojo.js application object
 const app = ctx.app;

@@ -16,6 +16,13 @@ convenience for the reader. Almost all features are exactly the same for full we
   browsers and web servers actually communicate, there's also a very nice introduction to
   [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP).
 
+### Conventions
+
+* Variable names
+
+  For brevity and clarity, example variables will reflect the type of data the API uses. For instance, `ctx` to denote
+  a [Context](Cheatsheet.md#context) object, and `app` to denote the [App](Cheatsheet.md#app) object.
+
 ### Tutorial
 
 * [Introduction](Introduction.md)
