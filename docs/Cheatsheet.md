@@ -257,7 +257,7 @@ await ctx.res.status(204).send();
 
 These generic helpers are currently available by default:
 
-### `currentRoute`
+#### currentRoute
 
 ```js
 const name = ctx.currentRoute();
@@ -265,7 +265,7 @@ const name = ctx.currentRoute();
 
 Get the current route name.
 
-### `inspect`
+#### inspect
 
 ```js
 const serialized = ctx.inpsect({hello: 'world'});
@@ -277,7 +277,7 @@ Serialize data structure for debugging.
 
 These exception helpers are currently available by default:
 
-### `exception`
+#### exception
 
 ```js
 await ctx.exception(new Error('Something went wrong!'));
@@ -286,7 +286,7 @@ await ctx.exception(new Error('Something went wrong!'));
 Render an exception response in the appropriate format by delegating to more specific exception helpers for HTTP and
 WebSockets.
 
-### `htmlException`
+#### htmlException
 
 ```js
 await ctx.htmlException(new Error('Something went wrong!'));
@@ -294,7 +294,7 @@ await ctx.htmlException(new Error('Something went wrong!'));
 
 Render an HTML response and set the response status to `500`.
 
-### `htmlNotFound`
+#### htmlNotFound
 
 ```js
 await ctx.htmlNotFound();
@@ -302,7 +302,7 @@ await ctx.htmlNotFound();
 
 Render an HTML response and set the response status to `404`.
 
-### `httpException`
+#### httpException
 
 ```js
 await ctx.httpException(new Error('Something went wrong!'));
@@ -311,7 +311,7 @@ await ctx.httpException(new Error('Something went wrong!'));
 Log the exception and render an HTTP exception response in the appropriate format and set the response status to `500`
 by delegating to more specific exception helpers for HTML, JSON and plain text rendering.
 
-### `jsonException`
+#### jsonException
 
 ```js
 await ctx.jsonException(new Error('Something went wrong!'));
@@ -319,7 +319,7 @@ await ctx.jsonException(new Error('Something went wrong!'));
 
 Render a JSON response and set the response status to `500`.
 
-### `jsonNotFound`
+#### jsonNotFound
 
 ```js
 await ctx.jsonNotFound();
@@ -327,7 +327,7 @@ await ctx.jsonNotFound();
 
 Render a JSON response and set the response status to `404`.
 
-### `notFound`
+#### notFound
 
 ```js
 await ctx.notFound();
@@ -336,7 +336,7 @@ await ctx.notFound();
 Render a not found response in the appropriate format by delegating to more specific exception helpers for HTTP and
 WebSockets.
 
-### `txtException`
+#### txtException
 
 ```js
 await ctx.txtException(new Error('Something went wrong!'));
@@ -344,7 +344,7 @@ await ctx.txtException(new Error('Something went wrong!'));
 
 Render a plain text response and set the response status to `500`.
 
-### `txtNotFound`
+#### txtNotFound
 
 ```js
 await ctx.txtNotFound();
@@ -352,7 +352,7 @@ await ctx.txtNotFound();
 
 Render a plain text response and set the response status to `404`.
 
-### `websocketException`
+#### websocketException
 
 ```js
 await ctx.websocketException(new Error('Something went wrong!'));
@@ -364,7 +364,7 @@ Log the exception and close the WebSocket connection with an `1011` error code.
 
 These view helpers are currently available by default:
 
-### `imageTag`
+#### imageTag
 
 ```
 %= ctx.imageTag('/myapp/logo.png')
@@ -372,7 +372,7 @@ These view helpers are currently available by default:
 
 Generate `<img>` tag for image file.
 
-### `include`
+#### include
 
 ```
 %= await ctx.include('_navbar')
@@ -380,7 +380,7 @@ Generate `<img>` tag for image file.
 
 Include a partial template.
 
-### `linkTo`
+#### linkTo
 
 ```
 %= ctx.linkTo('some_route', {class: 'foo'}, 'Link to some route');
@@ -388,7 +388,7 @@ Include a partial template.
 
 Generate portable `a` tag with `ctx.urlFor`.
 
-### `mojoFaviconTag`
+#### mojoFaviconTag
 
 ```
 %= ctx.mojoFaviconTag()
@@ -396,7 +396,7 @@ Generate portable `a` tag with `ctx.urlFor`.
 
 Generate `<link>` tag for the default mojo.js favicon.
 
-### `scriptTag`
+#### scriptTag
 
 ```
 %= ctx.scriptTag('/bootstrap/bootstrap.bundle.min.js')
@@ -404,7 +404,7 @@ Generate `<link>` tag for the default mojo.js favicon.
 
 Generate `<script>` tag for JavaScript file.
 
-### `styleTag`
+#### styleTag
 
 ```
 %= ctx.styleTag('/bootstrap/bootstrap.min.css')
@@ -412,7 +412,7 @@ Generate `<script>` tag for JavaScript file.
 
 Generate `<link>` tag for CSS file.
 
-### `tag`
+#### tag
 
 ```
 %= tag 'div'
