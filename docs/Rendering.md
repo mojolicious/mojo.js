@@ -301,7 +301,7 @@ const ctx = app.newMockContext();
 const serialized = ctx.inspect([1, 2, 3]);
 ```
 
-See the [Cheatsheet](Cheatsheet.ms#Helpers) for a full list of helpers that are currently available by default.
+See the [Cheatsheet](Cheatsheet.md#Helpers) for a full list of helpers that are currently available by default.
 
 ### Content Negotiation
 
