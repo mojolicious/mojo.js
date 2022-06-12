@@ -354,7 +354,7 @@ if (format !== null) {
 
 For even more advanced negotiation logic you can also use `ctx.accepts()`.
 
-### Rendering exception and not_found Pages
+### Exception and Not-Found Pages
 
 By now you've probably already encountered the built-in `404` (Not Found) and `500` (Server Error) pages, that get
 rendered automatically when you make a mistake. Those are fallbacks for when your own exception handling fails, which
