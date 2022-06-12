@@ -107,10 +107,12 @@ Hello World!
 
 $ node myapp.js --help
 ...List of available commands...
+
+$ node myapp.js server --help
+...List of available options for server command...
 ```
 
 The `app.start()` call, which is usually the last statement in your application, starts the command system.
-
 
 ### Reloading
 
