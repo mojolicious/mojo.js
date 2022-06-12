@@ -55,7 +55,7 @@ convenience for the reader. Almost all features are exactly the same for full we
 
   An overview of the most commonly encountered mojo.js objects.
 
-### Spin-off Projects
+### Spin-offs
 
 These modules are not part of [@mojojs/core](https://www.npmjs.com/package/@mojojs/core) itself, but have been designed
 to be used with it and are being developed under the same umbrella.
