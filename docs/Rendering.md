@@ -5,7 +5,7 @@ This document explains content generation with the [mojo.js](https://mojojs.org)
 
 ## Concepts
 
-Essentials every mojo.js developer should know.
+Essentials every [mojo.js](https://mojojs.org) developer should know.
 
 ### Renderer
 
@@ -39,9 +39,10 @@ The renderer can be easily extended to support additional template engine with p
 
 ### Templates
 
-The default template engine used by mojo.js is [@mojojs/template](https://www.npmjs.com/package/@mojojs/template). It
-allows the embedding of JavaScript code right into actual content using a small set of special tags. Templates are
-compiled to `async` functions, so you can even use `await`.
+The default template engine used by [mojo.js](https://mojojs.org) is
+[@mojojs/template](https://www.npmjs.com/package/@mojojs/template). It allows the embedding of JavaScript code right
+into actual content using a small set of special tags. Templates are compiled to `async` functions, so you can even
+use `await`.
 
 ```
 <% JavaScript code %>
@@ -133,7 +134,7 @@ Hello <%= name %> from <%= ctx.req.ip %>.
 
 ## Basics
 
-Most commonly used features every mojo.js developer should know about.
+Most commonly used features every [mojo.js](https://mojojs.org) developer should know about.
 
 ### Rendering Templates
 
@@ -783,8 +784,8 @@ export default function cachingHelperPlugin (app) {
 }
 ```
 
-The exported plugin function will be called by the mojo.js application during startup and may contain any code that
-could also appear in the main application script itself.
+The exported plugin function will be called by the [mojo.js](https://mojojs.org) application during startup and may
+contain any code that could also appear in the main application script itself.
 
 ```js
 import mojo from '@mojojs/core';
@@ -879,9 +880,9 @@ World!
 ### Adding Your Favorite Template System
 
 Maybe you would prefer a different template system than
-[@mojojs/template](https://www.npmjs.com/package/@mojojs/template), which is included with mojo.js under the name
-`tmpl`, and there is not already a plugin on npm for your favorite one. All you have to do, is to add a new template
-engine with `renderer.addEngine()` from your own plugin.
+[@mojojs/template](https://www.npmjs.com/package/@mojojs/template), which is included with
+[mojo.js](https://mojojs.org) under the name `tmpl`, and there is not already a plugin on npm for your favorite one.
+All you have to do, is to add a new template engine with `renderer.addEngine()` from your own plugin.
 
 ```js
 // my-engine.js

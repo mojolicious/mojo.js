@@ -5,7 +5,7 @@ A quick example-driven introduction to the wonders of [mojo.js](https://mojojs.o
 
 ### Two Variants
 
-At its heart mojo.js is an MVC framework, loosely following the
+At its heart [mojo.js](https://mojojs.org) is an MVC framework, loosely following the
 [architectural pattern](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller). That means it wants you to
 cleanly separate the parts of your web application into Models, Views and Controllers. On the file system that is
 reflected as separate directories and files for different concerns.
@@ -31,21 +31,22 @@ reflected as separate directories and files for different concerns.
 
 The `.js` files (or `.ts` if you're using [TypeScript](https://www.typescriptlang.org)) can also be moved into a `src`
 or `lib` directory to help with transpiling. What these files actually look like we will cover in detail later on in
-another guide. For now it is just important for you to know that this is considered the ideal structure for a mojo.js
-application. Because for the remainder of this guide we will be using a second variant.
+another guide. For now it is just important for you to know that this is considered the ideal structure for a
+[mojo.js](https://mojojs.org) application. Because for the remainder of this guide we will be using a second variant.
 
 ```
 `-- blog.js
 ```
 
 For tasks like prototyping and documentantion examples, clean abstraction with many different files can be a little
-distracting. So mojo.js can also be used for single file applications. And these single file apps can later on smoothly
-transition to proper MVC abstraction as they grow. This is one of the fundamental mojo.js design philosophies.
+distracting. So [mojo.js](https://mojojs.org) can also be used for single file applications. And these single file apps
+can later on smoothly transition to proper MVC abstraction as they grow. This is one of the fundamental
+[mojo.js](https://mojojs.org) design philosophies.
 
 ### Installation
 
-All you need to get started with mojo.js is [Node.js](https://nodejs.org) 16.0.0 (or newer). We do recommend the use of
-an [nvm](https://nvm.sh) environment though.
+All you need to get started with [mojo.js](https://mojojs.org) is [Node.js](https://nodejs.org) 16.0.0 (or newer). We
+do recommend the use of an [nvm](https://nvm.sh) environment though.
 
 ```
 $ mkdir myapp
@@ -54,8 +55,8 @@ $ npm install @mojojs/core
 ...
 ```
 
-Be aware that mojo.js uses [ES modules](https://nodejs.org/api/esm.html), so your `package.json` should include a
-`"type": "module"`. Or you have to use the `.mjs` file extension instead of `.js`.
+Be aware that [mojo.js](https://mojojs.org) uses [ES modules](https://nodejs.org/api/esm.html), so your `package.json`
+should include a `"type": "module"`. Or you have to use the `.mjs` file extension instead of `.js`.
 
 ```json
 {
@@ -203,8 +204,9 @@ The magic numbers are <%= one %> and <%= two %>.
 `;
 ```
 
-The default mojo.js template engine is [@mojojs/template](https://www.npmjs.com/package/@mojojs/template), but any
-other template system can be integrated, and will work just as well.
+The default [mojo.js](https://mojojs.org) template engine is
+[@mojojs/template](https://www.npmjs.com/package/@mojojs/template), but any other template system can be integrated,
+and will work just as well.
 
 ### HTTP
 
@@ -379,7 +381,8 @@ We know who you are <%= ctx.whois() %>.
 ```
 
 While helpers themselves can be redefined to change the behaviour of your application, they cannot overload properties
-inherited from the prototype chain of the context object. So core mojo.js functionality is protected.
+inherited from the prototype chain of the context object. So core [mojo.js](https://mojojs.org) functionality is
+protected.
 
 ### Plugins
 
@@ -411,9 +414,10 @@ Now if you create a `myapp.conf` file in the same directory as your application,
 }
 ```
 
-`jsonConfigPlugin` is a built-in plugin that ships with mojo.js and which can populate `app.config` using a config file
-(`config.json` by default). For multiple config files you can register it more than once. Plugins can also set up
-routes, hooks, helpers, template engines and many many other things we will later explore in the plugin guide.
+`jsonConfigPlugin` is a built-in plugin that ships with [mojo.js](https://mojojs.org) and which can populate
+`app.config` using a config file (`config.json` by default). For multiple config files you can register it more than
+once. Plugins can also set up routes, hooks, helpers, template engines and many many other things we will later explore
+in the plugin guide.
 
 ### Placeholders
 
@@ -1017,7 +1021,8 @@ const inlineTemplate = `
 
 ### Modes
 
-Every mojo.js application has multiple operating modes, which can be selected with the `NODE_ENV` environment variable.
+Every [mojo.js](https://mojojs.org) application has multiple operating modes, which can be selected with the `NODE_ENV`
+environment variable.
 
 ```
 NODE_ENV=production node myapp.js server
@@ -1048,8 +1053,9 @@ you switch modes from `development` to `production`, no sensitive information wi
 
 ### Testing
 
-Testing you mojo.js application is as easy as creating a `test` directory and filling it with normal JavaScript tests
-like `test/basic.js`. Especially if you use [tap](https://www.npmjs.com/package/tap) and the built-in test user agent.
+Testing you [mojo.js](https://mojojs.org) application is as easy as creating a `test` directory and filling it with
+normal JavaScript tests like `test/basic.js`. Especially if you use [tap](https://www.npmjs.com/package/tap) and the
+built-in test user agent.
 
 ```js
 import mojo from '@mojojs/core';

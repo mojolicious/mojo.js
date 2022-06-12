@@ -5,7 +5,8 @@ The [mojo.js](https://mojojs.org) documentation is structured into two parts, th
 multiple guides that explain all major features in detail.
 
 Some parts of the documentation only use simplified single file web applications for examples, but that's merely a
-convenience for the reader. Almost all features are exactly the same for full well-structured mojo.js applications.
+convenience for the reader. Almost all features are exactly the same for full well-structured
+[mojo.js](https://mojojs.org) applications.
 
 ### Basics
 
@@ -27,33 +28,35 @@ convenience for the reader. Almost all features are exactly the same for full we
 
 * [Introduction](Introduction.md)
 
-  A quick example driven introduction to the basic concepts of mojo.js.
+  A quick example driven introduction to the basic concepts of [mojo.js](https://mojojs.org).
 
 ### Guides
 
 * [Growing](Growing.md)
 
-  Starting a single file prototype from scratch and growing it into a well-structured mojo.js application.
+  Starting a single file prototype from scratch and growing it into a well-structured [mojo.js](https://mojojs.org)
+  application.
 
 * [Routing](Routing.md)
 
-  A more detailed introduction to the mojo.js router.
+  A more detailed introduction to the [mojo.js](https://mojojs.org) router.
 
 * [Rendering](Rendering.md)
 
-  Generating content with the mojo.js renderer.
+  Generating content with the [mojo.js](https://mojojs.org) renderer.
 
 * [User-Agent](User-Agent.md)
 
-  How to use the full featured HTTP and WebSocket user agent that ships with the mojo.js framework.
+  How to use the full featured HTTP and WebSocket user agent that ships with the [mojo.js](https://mojojs.org)
+  framework.
 
 * [Cookbook](Cookbook.md)
 
-  Cooking with mojo.js, recipes for every taste.
+  Cooking with [mojo.js](https://mojojs.org), recipes for every taste.
 
 * [Contributing](Contributing.md)
 
-  Become a part of the ongoing mojo.js development.
+  Become a part of the ongoing [mojo.js](https://mojojs.org) development.
 
 * [FAQ](FAQ.md)
 
@@ -61,7 +64,7 @@ convenience for the reader. Almost all features are exactly the same for full we
 
 * [Cheatsheet](Cheatsheet.md)
 
-  An overview of the most commonly encountered mojo.js objects.
+  An overview of the most commonly encountered [mojo.js](https://mojojs.org) objects.
 
 ### Spin-offs
 

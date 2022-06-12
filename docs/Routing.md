@@ -1,7 +1,8 @@
 
 # Routing
 
-This document contains a simple and fun introduction to the Mojolicious router and its underlying concepts.
+This document contains a simple and fun introduction to the [mojo.js](https://mojojs.org) router and its underlying
+concepts.
 
 ## Concepts
 
@@ -66,14 +67,16 @@ anywhere in the route.
 /user/:role/:id
 ```
 
-A fundamental concept of the mojo.js router is that extracted placeholder values are turned into an object.
+A fundamental concept of the [mojo.js](https://mojojs.org) router is that extracted placeholder values are turned into
+an object.
 
 ```
 /user/admin/23 -> /user/:role/:id -> {role: 'admin', id: 23}
 ```
 
-This object is basically the center of every mojo.js application, you will learn more about this later on. Internally,
-routes get compiled to regular expressions, so you can get the best of both worlds with a little bit of experience.
+This object is basically the center of every [mojo.js](https://mojojs.org) application, you will learn more about this
+later on. Internally, routes get compiled to regular expressions, so you can get the best of both worlds with a little
+bit of experience.
 
 ```
 /user/admin/:id -> /(?:^\/user\/admin\/([^\/.]+))/
@@ -170,11 +173,12 @@ They can be useful for manually matching entire file paths.
 
 ## Basics
 
-Most commonly used features every mojo.js developer should know about.
+Most commonly used features every [mojo.js](https://mojojs.org) developer should know about.
 
 ### Minimal Route
 
-The `router` property of every mojo.js application contains a router object you can use to generate route structures.
+The `router` property of every [mojo.js](https://mojojs.org) application contains a router object you can use to
+generate route structures.
 
 ```js
 import mojo from '@mojojs/core';
@@ -267,8 +271,8 @@ router.get('/☃').to({controller: 'foo', action: 'snowman'});
 
 ### Stash
 
-The generated object of a matching route is actually the center of the whole mojo.js request cycle. We call it the
-stash, and it persists until a response has been generated.
+The generated object of a matching route is actually the center of the whole [mojo.js](https://mojojs.org) request
+cycle. We call it the stash, and it persists until a response has been generated.
 
 ```js
 // GET /bye -> {controller: 'foo', action: 'bye', mymessage: 'Bye'}

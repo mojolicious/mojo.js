@@ -7,7 +7,7 @@ A quick overview of the most important [mojo.js](https://mojojs.org) classes and
 
 ### App
 
-The mojo.js application object, usually called `app`.
+The [mojo.js](https://mojojs.org) application object, usually called `app`.
 
 ```js
 // config: plain configuration object, filled with data by config plugins, use it to to store arbitrary information
@@ -371,7 +371,7 @@ These view helpers are currently available by default:
 %= ctx.faviconTag('/favicon.ico')
 ```
 
-Generate `<link>` tag for a favison, defaults to the mojo.js favicon.
+Generate `<link>` tag for a favison, defaults to the [mojo.js](https://mojojs.org) favicon.
 
 #### imageTag
 

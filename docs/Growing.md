@@ -6,7 +6,7 @@ well-structured [mojo.js](https://mojojs.org) application.
 
 ## Concepts
 
-Essentials every mojo.js developer should know.
+Essentials every [mojo.js](https://mojojs.org) developer should know.
 
 ### Model View Controller
 
@@ -20,7 +20,7 @@ Input -> | Controller | -> | Model | -> | View | -> Output
 ```
 
 A slightly modified version of the pattern moving some application logic into the controller is the foundation of
-pretty much every web framework these days, including mojo.js.
+pretty much every web framework these days, including [mojo.js](https://mojojs.org).
 
 ```
             +----------------+     +-------+
@@ -108,25 +108,27 @@ web server in the form of cookies.
 Set-Cookie: session=aes-256-gcm(json({user: 'sebastian'}))
 ```
 
-In mojo.js however we are taking this concept one step further by storing everything JSON serialized in AES-256-GCM
-encrypted cookies, which is more compatible with the REST philosophy and reduces infrastructure requirements.
+In [mojo.js](https://mojojs.org) however we are taking this concept one step further by storing everything JSON
+serialized in AES-256-GCM encrypted cookies, which is more compatible with the REST philosophy and reduces
+infrastructure requirements.
 
 ### Test-Driven Development
 
 TDD is a software development process where the developer starts writing failing test cases that define the desired
 functionality and then moves on to producing code that passes these tests. There are many advantages such as always
 having good test coverage and code being designed for testability, which will in turn often prevent future changes from
-breaking old code. Much of mojo.js was developed using TDD.
+breaking old code. Much of [mojo.js](https://mojojs.org) was developed using TDD.
 
 ## Prototype
 
-An important difference between mojo.js and other web frameworks is that it can operate in two modes, both as a 
-full-fledged web framework, and as a single file micro web framework optimized for rapid prototyping.
+An important difference between [mojo.js](https://mojojs.org) and other web frameworks is that it can operate in two
+modes, both as a full-fledged web framework, and as a single file micro web framework optimized for rapid prototyping.
 
 ### Differences
 
 You likely know the feeling, you've got a really cool idea and want to try it as quickly as possible. That's exactly
-why mojo.js applications don't need more than a single JavaScript file (in addition to `package.json`).
+why [mojo.js](https://mojojs.org) applications don't need more than a single JavaScript file (in addition to
+`package.json`).
 
 ```
 myapp                          // Application directory (created manually)
@@ -136,8 +138,8 @@ myapp                          // Application directory (created manually)
 `-- myapp.js                   // Templates can be inlined in the file
 ```
 
-Full mojo.js applications on the other hand follow the MVC pattern more closely and separate concerns into different
-files to maximize maintainability:
+Full [mojo.js](https://mojojs.org) applications on the other hand follow the MVC pattern more closely and separate
+concerns into different files to maximize maintainability:
 
 ```
 myapp                            // Application directory (created manually)
@@ -221,8 +223,8 @@ GET / HTTP/1.1
 Host: localhost:3000
 ```
 
-Once the request has been received by the web server through the event loop, it will be passed on to mojo.js, where it
-will be handled in a few simple steps.
+Once the request has been received by the web server through the event loop, it will be passed on to
+[mojo.js](https://mojojs.org), where it will be handled in a few simple steps.
 
 1. Check if a static file exists that would meet the requirements.
 2. Try to find a route that would meet the requirements.
@@ -247,8 +249,9 @@ Hello World!
 
 ### Model
 
-In mojo.js we consider web applications simple frontends for existing business logic. That means mojo.js is by design
-entirely _model_ layer agnostic, and you just use whatever JavaScript modules you like most.
+In [mojo.js](https://mojojs.org) we consider web applications simple frontends for existing business logic. That means
+[mojo.js](https://mojojs.org) is by design entirely _model_ layer agnostic, and you just use whatever JavaScript
+modules you like most.
 
 ```
 $ mkdir models
@@ -307,7 +310,7 @@ with a [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchpara
 
 ### Testing
 
-In mojo.js we take testing very seriously and try to make it a pleasant experience.
+In [mojo.js](https://mojojs.org) we take testing very seriously and try to make it a pleasant experience.
 
 ```
 $ mkdir tests
@@ -380,8 +383,8 @@ Welcome sebastian.
 
 ### State Keeping
 
-Sessions in mojo.js pretty much just work out-of-the-box once you await the `session` method, there is no setup
-required, but we suggest setting a more secure passphrase with `app.secrets`
+Sessions in [mojo.js](https://mojojs.org) pretty much just work out-of-the-box once you await the `session` method,
+there is no setup required, but we suggest setting a more secure passphrase with `app.secrets`.
 
 ```js
 app.secrets = ['Mojolicious rocks'];
@@ -538,8 +541,8 @@ great detail.
 
 # Well-Structured Application
 
-Due to the flexibility of mojo.js, there are many variations of the actual growing process, but this should give you a
-good overview of the possibilities.
+Due to the flexibility of [mojo.js](https://mojojs.org), there are many variations of the actual growing process, but
+this should give you a good overview of the possibilities.
 
 ### Moving Templates
 
@@ -677,7 +680,7 @@ export default class LoginController {
 }
 ```
 
-All mojo.js controllers are just ES6 classes and get instantiated on demand by the router.
+All [mojo.js](https://mojojs.org) controllers are just ES6 classes and get instantiated on demand by the router.
 
 ## Final Application
 

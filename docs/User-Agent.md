@@ -275,8 +275,8 @@ t.test('Mojolicious', async t => {
 });
 ```
 
-And to test mojo.js web applications there is no need to mock anything. The test user agent can automatically start and
-manage a web server listening to a random port for you.
+And to test [mojo.js](https://mojojs.org) web applications there is no need to mock anything. The test user agent can
+automatically start and manage a web server listening to a random port for you.
 
 ```js
 import {app} from '../index.js';

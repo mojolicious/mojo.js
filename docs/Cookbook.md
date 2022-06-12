@@ -1,19 +1,19 @@
 
 # Cookbook
 
-This document contains many fun recipes for cooking with[mojo.js](https://mojojs.org).
+This document contains many fun recipes for cooking with [mojo.js](https://mojojs.org).
 
 ## Concepts
 
-Essentials every mojo.js developer should know.
+Essentials every [mojo.js](https://mojojs.org) developer should know.
 
 ### Reverse Proxy
 
 A reverse proxy architecture is a deployment technique used in many production environments, where a `reverse proxy`
 server is put in front of your application to act as the endpoint accessible by external clients. It can provide a lot
 of benefits, like terminating SSL connections from the outside, limiting the number of concurrent open sockets towards
-the mojo.js application, balancing load across multiple instances, or supporting several applications through the same
-IP/port.
+the [mojo.js](https://mojojs.org) application, balancing load across multiple instances, or supporting several
+applications through the same IP/port.
 
 ```
                 ..........................................
@@ -31,9 +31,10 @@ IP/port.
 This setup introduces some problems, though: the application will receive requests from the reverse proxy instead of
 the original client; the address/hostname where your application lives internally will be different from the one
 visible from the outside; and if terminating SSL, the reverse proxy exposes services via HTTPS while using HTTP towards
-the mojo.js application.
+the [mojo.js](https://mojojs.org) application.
 
-As an example, compare a sample request from the client and what the mojo.js application receives:
+As an example, compare a sample request from the client and what the [mojo.js](https://mojojs.org) application
+receives:
 
 ```
 client                       reverse proxy                mojo.js app
@@ -69,12 +70,12 @@ $ node myapp.js server --proxy
 
 ## Deployment
 
-Getting mojo.js applications running on different platforms.
+Getting [mojo.js](https://mojojs.org) applications running on different platforms.
 
 ### Built-in Web Server
 
-mojo.js contains a very portable Node.js based HTTP and WebSocket server. It can be used for web applications of any
-size and scales very well.
+[mojo.js](https://mojojs.org) contains a very portable Node.js based HTTP and WebSocket server. It can be used for web
+applications of any size and scales very well.
 
 ```
 $ node myapp.js server
@@ -130,10 +131,10 @@ $ npx nodemon myapp.js server
 
 ## Apache/CGI
 
-CGI is supported out of the box and your mojo.js application will automatically detect that it is executed as a CGI
-script. Its use in production environments is discouraged though, because as a result of how CGI works, it is very slow
-and many web servers are making it exceptionally hard to configure properly. Additionally, many real-time web features,
-such as WebSockets, are not available.
+CGI is supported out of the box and your [mojo.js](https://mojojs.org) application will automatically detect that it is
+executed as a CGI script. Its use in production environments is discouraged though, because as a result of how CGI
+works, it is very slow and many web servers are making it exceptionally hard to configure properly. Additionally, many
+real-time web features, such as WebSockets, are not available.
 
 ```
 ScriptAlias / /home/sri/myapp/index.js/
@@ -185,8 +186,9 @@ similar to the Nginx one above. And if you need WebSocket support, newer version
 
 ### Envoy
 
-mojo.js applications can be deployed on cloud-native environments that use [Envoy](https://www.envoyproxy.io/), such as
-with this reverse proxy configuration similar to the Apache and Nginx ones above.
+[mojo.js](https://mojojs.org) applications can be deployed on cloud-native environments that use
+[Envoy](https://www.envoyproxy.io/), such as with this reverse proxy configuration similar to the Apache and Nginx ones
+above.
 
 ```
 static_resources:
@@ -237,7 +239,7 @@ in [Istio](https://istio.io/latest/docs/ops/deployment/architecture/). For more 
 
 ## Application
 
-Fun mojo.js application hacks for all occasions.
+Fun [mojo.js](https://mojojs.org) application hacks for all occasions.
 
 ### Basic Authentication
 
