@@ -55,6 +55,10 @@ convenience for the reader. Almost all features are exactly the same for full we
 
   Become a part of the ongoing mojo.js development.
 
+* [FAQ](FAQ.md)
+
+  Answers to the most frequently asked questions.
+
 * [Cheatsheet](Cheatsheet.md)
 
   An overview of the most commonly encountered mojo.js objects.
