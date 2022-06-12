@@ -51,6 +51,10 @@ convenience for the reader. Almost all features are exactly the same for full we
 
   Cooking with mojo.js, recipes for every taste.
 
+* [Contributing](Contributing.md)
+
+  Become a part of the ongoing mojo.js development.
+
 * [Cheatsheet](Cheatsheet.md)
 
   An overview of the most commonly encountered mojo.js objects.
