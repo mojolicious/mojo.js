@@ -62,6 +62,8 @@ convenience for the reader. Almost all features are exactly the same for full we
 
   Answers to the most frequently asked questions.
 
+### Reference
+
 * [Cheatsheet](Cheatsheet.md)
 
   An overview of the most commonly encountered [mojo.js](https://mojojs.org) objects.
