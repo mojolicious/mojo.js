@@ -186,6 +186,24 @@ const buffer = await ctx.req.buffer();
 
 // Retrieve "application/x-www-form-urlencoded" or "multipart/form-data" form parameters
 const params = await ctx.req.form();
+const foo = params.get('foo');
+
+// Retrieve request body as a JSON data structure
+const data = await ctx.req.json();
+
+// Retrieve request body as a YAML data structure
+const data = await ctx.req.yaml();
+
+// Retrieve request body as an XML `DOM` object
+const dom = await ctx.req.xml();
+const title = dom.at('foo > title').text();
+
+// Retrieve request body as an HTML `DOM` object
+const dom = await ctx.req.html();
+const title = dom.at('head > title').text();
+
+// Retrieve request body as a `Readable` stream
+const stream = ctx.req.createReadStream();
 
 // Pipe request body to `stream.Writable` object
 await ctx.req.pipe(process.stdout);
