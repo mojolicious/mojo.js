@@ -166,7 +166,7 @@ if (await ctx.render({view: 'localized/baz', maybe: true}) === false) {
 ### Rendering to Strings
 
 Sometimes you might want to use the rendered result directly instead of generating a response, for example, to send
-emails, this can be done with `ctx.renderToString`.
+emails, this can be done with `ctx.renderToString()`.
 
 ```js
 const html = await ctx.renderToString({view: 'email/confirmation'});
@@ -371,8 +371,8 @@ For even more advanced negotiation logic you can also use `ctx.accepts()`.
 
 By now you've probably already encountered the built-in `404` (Not Found) and `500` (Server Error) pages, that get
 rendered automatically when you make a mistake. Those are fallbacks for when your own exception handling fails, which
-can be especially helpful during development. You can also render them manually with the helpers `ctx.exception` and
-`ctx.notFound`.
+can be especially helpful during development. You can also render them manually with the helpers `ctx.exception()` and
+`ctx.notFound()`.
 
 ```js
 import mojo from '@mojojs/core';
@@ -475,12 +475,12 @@ layout with `ctx.content.main`.
 await ctx.render({view: 'mytemplate', layout: 'mylayout'});
 ```
 
-Instead of using `view.layout` you can also pass the layout directly to `ctx.render`.
+Instead of using `view.layout` you can also pass the layout directly to `ctx.render()`.
 
 ### Partial Views
 
 You can break up bigger templates into smaller, more manageable chunks. These partial views can also be shared with
-other templates. Just use `ctx.include` to include one view into another.
+other templates. Just use `ctx.include()` to include one view into another.
 
 ```js
 import mojo from '@mojojs/core';
@@ -638,7 +638,7 @@ While helpers can also be redefined, this should only be done very carefully to 
 
 ### Content Blocks
 
-The method `ctx.contentFor` allows you to pass whole blocks of content from one template to another. This can be very
+The method `ctx.contentFor()` allows you to pass whole blocks of content from one template to another. This can be very
 useful when your layout has distinct sections, such as sidebars, where content should be inserted by the template.
 
 ```js
@@ -712,8 +712,8 @@ app.start();
 </html>
 ```
 
-`ctx.flash` and `ctx.redirectTo` are often used together to prevent double form submission, allowing users to receive a
-confirmation message that will vanish if they decide to reload the page they've been redirected to.
+`ctx.flash()` and `ctx.redirectTo()` are often used together to prevent double form submission, allowing users to
+receive a confirmation message that will vanish if they decide to reload the page they've been redirected to.
 
 ## Advanced
 
@@ -722,7 +722,7 @@ Less commonly used and more powerful features.
 ### Serving Static Files
 
 Static files are automatically served from the `public` directories of the application, which can be customized with
-`app.static.publicPaths`. And if that's not enough you can also serve them manually with `ctx.sendFile`.
+`app.static.publicPaths`. And if that's not enough you can also serve them manually with `ctx.sendFile()`.
 
 ```js
 import mojo from '@mojojs/core';

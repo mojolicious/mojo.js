@@ -385,7 +385,7 @@ router.get('/bye', async ctx => {
 ### Named Routes
 
 Naming your routes will allow backreferencing in many methods and helpers throughout the whole framework, most of which
-internally rely on `ctx.urlFor` for this.
+internally rely on `ctx.urlFor()` for this.
 
 ```js
 // GET /foo/marcus -> {controller: 'foo', action: 'bar', user: 'marcus'}
@@ -419,7 +419,7 @@ const url = ctx.urlFor('current');
 const url = ctx.urlFor();
 ```
 
-To check or get the name of the current route you can use the helper `ctx.currentRoute`.
+To check or get the name of the current route you can use the helper `ctx.currentRoute()`.
 
 ```js
 // Name for current route
@@ -590,7 +590,7 @@ And just like with placeholders you can use a default value to make the extensio
 router.get('/foo', {ext: ['html', 'txt']}).to({controller: 'foo', action: 'bar', ext: null);
 ```
 
-An extension value can also be passed to `ctx.urlFor`.
+An extension value can also be passed to `ctx.urlFor()`.
 
 ```js
 // GET /foo/23.txt -> {controller: 'foo', action: 'bar', id: 23, ext: 'txt'}

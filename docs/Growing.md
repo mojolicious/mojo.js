@@ -415,7 +415,7 @@ session.expires = 1;
 ```
 
 For data that should only be visible on the next request, like a confirmation message after a `302` redirect performed
-with `ctx.redirectTo()`, you can use the flash, accessible through `ctx.flash`.
+with `ctx.redirectTo()`, you can use the flash, accessible through `ctx.flash()`.
 
 ```js
 const flash = await ctx.flash();
@@ -557,7 +557,8 @@ $ touch views/protected.html.tmpl
 ```
 
 Just move the content of the `indexTemplate`, `protectedTemplate` and `defaultLayout` constants into those template
-files. Instead of selecting a layout in the `ctx.render` call, from now on we will let each template select it for themselves, so we have to add a `view.layout` statement (as first line) to each of them.
+files. Instead of selecting a layout in the `ctx.render()` call, from now on we will let each template select it for
+themselves, so we have to add a `view.layout` statement (as first line) to each of them.
 
 ```
 % view.layout = 'default';
@@ -566,7 +567,7 @@ files. Instead of selecting a layout in the `ctx.render` call, from now on we wi
 
 ### Simplified Application
 
-Next we need to update all `ctx.render` calls and remove the inline templates from our application.
+Next we need to update all `ctx.render()` calls and remove the inline templates from our application.
 
 ```js
 import mojo from '@mojojs/core';
@@ -641,7 +642,7 @@ $ touch controlers/login.js
 ```
 
 Once again the actual action code does not need to change much, we just turn them into methods and remove the arguments
-from the `ctx.render` calls (because from now on we will rely on default `controller/action` template names).
+from the `ctx.render()` calls (because from now on we will rely on default `controller/action` template names).
 
 ```js
 export default class LoginController {

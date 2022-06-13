@@ -395,7 +395,7 @@ Include a partial template.
 %= ctx.linkTo('some_route', {class: 'foo'}, 'Link to some route');
 ```
 
-Generate portable `a` tag with `ctx.urlFor`.
+Generate portable `a` tag with `ctx.urlFor()`.
 
 #### scriptTag
 
