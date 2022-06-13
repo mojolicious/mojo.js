@@ -262,8 +262,8 @@ t.test('App', async t => {
   // GET /content/negotiation/fallback
   app.get('/content/negotiation/fallback', async ctx => {
     await ctx.respondTo({
-      any: ctx => ctx.render({text: 'Fallback'}),
-      json: ctx => ctx.render({json: {just: 'JSON'}})
+      any: {text: 'Fallback'},
+      json: {json: {just: 'JSON'}}
     });
   });
 

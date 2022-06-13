@@ -315,12 +315,24 @@ For resources with different representations and that require truly RESTful cont
 // GET /hello.json                       -> "json"
 // GET /hello.xml                        -> "xml"
 await ctx.respondTo({
-  json: ctx => ctx.render({json: {hello: 'world'}}),
-  xml:  ctx => ctx.render({text: '<hello>world</hello>', format: 'xml'})
+  json: {json: {hello: 'world'}},
+  xml:  {text: '<hello>world</hello>', format: 'xml'}
 });
 ```
 
 The best possible representation will be automatically selected from the `ext` stash value or `Accept` request header.
+
+```js
+await ctx.respondTo({
+  json: {json: {hello: 'world'}},
+  html: async ctx => {
+    ctx.contentFor('header', '<meta name="author" content="sri">');
+    await ctx.render({view: 'hello'}, {message: 'world'});
+  }
+});
+```
+
+Functions can be used for representations that are too complex to fit into a single render call.
 
 ```js
 // GET /hello (Accept: application/json) -> "json"
@@ -330,9 +342,9 @@ The best possible representation will be automatically selected from the `ext` s
 // GET /hello.html                       -> "html"
 // GET /hello.png                        -> "any"
 await ctx.respondTo({
-  json: ctx => ctx.render({json: {hello: 'world'}}),
-  html: ctx => ctx.render({template: 'hello'}, {message: 'world'}),
-  any:  ctx => ctx.render({text: '', status: 204})
+  json: {json: {hello: 'world'}},
+  html: {template: 'hello'}, {message: 'world'},
+  any:  {text: '', status: 204}
 });
 ```
 

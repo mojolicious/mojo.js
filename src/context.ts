@@ -269,18 +269,23 @@ class Context extends EventEmitter {
   /**
    * Automatically select best possible representation for resource.
    */
-  async respondTo(spec: Record<string, MojoAction>): Promise<void> {
+  async respondTo(spec: Record<string, MojoAction | RenderOptions>): Promise<void> {
     const formats = this.accepts() ?? [];
 
+    let handler: MojoAction | RenderOptions | undefined;
     for (const format of formats) {
       if (spec[format] === undefined) continue;
-      await spec[format](this as unknown as MojoContext);
-      return;
+      handler = spec[format];
+      break;
     }
+    if (handler === undefined && spec.any !== undefined) handler = spec.any;
 
-    if (spec.any !== undefined) {
-      await spec.any(this as unknown as MojoContext);
-      return;
+    if (handler !== undefined) {
+      if (typeof handler === 'function') {
+        await handler(this as unknown as MojoContext);
+      } else {
+        await this.render(handler);
+      }
     }
 
     await this.res.status(204).send();
