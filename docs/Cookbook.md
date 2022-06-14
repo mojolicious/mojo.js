@@ -98,6 +98,8 @@ $ node myapp.js server -l https://127.0.0.1:3000
 Web application available at https://127.0.0.1:3000/
 ```
 
+### Systemd
+
 To manage the web server with systemd, you can use a unit configuration file like this.
 
 ```
@@ -112,6 +114,29 @@ ExecStart=NODE_ENV=production node /home/sri/myapp/myapp.js server -l http://*:8
 
 [Install]
 WantedBy=multi-user.target
+```
+
+And while the default logger will already work pretty well, we also have native support for the journald format. That
+means if you activate the `systemdFormatter` you can get proper log level mapping and syntax highlighting for your
+journal too.
+
+```js
+import mojo, {Logger} from '@mojojs/core';
+
+const app = mojo();
+app.log.formatter = Logger.systemdFormatter;
+
+app.get('/', ctx => ctx.render({text: 'Hello systemd!'}));
+
+app.start();
+```
+
+You can even use systemd for
+[socket activation](https://www.freedesktop.org/software/systemd/man/systemd.socket.html). The socket will be passed to
+your server as file descriptor `3`, so all you have to do is to use a slightly different listen option.
+
+```
+ExecStart=NODE_ENV=production node /home/sri/myapp/myapp.js server -l http://*?fd=3
 ```
 
 ## Reloading
