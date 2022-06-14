@@ -82,13 +82,13 @@ th {
 .mojobar {
   background-color: #1a1a1a;
 }
-.mojobar #navbarNav .nav-link {
+.mojobar #navbarContent .nav-link {
   color: #bbb;
 }
-.mojobar #navbarNav .nav-link:hover {
+.mojobar #navbarContent .nav-link:hover {
   color: #fff;
 }
-.mojobar #navbarNav input[type=search] {
+.mojobar #navbarContent input[type=search] {
   background-color: #3a3a3a;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
@@ -97,7 +97,7 @@ th {
   margin-left: 1em;
   transition: all 0.15s;
 }
-.mojobar #navbarNav input[type="search"]:focus {
+.mojobar #navbarContent input[type="search"]:focus {
   background-color: #fff;
   color: #111;
   outline: 0;

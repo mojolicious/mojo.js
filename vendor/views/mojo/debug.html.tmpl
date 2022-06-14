@@ -24,57 +24,62 @@
     <header>
       <nav class="navbar navbar-expand-lg navbar-dark mojobar">
         <div class="container-fluid">
-        <a href="https://mojojs.org" id="mojobar-brand" class="navbar-brand">
-          <picture>
-            <img src="<%= ctx.urlForFile('/mojo/logo-white.png') %>"
-              srcset="<%= ctx.urlForFile('/mojo/logo-white-2x.png') %> 2x">
-          </picture>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-          aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="docDropdown" role="button"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                Documentation
-              </a>
-              <div class="dropdown-menu" aria-labelledby="docDropdown">
-                <a class="dropdown-item" href="https://mojojs.org/docs/">Overview</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="https://mojojs.org/docs/Introduction.md">Introduction</a>
-                <a class="dropdown-item" href="https://mojojs.org/docs/Growing.md">Growing</a>
-                <a class="dropdown-item" href="https://mojojs.org/docs/Routing.md">Routing</a>
-                <a class="dropdown-item" href="https://mojojs.org/docs/Rendering.md">Rendering</a>
-                <a class="dropdown-item" href="https://mojojs.org/docs/User-Agent.md">User-Agent</a>
-                <a class="dropdown-item" href="https://mojojs.org/docs/Cookbook.md">Cookbook</a>
-                <a class="dropdown-item" href="https://mojojs.org/docs/Contributing.md">Contributing</a>
-                <a class="dropdown-item" href="https://mojojs.org/docs/FAQ.md">FAQ</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="https://mojojs.org/docs/Cheatsheet.md">Cheatsheet</a>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="communityDropdown" role="button"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                Community
-              </a>
-              <div class="dropdown-menu" aria-labelledby="communityDropdown">
-                <a class="dropdown-item" href="https://matrix.to/#/#mojo:matrix.org">Matrix</a>
-                <a class="dropdown-item" href="https://web.libera.chat/#mojo">IRC</a>
-                <a class="dropdown-item" href="https://github.com/mojolicious/mojo.js/discussions">Forum</a>
-                <a class="dropdown-item" href="https://twitter.com/mojolicious_org">Twitter</a>
-                <a class="dropdown-item" href="https://blogs.mojolicious.org">Blogs</a>
-                <a class="dropdown-item" href="https://www.linkedin.com/groups/8963713/">LinkedIn</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="https://github.com/mojolicious/mojo.js/">Contribute on GitHub</a>
-            </li>
-          </ul>
-        </div>
+          <a href="https://mojojs.org" id="mojobar-brand" class="navbar-brand">
+            <picture>
+              <img src="<%= ctx.urlForFile('/mojo/logo-white.png') %>"
+                srcset="<%= ctx.urlForFile('/mojo/logo-white-2x.png') %> 2x">
+            </picture>
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="docDropdown" role="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  Documentation
+                </a>
+                <div class="dropdown-menu" aria-labelledby="docDropdown">
+                  <a class="dropdown-item" href="https://mojojs.org/docs/">Overview</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="https://mojojs.org/docs/Introduction.md">Introduction</a>
+                  <a class="dropdown-item" href="https://mojojs.org/docs/Growing.md">Growing</a>
+                  <a class="dropdown-item" href="https://mojojs.org/docs/Routing.md">Routing</a>
+                  <a class="dropdown-item" href="https://mojojs.org/docs/Rendering.md">Rendering</a>
+                  <a class="dropdown-item" href="https://mojojs.org/docs/User-Agent.md">User-Agent</a>
+                  <a class="dropdown-item" href="https://mojojs.org/docs/Cookbook.md">Cookbook</a>
+                  <a class="dropdown-item" href="https://mojojs.org/docs/Contributing.md">Contributing</a>
+                  <a class="dropdown-item" href="https://mojojs.org/docs/FAQ.md">FAQ</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="https://mojojs.org/docs/Cheatsheet.md">Cheatsheet</a>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="communityDropdown" role="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  Community
+                </a>
+                <div class="dropdown-menu" aria-labelledby="communityDropdown">
+                  <a class="dropdown-item" href="https://matrix.to/#/#mojo:matrix.org">Matrix</a>
+                  <a class="dropdown-item" href="https://web.libera.chat/#mojo">IRC</a>
+                  <a class="dropdown-item" href="https://github.com/mojolicious/mojo.js/discussions">Forum</a>
+                  <a class="dropdown-item" href="https://twitter.com/mojolicious_org">Twitter</a>
+                  <a class="dropdown-item" href="https://blogs.mojolicious.org">Blogs</a>
+                  <a class="dropdown-item" href="https://www.linkedin.com/groups/8963713/">LinkedIn</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://github.com/mojolicious/mojo.js/">Contribute on GitHub</a>
+              </li>
+            </ul>
+            <form action="https://www.google.com/cse" target="_blank" class="form-inline my-2 my-lg-0">
+              <input type="hidden" name="cx" value="047dacf0d8b084ef8">
+              <input type="hidden" name="ie" value="URF-8">
+              <input type="search" name="q" placeholder="Search...">
+            </form>
+          </div>
         </div>
       </nav>
     </header>
