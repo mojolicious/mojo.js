@@ -139,7 +139,7 @@ your server as file descriptor `3`, so all you have to do is to use a slightly d
 ExecStart=NODE_ENV=production node /home/sri/myapp/myapp.js server -l http://*?fd=3
 ```
 
-## Reloading
+### Reloading
 
 After reading the [Introduction](Introduction.md) you should already be familiar with
 [nodemon](https://www.npmjs.com/package/nodemon). It is a restarter that starts a new web server process whenever a
@@ -154,7 +154,7 @@ $ npx nodemon myapp.js server
 [39248] Web application available at http://127.0.0.1:3000/
 ```
 
-## Apache/CGI
+### Apache/CGI
 
 CGI is supported out of the box and your [mojo.js](https://mojojs.org) application will automatically detect that it is
 executed as a CGI script. Its use in production environments is discouraged though, because as a result of how CGI
