@@ -47,4 +47,4 @@ export {TestUserAgent} from './user-agent/test.js';
 export {UserAgent} from './user-agent.js';
 export * as util from './util.js';
 
-export {Expand, ExpandRecursive, JSONValue, MojoAction, MojoApp, MojoContext} from './types.js';
+export {JSONValue, MojoAction, MojoApp, MojoContext} from './types.js';

@@ -9,10 +9,6 @@ import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';
 import type {InspectOptions} from 'util';
 
-// Helper types for debugging
-export type Expand<T> = T extends infer O ? {[K in keyof O]: O[K]} : never;
-export type ExpandRecursive<T> = T extends infer O ? {[K in keyof O]: ExpandRecursive<O[K]>} : never;
-
 // Plain JSON
 export type JSONValue = string | number | boolean | null | JSONValue[] | {[key: string]: JSONValue};
 export type JSONObject = {[key: string]: JSONValue};
