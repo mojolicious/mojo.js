@@ -41,6 +41,22 @@ t.test('CGI', async t => {
     t.match(output, /Hello World!/);
   });
 
+  await t.test('Not found', async t => {
+    const env = process.env;
+    process.env = {PATH_INFO: '/missing'};
+
+    const output = await captureOutput(
+      async () => {
+        await new CGI(app).run();
+      },
+      {stderr: true, stdout: true}
+    );
+
+    process.env = env;
+
+    t.match(output.toString(), /Status: 404 Not Found.+Page Not Found/s);
+  });
+
   await t.test('Parse Lighttpd CGI environment variables', async t => {
     const res = CGI.envToRequest(
       {

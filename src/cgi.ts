@@ -61,6 +61,7 @@ export class CGI {
   async run(): Promise<void> {
     const app = this.app;
     await app.hooks.runHook('server:start', app);
+    await app.warmup();
 
     const ctx = app.newContext(
       CGI.envToRequest(process.env, process.stdin),
