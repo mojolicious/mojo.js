@@ -10,7 +10,7 @@ main {
   border: solid #cce4ff 1px;
   border-radius: .25rem;
   color: #333;
-  font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;;
+  font: 0.875rem SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;;
   padding: 0.4em;
 }
 h2 {
@@ -18,13 +18,13 @@ h2 {
   font-size: 2em;
 }
 pre {
-  font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font: 0.875rem SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   margin: 0;
   white-space: pre-wrap;
 }
 pre > code {
   display: block;
-  font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font: 0.875rem SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   margin-bottom: 0.7em;
   margin-top: 0.7em;
 }
@@ -131,13 +131,13 @@ th {
   background-color: #282c34;
   border: 0;
   border-radius: .25rem;
-  font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font: 0.875rem SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   padding: 1em;
   width: 100%;
 }
 .mojo-terminal > code {
   color: #eee;
-  font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font: 0.875rem SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   line-height: 1.5em;
   text-align: left;
   white-space: pre-wrap;
@@ -192,6 +192,6 @@ th {
   border: 0;
   border-radius: 0;
   color: #eee;
-  font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;;
+  font: 0.875rem SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;;
   padding: 0;
 }

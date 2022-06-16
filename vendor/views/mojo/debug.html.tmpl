@@ -135,7 +135,7 @@
                     for <code><%= ctx.req.path %></code>, maybe you need to add a new one?
                   </p>
                 </div>
-                % function walk (route, depth) {
+                <{walkBlock(route, depth)}>
                   % const pattern = route.pattern;
                   % let unparsed = pattern.unparsed || '/';
                   % if (depth > 0) unparsed = `+${unparsed}`;
@@ -158,9 +158,9 @@
                     </td>
                   </tr>
                   % depth++;
-                  %= route.children.map(child => walk(child, depth)).join('')
+                  %== (await Promise.all(route.children.map(child => walkBlock(child, depth)))).join('')
                   % depth--;
-                % }
+                <{/walkBlock}>
                 <table class="mojo-striped-light mojo-wide">
                   <thead>
                     <tr>
@@ -169,7 +169,7 @@
                       <th>Name</th>
                     </tr>
                   </thead>
-                  %= ctx.app.router.children.map(child => walk(child, 0)).join('')
+                  %== (await Promise.all(ctx.app.router.children.map(child => walkBlock(child, 0)))).join('')
                 </table>
               </div>
             % }
