@@ -72,9 +72,9 @@ Relative image1: <%= ctx.imageTag('/foo/bar.png') %>
 Relative image2: <%= ctx.imageTag('/foo/bar.png', {alt: 'Bar'}) %>
 Relative script: <%= ctx.scriptTag('/foo/bar.js') %>
 Relative style: <%= ctx.styleTag('/foo/bar.css') %>
-Absolute image: <%= ctx.imageTag('https://mojojs.org/public/foo/bar.png') %>
-Absolute script: <%= ctx.scriptTag('https://mojojs.org/public/foo/bar.js') %>
-Absolute style: <%= ctx.styleTag('https://mojojs.org/public/foo/bar.css') %>
+Absolute image: <%= ctx.imageTag('https://mojojs.org/static/foo/bar.png') %>
+Absolute script: <%= ctx.scriptTag('https://mojojs.org/static/foo/bar.js') %>
+Absolute style: <%= ctx.styleTag('https://mojojs.org/static/foo/bar.css') %>
 Link1: <%= ctx.linkTo('getter_setter', {class: 'foo'}, 'Getter & Setter') %>
 Link2: <%= ctx.linkTo('mix', {}, 'WebSocket link') %>
 Tag1: <%= ctx.tag('div', 'Hello Mojo!') %>
@@ -91,9 +91,9 @@ Relative image1: <img src="/${publicPath}foo/bar.png">
 Relative image2: <img src="/${publicPath}foo/bar.png" alt="Bar">
 Relative script: <script src="/${publicPath}foo/bar.js"></script>
 Relative style: <link rel="stylesheet" href="/${publicPath}foo/bar.css">
-Absolute image: <img src="https://mojojs.org/public/foo/bar.png">
-Absolute script: <script src="https://mojojs.org/public/foo/bar.js"></script>
-Absolute style: <link rel="stylesheet" href="https://mojojs.org/public/foo/bar.css">
+Absolute image: <img src="https://mojojs.org/static/foo/bar.png">
+Absolute script: <script src="https://mojojs.org/static/foo/bar.js"></script>
+Absolute style: <link rel="stylesheet" href="https://mojojs.org/static/foo/bar.css">
 Link1: <a href="/getter/setter" class="foo">Getter &amp; Setter</a>
 Link2: <a href="${wsURL}websocket/mixed">WebSocket link</a>
 Tag1: <div>Hello Mojo!</div>

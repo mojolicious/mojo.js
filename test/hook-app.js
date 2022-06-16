@@ -143,7 +143,7 @@ t.test('Hook app', async t => {
   await t.test('Router hooks', async () => {
     (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
     (await ua.getOk('/?fourth=1')).statusIs(200).bodyIs('Fourth hook');
-    (await ua.getOk('/public/mojo/favicon.ico?fourth=1')).statusIs(200).bodyIsnt('Fourth hook');
+    (await ua.getOk('/static/mojo/favicon.ico?fourth=1')).statusIs(200).bodyIsnt('Fourth hook');
   });
 
   await t.test('Send hooks', async () => {
@@ -162,24 +162,24 @@ t.test('Hook app', async t => {
   });
 
   await t.test('Static hooks', async () => {
-    (await ua.getOk('/public/mojo/favicon.ico?cache=1'))
+    (await ua.getOk('/static/mojo/favicon.ico?cache=1'))
       .statusIs(200)
       .typeIs('image/vnd.microsoft.icon')
       .headerExists('Content-Length')
       .headerIs('Cache-Control', 'public, max-age=604800, immutable');
-    (await ua.getOk('/public/mojo/favicon.ico?cache=0'))
+    (await ua.getOk('/static/mojo/favicon.ico?cache=0'))
       .statusIs(200)
       .typeIs('image/vnd.microsoft.icon')
       .headerExists('Content-Length')
       .headerExistsNot('Cache-Control');
 
-    (await ua.getOk('/public/mojo/favicon.ico?cache=1&hijack=1'))
+    (await ua.getOk('/static/mojo/favicon.ico?cache=1&hijack=1'))
       .statusIs(200)
       .headerExists('Content-Length')
       .headerIs('Cache-Control', 'public, max-age=604800, immutable')
       .bodyIs('Hijacked: favicon.ico');
 
-    (await ua.getOk('/public/mojo/favicon.ico?cache=1&hijack=1&powered=1'))
+    (await ua.getOk('/static/mojo/favicon.ico?cache=1&hijack=1&powered=1'))
       .statusIs(200)
       .headerExists('Content-Length')
       .headerIs('Cache-Control', 'public, max-age=604800, immutable')

@@ -690,7 +690,7 @@ app.start();
 ### Static Files
 
 Static files will be served automatically from the `public` directory of your application if it exists. All static URLs
-have a `/public` prefix by default, to make it easier to integrate reverse proxy servers in production environments.
+have a `/static` prefix by default, to make it easier to integrate reverse proxy servers in production environments.
 
 ```
 $ mkdir public

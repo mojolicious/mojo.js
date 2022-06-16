@@ -62,7 +62,7 @@ t.test('Exception app', async t => {
         .statusIs(500)
         .typeIs('text/html; charset=utf-8')
         .bodyLike(/This application is in.*development.*mode/)
-        .bodyUnlike(/\/public\/mojo\/failraptor\.png/);
+        .bodyUnlike(/\/static\/mojo\/failraptor\.png/);
 
       app.exceptionFormat = 'txt';
       (await ua.getOk('/exception'))

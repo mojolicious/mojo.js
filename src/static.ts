@@ -9,7 +9,7 @@ export class Static {
   /**
    * Prefix to use for all static files.
    */
-  prefix = '/public';
+  prefix = '/static';
   /**
    * Directories to serve static files from, first one has the highest precedence.
    */
