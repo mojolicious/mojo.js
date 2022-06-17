@@ -408,12 +408,14 @@ command you can do just that, the application object itself can be accessed via 
 
 ```
 $ node index.js eval 'console.log(app.static.publicPaths)'
+["/home/sri/myapp/public"]
 ```
 
 The verbose option will automatically print the return value or returned data structure to STDOUT.
 
 ```
-$ node index.js eval -v 'app.static.viewPaths'
+$ node index.js eval -v 'app.renderer.viewPaths'
+["/home/sri/myapp/views"]
 ```
 
 ## Support
