@@ -30,8 +30,8 @@ reflected as separate directories and files for different concerns.
 ```
 
 The `.js` files (or `.ts` if you're using [TypeScript](https://www.typescriptlang.org)) can also be moved into a `src`
-or `lib` directory to help with transpiling. What these files actually look like we will cover in detail later on in
-another guide. For now it is just important for you to know that this is considered the ideal structure for a
+`dist`, or `lib` directory to help with transpiling. What these files actually look like we will cover in detail later
+on in another guide. For now it is just important for you to know that this is considered the ideal structure for a
 [mojo.js](https://mojojs.org) application. Because for the remainder of this guide we will be using a second variant.
 
 ```
