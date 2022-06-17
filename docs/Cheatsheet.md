@@ -24,10 +24,10 @@ const app = mojo({
   // Format for HTTP exceptions ("html", "json", or "txt")
   exceptionFormat: 'html',
 
-  // Secret passphrases used for signed cookies and the like
+  // Rotating secret passphrases used for signed cookies and the like
   secrets: ['s3cret'],
 
-  // Application operating mode
+  // Operating mode for application
   mode: 'development'
 });
 ```
@@ -44,6 +44,9 @@ app.exceptionFormat = 'html';
 
 // secrets: rotating secret passphrases used for signed cookies and the like
 app.secrets = ['s3cret pa$$phrase'];
+
+// mode: operating mode for application
+const mode = app.mode;
 
 // home: a `Path` object with the path of the application home directory
 const path = app.home.child('config.json').toString();
@@ -89,7 +92,7 @@ const ua = await app.newTestUserAgent();
 
 // addAppHook: add an application hook to extend the framework
 app.addAppHook('server:start', async app => {
-  app.mode = 'production';
+  app.config.deployment = 'server';
 });
 
 // addContextHook: add a context hook to extend the framework
@@ -492,7 +495,7 @@ Runs whenever the server has been started.
 
 ```js
 app.addAppHook('server:start', async app => {
-  app.mode = 'production';
+  app.config.deployment = 'server';
 });
 ```
 

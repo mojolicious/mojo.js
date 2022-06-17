@@ -90,7 +90,7 @@ export class App {
    */
   router: Router = new Router();
   /**
-   * Secret passphrases used for signed cookies and the like.
+   * Rotating secret passphrases used for signed cookies and the like.
    */
   secrets: string[];
   /**
