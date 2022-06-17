@@ -373,7 +373,7 @@ $ mkdir cli
 $ touch cli/spy.js
 ```
 
-The description will be used in the command list.
+Every command is async and has full access to the application object `app`.
 
 ```js
 export default async function spyCommand(app, args) {
