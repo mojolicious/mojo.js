@@ -314,7 +314,7 @@ const app = mojo();
 app.plugin(jsonConfigPlugin);
 
 app.get('/', async ctx => {
-  await ctx.render({json: {"name": ctx.config.name});
+  await ctx.render({json: {"name": ctx.config.name}});
 });
 
 app.start();
