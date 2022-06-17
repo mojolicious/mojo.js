@@ -1,7 +1,7 @@
 
 # Cheatsheet
 
-A quick overview of the most important [mojo.js](https://mojojs.org) classes and helpers.
+A quick overview of the most important [mojo.js](https://mojojs.org) classes, helpers and hooks.
 
 ## Classes
 
