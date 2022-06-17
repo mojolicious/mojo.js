@@ -322,7 +322,7 @@ app.start();
 
 Alternatively you can also use configuration files in the YAML format with `yamlConfigPlugin`.
 
-### Adding a Plugin to Your Application
+### Adding Plugins to Your Application
 
 To organize your code better and to prevent helpers from cluttering your application, you can use application specific
 plugins.
