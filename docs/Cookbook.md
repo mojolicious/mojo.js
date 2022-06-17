@@ -377,8 +377,12 @@ The description will be used in the command list.
 
 ```js
 export default async function spyCommand(app, args) {
-  if      (args[2] === 'secrets') console.warn(app.secrets);
-  else if (args[2] === 'mode')    console.warn(app.mode);
+  const subCommand = args[2];
+  if (subCommand === 'secrets') {
+    console.warn(app.secrets);
+  } else if (subCommand === 'mode') {
+    console.warn(app.mode);
+  }
 }
 
 spyCommand.description = 'Spy on application';
