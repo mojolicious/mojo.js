@@ -322,6 +322,46 @@ app.start();
 
 Alternatively you can also use configuration files in the YAML format with `yamlConfigPlugin`.
 
+### Adding a Plugin to Your Application
+
+To organize your code better and to prevent helpers from cluttering your application, you can use application specific
+plugins.
+
+```
+$ mkdir plugins
+$ touch plugins/my-helpers.js
+```
+
+They work just like normal plugins.
+
+```js
+export default function myHelpersPlugin (app) {
+  app.addHelper('renderWithHeader', async (ctx, ...args) => {
+    ctx.res.set('X-Mojo', 'I <3 mojo.js!');
+    await ctx.render(...args);
+  });
+}
+```
+
+You can have as many application specific plugins as you like, the only difference to normal plugins is that you load
+them directly from the file.
+
+```js
+import mojo from '@mojojs/core';
+import myHelpersPlugin from './plugins/my-helpers.js';
+
+const app = mojo();
+app.plugin(myHelpersPlugin);
+
+app.get('/', async ctx => {
+  await ctx.renderWithHeader({text => 'I ♥ mojo.js!'});
+});
+
+app.start();
+```
+
+Of course these plugins can contain more than just helpers.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
