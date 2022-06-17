@@ -44,20 +44,35 @@ app.session.sameSite = 'strict';
 // mime: manage MIME types
 app.mime.custom['foo'] = 'text/foo; charset=utf-8';
 
-// hooks: extend the framework with hooks
-app.addAppHook('server:start', async app => {
-  app.mode = 'production';
-});
-app.addContextHook('dispatch:before', async ctx => {
-  ctx.res.set('Server', 'MyServer 1.0');
-});
-
 // renderer: the application renderer, use it to add template engines and view directories
 app.renderer.addEngine('foo', fooEngine);
 app.renderer.viewPaths.push(app.home.child('templates').toString());
 
 // cli: the command line interface, use it to add your own custom commands
 app.cli.commandPaths.push(app.home.child('cli').toString());
+
+// newMockContext: create a new mock context for application (very useful for testing)
+const ctx = app.newMockContext();
+const html = ctx.faviconTag();
+
+// newTestUserAgent: create a new test user-agent for application
+const ua = await app.newTestUserAgent();
+(await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
+
+// addAppHook: add an application hook to extend the framework
+app.addAppHook('server:start', async app => {
+  app.mode = 'production';
+});
+
+// addContextHook: add a context hook to extend the framework
+app.addContextHook('dispatch:before', async ctx => {
+  ctx.res.set('Server', 'MyServer 1.0');
+});
+
+// addHelper: add a helper
+app.addHelper('debug', (ctx, str) => {
+  ctx.app.log.debug(str);
+});
 ```
 
 The `router` is the most commonly used application property and there are various shortcut methods for it.

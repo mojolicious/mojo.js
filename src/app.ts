@@ -130,7 +130,7 @@ export class App {
   }
 
   /**
-   * Add an application hook.
+   * Add an application hook to extend the framework.
    */
   addAppHook(name: string, fn: AppHook): this {
     this.hooks.addHook(name, fn);
@@ -138,7 +138,7 @@ export class App {
   }
 
   /**
-   * Add a context hook.
+   * Add a context hook to extend the framework.
    */
   addContextHook(name: string, fn: ContextHook): this {
     this.hooks.addHook(name, fn);
