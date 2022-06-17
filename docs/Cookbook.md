@@ -294,6 +294,34 @@ This can be combined with TLS for a secure authentication mechanism.
 $ node myapp.js server -l 'https://*:3000?cert=./server.crt&key=./server.key'
 ```
 
+### Adding a Configuration File
+
+Adding a configuration file to your application is as easy as adding a file to its home directory and loading the
+plugin `jsonConfigPlugin`. The default name for the config file is `config.json`, and it is possible to have mode
+specific config files like `config.development.json`.
+
+```
+$ echo '{"name": "my mojo.js application"}' > config.json
+```
+
+Configuration files themselves are just plain JSON files containing settings that will get merged into `app.config`,
+which is also available as `ctx.config`.
+
+```js
+import mojo, {jsonConfigPlugin} from '@mojojs/core';
+
+const app = mojo();
+app.plugin(jsonConfigPlugin);
+
+app.get('/', async ctx => {
+  await ctx.render({json: {"name": ctx.config.name});
+});
+
+app.start();
+```
+
+Alternatively you can also use configuration files in the YAML format with `yamlConfigPlugin`.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
