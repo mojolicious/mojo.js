@@ -362,6 +362,21 @@ app.start();
 
 Of course these plugins can contain more than just helpers.
 
+### Running Code Against Your Application
+
+Ever thought about running a quick one-liner against your mojo.js application to test something? Thanks to the `eval`
+command you can do just that, the application object itself can be accessed via `app`.
+
+```
+$ node index.js eval 'console.log(app.static.publicPaths)'
+```
+
+The verbose option will automatically print the return value or returned data structure to STDOUT.
+
+```
+$ node index.js eval -v 'app.static.viewPaths'
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
