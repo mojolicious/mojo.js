@@ -427,7 +427,7 @@ Generate HTML tag.
 
 These are all application hooks that are currently available, in the same order they usually run:
 
-### `command:before`
+### command:before
 
 Runs after `app.start()` has been called, and before the application reaches a command or prints the command list.
 
@@ -440,7 +440,7 @@ app.addAppHook('command:before', async (app, args) => {
 Useful for reconfiguring the application before running a command or to modify the behavior of a command. Passed the
 application object and command arguments.
 
-### `server:start`
+### server:start
 
 Runs whenever the server has been started.
 
@@ -452,7 +452,7 @@ app.addAppHook('server:start', async app => {
 
 Useful for reconfiguring the application or warming up caches. Passed the application object.
 
-### `server:stop`
+### server:stop
 
 Runs whenever the server has been stopped.
 
@@ -464,7 +464,7 @@ app.addAppHook('server:stop', async app => {
 
 Useful for cleanup tasks. Passed the application object.
 
-### `command:after`
+### command:after
 
 Runs after a command is finished or the command list has been printed.
 
@@ -480,7 +480,7 @@ Useful for cleanup tasks. Passed the application object and command argument.
 
 These are all context hooks that are currently available, in the same order they usually run:
 
-### `dispatch:before`
+### dispatch:before
 
 Runs after a new request has been received and before the static file server and router start their work.
 
@@ -494,7 +494,7 @@ app.addContextHook('dispatch:before', async ctx => {
 Useful for rewriting incoming requests and other preprocessing tasks. Passed the context object. Can return `true` to
 intercept the static file server and router.
 
-### `static:before`
+### static:before
 
 Runs before the static file server sends a response.
 
@@ -507,7 +507,7 @@ app.addContextHook('static:before', async (ctx, file) => {
 Mostly used for post-processing static file responses. Passed the context object and the static file to be sent. Can
 return `true` to intercept sending the static file.
 
-### `router:before`
+### router:before
 
 Runs after the static file server determined if a static file should be served and before the router starts its work.
 
@@ -522,7 +522,7 @@ app.addContextHook('router:before', async ctx => {
 Mostly used for custom dispatchers and collecting metrics. Passed the context object. Can return `true` to intercept
 the router.
 
-### `send:before`
+### send:before
 
 Runs after `ctx.res.send()` has been called and before dynamically generated content is sent with the response.
 
