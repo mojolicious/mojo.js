@@ -359,8 +359,8 @@ automatically.
 // GET /hello.html                 -> "html"
 // GET /hello.xml                  -> "xml"
 // GET /hello.txt                  -> null
-const format = ctx.accepts(['html', 'xml']);
-if (format !== null) {
+const formats = ctx.accepts(['html', 'xml']);
+if (formats !== null) {
   ...
 }
 ```

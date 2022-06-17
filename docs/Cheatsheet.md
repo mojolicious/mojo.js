@@ -137,19 +137,23 @@ await ctx.res.status(200).type('text/html').send('Hello World!');
 const params = await ctx.params();
 const foo = params.get('foo');
 
+// log: log messages with request id as context
+ctx.log.debug('Shut up and take my money!');
+
 // urlFor: generate URLs for routes
 const url = ctx.urlFor('index');
 
 // urlForFile: generate URLs for static files
-const url = ctx.urlForFile('foo/app.css');
+const url = ctx.urlForFile('/foo/app.css');
 
-// log: log messages with request id as context
-ctx.log.debug('Shut up and take my money!');
-
-// session: encrypted cookie based session
+// session: persistent data storage for the next few requests.
 const session = await ctx.session();
 session.user = 'kraih';
 const user = session.user;
+
+// flash: data storage persistent only for the next request.
+const flash = await ctx.flash();
+flash.confirmation = 'The record has been updated';
 
 // config: access application config
 const foo = ctx.config.foo;
@@ -161,6 +165,19 @@ const users = ctx.models.users;
 const validate = ctx.schema({$id: 'testForm', type: 'object'});
 const result = validate(await ctx.req.json());
 const valid = result.isValid;
+
+// redirectTo: send `302` redirect response
+await ctx.redirectTo('index');
+await ctx.redirectTo('https://mojojs.org');
+
+// respondTo: automatically select best possible representation for resource
+await ctx.respondTo({
+  json: {json: {hello: 'world'}},
+  any: {text: 'Hello World!'}
+});
+
+// sendFile: send static file
+await ctx.sendFile(ctx.home.child('index.js'));
 
 // exceptionFormat: format for HTTP exceptions ("html", "json", or "txt")
 ctx.exceptionFormat = 'html';
