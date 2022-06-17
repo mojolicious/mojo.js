@@ -277,7 +277,7 @@ export class App {
   /**
    * Register plugin.
    */
-  plugin<Type>(plugin: (app: App, options: Record<string, any>) => Type, options: Record<string, any> = {}): Type {
+  plugin<T>(plugin: (app: App, options: Record<string, any>) => T, options: Record<string, any> = {}): T {
     return plugin(this, options);
   }
 
