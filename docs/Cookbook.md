@@ -362,6 +362,45 @@ app.start();
 
 Of course these plugins can contain more than just helpers.
 
+### Adding Commands to Your Application
+
+By now you've probably used many of the built-in commands, like `get` and `server`, but did you know that you can just
+add new ones and that they will be picked up automatically by the command line interface if they are placed in a `cli`
+directory in your application's home directory?
+
+```
+$ mkdir cli
+$ touch cli/spy.js
+```
+
+The description will be used in the command list.
+
+```js
+export default async function spyCommand(app, args) {
+  if      (args[2] === 'secrets') console.warn(app.secrets);
+  else if (args[2] === 'mode')    console.warn(app.mode);
+}
+
+spyCommand.description = 'Spy on application';
+spyCommand.usage = `Usage: APPLICATION spy [OPTIONS]
+
+  node index.js spy
+
+Options:
+  -h, --help   Show this summary of available options
+`;
+
+```
+
+Command line arguments are passed right through and you can parse them with whatever module you prefer.
+
+```
+$ node index.js spy secrets
+["s3cret"]
+```
+
+The options `-h` and `--help` are handled automatically for all commands.
+
 ### Running Code Against Your Application
 
 Ever thought about running a quick one-liner against your mojo.js application to test something? Thanks to the `eval`
