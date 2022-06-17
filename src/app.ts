@@ -35,8 +35,6 @@ type ContextHook = (app: MojoContext, ...args: any[]) => any;
 
 type Decoration = ((...args: any[]) => any) | {get?: () => any; set?: (value: any) => any};
 
-type Plugin = (app: App, options: Record<string, any>) => any;
-
 const ContextWrapper = class extends Context {};
 
 /**
@@ -279,7 +277,7 @@ export class App {
   /**
    * Register plugin.
    */
-  plugin(plugin: Plugin, options: Record<string, any> = {}): any {
+  plugin<Type>(plugin: (app: App, options: Record<string, any>) => Type, options: Record<string, any> = {}): Type {
     return plugin(this, options);
   }
 
