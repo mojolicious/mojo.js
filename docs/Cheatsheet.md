@@ -7,12 +7,40 @@ A quick overview of the most important [mojo.js](https://mojojs.org) classes, he
 
 ### App
 
-The [mojo.js](https://mojojs.org) application object, usually called `app`.
+The [mojo.js](https://mojojs.org) application object. Created with the `mojo` function, which accepts a few options,
+but none of them are required.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo({
+
+  // Default configuration
+  config: {name: 'My Application'},
+
+  // Detect if the application has been imported and disable the command line interface if it has
+  detectImport: true,
+
+  // Format for HTTP exceptions ("html", "json", or "txt")
+  exceptionFormat: 'html',
+
+  // Secret passphrases used for signed cookies and the like
+  secrets: ['s3cret'],
+
+  // Application operating mode
+  mode: 'development'
+});
+```
+
+It is usually called `app`.
 
 ```js
 // config: plain configuration object, filled with data by config plugins, use it to to store arbitrary information
 app.config.foo = 'bar';
 const foo = app.config.foo;
+
+// exceptionFormat: format for HTTP exceptions ("html", "json", or "txt")
+app.exceptionFormat = 'html';
 
 // secrets: rotating secret passphrases used for signed cookies and the like
 app.secrets = ['s3cret pa$$phrase'];
@@ -130,6 +158,9 @@ const users = ctx.models.users;
 const validate = ctx.schema({$id: 'testForm', type: 'object'});
 const result = validate(await ctx.req.json());
 const valid = result.isValid;
+
+// exceptionFormat: format for HTTP exceptions ("html", "json", or "txt")
+ctx.exceptionFormat = 'html';
 
 // app: the mojo.js application object
 const app = ctx.app;

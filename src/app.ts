@@ -58,7 +58,7 @@ export class App {
    */
   detectImport: boolean;
   /**
-   * Format for HTTP exceptions.
+   * Format for HTTP exceptions ("html", "json", or "txt").
    */
   exceptionFormat: string;
   /**

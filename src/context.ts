@@ -49,7 +49,7 @@ class Context extends EventEmitter {
     }
   );
   /**
-   * Format for HTTP exceptions.
+   * Format for HTTP exceptions ("html", "json", or "txt").
    */
   exceptionFormat: string;
   /**
