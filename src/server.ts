@@ -108,9 +108,7 @@ export class Server {
   async start(): Promise<void> {
     await this.app.hooks.runHook('server:start', this.app);
     if (this._cluster === true && cluster.isPrimary === true) {
-      for (let i = 0; i < this._workers; i++) {
-        cluster.fork();
-      }
+      for (let i = 0; i < this._workers; i++) cluster.fork();
     } else {
       for (const location of this._listen) {
         await this._createServer(location);

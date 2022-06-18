@@ -226,7 +226,7 @@ export class App {
    * Create a mock context for application. Very useful for testing helpers.
    */
   newMockContext(options: {headers?: string[]; method?: string; url?: string} = {}): MojoContext {
-    const ctx = new this._contextClass(
+    const ctx: MojoContext = new this._contextClass(
       this,
       new ServerRequest({
         body: new Readable(),
@@ -238,9 +238,7 @@ export class App {
         reverseProxy: false,
         url: options.url ?? '/'
       }),
-      new ServerResponse(() => {
-        // Do nothing
-      })
+      new ServerResponse(() => ctx.log.trace('Mock response has been sent'))
     );
     Object.assign(ctx.stash, this.defaults);
     return ctx;

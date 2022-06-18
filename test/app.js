@@ -927,6 +927,11 @@ t.test('App', async t => {
     t.equal(await ctx.renderToString({inline: 'Test: <%= hello %>'}), 'Test: mojo');
     t.equal(app.newMockContext().tag('p', {class: 'test'}, 'Hello!').toString(), '<p class="test">Hello!</p>');
 
+    const logs = app.log.capture('trace');
+    await ctx.render({text: 'Hello World!'});
+    logs.stop();
+    t.match(logs.toString(), /Mock response has been sent/);
+
     const ctx2 = app.newMockContext({method: 'POST', url: '/test', headers: ['Host', 'localhost']});
     t.equal(ctx2.req.method, 'POST');
     t.equal(ctx2.req.path, '/test');

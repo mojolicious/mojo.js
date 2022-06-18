@@ -93,9 +93,7 @@ export class Body {
   async form(options?: UploadOptions): Promise<Params> {
     if (this._form === undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for await (const _ of this.files(options)) {
-        // We only care about the side effects
-      }
+      for await (const _ of this.files(options));
     }
 
     return this._params;
