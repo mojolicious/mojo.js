@@ -21,6 +21,10 @@ t.test('CGI', async t => {
 
   app.get('/', ctx => ctx.render({text: 'Hello World!'}));
 
+  app.get('/stream', async ctx => {
+    await ctx.res.length(13).send(Stream.Readable.from(['Hello', ' Stream!']));
+  });
+
   await t.test('Minimal request', async t => {
     const env = process.env;
     process.env = {PATH_INFO: '/'};
@@ -39,6 +43,24 @@ t.test('CGI', async t => {
     t.match(output, /Content-Type: text\/plain; charset=utf-8/);
     t.match(output, /Status: 200 OK/);
     t.match(output, /Hello World!/);
+  });
+
+  await t.test('Stream response', async t => {
+    const env = process.env;
+    process.env = {PATH_INFO: '/stream'};
+
+    const output = await captureOutput(
+      async () => {
+        await new CGI(app).run();
+      },
+      {stderr: true, stdout: true}
+    );
+
+    process.env = env;
+
+    t.match(output, /Content-Length: 13/);
+    t.match(output, /Status: 200 OK/);
+    t.match(output, /Hello Stream!/);
   });
 
   await t.test('Not found', async t => {
