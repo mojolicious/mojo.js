@@ -1,7 +1,7 @@
 name: coverage
 on: [push, pull_request]
 jobs:
-  eslint:
+  coveralls:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
