@@ -5,6 +5,13 @@ import {URLSearchParams} from 'url';
  */
 export class Params extends URLSearchParams {
   /**
+   * Current number of parameters.
+   */
+  get size(): number {
+    return [...this.keys()].length;
+  }
+
+  /**
    * Convert parameters into a plain object, useful for validation.
    */
   toObject(): Record<string, any> {

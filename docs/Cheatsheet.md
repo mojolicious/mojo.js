@@ -140,11 +140,14 @@ const foo = params.get('foo');
 // log: log messages with request id as context
 ctx.log.debug('Shut up and take my money!');
 
-// urlFor: generate URLs for routes
+// urlFor: generate URL for route or path
 const url = ctx.urlFor('index');
 
-// urlForFile: generate URLs for static files
+// urlForFile: generate URL for static file
 const url = ctx.urlForFile('/foo/app.css');
+
+// urlWith: generate URL for route or path and preserve the current query parameters
+const url = ctx.urlWith('index');
 
 // session: persistent data storage for the next few requests.
 const session = await ctx.session();

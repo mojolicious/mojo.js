@@ -321,7 +321,7 @@ class Context extends EventEmitter {
   }
 
   /**
-   * Generate URL for route of path.
+   * Generate URL for route or path.
    */
   urlFor(target?: string, values?: Record<string, any>, options: URLOptions = {}): string | null {
     if (target === undefined || target === 'current') {
@@ -344,6 +344,19 @@ class Context extends EventEmitter {
   urlForFile(path: string): string {
     if (ABSOLUTE.test(path)) return path;
     return this.app.static.filePath(path);
+  }
+
+  /**
+   * Generate URL for route or path and preserve the current query parameters.
+   */
+  urlWith(target?: string, values?: Record<string, any>, options: URLOptions = {}): string | null {
+    const params = this.req.query;
+    if (params.size > 0) {
+      const query = params.toObject();
+      options.query = options.query === undefined ? query : {...query, ...options.query};
+    }
+
+    return this.urlFor(target, values, options);
   }
 
   /**
