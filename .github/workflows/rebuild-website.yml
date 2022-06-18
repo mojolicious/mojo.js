@@ -1,4 +1,4 @@
-name: Rebuild Website
+name: rebuild website
 on:
   push:
     branches:
@@ -7,7 +7,7 @@ jobs:
   rebuild_website:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger website workflow
+      - name: trigger website workflow
         run: |
           curl \
             -X POST \
