@@ -10,7 +10,7 @@ export default function defaultConditionsPlugin(app: App): void {
   router.addCondition('host', hostCondition);
 }
 
-function headerCondition(ctx: MojoContext, requirement: Record<string, RegExp>): boolean {
+async function headerCondition(ctx: MojoContext, requirement: Record<string, RegExp>): Promise<boolean> {
   for (const [name, regex] of Object.entries(requirement)) {
     const value = ctx.req.get(name);
     if (typeof value !== 'string') return false;
@@ -20,6 +20,6 @@ function headerCondition(ctx: MojoContext, requirement: Record<string, RegExp>):
   return true;
 }
 
-function hostCondition(ctx: MojoContext, requirement: RegExp): boolean {
+async function hostCondition(ctx: MojoContext, requirement: RegExp): Promise<boolean> {
   return headerCondition(ctx, {Host: requirement});
 }

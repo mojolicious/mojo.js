@@ -13,7 +13,7 @@ interface RouteSpec {
   websocket: boolean;
 }
 
-type RouteCondition = (ctx: MojoContext, requirements: any) => boolean;
+type RouteCondition = (ctx: MojoContext, requirements: any) => Promise<boolean>;
 
 const PLACEHOLDER = {};
 

@@ -767,7 +767,7 @@ run every time a new request arrives, and which need to return `true` for the ro
 
 ```js
 // A condition that randomly allows a route to match
-router.addCondition('random', (ctx, num) => {
+router.addCondition('random', async (ctx, num) => {
   // Winner
   if (Math.floor(Math.random() * 10) === num) return true;
 
@@ -779,7 +779,7 @@ router.addCondition('random', (ctx, num) => {
 router.get('/maybe').requires('random', 5).to('foo#bar');
 ```
 
-Use whatever request information you need. Conditions can be `async` functions too.
+As `async` functions, conditions can access a wide range of information.
 
 ```js
 // A condition to check query parameters (useful for mock web services)
