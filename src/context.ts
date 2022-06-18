@@ -209,6 +209,10 @@ class Context extends EventEmitter {
 
   /**
    * GET and POST parameters.
+   * @example
+   * // Get a specific parameter
+   * const params = await ctx.params();
+   * const foo = params.get('foo');
    */
   async params(options?: BusboyConfig): Promise<Params> {
     if (this._params === undefined) {
@@ -241,6 +245,15 @@ class Context extends EventEmitter {
 
   /**
    * Render dynamic content.
+   * @example
+   * // Render text
+   * await ctx.render({text: 'Hello World!'});
+   *
+   * // Render JSON
+   * await ctx.render({json: {hello: 'world'}});
+   *
+   * // Render view "users/list.*.*" and pass it a stash value
+   * await ctx.render({view: 'users/list'}, {foo: 'bar'});
    */
   async render(options: RenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
     if (typeof options === 'string') options = {view: options};
@@ -322,6 +335,15 @@ class Context extends EventEmitter {
 
   /**
    * Generate URL for route or path.
+   * @example
+   * // Current URL with query parameter
+   * const url = ctx.urlFor('current', {query: {foo: 'bar'}});
+   *
+   * // URL for route with placeholder values
+   * const url = ctx.urlFor('users', {values: {id: 23}});
+   *
+   * // Absolute URL for path
+   * const url = ctx.urlFor('/some/path', {absolute: true});
    */
   urlFor(target?: string, options: URLOptions = {}): string | null {
     if (target === undefined || target === 'current') {
@@ -348,6 +370,9 @@ class Context extends EventEmitter {
 
   /**
    * Generate URL for route or path and preserve the current query parameters.
+   * @example
+   * // Remove a specific query parameter
+   * const url = ctx.urlWith('current', {query: {foo: null}});
    */
   urlWith(target?: string, options: URLOptions = {}): string | null {
     options.query = Object.fromEntries(
