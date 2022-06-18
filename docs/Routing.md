@@ -396,7 +396,7 @@ router.get('/foo/:user').to('foo#bar').name('baz');
 const url = ctx.urlFor('baz');
 
 // Generate URL "/foo/jan" for route "baz"
-const url = ctx.urlFor('baz', {user: 'jan'});
+const url = ctx.urlFor('baz', {values: {user: 'jan'}});
 ```
 
 You can manually assign a name or let the router generate one automatically, which would be equal to the route itself
@@ -598,7 +598,7 @@ router.get('/foo/:id', {ext: ['txt', 'json']}).to('foo#bar').name('baz');
 ```
 ```js
 // Generate URL "/foo/24.json" for route "baz"
-const url = ctx.urlFor('baz', {id: 24, ext: 'txt'});
+const url = ctx.urlFor('baz', {values: {id: 24, ext: 'txt'}});
 ```
 
 ### WebSockets

@@ -227,7 +227,7 @@ t.test('App', async t => {
     const form = await ctx.req.form();
     const target = form.get('target');
     const values = form.has('msg') ? {msg: form.get('msg')} : undefined;
-    return ctx.render({text: ctx.urlFor(target, values)});
+    return ctx.render({text: ctx.urlFor(target, {values})});
   });
   app.any('/websocket').websocket('/route').any('/works').name('websocket_route');
 
@@ -948,20 +948,22 @@ t.test('App', async t => {
     t.equal(ctx.urlWith('/what/ever'), '/what/ever?foo=bar&baz=yada');
 
     t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
-    t.equal(ctx.urlFor('methods', {}, {query: {_method: 'PUT'}}), '/methods?_method=PUT');
+    t.equal(ctx.urlFor('methods', {query: {_method: 'PUT'}}), '/methods?_method=PUT');
+    t.equal(ctx.urlFor('methods', {absolute: true, query: {_method: 'PUT'}}), 'http://example.com/methods?_method=PUT');
+    t.equal(ctx.urlFor('/what/ever', {query: {_method: 'PUT'}}), '/what/ever?_method=PUT');
+    t.equal(ctx.urlFor('methods', {query: {b: 'B', a: 'A', c: 'C'}}), '/methods?b=B&a=A&c=C');
     t.equal(
-      ctx.urlFor('methods', {}, {absolute: true, query: {_method: 'PUT'}}),
-      'http://example.com/methods?_method=PUT'
+      ctx.urlFor('exception', {query: {_method: 'QUERY'}, values: {msg: 'test'}}),
+      '/exception/test?_method=QUERY'
     );
-    t.equal(ctx.urlFor('/what/ever', {}, {query: {_method: 'PUT'}}), '/what/ever?_method=PUT');
-    t.equal(ctx.urlFor('methods', {}, {query: {b: 'B', a: 'A', c: 'C'}}), '/methods?b=B&a=A&c=C');
-    t.equal(ctx.urlFor('exception', {msg: 'test'}, {query: {_method: 'QUERY'}}), '/exception/test?_method=QUERY');
 
-    t.equal(ctx.urlWith('/what/ever', {}, {query: {baz: 'works'}}), '/what/ever?foo=bar&baz=works');
-    t.equal(ctx.urlWith('/what/ever', {}, {query: {foo: 'works', baz: 'too'}}), '/what/ever?foo=works&baz=too');
-    t.equal(ctx.urlWith('exception', {msg: 'tset'}, {query: {baz: 'too'}}), '/exception/tset?foo=bar&baz=too');
+    t.equal(ctx.urlWith('/what/ever', {query: {baz: 'works'}}), '/what/ever?foo=bar&baz=works');
+    t.equal(ctx.urlWith('/what/ever', {query: {foo: 'works', baz: 'too'}}), '/what/ever?foo=works&baz=too');
+    t.equal(ctx.urlWith('/what/ever', {query: {baz: null}}), '/what/ever?foo=bar');
+    t.equal(ctx.urlWith('/what/ever', {query: {baz: null, foo: null}}), '/what/ever');
+    t.equal(ctx.urlWith('exception', {query: {baz: 'too'}, values: {msg: 'tset'}}), '/exception/tset?foo=bar&baz=too');
     t.equal(
-      ctx.urlWith('/what/ever', {}, {absolute: true, query: {foo: 'works'}}),
+      ctx.urlWith('/what/ever', {absolute: true, query: {foo: 'works'}}),
       'http://example.com/what/ever?foo=works&baz=yada'
     );
 

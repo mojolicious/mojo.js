@@ -13,7 +13,7 @@ import EventEmitter from 'events';
 import {Params} from './body/params.js';
 import {SafeString} from './util.js';
 
-type URLOptions = {absolute?: boolean; query?: Record<string, string>};
+type URLOptions = {absolute?: boolean; query?: Record<string, string>; values?: Record<string, string>};
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 
@@ -235,7 +235,7 @@ class Context extends EventEmitter {
   async redirectTo(target: string, options: {status?: number; values?: Record<string, any>} = {}): Promise<void> {
     await this.res
       .status(options.status ?? 302)
-      .set('Location', this.urlFor(target, options.values, {absolute: true}) ?? '')
+      .set('Location', this.urlFor(target, {absolute: true, values: options.values}) ?? '')
       .send();
   }
 
@@ -323,10 +323,10 @@ class Context extends EventEmitter {
   /**
    * Generate URL for route or path.
    */
-  urlFor(target?: string, values?: Record<string, any>, options: URLOptions = {}): string | null {
+  urlFor(target?: string, options: URLOptions = {}): string | null {
     if (target === undefined || target === 'current') {
       if (this.plan === null) return null;
-      const result = this.plan.render(values);
+      const result = this.plan.render(options.values);
       return this._urlForPath(result.path, result.websocket, options);
     }
 
@@ -335,7 +335,7 @@ class Context extends EventEmitter {
 
     const route = this.app.router.lookup(target);
     if (route === null) return null;
-    return this._urlForPath(route.render(values), route.hasWebSocket(), options);
+    return this._urlForPath(route.render(options.values), route.hasWebSocket(), options);
   }
 
   /**
@@ -349,14 +349,12 @@ class Context extends EventEmitter {
   /**
    * Generate URL for route or path and preserve the current query parameters.
    */
-  urlWith(target?: string, values?: Record<string, any>, options: URLOptions = {}): string | null {
-    const params = this.req.query;
-    if (params.size > 0) {
-      const query = params.toObject();
-      options.query = options.query === undefined ? query : {...query, ...options.query};
-    }
+  urlWith(target?: string, options: URLOptions = {}): string | null {
+    options.query = Object.fromEntries(
+      Object.entries({...this.req.query.toObject(), ...(options.query ?? {})}).filter(([, v]) => v !== null)
+    );
 
-    return this.urlFor(target, values, options);
+    return this.urlFor(target, options);
   }
 
   /**
@@ -367,8 +365,13 @@ class Context extends EventEmitter {
   }
 
   _urlForPath(path: string, isWebSocket: boolean, options: URLOptions): string {
-    const query = options.query === undefined ? '' : '?' + new Params(options.query).toString();
+    let query = '';
+    if (options.query !== undefined && Object.keys(options.query).length > 0) {
+      query = '?' + new Params(options.query).toString();
+    }
+
     if (options.absolute !== true && isWebSocket === false) return path + query;
+
     const url = this.req.baseURL + path + query;
     return isWebSocket ? url.replace(/^http/, 'ws') : url;
   }
