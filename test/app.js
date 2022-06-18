@@ -937,6 +937,16 @@ t.test('App', async t => {
     const ctx = app.newMockContext();
     ctx.req.set('Host', 'example.com');
 
+    t.same(ctx.urlFor('current'), null);
+    t.same(ctx.urlWith('current'), null);
+
+    t.equal(ctx.urlFor('/what/ever'), '/what/ever');
+    t.equal(ctx.urlWith('/what/ever'), '/what/ever');
+    ctx.req.query.set('foo', 'bar');
+    ctx.req.query.set('baz', 'yada');
+    t.equal(ctx.urlFor('/what/ever'), '/what/ever');
+    t.equal(ctx.urlWith('/what/ever'), '/what/ever?foo=bar&baz=yada');
+
     t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
     t.equal(ctx.urlFor('methods', {}, {query: {_method: 'PUT'}}), '/methods?_method=PUT');
     t.equal(
@@ -947,12 +957,6 @@ t.test('App', async t => {
     t.equal(ctx.urlFor('methods', {}, {query: {b: 'B', a: 'A', c: 'C'}}), '/methods?b=B&a=A&c=C');
     t.equal(ctx.urlFor('exception', {msg: 'test'}, {query: {_method: 'QUERY'}}), '/exception/test?_method=QUERY');
 
-    t.same(ctx.urlWith('current'), null);
-    t.equal(ctx.urlWith('/what/ever'), '/what/ever');
-
-    ctx.req.query.set('foo', 'bar');
-    ctx.req.query.set('baz', 'yada');
-    t.equal(ctx.urlWith('/what/ever'), '/what/ever?foo=bar&baz=yada');
     t.equal(ctx.urlWith('/what/ever', {}, {query: {baz: 'works'}}), '/what/ever?foo=bar&baz=works');
     t.equal(ctx.urlWith('/what/ever', {}, {query: {foo: 'works', baz: 'too'}}), '/what/ever?foo=works&baz=too');
     t.equal(ctx.urlWith('exception', {msg: 'tset'}, {query: {baz: 'too'}}), '/exception/tset?foo=bar&baz=too');
