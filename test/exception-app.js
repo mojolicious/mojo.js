@@ -482,4 +482,32 @@ t.test('Exception app', async t => {
 
     await ua.stop();
   });
+
+  await t.test('Bad controller exceptions', async t => {
+    const app = mojo({mode: 'development'});
+    app.router.controllers['bar'] = null;
+
+    app.any('/missing/controller').to('foo#one');
+    app.any('/no/default/export').to('bar#two');
+
+    const ua = await app.newTestUserAgent({tap: t});
+
+    const logs = app.log.capture('trace');
+    (await ua.getOk('/missing/controller'))
+      .statusIs(500)
+      .typeIs('text/plain; charset=utf-8')
+      .bodyLike(/Controller "foo" does not exist/);
+    logs.stop();
+    t.match(logs.toString(), /Controller "foo" does not exist/);
+
+    const logs2 = app.log.capture('trace');
+    (await ua.getOk('/no/default/export'))
+      .statusIs(500)
+      .typeIs('text/plain; charset=utf-8')
+      .bodyLike(/Controller "bar" does not have a default export/);
+    logs2.stop();
+    t.match(logs2.toString(), /Controller "bar" does not have a default export/);
+
+    await ua.stop();
+  });
 });
