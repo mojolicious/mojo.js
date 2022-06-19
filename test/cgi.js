@@ -45,6 +45,25 @@ t.test('CGI', async t => {
     t.match(output, /Hello World!/);
   });
 
+  await t.test('Empty environment', async t => {
+    const env = process.env;
+    process.env = {};
+
+    const output = await captureOutput(
+      async () => {
+        await new CGI(app).run();
+      },
+      {stderr: true, stdout: true}
+    );
+
+    process.env = env;
+
+    t.match(output, /Content-Length: 12/);
+    t.match(output, /Content-Type: text\/plain; charset=utf-8/);
+    t.match(output, /Status: 200 OK/);
+    t.match(output, /Hello World!/);
+  });
+
   await t.test('Stream response', async t => {
     const env = process.env;
     process.env = {PATH_INFO: '/stream'};
