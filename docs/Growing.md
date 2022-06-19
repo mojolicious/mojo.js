@@ -187,7 +187,7 @@ myapp                            // Application directory (created manually)
 |-- node_modules
 |   `-- *lots of node files*
 |-- package.json                 // Node package information and settings
-|-- tsconfig.json                // TypeScript compiler configuration
+|-- tsconfig.json                // TypeScript configuration
 |-- test                         // Test directory
 |   `-- example.js               // Random test
 |-- config.yml                   // Configuration file
@@ -195,11 +195,11 @@ myapp                            // Application directory (created manually)
 |   `-- index.html               // Static HTML file
 |-- src                          // TypeScript source directory
 |   |-- index.ts                 // Application script
-|   `-- controllers              // Controller directory
-|       `-- example.ts           // Controller class
+|   |-- controllers              // Controller directory
+|   |   `-- example.ts           // Controller class
+|   `-- models                   // Model directory
 |-- lib
 |   `-- *compiled js files*
-|-- models                       // Model directory
 `-- views                        // Views directory
     |-- example                  // View directory for "Example" controller
     |    `-- welcome.html.tmpl   // Template for "welcome" action
