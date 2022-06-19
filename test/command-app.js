@@ -355,7 +355,9 @@ t.test('Command app', async t => {
     t.match(await dir2.child('test', 'example.js').readFile('utf8'), /getOk/);
     t.match(output4.toString(), /\[write\].+tsconfig\.json/);
     t.same(await dir2.child('tsconfig.json').exists(), true);
-    t.match(await dir2.child('tsconfig.json').readFile('utf8'), /compilerOptions/);
+    const tsConfig = JSON.parse(await dir2.child('tsconfig.json').readFile('utf8'));
+    t.equal(tsConfig.compilerOptions.target, 'ES2020');
+    t.same(tsConfig.include, ['src/**/*']);
     t.match(output4.toString(), /\[fixed\].+package\.json/);
     t.same(await dir2.child('package.json').exists(), true);
     const pkg2 = JSON.parse(await dir2.child('package.json').readFile('utf8'));
