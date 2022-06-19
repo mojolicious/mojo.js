@@ -24,12 +24,6 @@ t.test('App', async t => {
     'user'
   );
 
-  app.renderer.addEngine('test', {
-    render() {
-      return Buffer.from('Hello Test!');
-    }
-  });
-
   // GET /
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
@@ -944,7 +938,7 @@ t.test('App', async t => {
     t.equal(ctx2.req.headers.get('Host'), 'localhost');
   });
 
-  await t.test('URL generation', async t => {
+  await t.test('URL generation', t => {
     const ctx = app.newMockContext();
     ctx.req.set('Host', 'example.com');
 
@@ -978,10 +972,7 @@ t.test('App', async t => {
       'http://example.com/what/ever?foo=works&baz=yada'
     );
 
-    t.same(await ctx.renderToString({engine: 'test'}), 'Hello Test!');
-    t.same(await ctx.renderToString({view: 'does-not-exist', engine: 'test'}), null);
-    t.same(await ctx.renderToString({engine: 'does-not-exist'}), null);
-    t.same(await ctx.renderToString({inline: 'failed', engine: 'does-not-exist'}), null);
+    t.end();
   });
 
   await t.test('Partial content', t => {

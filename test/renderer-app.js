@@ -7,6 +7,12 @@ t.test('Renderer app', async t => {
   t.equal(app.log.level, 'trace');
   app.log.level = 'fatal';
 
+  app.renderer.addEngine('test', {
+    render() {
+      return Buffer.from('Hello Test!');
+    }
+  });
+
   app.renderer.addEngine('custom', {
     render: (ctx, options) => {
       return Buffer.from(`Custom ${options.inline}`);
@@ -45,6 +51,14 @@ t.test('Renderer app', async t => {
 
   await t.test('Inline layout', async () => {
     (await ua.getOk('/inline/layout')).statusIs(200).bodyLike(/Header: Test.+this works.+Footer/s);
+  });
+
+  await t.test('Rendering order', async t => {
+    const ctx = app.newMockContext();
+    t.same(await ctx.renderToString({engine: 'test'}), 'Hello Test!');
+    t.same(await ctx.renderToString({view: 'does-not-exist', engine: 'test'}), null);
+    t.same(await ctx.renderToString({engine: 'does-not-exist'}), null);
+    t.same(await ctx.renderToString({inline: 'failed', engine: 'does-not-exist'}), null);
   });
 
   await ua.stop();
