@@ -25,7 +25,7 @@ export class CookieJar {
    */
   async storeCookies(url: URL, headers: string[]): Promise<void> {
     const cookieURL = this._cookieURL(url);
-    for (const cookie of headers.map(value => tough.Cookie.parse(value ?? ''))) {
+    for (const cookie of headers.map(value => tough.Cookie.parse(value))) {
       if (cookie !== undefined) await this.storage.setCookie(cookie, cookieURL);
     }
   }
