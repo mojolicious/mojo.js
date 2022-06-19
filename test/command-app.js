@@ -327,15 +327,36 @@ t.test('Command app', async t => {
     t.match(output3.toString(), /\[exists\].+welcome\.html\.tmpl/);
     t.match(output3.toString(), /\[exists\].+test.+example\.js/);
 
-    const dir2 = dir.child('test-app');
+    const dir2 = dir.child('ts-app');
     await dir2.mkdir();
     process.chdir(dir2.toString());
     const output4 = await captureOutput(async () => {
-      await app.cli.start('create-full-app', 'myapp.js');
+      await app.cli.start('create-full-app', '--typescript');
     });
-    t.match(output4.toString(), /\[write\].+test-app.+myapp\.js/);
-    t.same(await dir2.child('myapp.js').exists(), true);
-    t.match(await dir2.child('myapp.js').readFile('utf8'), /import mojo.+from '@mojojs\/core'/);
+    t.match(output4.toString(), /\[write\].+config\.yml/);
+    t.same(await dir2.child('config.yml').exists(), true);
+    t.match(await dir2.child('config.yml').readFile('utf8'), /secrets:/);
+    t.match(output4.toString(), /\[write\].+src.+index\.ts/);
+    t.same(await dir2.child('src', 'index.ts').exists(), true);
+    t.match(await dir2.child('src', 'index.ts').readFile('utf8'), /import mojo.+from '@mojojs\/core'/);
+    t.match(output4.toString(), /\[write\].+src.+controllers.+example\.ts/);
+    t.same(await dir2.child('src', 'controllers', 'example.ts').exists(), true);
+    t.match(await dir2.child('src', 'controllers', 'example.ts').readFile('utf8'), /export default class Controller/);
+    t.match(output4.toString(), /\[write\].+default\.html\.tmpl/);
+    t.same(await dir2.child('views', 'layouts', 'default.html.tmpl').exists(), true);
+    t.match(await dir2.child('views', 'layouts', 'default.html.tmpl').readFile('utf8'), /Welcome/);
+    t.match(output4.toString(), /\[write\].+welcome\.html\.tmpl/);
+    t.same(await dir2.child('views', 'example', 'welcome.html.tmpl').exists(), true);
+    t.match(await dir2.child('views', 'example', 'welcome.html.tmpl').readFile('utf8'), /This page/);
+    t.match(output4.toString(), /\[write\].+test.+example\.js/);
+    t.same(await dir2.child('test', 'example.js').exists(), true);
+    t.match(await dir2.child('test', 'example.js').readFile('utf8'), /getOk/);
+    t.match(output4.toString(), /\[write\].+tsconfig\.json/);
+    t.same(await dir2.child('tsconfig.json').exists(), true);
+    t.match(await dir2.child('tsconfig.json').readFile('utf8'), /compilerOptions/);
+    t.match(output4.toString(), /\[fixed\].+package\.json/);
+    t.same(await dir2.child('package.json').exists(), true);
+    t.match(await dir2.child('package.json').readFile('utf8'), /module/);
 
     process.chdir(cwd);
   });

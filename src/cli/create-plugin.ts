@@ -5,7 +5,7 @@ import * as util from '../util.js';
 /**
  * Plugin generator command.
  */
-export default async function genPluginCommand(app: App, args: string[]): Promise<void> {
+export default async function createPluginCommand(app: App, args: string[]): Promise<void> {
   const stdout = process.stdout;
   stdout.write('Generating plugin:\n');
 
@@ -34,8 +34,8 @@ export default async function genPluginCommand(app: App, args: string[]): Promis
   });
 }
 
-genPluginCommand.description = 'Create plugin';
-genPluginCommand.usage = `Usage: APPLICATION create-plugin [OPTIONS] [NAME]
+createPluginCommand.description = 'Create plugin';
+createPluginCommand.usage = `Usage: APPLICATION create-plugin [OPTIONS] [NAME]
 
   node index.js create-plugin
   node index.js create-plugin mojo-plugin-foo

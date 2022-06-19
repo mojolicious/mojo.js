@@ -4,7 +4,7 @@ import * as util from '../util.js';
 /**
  * Application generator command.
  */
-export default async function genLiteAppCommand(app: App, args: string[]): Promise<void> {
+export default async function createLiteAppCommand(app: App, args: string[]): Promise<void> {
   const stdout = process.stdout;
   stdout.write('Generating single file application:\n');
   await util.cliCreateFile(args[1] ?? 'index.js', liteApp);
@@ -12,8 +12,8 @@ export default async function genLiteAppCommand(app: App, args: string[]): Promi
   stdout.write(tip);
 }
 
-genLiteAppCommand.description = 'Create single file application';
-genLiteAppCommand.usage = `Usage: APPLICATION create-lite-app [OPTIONS] [NAME]
+createLiteAppCommand.description = 'Create single file application';
+createLiteAppCommand.usage = `Usage: APPLICATION create-lite-app [OPTIONS] [NAME]
 
   node index.js create-lite-app
   node index.js create-lite-app myapp.js

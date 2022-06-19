@@ -62,7 +62,7 @@ should include a `"type": "module"`. Or you have to use the `.mjs` file extensio
 {
   "type": "module",
   "dependencies": {
-    "@mojojs/core": ">=0.0.6"
+    "@mojojs/core": "^1.0.0"
   }
 }
 ```
