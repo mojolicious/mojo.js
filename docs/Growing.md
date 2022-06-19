@@ -156,7 +156,7 @@ myapp                            // Application directory (created manually)
 |   `-- example.js               // Controller class
 |-- models                       // Model directory
 `-- views                        // Views directory
-    |-- example                  // View directory for "Example" controller
+    |-- example                  // View directory for "example" controller
     |    `-- welcome.html.tmpl   // Template for "welcome" action
     `-- layouts                  // View directory for layout templates
         `-- default.html.tmpl    // Layout template
@@ -201,7 +201,7 @@ myapp                            // Application directory (created manually)
 |-- lib
 |   `-- *compiled js files*
 `-- views                        // Views directory
-    |-- example                  // View directory for "Example" controller
+    |-- example                  // View directory for "example" controller
     |    `-- welcome.html.tmpl   // Template for "welcome" action
     `-- layouts                  // View directory for layout templates
         `-- default.html.tmpl    // Layout template
