@@ -186,6 +186,7 @@ t.test('Util', async t => {
     t.same(jsonPointer(['test', 123], '/1'), 123, 'right result');
     t.same(jsonPointer('test', ''), 'test', 'right result');
     t.same(jsonPointer('', '/0'), undefined, 'no result');
+    t.same(jsonPointer('test', '0'), undefined, 'no result');
 
     const value = {
       foo: ['bar', 'baz'],
