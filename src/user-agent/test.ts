@@ -344,7 +344,7 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   get _html(): DOM {
-    if (this._dom === undefined) this._dom = new DOM((this.body ?? '').toString());
+    if (this._dom === undefined) this._dom = new DOM(this.body.toString());
     return this._dom;
   }
 
