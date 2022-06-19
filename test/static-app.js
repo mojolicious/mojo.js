@@ -43,6 +43,12 @@ t.test('Static app', async t => {
       .headerExists('Content-Length');
   });
 
+  await t.test('File names', t => {
+    t.equal(app.static.filePath('/index.html'), '/static/index.html');
+    t.equal(app.static.filePath('index.html'), '/static/index.html');
+    t.end();
+  });
+
   await t.test('0', async () => {
     (await ua.getOk('/static/0')).statusIs(200).headerIs('Content-Length', '1').bodyIs('0');
     (await ua.getOk('/0')).statusIs(200).headerIs('Content-Length', '4').bodyIs('Zero');
