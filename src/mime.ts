@@ -24,8 +24,7 @@ export class Mime {
       this._reverseCustom = {};
       for (const [name, value] of Object.entries(this.custom)) {
         const match = value.match(/^\s*([^,; ]+)/);
-        if (match === null) continue;
-        this._reverseCustom[match[1]] = name;
+        if (match !== null) this._reverseCustom[match[1]] = name;
       }
     }
     const reverse = this._reverseCustom;

@@ -486,9 +486,11 @@ t.test('Exception app', async t => {
   await t.test('Bad controller exceptions', async t => {
     const app = mojo({mode: 'development'});
     app.router.controllers['bar'] = null;
+    app.router.controllers['baz'] = class {};
 
     app.any('/missing/controller').to('foo#one');
     app.any('/no/default/export').to('bar#two');
+    app.any('/missing/action').to('baz#three');
 
     const ua = await app.newTestUserAgent({tap: t});
 
@@ -507,6 +509,14 @@ t.test('Exception app', async t => {
       .bodyLike(/Controller "bar" does not have a default export/);
     logs2.stop();
     t.match(logs2.toString(), /Controller "bar" does not have a default export/);
+
+    const logs3 = app.log.capture('trace');
+    (await ua.getOk('/missing/action'))
+      .statusIs(500)
+      .typeIs('text/plain; charset=utf-8')
+      .bodyLike(/Action "three" does not exist/);
+    logs3.stop();
+    t.match(logs3.toString(), /Action "three" does not exist/);
 
     await ua.stop();
   });

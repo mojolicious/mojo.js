@@ -165,6 +165,8 @@ t.test('Router', async t => {
 
   t.test('Introspect', t => {
     t.equal(r.lookup('null').customName, 'null');
+    t.same(r.lookup('does-not-exist'), null);
+    t.same(r.find('does-not-exist'), null);
     t.end();
   });
 
