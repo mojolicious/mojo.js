@@ -55,10 +55,21 @@ t.test('Renderer app', async t => {
 
   await t.test('Rendering order', async t => {
     const ctx = app.newMockContext();
-    t.same(await ctx.renderToString({engine: 'test'}), 'Hello Test!');
+    t.equal(await ctx.renderToString({engine: 'test'}), 'Hello Test!');
     t.same(await ctx.renderToString({view: 'does-not-exist', engine: 'test'}), null);
     t.same(await ctx.renderToString({engine: 'does-not-exist'}), null);
     t.same(await ctx.renderToString({inline: 'failed', engine: 'does-not-exist'}), null);
+  });
+
+  await t.test('Missing view', async t => {
+    const ctx = app.newMockContext();
+    let result;
+    try {
+      await ctx.renderToString({engine: 'tmpl'});
+    } catch (error) {
+      result = error;
+    }
+    t.match(result, /viewPath is not defined for tmplEngine/);
   });
 
   await ua.stop();
