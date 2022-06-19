@@ -45,6 +45,7 @@ Options:
 `;
 
 const plugin = `export default function myPlugin(app, options) {
+  // Add plugin code here
 }
 `;
 

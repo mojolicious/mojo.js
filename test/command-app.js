@@ -386,7 +386,10 @@ t.test('Command app', async t => {
     });
     t.match(output2.toString(), /\[write\].+lib.+mojo-plugin-myplugin\.js/);
     t.same(await dir.child('lib', 'mojo-plugin-myplugin.js').exists(), true);
-    t.match(await dir.child('lib', 'mojo-plugin-myplugin.js').readFile('utf8'), /export default/);
+    t.match(
+      await dir.child('lib', 'mojo-plugin-myplugin.js').readFile('utf8'),
+      /export default.+Add plugin code here/s
+    );
     t.match(output2.toString(), /\[write\].+test.+basic\.js/);
     t.same(await dir.child('test', 'basic.js').exists(), true);
     t.match(await dir.child('test', 'basic.js').readFile('utf8'), /import mojo/);
