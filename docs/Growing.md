@@ -177,8 +177,8 @@ transformed into the other.
 
 ### TypeScript
 
-[TypeScript](https://www.typescriptlang.org) is fully supported too, and in fact mojo.js is written entirely in
-TypeScript itself. But because it requires a build step, we recommend a slightly different directory layout for
+[TypeScript](https://www.typescriptlang.org) is fully supported as well, and in fact mojo.js itself is written entirely
+in TypeScript. But because it requires a build step, we recommend a slightly different directory layout for
 applications that are planning to use it. With a `src` directory for `.ts` source files, and a `lib` directory for the
 compiled `.js` output files.
 
@@ -217,7 +217,7 @@ $ npm install
 $ npm run build:test
 ```
 
-The use of TypeScript is completely optional though, and for the rest if this guide we will stick with plain old
+However, the use of TypeScript is completely optional, and for the rest if this guide we will stick with plain old
 JavaScript.
 
 ## Foundation
