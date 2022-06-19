@@ -315,7 +315,9 @@ t.test('Command app', async t => {
     t.match(await dir.child('test', 'example.js').readFile('utf8'), /getOk/);
     t.match(output2.toString(), /\[fixed\].+package\.json/);
     t.same(await dir.child('package.json').exists(), true);
-    t.match(await dir.child('package.json').readFile('utf8'), /module/);
+    const pkg = JSON.parse(await dir.child('package.json').readFile('utf8'));
+    t.equal(pkg.type, 'module');
+    t.equal(typeof pkg.devDependencies['tap'], 'string');
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('create-full-app');
@@ -356,7 +358,11 @@ t.test('Command app', async t => {
     t.match(await dir2.child('tsconfig.json').readFile('utf8'), /compilerOptions/);
     t.match(output4.toString(), /\[fixed\].+package\.json/);
     t.same(await dir2.child('package.json').exists(), true);
-    t.match(await dir2.child('package.json').readFile('utf8'), /module/);
+    const pkg2 = JSON.parse(await dir2.child('package.json').readFile('utf8'));
+    t.equal(pkg2.type, 'module');
+    t.equal(typeof pkg2.devDependencies['@types/node'], 'string');
+    t.equal(typeof pkg2.devDependencies['tap'], 'string');
+    t.equal(typeof pkg2.devDependencies['typescript'], 'string');
 
     process.chdir(cwd);
   });
