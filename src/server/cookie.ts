@@ -12,7 +12,8 @@ export function parseCookie(cookie: string): Record<string, string> {
     if (match === null) continue;
     let value = match[2];
     if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
-    values[match[1]] = decodeURIComponentSafe(value) ?? value;
+    const decoded = decodeURIComponentSafe(value);
+    if (decoded !== null) values[match[1]] = decoded;
   }
 
   return values;
