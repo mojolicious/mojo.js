@@ -149,7 +149,7 @@ export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions
   protocols?: string[];
 }
 
-export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Tap};
+export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Test};
 
 export interface ValidationError {
   instancePath: string;

@@ -28,7 +28,7 @@ export class TestUserAgent extends MockUserAgent {
    */
   body: Buffer = Buffer.from('');
 
-  _assert: typeof assert | Tap.Tap | undefined = undefined;
+  _assert: typeof assert | Tap.Test | undefined = undefined;
   _dom: DOM | undefined = undefined;
   _finished: [number, string] | null | undefined = undefined;
   _messages: AsyncIterableIterator<JSONValue> | undefined = undefined;
@@ -348,7 +348,7 @@ export class TestUserAgent extends MockUserAgent {
     return this._dom;
   }
 
-  _prepareTap(tap: Tap.Tap): void {
+  _prepareTap(tap: Tap.Test): void {
     const subtests = [(this._assert = tap)];
     const assert = this._assert;
 
