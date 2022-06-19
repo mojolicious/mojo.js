@@ -938,7 +938,7 @@ t.test('App', async t => {
     t.equal(ctx2.req.headers.get('Host'), 'localhost');
   });
 
-  await t.test('URL generation', t => {
+  await t.test('URL generation', async t => {
     const ctx = app.newMockContext();
     ctx.req.set('Host', 'example.com');
 
@@ -972,7 +972,7 @@ t.test('App', async t => {
       'http://example.com/what/ever?foo=works&baz=yada'
     );
 
-    t.end();
+    t.same(await ctx.renderToString({inline: 'failed', engine: 'does-not-exist'}), null);
   });
 
   await t.test('Partial content', t => {

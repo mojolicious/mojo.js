@@ -117,7 +117,6 @@ export class Renderer {
     if (options.inline !== undefined) {
       log.trace('Rendering inline view');
       const result = await this._renderInline(ctx, options);
-      if (result === null) return null;
 
       if (options.inlineLayout !== undefined) {
         options.inline = options.inlineLayout;
@@ -171,8 +170,9 @@ export class Renderer {
     }
 
     if (options.status !== undefined) res.status(options.status);
-    const type = ctx.app.mime.extType(result.format) ?? 'application/octet-stream';
-    await res.type(type).send(output);
+    const type = ctx.app.mime.extType(result.format);
+    if (type !== null) res.type(type);
+    await res.send(output);
 
     return true;
   }
@@ -197,9 +197,8 @@ export class Renderer {
     }
   }
 
-  async _renderInline(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
+  async _renderInline(ctx: MojoContext, options: RenderOptions): Promise<EngineResult> {
     const engine = this.engines[options.engine ?? this.defaultEngine];
-    if (engine === undefined) return null;
     return {output: await engine.render(ctx, options), format: options.format ?? this.defaultFormat};
   }
 
