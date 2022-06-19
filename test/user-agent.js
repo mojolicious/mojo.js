@@ -106,6 +106,15 @@ t.test('UserAgent', async t => {
     t.equal(await res.text(), 'Hello World!');
   });
 
+  await t.test('Custom request', async t => {
+    const res = await ua.request({url: '/hello'});
+    t.equal(res.statusCode, 200);
+    t.equal(await res.text(), 'Hello World!');
+
+    const res2 = await ua.request({});
+    t.equal(res2.statusCode, 404);
+  });
+
   await t.test('Status', async t => {
     const res = await ua.get('/status?status=200');
     t.ok(res.isSuccess);

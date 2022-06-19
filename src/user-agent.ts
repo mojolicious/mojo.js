@@ -158,7 +158,6 @@ class UserAgent extends EventEmitter {
 
   async _filterConfig(config: UserAgentRequestOptions): Promise<Record<string, any>> {
     const filtered = await this._filterSharedConfig(config);
-    if (filtered.method === undefined) filtered.method = 'GET';
 
     // Body
     if (filtered.json !== undefined) {
@@ -173,7 +172,7 @@ class UserAgent extends EventEmitter {
       }
       filtered.body = new URLSearchParams(filtered.form).toString();
     } else if (filtered.formData !== undefined) {
-      const form = filtered.formData instanceof FormData ? filtered.formData : this._formData(filtered.formData);
+      const form = this._formData(filtered.formData);
       Object.assign(filtered.headers, form.getHeaders());
       filtered.body = form;
     }
@@ -182,7 +181,7 @@ class UserAgent extends EventEmitter {
   }
 
   async _filterSharedConfig(config: UserAgentRequestOptions | UserAgentWebSocketOptions): Promise<Record<string, any>> {
-    if (!(config.url instanceof URL)) config.url = new URL(config.url ?? '', this.baseURL);
+    if (!(config.url instanceof URL)) config.url = new URL(config.url ?? '/', this.baseURL);
 
     // Auth
     const url: URL = config.url;

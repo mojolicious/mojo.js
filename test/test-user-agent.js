@@ -190,7 +190,7 @@ t.test('TestUserAgent', async t => {
     ]);
   });
 
-  await t.test('WebSocket', async t => {
+  await t.test('WebSocket exception', async t => {
     let result;
     try {
       await ua.messageOk();
@@ -198,7 +198,9 @@ t.test('TestUserAgent', async t => {
       result = error;
     }
     t.match(result, /No active WebSocket connection/);
+  });
 
+  await t.test('WebSocket', async t => {
     const results = [];
     ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
