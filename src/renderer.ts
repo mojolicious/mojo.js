@@ -107,16 +107,10 @@ export class Renderer {
       return {output: Buffer.from(yaml.dump(options.yaml)), format: options.format ?? 'yaml'};
     }
 
-    if (options.engine !== undefined) {
-      const engine = this.engines[options.engine];
-      if (engine === undefined) return null;
-      log.trace(`Rendering response with "${options.engine}" engine`);
-      return {output: await engine.render(ctx, options), format: options.format ?? this.defaultFormat};
-    }
-
     if (options.inline !== undefined) {
       log.trace('Rendering inline view');
       const result = await this._renderInline(ctx, options);
+      if (result === null) return null;
 
       if (options.inlineLayout !== undefined) {
         options.inline = options.inlineLayout;
@@ -126,6 +120,13 @@ export class Renderer {
       }
 
       return result;
+    }
+
+    if (options.engine !== undefined) {
+      const engine = this.engines[options.engine];
+      if (engine === undefined) return null;
+      log.trace(`Rendering response with "${options.engine}" engine`);
+      return {output: await engine.render(ctx, options), format: options.format ?? this.defaultFormat};
     }
 
     const stash = ctx.stash;
@@ -197,8 +198,9 @@ export class Renderer {
     }
   }
 
-  async _renderInline(ctx: MojoContext, options: RenderOptions): Promise<EngineResult> {
+  async _renderInline(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
     const engine = this.engines[options.engine ?? this.defaultEngine];
+    if (engine === undefined) return null;
     return {output: await engine.render(ctx, options), format: options.format ?? this.defaultFormat};
   }
 

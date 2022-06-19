@@ -24,6 +24,12 @@ t.test('App', async t => {
     'user'
   );
 
+  app.renderer.addEngine('test', {
+    render() {
+      return Buffer.from('Hello Test!');
+    }
+  });
+
   // GET /
   app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
@@ -972,6 +978,8 @@ t.test('App', async t => {
       'http://example.com/what/ever?foo=works&baz=yada'
     );
 
+    t.same(await ctx.renderToString({engine: 'test'}), 'Hello Test!');
+    t.same(await ctx.renderToString({engine: 'does-not-exist'}), null);
     t.same(await ctx.renderToString({inline: 'failed', engine: 'does-not-exist'}), null);
   });
 
