@@ -106,7 +106,7 @@ async function devDependencies(regex: RegExp): Promise<Record<string, string>> {
 
   const deps: Record<string, string> = {};
   for (const [name, version] of Object.entries(pkg.devDependencies)) {
-    if (regex.test(name) === true) deps[name as string] = version as string;
+    if (regex.test(name) === true) deps[name] = version as string;
   }
 
   return deps;
