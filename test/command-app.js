@@ -5,6 +5,21 @@ import Path from '@mojojs/path';
 import t from 'tap';
 
 t.test('Command app', async t => {
+  await t.test('Command detection', t => {
+    const env = process.env;
+    process.env = {};
+
+    t.same(app.cli.detectCommand(), null);
+    process.env.PATH_INFO = '/';
+    t.equal(app.cli.detectCommand(), 'cgi');
+    process.env.MOJO_NO_DETECT = '1';
+    t.same(app.cli.detectCommand(), null);
+
+    process.env = env;
+
+    t.end();
+  });
+
   await t.test('Help', async t => {
     const output = await captureOutput(async () => {
       await app.cli.start();
