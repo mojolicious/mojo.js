@@ -979,6 +979,7 @@ t.test('App', async t => {
     );
 
     t.same(await ctx.renderToString({engine: 'test'}), 'Hello Test!');
+    t.same(await ctx.renderToString({view: 'does-not-exist', engine: 'test'}), null);
     t.same(await ctx.renderToString({engine: 'does-not-exist'}), null);
     t.same(await ctx.renderToString({inline: 'failed', engine: 'does-not-exist'}), null);
   });

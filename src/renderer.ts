@@ -122,7 +122,7 @@ export class Renderer {
       return result;
     }
 
-    if (options.engine !== undefined) {
+    if (options.view === undefined && options.engine !== undefined) {
       const engine = this.engines[options.engine];
       if (engine === undefined) return null;
       log.trace(`Rendering response with "${options.engine}" engine`);
