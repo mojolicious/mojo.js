@@ -23,13 +23,10 @@ export class CookieJar {
   /**
    * Store cookies.
    */
-  async storeCookies(url: URL, header?: string[]): Promise<void> {
-    if (header === undefined) return;
-
+  async storeCookies(url: URL, headers: string[]): Promise<void> {
     const cookieURL = this._cookieURL(url);
-    for (const cookie of header.map(value => tough.Cookie.parse(value ?? ''))) {
-      if (cookie === undefined) continue;
-      await this.storage.setCookie(cookie, cookieURL);
+    for (const cookie of headers.map(value => tough.Cookie.parse(value ?? ''))) {
+      if (cookie !== undefined) await this.storage.setCookie(cookie, cookieURL);
     }
   }
 

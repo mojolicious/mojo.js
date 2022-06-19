@@ -13,6 +13,7 @@ export class Mime {
     txt: 'text/plain; charset=utf-8',
     yaml: 'text/yaml; charset=utf-8'
   };
+
   _reverseCustom: Record<string, string> | undefined = undefined;
 
   /**
