@@ -143,18 +143,18 @@ concerns into different files to maximize maintainability:
 
 ```
 myapp                            // Application directory (created manually)
-|-- config.yml                   // Configuration file
-|-- index.js                     // Application script
 |-- node_modules
 |   `-- *lots of node files*
 |-- package.json                 // Node package information and settings
 |-- test                         // Test directory
 |   `-- example.js               // Random test
+|-- config.yml                   // Configuration file
+|-- public                       // Static file directory (served automatically)
+|   `-- index.html               // Static HTML file
+|-- index.js                     // Application script
 |-- controllers                  // Controller directory
 |   `-- example.js               // Controller class
 |-- models                       // Model directory
-|-- public                       // Static file directory (served automatically)
-|   `-- index.html               // Static HTML file
 `-- views                        // Views directory
     |-- example                  // View directory for "Example" controller
     |    `-- welcome.html.tmpl   // Template for "welcome" action
@@ -164,15 +164,61 @@ myapp                            // Application directory (created manually)
 
 Both application skeletons can be automatically generated with the commands `npx mojo create-lite-app` and
 `npx mojo create-full-app`.
+
 ```
 $ mkdir myapp && cd myapp
 $ npm install @mojojs/core
-$ npx mojo create-full-app myapp   # or
-$ npx mojo create-lite-app myapp
+$ npx mojo create-full-app   # or
+$ npx mojo create-lite-app
 ```
 
 Feature-wise both are almost equal, the only real differences are organizational, so each one can be gradually
 transformed into the other.
+
+## TypeScript
+
+[TypeScript](https://www.typescriptlang.org) is fully supported too, and in fact mojo.js is written entirely in
+TypeScript itself. But because it requires a build step, we recommend a slightly different directory layout for
+applications that are planning to use it. With a `src` directory for `.ts` source files, and a `lib` directory for the
+compiled `.js` output files.
+
+```
+myapp                            // Application directory (created manually)
+|-- node_modules
+|   `-- *lots of node files*
+|-- package.json                 // Node package information and settings
+|-- tsconfig.json                // TypeScript compiler configuration
+|-- test                         // Test directory
+|   `-- example.js               // Random test
+|-- config.yml                   // Configuration file
+|-- public                       // Static file directory (served automatically)
+|   `-- index.html               // Static HTML file
+|-- src                          // TypeScript source directory
+|   |-- index.ts                 // Application script
+|   `-- controllers              // Controller directory
+|       `-- example.ts           // Controller class
+|-- lib
+|   `-- *compiled js files*
+|-- models                       // Model directory
+`-- views                        // Views directory
+    |-- example                  // View directory for "Example" controller
+    |    `-- welcome.html.tmpl   // Template for "welcome" action
+    `-- layouts                  // View directory for layout templates
+        `-- default.html.tmpl    // Layout template
+```
+
+A fully functional TypeScript mojo.js application can be generated with the command `npx mojo create-full-app --ts`.
+
+```
+$ mkdir myapp && cd myapp
+$ npm install @mojojs/core
+$ npx mojo create-full-app --ts
+$ npm install
+$ npm run build:test
+```
+
+The use of TypeScript is completely optional though, and for the rest if this guide we will stick with plain old
+JavaScript.
 
 ## Foundation
 
