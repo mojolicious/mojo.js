@@ -5,6 +5,7 @@ import type {
   UserAgentOptions,
   MojoAction,
   MojoContext,
+  MojoModels,
   RouteArguments,
   ServerOptions,
   TestUserAgentOptions
@@ -80,7 +81,7 @@ export class App {
   /**
    * Storage for user defined models.
    */
-  models: Record<string, any> = {};
+  models: MojoModels = {};
   /**
    * Application renderer.
    */

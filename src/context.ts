@@ -4,7 +4,7 @@ import type {Plan} from './router/plan.js';
 import type {ServerRequest} from './server/request.js';
 import type {ServerResponse} from './server/response.js';
 import type {SessionData} from './types.js';
-import type {MojoAction, MojoContext, RenderOptions, ValidatorFunction} from './types.js';
+import type {MojoAction, MojoContext, MojoModels, RenderOptions, ValidatorFunction} from './types.js';
 import type {UserAgent} from './user-agent.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
@@ -203,7 +203,7 @@ class Context extends EventEmitter {
   /**
    * Model shortcut.
    */
-  get models(): Record<string, any> {
+  get models(): MojoModels {
     return this.app.models;
   }
 

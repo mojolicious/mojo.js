@@ -41,6 +41,10 @@ export interface MojoContext extends Context {
 
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
+export interface MojoModels {
+  [key: string]: any;
+}
+
 export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
