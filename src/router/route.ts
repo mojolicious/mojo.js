@@ -160,7 +160,7 @@ export class Route {
   remove(): this {
     const parent = this.parent;
     if (parent === undefined) return this;
-    this._parent = undefined;
+    this.parent = undefined;
     parent.children = parent.children.filter(route => route !== this);
     return this;
   }
@@ -186,7 +186,6 @@ export class Route {
     const root = this.root;
     if (root === undefined) return this;
 
-    if (this.requirements === undefined) this.requirements = [];
     this.requirements.push({condition, requirement});
     root.cache = null;
 
