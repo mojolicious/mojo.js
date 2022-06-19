@@ -297,9 +297,9 @@ export class App {
   /**
    * Start the command line interface.
    */
-  start(command?: string, ...args: string[]): void {
-    if (this.detectImport && process.argv[1] !== Path.callerFile().toString()) return;
-    this.cli.start(command, ...args).catch(error => this.log.error(error.message));
+  async start(command?: string, ...args: string[]): Promise<void> {
+    if (this.detectImport === true && process.argv[1] !== Path.callerFile().toString()) return;
+    return this.cli.start(command, ...args).catch(error => this.log.error(error.message));
   }
 
   /**

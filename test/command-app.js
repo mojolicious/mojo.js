@@ -40,6 +40,26 @@ t.test('Command app', async t => {
     t.equal(app.cli.commands.test.usage, 'Test usage');
   });
 
+  await t.test('Exception in command', async t => {
+    const app = mojo({detectImport: false});
+
+    const output = await captureOutput(async () => {
+      await app.start();
+    });
+    t.match(output, /eval.*get.*server.*version/s);
+
+    app.cli.commands['dies'] = async () => {
+      throw new Error('Just a test');
+    };
+    const logs = app.log.capture();
+    const output2 = await captureOutput(async () => {
+      await app.start('dies');
+    });
+    logs.stop();
+    t.match(logs.toString(), /error.+Just a test/);
+    t.equal(output2, '');
+  });
+
   await t.test('eval', async t => {
     const output = await captureOutput(async () => {
       await app.cli.start('eval', '-v', '100 + 924');
