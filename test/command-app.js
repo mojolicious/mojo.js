@@ -333,7 +333,7 @@ t.test('Command app', async t => {
     await dir2.mkdir();
     process.chdir(dir2.toString());
     const output4 = await captureOutput(async () => {
-      await app.cli.start('create-full-app', '--typescript');
+      await app.cli.start('create-full-app', '--ts');
     });
     t.match(output4.toString(), /\[write\].+config\.yml/);
     t.same(await dir2.child('config.yml').exists(), true);

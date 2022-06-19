@@ -9,8 +9,8 @@ import nopt from 'nopt';
  * Minimal application generator command.
  */
 export default async function createFullAppCommand(app: App, args: string[]): Promise<void> {
-  const parsed = nopt({typescript: Boolean}, {t: '--typescript'}, args, 1);
-  const ts = parsed.typescript === true;
+  const parsed = nopt({ts: Boolean}, {}, args, 1);
+  const ts = parsed.ts === true;
 
   process.stdout.write('Generating application directory struture:\n');
   await util.cliCreateFile('config.yml', yamlConfig, {secret: crypto.randomBytes(16).toString('hex')});
@@ -92,11 +92,11 @@ createFullAppCommand.description = 'Create application directory structure';
 createFullAppCommand.usage = `Usage: APPLICATION create-full-app [OPTIONS]
 
   node index.js create-full-app
-  node index.js create-full-app --typescript
+  node index.js create-full-app --ts
 
 Options:
-  -h, --help         Show this summary of available options
-  -t, --typescript   Generate TypeScript code instead of JavaScript
+  -h, --help   Show this summary of available options
+      --ts     Generate TypeScript code instead of JavaScript
 `;
 
 async function devDependencies(regex: RegExp): Promise<Record<string, string>> {
