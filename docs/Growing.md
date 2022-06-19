@@ -175,7 +175,7 @@ $ npx mojo create-lite-app
 Feature-wise both are almost equal, the only real differences are organizational, so each one can be gradually
 transformed into the other.
 
-## TypeScript
+### TypeScript
 
 [TypeScript](https://www.typescriptlang.org) is fully supported too, and in fact mojo.js is written entirely in
 TypeScript itself. But because it requires a build step, we recommend a slightly different directory layout for
