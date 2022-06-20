@@ -116,4 +116,4 @@ const inlineTemplate = `
 
 ## Want to know more?
 
-Take a look at our excellent [documentation](https://github.com/mojolicious/mojo.js/tree/main/docs)!
+Take a look at our excellent [documentation](https://mojojs.org/docs/)!
