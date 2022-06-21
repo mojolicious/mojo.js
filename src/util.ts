@@ -5,7 +5,7 @@ import {setTimeout} from 'timers/promises';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
 import chalk from 'chalk';
-export {SafeString} from '@mojojs/template';
+export {SafeString} from '@mojojs/util';
 
 type FixOptions = {
   author?: string;
