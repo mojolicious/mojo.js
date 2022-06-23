@@ -524,8 +524,8 @@ application object.
 
 ### app:start
 
-This hook combines [command:before](#command:before) and [server:start](#server:start) for convenience. It will not run
-again until the corresponding [app:stop](#app:stop) hook has been triggered.
+This hook combines [command:before](#command:before) and [server:start](#server:start). It is usually a good default
+choice.
 
 ```js
 app.addAppHook('app:start', async app => {
@@ -533,20 +533,8 @@ app.addAppHook('app:start', async app => {
 });
 ```
 
-Useful for reconfiguring the application or warming up caches. Passed the application object.
-
-### app:stop
-
-This hook combines [command:after](#command:before) and [server:stop](#server:start) for convenience. It will not run
-again until the corresponding [app:start](#app:start) hook has been triggered.
-
-```js
-app.addAppHook('app:stop', async app => {
-  await app.models.foo.releaseConnections();
-});
-```
-
-Useful for cleanup tasks. Passed the application object.
+Useful for reconfiguring the application, warming up caches or preparing database connections. Passed the application
+object.
 
 ### server:stop
 
@@ -571,6 +559,19 @@ app.addAppHook('command:after', async (app, args) => {
 ```
 
 Useful for cleanup tasks that depend on a command line environment. Passed the application object and command argument.
+
+### app:stop
+
+This hook combines [command:after](#command:before) and [server:stop](#server:start). It is usually a good default
+choice.
+
+```js
+app.addAppHook('app:stop', async app => {
+  await app.models.foo.releaseConnections();
+});
+```
+
+Useful for cleanup tasks like releasing idle database connections. Passed the application object.
 
 ## Context Hooks
 
