@@ -60,7 +60,7 @@ export class CGI {
    */
   async run(): Promise<void> {
     const app = this.app;
-    await app.hooks.runHook('server:start', app);
+    await app.hooks.serverStart(app);
     await app.warmup();
 
     const ctx = app.newContext(
@@ -71,7 +71,7 @@ export class CGI {
     );
     await app.handleRequest(ctx).catch(error => ctx.exception(error));
 
-    await app.hooks.runHook('server:stop', app);
+    await app.hooks.serverStop(app);
   }
 
   _sendResponse(res: ServerResponse, body: ServerResponseBody): void {
