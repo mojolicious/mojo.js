@@ -7,23 +7,33 @@ if (app.mode === 'development') app.log.level = 'debug';
 app.addAppHook('command:before', (app, args) => {
   if (args[2] === 'hook-command-get') {
     const mode = app.mode;
-    process.stdout.write(Buffer.from(`before: ${mode}`));
+    process.stdout.write(Buffer.from(`command:before: ${mode}`));
     args[2] = 'get';
   }
 });
 
 app.addAppHook('app:start', app => {
   const mode = app.mode;
-  process.stdout.write(Buffer.from(`start: ${mode}`));
+  process.stdout.write(Buffer.from(`app:start: ${mode}`));
+});
+
+app.addAppHook('server:start', app => {
+  const mode = app.mode;
+  process.stdout.write(Buffer.from(`server:start: ${mode}`));
 });
 
 app.addAppHook('command:after', (app, args) => {
-  if (args[2] === 'get') process.stdout.write(Buffer.from(`after: ${app.mode}`));
+  if (args[2] === 'get') process.stdout.write(Buffer.from(`command:after: ${app.mode}`));
 });
 
 app.addAppHook('app:stop', app => {
   const mode = app.mode;
-  process.stdout.write(Buffer.from(`stop: ${mode}`));
+  process.stdout.write(Buffer.from(`app:stop: ${mode}`));
+});
+
+app.addAppHook('server:stop', app => {
+  const mode = app.mode;
+  process.stdout.write(Buffer.from(`server:stop: ${mode}`));
 });
 
 app.any('/', ctx => ctx.render({text: 'Hello Mojo!'})).name('root');

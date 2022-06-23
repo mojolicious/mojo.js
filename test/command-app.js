@@ -86,7 +86,7 @@ t.test('Command app', async t => {
     const output2 = await captureOutput(async () => {
       await app.cli.start('eval', 'await 100 + 924');
     });
-    t.equal(output2.toString(), 'start: developmentstop: development');
+    t.equal(output2.toString(), 'app:start: developmentapp:stop: development');
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('eval', '-v', 'await 100 + 924');
@@ -463,6 +463,11 @@ t.test('Command app', async t => {
     const output = await captureOutput(async () => {
       await app.cli.start('hook-command-get', '/');
     });
-    t.match(output.toString(), 'before: developmentstart: developmentHello Mojo!after: developmentstop: development');
+    t.match(
+      output.toString(),
+      'command:before: developmentapp:start: developmentserver:start: development' +
+        'Hello Mojo!' +
+        'server:stop: developmentcommand:after: developmentapp:stop: development'
+    );
   });
 });
