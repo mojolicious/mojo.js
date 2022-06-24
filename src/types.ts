@@ -85,7 +85,7 @@ export interface RenderOptions {
   format?: string;
   inline?: string;
   inlineLayout?: string;
-  json?: JSONValue;
+  json?: any;
   layout?: string;
   maybe?: boolean;
   pretty?: boolean;
@@ -93,6 +93,7 @@ export interface RenderOptions {
   text?: string;
   variant?: string;
   view?: string;
+  yaml?: any;
   [key: string]: any;
 }
 
@@ -143,6 +144,7 @@ export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
   json?: JSONValue;
   method?: string;
   servername?: string;
+  yaml?: any;
 }
 export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions {
   json?: boolean;
