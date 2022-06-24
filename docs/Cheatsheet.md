@@ -511,7 +511,7 @@ application object and command arguments.
 
 ### server:start
 
-Runs whenever a server backend has been started.
+Runs whenever a server has been started.
 
 ```js
 app.addAppHook('server:start', async app => {
@@ -524,8 +524,8 @@ application object.
 
 ### app:start
 
-This hook combines [command:before](#command:before) and [server:start](#server:start). It is usually a good default
-choice.
+This hook combines [command:before](#command:before) and [server:start](#server:start). It is usually a good first
+choice for running code during application startup.
 
 ```js
 app.addAppHook('app:start', async app => {
@@ -538,7 +538,7 @@ object.
 
 ### server:stop
 
-Runs whenever a backend server has been stopped.
+Runs whenever a server has been stopped.
 
 ```js
 app.addAppHook('server:stop', async app => {
@@ -562,8 +562,8 @@ Useful for cleanup tasks that depend on a command line environment. Passed the a
 
 ### app:stop
 
-This hook combines [command:after](#command:before) and [server:stop](#server:start). It is usually a good default
-choice.
+This hook combines [command:after](#command:before) and [server:stop](#server:start). It is usually a good first choice
+for running code during application shutdown.
 
 ```js
 app.addAppHook('app:stop', async app => {
