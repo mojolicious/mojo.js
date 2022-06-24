@@ -54,12 +54,31 @@ serverCommand.usage = `Usage: APPLICATION server [OPTIONS]
   node index.js server --level trace
   node index.js server --cluster
   node index.js server --requests 10 --keep-alive-timeout 30000
-  node index.js server -l http://[::1]:3000
-  node index.js server -l http://*:8080 -l http://*:8081
-  node index.js server -l 'https://*:443?cert=./server.crt&key=./server.key'
+  node index.js server -l http://*:4000
 
   # Run server in production mode
   NODE_ENV=production node index.js server
+
+  # Listen on all interfaces
+  node index.js server -l http://*:3000
+
+  # Listen only on IPv6 interfaces
+  node index.js server -l http://[::1]:3000
+
+  # Listen on two ports
+  node index.js server -l http://127.0.0.1:3000 -l http://*:4000
+
+  # Listen on UNIX domain socket
+  node index.js server -l http+unix:///var/run/myapp.sock
+
+  # File descriptor, as used by systemd
+  node index.js server -l http://127.0.0.1?fd=3
+
+  # Listen on two ports with HTTP and HTTPS at the same time
+  node index.js server -l http://*:3000 -l https://*:4000
+
+  # Use a custom certificate and key
+  node index.js server -l 'https://*:443?cert=./server.crt&key=./server.key'
 
 Options:
   -c, --cluster                   Run in cluster mode with multiple processes

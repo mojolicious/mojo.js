@@ -5,6 +5,7 @@
 
 ### Features
 
+  * Added UNIX domain socket support for user-agent and server (HTTP and WebSocket).
   * Added `app:start` and `app:stop` application hooks.
 
 ## v1.0.0 (2022-06-20)

@@ -19,6 +19,11 @@ t.test('Server', async t => {
     t.same(Server.listenArgsForURL(new URL('http://*?fd=3')), [{fd: 3}]);
     t.same(Server.listenArgsForURL(new URL('http://[::1]:5000')), [5000, '::1']);
 
+    t.same(Server.listenArgsForURL(new URL(`http+unix:///var/run/myapp.sock`)), [{path: '/var/run/myapp.sock'}]);
+    t.same(Server.listenArgsForURL(new URL(`http+unix://foo:23/myapp.sock`)), [{path: 'foo:23/myapp.sock'}]);
+    t.same(Server.listenArgsForURL(new URL(`http+unix://myapp.sock`)), [{path: 'myapp.sock'}]);
+    t.same(Server.listenArgsForURL(new URL(`http+unix://foo/bar.sock`)), [{path: 'foo/bar.sock'}]);
+
     t.end();
   });
 

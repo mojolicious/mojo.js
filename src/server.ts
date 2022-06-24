@@ -86,11 +86,14 @@ export class Server {
   static listenArgsForURL(url: URL): ListenArgs {
     const listen = [];
 
+    const protocol = url.protocol;
     const hostname = url.hostname;
     const port = url.port;
     const params = url.searchParams;
 
-    if (port !== '' && hostname !== '') {
+    if (protocol === 'http+unix:') {
+      listen.push({path: urlToSocketPath(url)});
+    } else if (port !== '' && hostname !== '') {
       listen.push(parseInt(port));
       listen.push(hostname === '*' ? '0.0.0.0' : hostname.replace(/^\[/, '').replace(/]$/, ''));
     } else if (params.has('fd') === true) {
@@ -122,6 +125,12 @@ export class Server {
    */
   async stop(): Promise<void> {
     await Promise.all(this._servers.map(async server => await new Promise(resolve => server.close(resolve))));
+
+    // Clean up UNIX domain socket
+    for (const url of this.urls) {
+      if (url.protocol === 'http+unix') await new Path(urlToSocketPath(url)).rm();
+    }
+
     const app = this.app;
     await app.hooks.serverStop(app);
   }
@@ -166,10 +175,21 @@ export class Server {
     return new Promise(resolve => {
       server.listen(...Server.listenArgsForURL(url), () => {
         const address = server.address();
-        if (address === null || typeof address !== 'object') throw new Error('Unknown server address');
 
-        const host = address.family === 'IPv6' ? `[${address.address}]` : address.address;
-        const realLocation = new URL(`${url.protocol}//${host}:${address.port}`);
+        // UNIX domain socket
+        let realLocation: URL | undefined;
+        if (typeof address === 'string') {
+          realLocation = new URL(`http+unix://${address}`);
+        }
+
+        // TCP socket
+        else if (address !== null && typeof address === 'object') {
+          const host = address.family === 'IPv6' ? `[${address.address}]` : address.address;
+          realLocation = new URL(`${url.protocol}//${host}:${address.port}`);
+        } else {
+          throw new Error('Unknown server address');
+        }
+
         this.urls.push(realLocation);
 
         if (this._quiet === false) {
@@ -191,7 +211,7 @@ export class Server {
     const ctx = app.newContext(
       this._prepareRequest(req, socket, false),
       new ServerResponse((res: ServerResponse, body: ServerResponseBody) => {
-        _sendResponse(res, body, raw);
+        sendResponse(res, body, raw);
       })
     );
     raw.on('finish', () => ctx.emit('finish'));
@@ -203,7 +223,7 @@ export class Server {
     const ctx = app.newContext(
       this._prepareRequest(req, socket, true),
       new ServerResponse((res: ServerResponse, body: ServerResponseBody) => {
-        _sendResponse(res, body, new http.ServerResponse(req));
+        sendResponse(res, body, new http.ServerResponse(req));
       })
     );
 
@@ -238,7 +258,7 @@ export class Server {
   }
 }
 
-function _sendHeaders(res: ServerResponse, raw: http.ServerResponse): void {
+function sendHeaders(res: ServerResponse, raw: http.ServerResponse): void {
   const statusCode = res.statusCode;
   const statusMessage = res.statusMessage;
   const headers = res.headers.toArray();
@@ -250,16 +270,20 @@ function _sendHeaders(res: ServerResponse, raw: http.ServerResponse): void {
   }
 }
 
-function _sendResponse(res: ServerResponse, body: ServerResponseBody, raw: http.ServerResponse): void {
+function sendResponse(res: ServerResponse, body: ServerResponseBody, raw: http.ServerResponse): void {
   if (typeof body === 'string' || Buffer.isBuffer(body)) {
     res.length(Buffer.byteLength(body));
-    _sendHeaders(res, raw);
+    sendHeaders(res, raw);
     raw.end(body);
   } else if (body instanceof Stream) {
-    _sendHeaders(res, raw);
+    sendHeaders(res, raw);
     body.pipe(raw);
   } else {
-    _sendHeaders(res, raw);
+    sendHeaders(res, raw);
     raw.end();
   }
+}
+
+function urlToSocketPath(url: URL): string {
+  return url.host + url.pathname;
 }

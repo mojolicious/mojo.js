@@ -7,8 +7,16 @@ import nopt from 'nopt';
  */
 export default async function getCommand(app: MojoApp, args: string[]): Promise<void> {
   const parsed = nopt(
-    {body: String, header: [String, Array], insecure: Boolean, method: String, redirect: Boolean, verbose: Boolean},
-    {b: '--body', H: '--header', k: '--insecure', X: '--method', r: '--redirect', v: '--verbose'},
+    {
+      body: String,
+      header: [String, Array],
+      insecure: Boolean,
+      method: String,
+      redirect: Boolean,
+      'socket-path': String,
+      verbose: Boolean
+    },
+    {b: '--body', H: '--header', k: '--insecure', X: '--method', P: '--socket-path', r: '--redirect', v: '--verbose'},
     args,
     1
   );
@@ -19,6 +27,7 @@ export default async function getCommand(app: MojoApp, args: string[]): Promise<
     headers: parseHeaders(parsed.header),
     insecure: parsed.insecure,
     method: parsed.method ?? 'GET',
+    socketPath: parsed['socket-path'],
     url: argv.remain[0] ?? '/'
   };
 
@@ -65,6 +74,7 @@ Options:
   -h, --help                  Show this summary of available options
   -k, --insecure              Do not require a valid TLS certificate to access
                               HTTPS sites
+  -P, --socket-path <path>    UNIX domain socket path
   -r, --redirect              Follow up to 10 redirects
   -X, --method <method>       HTTP method to use, defaults to "GET"
   -v, --verbose               Print response headers to STDERR

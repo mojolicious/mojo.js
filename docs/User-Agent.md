@@ -80,6 +80,9 @@ const res = await ua.request({
   // Server name for the SNI (Server Name Indication) TLS extension
   servername: 'localhost',
 
+  // Path to UNIX domain socket (UNIX only)
+  socketPath: '/var/lib/run/myapp.sock',
+
   // Alternative `http.Agent` object to use, for keep-alive or SOCKS proxy support with `proxy-agent`
   agent: new http.Agent({keepAlive: true})
 });
@@ -212,7 +215,10 @@ const ws = await ua.websocket('wss://mojolicious.org', {
   auth: 'user:password',
 
   // WebSocket subprotocols
-  protocols: ['foo', 'bar']
+  protocols: ['foo', 'bar'],
+
+  // Path to UNIX domain socket (UNIX only)
+  socketPath: '/var/lib/run/myapp.sock'
 });
 ```
 

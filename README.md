@@ -28,8 +28,8 @@ If you want to stay up to date on the latest developments join us on [Matrix](ht
 * A powerful web development toolkit, that you can use for all kinds of applications, independently of the web
   framework.
   * High performance HTTP and WebSocket client/server implementation with support for HTTPS/WSS, cookies, redirects,
-    urlencoded/multi-part forms, file uploads, JSON/YAML, HTML/XML, mocking, API testing, HTTP/SOCKS proxies, and gzip
-    compression.
+    urlencoded/multi-part forms, file uploads, JSON/YAML, HTML/XML, mocking, API testing, HTTP/SOCKS proxies, UNIX
+    domain sockets and gzip compression.
   * HTML/XML parser with CSS selector support.
 
 * Very clean, `class` and `async`/`await` based API, written in TypeScript, with very few requirements to avoid NPM

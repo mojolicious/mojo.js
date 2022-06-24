@@ -12,6 +12,11 @@ export class WSTransport {
    * Establish WebSocket connection.
    */
   async connect(config: UserAgentWebSocketOptions): Promise<WebSocket> {
+    // UNIX domain socket
+    if (config.socketPath !== undefined) {
+      config.url = new URL(`ws+unix://${config.socketPath}:${new URL(config.url ?? '').pathname}`);
+    }
+
     const ws = new WS(config.url ?? '', config.protocols, {headers: config.headers});
     return await new Promise((resolve, reject) => {
       let handshake: UserAgentResponse;

@@ -132,6 +132,7 @@ interface SharedUserAgentRequestOptions {
   auth?: string;
   headers?: Record<string, string>;
   query?: Record<string, string>;
+  socketPath?: string;
   url?: string | URL;
 }
 export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
