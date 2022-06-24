@@ -562,7 +562,7 @@ Useful for cleanup tasks that depend on a command line environment. Passed the a
 
 ### app:stop
 
-This hook combines [command:after](#command:before) and [server:stop](#server:start). It is usually a good first choice
+This hook combines [command:after](#command:after) and [server:stop](#server:stop). It is usually a good first choice
 for running code during application shutdown.
 
 ```js
