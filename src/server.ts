@@ -126,7 +126,7 @@ export class Server {
   async stop(): Promise<void> {
     await Promise.all(this._servers.map(async server => await new Promise(resolve => server.close(resolve))));
 
-    // Clean up UNIX domain socket
+    // Clean up UNIX domain sockets
     for (const url of this.urls) {
       if (url.protocol === 'http+unix') await new Path(urlToSocketPath(url)).rm();
     }

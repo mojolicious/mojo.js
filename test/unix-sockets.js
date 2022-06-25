@@ -76,5 +76,8 @@ t.test('UNIX domain sockets', skip, async t => {
     t.equal(result, 'Hello Mojo!');
   });
 
+  const path = new Path(sock);
+  t.same(await path.exists(), true);
   await server.stop();
+  t.same(await path.exists(), false);
 });
