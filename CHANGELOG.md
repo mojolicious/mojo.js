@@ -1,6 +1,12 @@
 
 # Changelog
 
+## v1.2.0 (2022-06-XX)
+
+### Features
+
+  * Added `suggestedMethod` method to `Route` class.
+
 ## v1.1.0 (2022-06-24)
 
 ### Features

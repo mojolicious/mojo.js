@@ -155,6 +155,12 @@ r.get('/missing/:/name').to('missing#placeholder');
 r.get('/missing/*/name').to('missing#wildcard');
 r.get('/missing/too/*', {'': ['test']}).to({controller: 'missing', action: 'too', '': 'missing'});
 
+// GET   /similar/*
+// PATCH /similar/too
+const similar = r.any(['DELETE', 'GET', 'PATCH'], '/similar');
+similar.any(['GET'], '/:something').to('similar#get');
+similar.any(['PATCH'], '/too').to('similar#post');
+
 // WebSocket /websocket/route/works
 r.any('/websocket').websocket('/route').any('/works').name('websocket_route');
 
@@ -310,6 +316,7 @@ t.test('Router', async t => {
     const plan2 = await r.plot({method: 'GET', path: '/foo/testedit', websocket: false});
     t.same(plan2.steps, [{testcase: 'foo', action: 'testedit'}]);
     t.equal(plan2.render().path, '/foo/testedit');
+    t.equal(plan.endpoint.suggestedMethod(), 'GET');
   });
 
   await t.test('Optional captures in sub route with requirement', async t => {
@@ -490,12 +497,14 @@ t.test('Router', async t => {
     const plan2 = await r.plot({method: 'GET', path: '/method/get.html', websocket: false});
     t.same(plan2.steps, [{testcase: 'method', action: 'get', ext: 'html'}]);
     t.equal(plan2.render().path, '/method/get.html');
+    t.equal(plan2.endpoint.suggestedMethod(), 'GET');
 
     const plan3 = await r.plot({method: 'POST', path: '/method/post', websocket: false});
     t.same(plan3.steps, [{testcase: 'method', action: 'post'}]);
     t.equal(plan3.render().path, '/method/post');
     t.same(await r.plot({method: 'POST', path: '/method/post.html'}), null);
     t.same(await r.plot({method: 'GET', path: '/method/post'}), null);
+    t.equal(plan3.endpoint.suggestedMethod(), 'POST');
 
     const plan4 = await r.plot({method: 'POST', path: '/method/post_get', websocket: false});
     t.same(plan4.steps, [{testcase: 'method', action: 'post_get'}]);
@@ -504,6 +513,7 @@ t.test('Router', async t => {
     const plan5 = await r.plot({method: 'GET', path: '/method/post_get', websocket: false});
     t.same(plan5.steps, [{testcase: 'method', action: 'post_get'}]);
     t.equal(plan5.render().path, '/method/post_get');
+    t.equal(plan5.endpoint.suggestedMethod(), 'GET');
     t.same(await r.plot({method: 'PUT', path: '/method/get_post', websocket: false}), null);
   });
 
@@ -556,6 +566,18 @@ t.test('Router', async t => {
     const plan4 = await r.plot({method: 'GET', path: '/missing/too', websocket: false});
     t.same(plan4.steps, [{controller: 'missing', action: 'too', '': 'missing'}]);
     t.equal(plan4.render().path, '/missing/too');
+  });
+
+  await t.test('Similar routes with placeholders', async t => {
+    const plan = await r.plot({method: 'GET', path: '/similar/too', websocket: false});
+    t.same(plan.steps, [{}, {controller: 'similar', action: 'get', something: 'too'}]);
+    t.equal(plan.endpoint.suggestedMethod(), 'GET');
+
+    const plan2 = await r.plot({method: 'PATCH', path: '/similar/too', websocket: false});
+    t.same(plan2.steps, [{}, {controller: 'similar', action: 'post'}]);
+    t.equal(plan2.endpoint.suggestedMethod(), 'PATCH');
+
+    t.same(await r.plot({method: 'DELETE', path: '/similar/too'}), null);
   });
 
   await t.test('Unknown type (matches nothing)', async t => {

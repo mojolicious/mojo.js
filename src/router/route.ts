@@ -204,6 +204,22 @@ export class Route {
   }
 
   /**
+   * Suggested HTTP method for reaching this route, `GET` and `POST` are preferred.
+   */
+  suggestedMethod(): string {
+    const suggestions: string[] = [];
+    for (const route of this._branch()) {
+      const methods = route.methods;
+      if (methods.length <= 0) continue;
+      suggestions.push(...(suggestions.length > 0 ? suggestions.filter(method => methods.includes(method)) : methods));
+    }
+
+    const hasGet = suggestions.includes('GET');
+    if (suggestions.includes('POST') === true && hasGet === false) return 'POST';
+    return hasGet === true ? 'GET' : suggestions[0] ?? 'GET';
+  }
+
+  /**
    * Set default parameters for this route.
    */
   to(...targets: Array<string | MojoAction | Record<string, any>>): this {
