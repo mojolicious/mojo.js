@@ -85,6 +85,11 @@ to be used with it and are being developed under the same umbrella.
 
   A convenient container class for file system paths.
 
+* [@mojojs/pg](https://www.npmjs.com/package/@mojojs/pg)
+
+  A tiny wrapper around [pg](https://www.npmjs.com/package/pg) that makes [PostgreSQL](http://www.postgresql.org/) a
+  lot of fun to use.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
