@@ -3,8 +3,13 @@
   "version": "1.0.3",
   "description": "Real-time web framework",
   "keywords": [
+    "mojojs",
+    "real-time",
     "web",
-    "framework"
+    "framework",
+    "mvc",
+    "websockets",
+    "websocket"
   ],
   "author": "Sebastian Riedel <kraih@mojolicious.org>",
   "license": "MIT",
