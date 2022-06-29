@@ -525,9 +525,9 @@ Generate `input` tag of type `submit`.
 #### tag
 
 ```
-%= tag 'div'
-%= tag 'div', {class: 'wrapper'}
-%= tag 'div', {class: 'wrapper'}, 'Hello World!'
+%= ctx.tag('div')
+%= ctx.tag('div', {class: 'wrapper'})
+%= ctx.tag('div', {class: 'wrapper'}, 'Hello World!')
 ```
 
 Generate HTML tag.
