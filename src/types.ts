@@ -21,7 +21,7 @@ export interface MojoContext extends Context {
   currentRoute: () => string | null;
   exception: (error: Error) => Promise<boolean>;
   faviconTag: (file?: string) => SafeString;
-  formTag(target: URLTarget, attrs: Record<string, string>, content: string | SafeString): SafeString;
+  formFor(target: URLTarget, attrs: Record<string, string>, content: string | SafeString): SafeString;
   htmlException: (error: Error) => Promise<boolean>;
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;

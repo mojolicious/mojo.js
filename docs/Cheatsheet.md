@@ -440,7 +440,7 @@ These view helpers are currently available by default:
 %= ctx.buttonTo(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Go there');
 ```
 
-Generate portable `<form>` tag with `ctx.formTag()`, containing a single button.
+Generate portable `<form>` tag with `ctx.formFor()`, containing a single button.
 
 #### faviconTag
 
@@ -451,11 +451,11 @@ Generate portable `<form>` tag with `ctx.formTag()`, containing a single button.
 
 Generate `<link>` tag for a favison, defaults to the [mojo.js](https://mojojs.org) favicon.
 
-#### formTag
+#### formFor
 
 ```
-%= ctx.formTag('some_route', {class: 'foo'}, 'Form content')
-%= ctx.formTag(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Form content')
+%= ctx.formFor('some_route', {class: 'foo'}, 'Form content')
+%= ctx.formFor(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Form content')
 ```
 
 Generate portable `<form>` tag with `ctx.urlFor()`. For routes that do not allow `GET`, a `method` attribute with the

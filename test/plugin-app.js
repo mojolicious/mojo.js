@@ -86,9 +86,9 @@ Link2: <%= ctx.linkTo('mix', {}, 'WebSocket link') %>
 Link3: <%= ctx.linkTo(['form', {values: {name: 'yada'}}], {id: 'baz'}, 'Placeholder') %>
 Tag1: <%= ctx.tag('div', 'Hello Mojo!') %>
 Tag2: <%== ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
-Form: <%= ctx.formTag('tag_helpers', {}, await formBlock()) %>
-Form: <%= ctx.formTag(['form', {values: {name: 'foo'}}], {class: 'test'}, 'Form') %>
-Form: <%= ctx.formTag('special', {}, 'Form') %>
+Form: <%= ctx.formFor('tag_helpers', {}, await formBlock()) %>
+Form: <%= ctx.formFor(['form', {values: {name: 'foo'}}], {class: 'test'}, 'Form') %>
+Form: <%= ctx.formFor('special', {}, 'Form') %>
 Submit: <%= ctx.submitButtonTag() %>
 Submit: <%= ctx.submitButtonTag('Search') %>
 Submit: <%= ctx.submitButtonTag('Search', {class: 'foo'}) %>

@@ -28,7 +28,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 
   app.addHelper('buttonTo', buttonTo);
   app.addHelper('faviconTag', faviconTag);
-  app.addHelper('formTag', formTag);
+  app.addHelper('formFor', formFor);
   app.addHelper('imageTag', imageTag);
   app.addHelper('linkTo', linkTo);
   app.addHelper('scriptTag', scriptTag);
@@ -40,7 +40,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 }
 
 function buttonTo(ctx: MojoContext, target: URLTarget, attrs: Record<string, string>, text: string): SafeString {
-  return ctx.formTag(target, attrs, ctx.submitButtonTag(text));
+  return ctx.formFor(target, attrs, ctx.submitButtonTag(text));
 }
 
 function currentRoute(ctx: MojoContext): string | null {
@@ -60,7 +60,7 @@ function faviconTag(ctx: MojoContext, file?: string): SafeString {
   return ctx.tag('link', {rel: 'icon', href: ctx.urlForFile(file ?? '/mojo/favicon.ico')});
 }
 
-function formTag(
+function formFor(
   ctx: MojoContext,
   target: URLTarget,
   attrs: Record<string, string>,
