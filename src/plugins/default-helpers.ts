@@ -1,4 +1,4 @@
-import type {MojoApp, MojoContext, RenderOptions, URLOptions, URLTarget} from '../types.js';
+import type {MojoApp, MojoContext, RenderOptions, TagAttrs, URLOptions, URLTarget} from '../types.js';
 import type {InspectOptions} from 'util';
 import {inspect} from 'util';
 import {Logger} from '../logger.js';
@@ -27,7 +27,13 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('include', include);
 
   app.addHelper('inputTag', inputTag);
-  app.addHelper('textFieldTag', async (ctx: MojoContext, name: string, attrs: Record<string, string> = {}) => {
+  app.addHelper('checkBoxTag', async (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
+    return await inputTag(ctx, name, {...attrs, type: 'checkbox'});
+  });
+  app.addHelper('radioButtonTag', async (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
+    return await inputTag(ctx, name, {...attrs, type: 'radio'});
+  });
+  app.addHelper('textFieldTag', async (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
     return await inputTag(ctx, name, {...attrs, type: 'text'});
   });
   app.addHelper('textAreaTag', textAreaTag);
@@ -45,7 +51,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.decorateContext('inspect', (object: Record<string, any>, options: InspectOptions) => inspect(object, options));
 }
 
-function buttonTo(ctx: MojoContext, target: URLTarget, attrs: Record<string, string>, text: string): SafeString {
+function buttonTo(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, text: string): SafeString {
   return ctx.formFor(target, attrs, ctx.submitButtonTag(text));
 }
 
@@ -66,12 +72,7 @@ function faviconTag(ctx: MojoContext, file?: string): SafeString {
   return ctx.tag('link', {rel: 'icon', href: ctx.urlForFile(file ?? '/mojo/favicon.ico')});
 }
 
-function formFor(
-  ctx: MojoContext,
-  target: URLTarget,
-  attrs: Record<string, string>,
-  content: string | SafeString
-): SafeString {
+function formFor(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, content: string | SafeString): SafeString {
   target = urlTarget(target);
   const route = ctx.app.router.lookup(target[0]);
   const method = route === null ? 'GET' : route.suggestedMethod();
@@ -120,11 +121,11 @@ async function httpException(ctx: MojoContext, error: any): Promise<boolean> {
   return ctx.htmlException(error);
 }
 
-function imageTag(ctx: MojoContext, target: string, attrs: Record<string, string> = {}): SafeString {
+function imageTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): SafeString {
   return ctx.tag('img', {src: ctx.urlForFile(target), ...attrs});
 }
 
-async function inputTag(ctx: MojoContext, name: string, attrs: Record<string, string> = {}): Promise<SafeString> {
+async function inputTag(ctx: MojoContext, name: string, attrs: TagAttrs = {}): Promise<SafeString> {
   attrs.name = name;
 
   const params = await ctx.params();
@@ -178,12 +179,7 @@ async function jsonNotFound(ctx: MojoContext): Promise<boolean> {
   return await ctx.render({json: {error: {message: 'Not Found'}}, pretty: true, status: 404});
 }
 
-function linkTo(
-  ctx: MojoContext,
-  target: URLTarget,
-  attrs: Record<string, string>,
-  content: string | SafeString
-): SafeString {
+function linkTo(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, content: string | SafeString): SafeString {
   const href = ctx.urlFor(...urlTarget(target)) ?? '';
   return ctx.tag('a', {href, ...attrs}, content);
 }
@@ -203,23 +199,18 @@ function styleTag(ctx: MojoContext, target: string): SafeString {
   return ctx.tag('link', {rel: 'stylesheet', href: ctx.urlForFile(target)});
 }
 
-function submitButtonTag(ctx: MojoContext, text = 'Ok', attrs: Record<string, string> = {}): SafeString {
+function submitButtonTag(ctx: MojoContext, text = 'Ok', attrs: TagAttrs = {}): SafeString {
   return ctx.tag('input', {value: text, ...attrs, type: 'submit'});
 }
 
-function tag(
-  ctx: MojoContext,
-  name: string,
-  attrs: Record<string, string> = {},
-  content: string | SafeString = ''
-): SafeString {
+function tag(ctx: MojoContext, name: string, attrs: TagAttrs = {}, content: string | SafeString = ''): SafeString {
   return new SafeString(DOM.newTag(name, attrs, content).toString());
 }
 
 async function textAreaTag(
   ctx: MojoContext,
   name: string,
-  attrs: Record<string, string> = {},
+  attrs: TagAttrs = {},
   content?: string | SafeString
 ): Promise<SafeString> {
   attrs.name = name;

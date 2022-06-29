@@ -56,7 +56,10 @@ t.test('Plugin app', async t => {
       six: 'Six',
       seven: 'Sev&en',
       eight: 'Eight&',
-      nine: 'Nine&'
+      nine: 'Nine&',
+      ten: 'Ten',
+      eleven: 'on',
+      twelve: 'on'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -92,6 +95,12 @@ Text3: <%= await ctx.textFieldTag('six', {class: 'bar', value: 'Default'}) %>
 Area1: <%= await ctx.textAreaTag('seven') %>
 Area2: <%= await ctx.textAreaTag('eight', {class: 'bar'}) %>
 Area3: <%= await ctx.textAreaTag('nine', {class: 'bar'}, 'Default&') %>
+Check1: <%= await ctx.checkBoxTag('ten', {value: 'Ten'}) %>
+Check2: <%= await ctx.checkBoxTag('eleven', {class: 'bar'}) %>
+Check3: <%= await ctx.checkBoxTag('twelve') %>
+Radio1: <%= await ctx.radioButtonTag('ten', {value: 'Ten'}) %>
+Radio2: <%= await ctx.radioButtonTag('eleven', {class: 'bar'}) %>
+Radio3: <%= await ctx.radioButtonTag('twelve') %>
 `;
 
 const formTagHelpersResult = `
@@ -104,6 +113,12 @@ Text3: <input class="bar" value="Default" type="text" name="six">
 Area1: <textarea name="seven"></textarea>
 Area2: <textarea class="bar" name="eight"></textarea>
 Area3: <textarea class="bar" name="nine">Default&amp;</textarea>
+Check1: <input value="Ten" type="checkbox" name="ten">
+Check2: <input class="bar" type="checkbox" name="eleven">
+Check3: <input type="checkbox" name="twelve">
+Radio1: <input value="Ten" type="radio" name="ten">
+Radio2: <input class="bar" type="radio" name="eleven">
+Radio3: <input type="radio" name="twelve">
 `;
 
 const formTagHelpersFilledResult = `
@@ -116,6 +131,12 @@ Text3: <input class="bar" value="Six" type="text" name="six">
 Area1: <textarea name="seven">Sev&amp;en</textarea>
 Area2: <textarea class="bar" name="eight">Eight&amp;</textarea>
 Area3: <textarea class="bar" name="nine">Nine&amp;</textarea>
+Check1: <input value="Ten" type="checkbox" name="ten" checked>
+Check2: <input class="bar" type="checkbox" name="eleven" checked>
+Check3: <input type="checkbox" name="twelve" checked>
+Radio1: <input value="Ten" type="radio" name="ten" checked>
+Radio2: <input class="bar" type="radio" name="eleven" checked>
+Radio3: <input type="radio" name="twelve" checked>
 `;
 
 const tagHelperPlugin = `

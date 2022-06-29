@@ -8,7 +8,8 @@
   * Added UNIX domain socket support for user-agent and server (HTTP and WebSocket).
   * Added `app:start` and `app:stop` application hooks.
   * Added `suggestedMethod` method to `Route` class.
-  * Added `buttonTo`, `formFor`, `inputTag`,`submitButtonTag`, `textAreaTag` and `textFieldTag` helpers.
+  * Added `buttonTo`, `checkBoxTag`, `formFor`, `inputTag`, `radioButtonTag`, `submitButtonTag`, `textAreaTag` and
+    `textFieldTag` helpers.
   * Added support for `urlFor` options to `linkTo` helper.
 
 ## v1.0.0 (2022-06-20)

@@ -24,7 +24,7 @@ export default function mojo(options?: AppOptions): App {
   const dirName = caller.basename();
 
   // App in dist/lib/src and "package.json" in parent directory (but not in app directory)
-  if (callerExists === false && uplevelExists === true && ['dist', 'lib', 'src'].includes(dirName) === true) {
+  if (callerExists === false && uplevelExists === true && ['dist', 'lib', 'src'].includes(dirName)) {
     app.home = uplevel;
   }
 

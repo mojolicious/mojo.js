@@ -442,6 +442,15 @@ These view helpers are currently available by default:
 
 Generate portable `<form>` tag with `ctx.formFor()`, containing a single button.
 
+#### checkBoxTag
+
+```
+%= await ctx.checkBoxTag('test')
+%= await ctx.checkBoxTag('test', {class: 'user', value: 'passed'})
+```
+
+Generate `<input>` tag of type `checkbox`. Previous input values will automatically get picked up and shown as default.
+
 #### faviconTag
 
 ```
@@ -495,6 +504,15 @@ Generate `<input>` tag. Previous input values will automatically get picked up a
 ```
 
 Generate portable `a` tag with `ctx.urlFor()`.
+
+#### radioButtonTag
+
+```
+%= await ctx.radioButtonTag('test')
+%= await ctx.radioButtonTag('test', {class: 'user', value: 'passed'})
+```
+
+Generate `<input>` tag of type `radio`. Previous input values will automatically get picked up and shown as default.
 
 #### scriptTag
 

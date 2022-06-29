@@ -17,27 +17,29 @@ export type MojoApp = App;
 
 // With default helpers from plugins
 export interface MojoContext extends Context {
-  buttonTo(target: URLTarget, attrs: Record<string, string>, text: string): SafeString;
+  buttonTo(target: URLTarget, attrs: TagAttrs, text: string): SafeString;
+  checkBoxTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   currentRoute: () => string | null;
   exception: (error: Error) => Promise<boolean>;
   faviconTag: (file?: string) => SafeString;
-  formFor(target: URLTarget, attrs: Record<string, string>, content: string | SafeString): SafeString;
+  formFor(target: URLTarget, attrs: TagAttrs, content: string | SafeString): SafeString;
   htmlException: (error: Error) => Promise<boolean>;
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;
-  imageTag: (target: string, attrs?: Record<string, string>) => SafeString;
+  imageTag: (target: string, attrs?: TagAttrs) => SafeString;
   include: (options: RenderOptions, stash: Record<string, any>) => Promise<SafeString | null>;
   inpsect: (object: Record<string, any>, options: InspectOptions) => string;
-  inputTag: (ctx: MojoContext, name: string, attrs: Record<string, string>) => Promise<SafeString>;
+  inputTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
-  linkTo: (target: URLTarget, attrs: Record<string, string>, content: string | SafeString) => SafeString;
+  linkTo: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
+  radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   scriptTag: (target: string) => SafeString;
   styleTag: (target: string) => SafeString;
-  submitButtonTag(text?: string, attrs?: Record<string, string>): SafeString;
-  tag: (name: string, attrs?: Record<string, string>, content?: string | SafeString) => SafeString;
-  textAreaTag: (name: string, attrs?: Record<string, string>, content?: string | SafeString) => Promise<SafeString>;
-  textFieldTag: (ctx: MojoContext, name: string, attrs: Record<string, string>) => Promise<SafeString>;
+  submitButtonTag(text?: string, attrs?: TagAttrs): SafeString;
+  tag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => SafeString;
+  textAreaTag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => Promise<SafeString>;
+  textFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   txtException: (error: Error) => Promise<boolean>;
   txtNotFound: () => Promise<boolean>;
   notFound: () => Promise<boolean>;
@@ -54,6 +56,8 @@ export interface MojoModels {
 export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
+
+export type TagAttrs = Record<string, string>;
 
 export interface SessionData {
   expiration?: number;
