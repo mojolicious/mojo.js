@@ -17,11 +17,11 @@ export type MojoApp = App;
 
 // With default helpers from plugins
 export interface MojoContext extends Context {
-  buttonTo(target: string, attrs: Record<string, string>, text: string): SafeString;
+  buttonTo(target: URLTarget, attrs: Record<string, string>, text: string): SafeString;
   currentRoute: () => string | null;
   exception: (error: Error) => Promise<boolean>;
-  faviconTag: () => SafeString;
-  formTag(target: string, attrs: Record<string, string>, content: string | SafeString): SafeString;
+  faviconTag: (file?: string) => SafeString;
+  formTag(target: URLTarget, attrs: Record<string, string>, content: string | SafeString): SafeString;
   htmlException: (error: Error) => Promise<boolean>;
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;
@@ -30,7 +30,7 @@ export interface MojoContext extends Context {
   inpsect: (object: Record<string, any>, options: InspectOptions) => string;
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
-  linkTo: (target: string, attrs: Record<string, string>, content: string | SafeString) => SafeString;
+  linkTo: (target: URLTarget, attrs: Record<string, string>, content: string | SafeString) => SafeString;
   scriptTag: (target: string) => SafeString;
   styleTag: (target: string) => SafeString;
   submitButtonTag(text?: string, attrs?: Record<string, string>): SafeString;
@@ -156,6 +156,8 @@ export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions
 }
 
 export type URLOptions = {absolute?: boolean; query?: Record<string, string>; values?: Record<string, string>};
+
+export type URLTarget = string | [string, URLOptions];
 
 export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Test};
 

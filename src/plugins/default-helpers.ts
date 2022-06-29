@@ -1,4 +1,4 @@
-import type {MojoApp, MojoContext, RenderOptions, URLOptions} from '../types.js';
+import type {MojoApp, MojoContext, RenderOptions, URLOptions, URLTarget} from '../types.js';
 import type {InspectOptions} from 'util';
 import {inspect} from 'util';
 import {Logger} from '../logger.js';
@@ -39,7 +39,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.decorateContext('inspect', (object: Record<string, any>, options: InspectOptions) => inspect(object, options));
 }
 
-function buttonTo(ctx: MojoContext, target: string, attrs: Record<string, string>, text: string): SafeString {
+function buttonTo(ctx: MojoContext, target: URLTarget, attrs: Record<string, string>, text: string): SafeString {
   return ctx.formTag(target, attrs, ctx.submitButtonTag(text));
 }
 
@@ -62,19 +62,21 @@ function faviconTag(ctx: MojoContext, file?: string): SafeString {
 
 function formTag(
   ctx: MojoContext,
-  target: string,
+  target: URLTarget,
   attrs: Record<string, string>,
   content: string | SafeString
 ): SafeString {
-  const route = ctx.app.router.lookup(target);
+  target = urlTarget(target);
+  const route = ctx.app.router.lookup(target[0]);
   const method = route === null ? 'GET' : route.suggestedMethod();
 
-  const options: URLOptions = {};
+  const options = target[1];
   if (method !== 'GET') {
     attrs.method = 'POST';
     if (method !== 'POST') options.query = {_method: method};
   }
-  const url = ctx.urlFor(target, options);
+
+  const url = ctx.urlFor(...target);
   if (url !== null) attrs.action = url;
 
   return ctx.tag('form', attrs, content);
@@ -149,11 +151,11 @@ async function jsonNotFound(ctx: MojoContext): Promise<boolean> {
 
 function linkTo(
   ctx: MojoContext,
-  target: string,
+  target: URLTarget,
   attrs: Record<string, string>,
   content: string | SafeString
 ): SafeString {
-  const href = ctx.urlFor(target) ?? '';
+  const href = ctx.urlFor(...urlTarget(target)) ?? '';
   return ctx.tag('a', {href, ...attrs}, content);
 }
 
@@ -203,6 +205,10 @@ async function websocketException(ctx: MojoContext, error: any): Promise<boolean
   const ws = ctx.ws;
   if (ws !== null && ctx.isEstablished) ws.close(1011);
   return true;
+}
+
+function urlTarget(target: URLTarget): [string, URLOptions] {
+  return typeof target === 'string' ? [target, {}] : target;
 }
 
 // If you see this then your code has thrown something that was not an Error object

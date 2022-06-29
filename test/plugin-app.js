@@ -21,7 +21,7 @@ t.test('Plugin app', async t => {
 
   app.get('/method', ctx => ctx.render({text: ctx.testMethod('test')}));
 
-  app.post('/form');
+  app.post('/form/:name').name('form');
   app.patch('/special/form').name('special');
 
   app
@@ -83,16 +83,17 @@ Absolute script: <%= ctx.scriptTag('https://mojojs.org/static/foo/bar.js') %>
 Absolute style: <%= ctx.styleTag('https://mojojs.org/static/foo/bar.css') %>
 Link1: <%= ctx.linkTo('getter_setter', {class: 'foo'}, 'Getter & Setter') %>
 Link2: <%= ctx.linkTo('mix', {}, 'WebSocket link') %>
+Link3: <%= ctx.linkTo(['form', {values: {name: 'yada'}}], {id: 'baz'}, 'Placeholder') %>
 Tag1: <%= ctx.tag('div', 'Hello Mojo!') %>
 Tag2: <%== ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
 Form: <%= ctx.formTag('tag_helpers', {}, await formBlock()) %>
-Form: <%= ctx.formTag('form', {class: 'test'}, 'Form') %>
+Form: <%= ctx.formTag(['form', {values: {name: 'foo'}}], {class: 'test'}, 'Form') %>
 Form: <%= ctx.formTag('special', {}, 'Form') %>
 Submit: <%= ctx.submitButtonTag() %>
 Submit: <%= ctx.submitButtonTag('Search') %>
 Submit: <%= ctx.submitButtonTag('Search', {class: 'foo'}) %>
 Button: <%= ctx.buttonTo('special', {class: 'foo'}, 'Test') %>
-Button: <%= ctx.buttonTo('form', {}, 'Test2') %>
+Button: <%= ctx.buttonTo(['form', {values: {name: 'bar'}}], {}, 'Test2') %>
 `;
 
 function tagHelperPluginResult(baseURL, publicPath) {
@@ -110,17 +111,18 @@ Absolute script: <script src="https://mojojs.org/static/foo/bar.js"></script>
 Absolute style: <link rel="stylesheet" href="https://mojojs.org/static/foo/bar.css">
 Link1: <a href="/getter/setter" class="foo">Getter &amp; Setter</a>
 Link2: <a href="${wsURL}websocket/mixed">WebSocket link</a>
+Link3: <a href="/form/yada" id="baz">Placeholder</a>
 Tag1: <div>Hello Mojo!</div>
 Tag2: <div class="test">Hello Mojo!</div>
 Form: <form action="/tag_helpers">  Form
 </form>
-Form: <form class="test" method="POST" action="/form">Form</form>
+Form: <form class="test" method="POST" action="/form/foo">Form</form>
 Form: <form method="POST" action="/special/form?_method=PATCH">Form</form>
 Submit: <input value="Ok" type="submit">
 Submit: <input value="Search" type="submit">
 Submit: <input value="Search" class="foo" type="submit">
 Button: <form class="foo" method="POST" action="/special/form?_method=PATCH"><input value="Test" type="submit"></form>
-Button: <form method="POST" action="/form"><input value="Test2" type="submit"></form>
+Button: <form method="POST" action="/form/bar"><input value="Test2" type="submit"></form>
 `;
 }
 

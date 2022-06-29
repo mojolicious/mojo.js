@@ -7,6 +7,7 @@
 
   * Added `suggestedMethod` method to `Route` class.
   * Added `buttonTo`, `formTag` and `submitButtonTag` helpers.
+  * Added support for `urlFor` options to `linkTo` helper.
 
 ## v1.1.0 (2022-06-24)
 
