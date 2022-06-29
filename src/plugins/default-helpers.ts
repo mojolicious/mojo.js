@@ -32,6 +32,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('linkTo', linkTo);
   app.addHelper('scriptTag', scriptTag);
   app.addHelper('styleTag', styleTag);
+  app.addHelper('submitButtonTag', submitButtonTag);
   app.addHelper('tag', tag);
 
   app.decorateContext('inspect', (object: Record<string, any>, options: InspectOptions) => inspect(object, options));
@@ -164,6 +165,10 @@ function scriptTag(ctx: MojoContext, target: string): SafeString {
 
 function styleTag(ctx: MojoContext, target: string): SafeString {
   return ctx.tag('link', {rel: 'stylesheet', href: ctx.urlForFile(target)});
+}
+
+function submitButtonTag(ctx: MojoContext, text = 'Ok', attrs: Record<string, string> = {}): SafeString {
+  return ctx.tag('input', {value: text, ...attrs, type: 'submit'});
 }
 
 function tag(

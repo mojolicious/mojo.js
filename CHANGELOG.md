@@ -6,7 +6,7 @@
 ### Features
 
   * Added `suggestedMethod` method to `Route` class.
-  * Added `formTag` helper.
+  * Added `formTag` and `submitButtonTag` helpers.
 
 ## v1.1.0 (2022-06-24)
 

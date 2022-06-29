@@ -492,6 +492,16 @@ Generate `<script>` tag for JavaScript file.
 
 Generate `<link>` tag for CSS file.
 
+#### submitButtonTag
+
+```
+%= ctx.submitButtonTag()
+%= ctx.submitButtonTag('Search')
+%= ctx.submitButtonTag('Search', {class: 'foo'})
+```
+
+Generate `input` tag of type `submit`.
+
 #### tag
 
 ```
