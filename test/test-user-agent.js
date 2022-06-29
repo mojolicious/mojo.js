@@ -24,7 +24,7 @@ t.test('TestUserAgent', async t => {
     });
   });
 
-  app.post('/redirect', ctx => ctx.redirectTo('/target'));
+  app.post('/redirect', ctx => ctx.redirectTo('/target', {query: {test: 'pass'}}));
 
   app.get('/target', ctx => ctx.render({text: 'Hi'}));
 
@@ -252,6 +252,8 @@ t.test('TestUserAgent', async t => {
   });
 
   await t.test('Test redirects', async t => {
+    (await ua.postOk('/redirect')).statusIs(302).headerLike('location', /\?test=pass/);
+
     const uaRedirect = await app.newTestUserAgent({tap: t, maxRedirects: 1});
     (await uaRedirect.postOk('/redirect')).statusIs(200).bodyIs('Hi');
     await uaRedirect.stop();
