@@ -87,7 +87,7 @@ to be used with it and are being developed under the same umbrella.
   lot of fun to use.
 
   **Examples:** A the well-structured [blog](https://github.com/mojolicious/pg.js/tree/main/examples/blog) application
-  how to apply the MVC design pattern in practice.
+  that will show you how to apply the MVC design pattern in practice.
 
 * [@mojojs/template](https://www.npmjs.com/package/@mojojs/template)
 
