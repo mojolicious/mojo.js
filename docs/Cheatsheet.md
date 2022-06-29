@@ -433,6 +433,14 @@ Log the exception and close the WebSocket connection with an `1011` error code.
 
 These view helpers are currently available by default:
 
+#### buttonTo
+
+```
+%= ctx.buttonTo('some_route', {class: 'foo'}, 'Go there');
+```
+
+Generate portable `<form>` tag with `ctx.formTag()`, containing a single button.
+
 #### faviconTag
 
 ```

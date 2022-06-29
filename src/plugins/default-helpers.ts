@@ -26,6 +26,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 
   app.addHelper('include', include);
 
+  app.addHelper('buttonTo', buttonTo);
   app.addHelper('faviconTag', faviconTag);
   app.addHelper('formTag', formTag);
   app.addHelper('imageTag', imageTag);
@@ -36,6 +37,10 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('tag', tag);
 
   app.decorateContext('inspect', (object: Record<string, any>, options: InspectOptions) => inspect(object, options));
+}
+
+function buttonTo(ctx: MojoContext, target: string, attrs: Record<string, string>, text: string): SafeString {
+  return ctx.formTag(target, attrs, ctx.submitButtonTag(text));
 }
 
 function currentRoute(ctx: MojoContext): string | null {

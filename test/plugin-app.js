@@ -91,6 +91,8 @@ Form: <%= ctx.formTag('special', {}, 'Form') %>
 Submit: <%= ctx.submitButtonTag() %>
 Submit: <%= ctx.submitButtonTag('Search') %>
 Submit: <%= ctx.submitButtonTag('Search', {class: 'foo'}) %>
+Button: <%= ctx.buttonTo('special', {class: 'foo'}, 'Test') %>
+Button: <%= ctx.buttonTo('form', {}, 'Test2') %>
 `;
 
 function tagHelperPluginResult(baseURL, publicPath) {
@@ -117,6 +119,8 @@ Form: <form method="POST" action="/special/form?_method=PATCH">Form</form>
 Submit: <input value="Ok" type="submit">
 Submit: <input value="Search" type="submit">
 Submit: <input value="Search" class="foo" type="submit">
+Button: <form class="foo" method="POST" action="/special/form?_method=PATCH"><input value="Test" type="submit"></form>
+Button: <form method="POST" action="/form"><input value="Test2" type="submit"></form>
 `;
 }
 
