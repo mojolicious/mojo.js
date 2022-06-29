@@ -44,6 +44,18 @@ t.test('Command app', async t => {
     t.match(output, /Unknown command "does-not-exist", maybe you need to install it\?/s);
   });
 
+  await t.test('Command hooks', async t => {
+    const output = await captureOutput(async () => {
+      await app.cli.start('hook-command-get', '/');
+    });
+    t.match(
+      output.toString(),
+      'command:before: developmentapp:start: developmentserver:start: development' +
+        'Hello Mojo!' +
+        'server:stop: developmentcommand:after: developmentapp:stop: development'
+    );
+  });
+
   await t.test('Custom command', async t => {
     let result;
     const output = await captureOutput(async () => {
@@ -457,17 +469,5 @@ t.test('Command app', async t => {
     t.match(await dir2.child('README.md').readFile('utf8'), /npm install mojo-plugin-test-helpers/);
 
     process.chdir(cwd);
-  });
-
-  await t.test('Command hooks', async t => {
-    const output = await captureOutput(async () => {
-      await app.cli.start('hook-command-get', '/');
-    });
-    t.match(
-      output.toString(),
-      'command:before: developmentapp:start: developmentserver:start: development' +
-        'Hello Mojo!' +
-        'server:stop: developmentcommand:after: developmentapp:stop: development'
-    );
   });
 });

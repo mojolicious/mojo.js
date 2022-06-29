@@ -1,6 +1,12 @@
 
 # Changelog
 
+## v1.1.2 (2022-06-30)
+
+### Bug Fixes
+
+  * Fixed a bug where the `app:stop` hook was triggered too early with the server command.
+
 ## v1.1.1 (2022-06-29)
 
 ### Bug Fixes

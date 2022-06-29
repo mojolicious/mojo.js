@@ -5,8 +5,8 @@ type Hook = (...args: any[]) => any;
  * Hook class.
  */
 export class Hooks {
-  _expectedHookName: string | undefined = undefined;
   _hooks: Record<string, Hook[]> = {};
+  _lifecycleHookScore = 0;
 
   /**
    * Add hook.
@@ -22,7 +22,7 @@ export class Hooks {
    */
   async commandBefore(app: MojoApp, commandArgs: string[]): Promise<void> {
     await this.runHook('command:before', app, commandArgs);
-    await this._appStart('command:after', app);
+    await this._appStart(app);
   }
 
   /**
@@ -31,7 +31,7 @@ export class Hooks {
    */
   async commandAfter(app: MojoApp, commandArgs: string[]): Promise<void> {
     await this.runHook('command:after', app, commandArgs);
-    await this._appStop('command:after', app);
+    await this._appStop(app);
   }
 
   /**
@@ -47,7 +47,7 @@ export class Hooks {
    */
   async serverStart(app: MojoApp): Promise<void> {
     await this.runHook('server:start', app);
-    await this._appStart('server:stop', app);
+    await this._appStart(app);
   }
 
   /**
@@ -55,19 +55,17 @@ export class Hooks {
    */
   async serverStop(app: MojoApp): Promise<void> {
     await this.runHook('server:stop', app);
-    await this._appStop('server:stop', app);
+    await this._appStop(app);
   }
 
-  async _appStart(expectedHookName: string, app: MojoApp): Promise<void> {
-    if (this._expectedHookName !== undefined) return;
-    await this.runHook('app:start', app);
-    this._expectedHookName = expectedHookName;
+  async _appStart(app: MojoApp): Promise<void> {
+    if (this._lifecycleHookScore === 0) await this.runHook('app:start', app);
+    this._lifecycleHookScore++;
   }
 
-  async _appStop(hookName: string, app: MojoApp): Promise<void> {
-    if (this._expectedHookName !== hookName) return;
-    await this.runHook('app:stop', app);
-    this._expectedHookName = undefined;
+  async _appStop(app: MojoApp): Promise<void> {
+    this._lifecycleHookScore--;
+    if (this._lifecycleHookScore === 0) await this.runHook('app:stop', app);
   }
 
   _prepareHook(chain: Hook[]) {
