@@ -532,6 +532,15 @@ Generate `input` tag of type `submit`.
 
 Generate HTML tag.
 
+#### textFieldTag
+
+```
+%= await ctx.textFieldTag('first_name')
+%= await ctx.textFieldTag('first_name', {class: 'user'})
+```
+
+Generate `<input>` tag of type `text`. Previous input values will automatically get picked up and shown as default.
+
 ## Hooks
 
 These are all application hooks that are currently available, in the same order they usually run:

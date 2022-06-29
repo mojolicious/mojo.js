@@ -47,9 +47,8 @@ t.test('Plugin app', async t => {
     (await ua.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL, publicPath));
 
     (await ua.getOk('/form_helpers', {form: {}})).statusIs(200).bodyIs(formTagHelpersResult);
-    (await ua.getOk('/form_helpers', {form: {one: 'One', two: 'Two', three: 'Three'}}))
-      .statusIs(200)
-      .bodyIs(formTagHelpersFilledResult);
+    const form = {one: 'One', two: 'Two', three: 'Three', four: 'Four', five: 'Five', six: 'Six'};
+    (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
 
   await t.test('Helper', async () => {
@@ -77,18 +76,27 @@ const formTagHelpers = `
 Input1: <%= await ctx.inputTag('one') %>
 Input2: <%= await ctx.inputTag('two', {class: 'bar'}) %>
 Input3: <%= await ctx.inputTag('three', {class: 'bar', value: 'Default'}) %>
+Text1: <%= await ctx.textFieldTag('four') %>
+Text2: <%= await ctx.textFieldTag('five', {class: 'bar'}) %>
+Text3: <%= await ctx.textFieldTag('six', {class: 'bar', value: 'Default'}) %>
 `;
 
 const formTagHelpersResult = `
 Input1: <input name="one">
 Input2: <input class="bar" name="two">
 Input3: <input class="bar" value="Default" name="three">
+Text1: <input type="text" name="four">
+Text2: <input class="bar" type="text" name="five">
+Text3: <input class="bar" value="Default" type="text" name="six">
 `;
 
 const formTagHelpersFilledResult = `
 Input1: <input name="one" value="One">
 Input2: <input class="bar" name="two" value="Two">
 Input3: <input class="bar" value="Three" name="three">
+Text1: <input type="text" name="four" value="Four">
+Text2: <input class="bar" type="text" name="five" value="Five">
+Text3: <input class="bar" value="Six" type="text" name="six">
 `;
 
 const tagHelperPlugin = `

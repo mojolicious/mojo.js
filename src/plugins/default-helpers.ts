@@ -27,6 +27,9 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('include', include);
 
   app.addHelper('inputTag', inputTag);
+  app.addHelper('textFieldTag', async (ctx: MojoContext, name: string, attrs: Record<string, string> = {}) => {
+    return await inputTag(ctx, name, {...attrs, type: 'text'});
+  });
 
   app.addHelper('buttonTo', buttonTo);
   app.addHelper('faviconTag', faviconTag);
