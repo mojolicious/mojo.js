@@ -152,6 +152,8 @@ export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions
   protocols?: string[];
 }
 
+export type URLOptions = {absolute?: boolean; query?: Record<string, string>; values?: Record<string, string>};
+
 export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Test};
 
 export interface ValidationError {

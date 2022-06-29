@@ -1,4 +1,4 @@
-import type {MojoApp, MojoContext, RenderOptions} from '../types.js';
+import type {MojoApp, MojoContext, RenderOptions, URLOptions} from '../types.js';
 import type {InspectOptions} from 'util';
 import {inspect} from 'util';
 import {Logger} from '../logger.js';
@@ -27,6 +27,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('include', include);
 
   app.addHelper('faviconTag', faviconTag);
+  app.addHelper('formTag', formTag);
   app.addHelper('imageTag', imageTag);
   app.addHelper('linkTo', linkTo);
   app.addHelper('scriptTag', scriptTag);
@@ -51,6 +52,26 @@ async function exception(ctx: MojoContext, error: Error): Promise<boolean> {
 
 function faviconTag(ctx: MojoContext, file?: string): SafeString {
   return ctx.tag('link', {rel: 'icon', href: ctx.urlForFile(file ?? '/mojo/favicon.ico')});
+}
+
+function formTag(
+  ctx: MojoContext,
+  target: string,
+  attrs: Record<string, string>,
+  content: string | SafeString
+): SafeString {
+  const route = ctx.app.router.lookup(target);
+  const method = route === null ? 'GET' : route.suggestedMethod();
+
+  const options: URLOptions = {};
+  if (method !== 'GET') {
+    attrs.method = 'POST';
+    if (method !== 'POST') options.query = {_method: method};
+  }
+  const url = ctx.urlFor(target, options);
+  if (url !== null) attrs.action = url;
+
+  return ctx.tag('form', attrs, content);
 }
 
 async function htmlException(ctx: MojoContext, error: Error): Promise<boolean> {

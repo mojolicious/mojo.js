@@ -21,6 +21,9 @@ t.test('Plugin app', async t => {
 
   app.get('/method', ctx => ctx.render({text: ctx.testMethod('test')}));
 
+  app.post('/form');
+  app.patch('/special/form').name('special');
+
   app
     .websocket('/websocket/mixed')
     .to(ctx => {
@@ -65,6 +68,9 @@ t.test('Plugin app', async t => {
 });
 
 const tagHelperPlugin = `
+<{formBlock}>
+  Form
+<{/formBlock}>
 Route: <%= ctx.currentRoute() %>
 Favicon: <%= ctx.faviconTag() %>
 Favicon2: <%= ctx.faviconTag('/favicon.ico') %>
@@ -79,6 +85,9 @@ Link1: <%= ctx.linkTo('getter_setter', {class: 'foo'}, 'Getter & Setter') %>
 Link2: <%= ctx.linkTo('mix', {}, 'WebSocket link') %>
 Tag1: <%= ctx.tag('div', 'Hello Mojo!') %>
 Tag2: <%== ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
+Form: <%= ctx.formTag('tag_helpers', {}, await formBlock()) %>
+Form: <%= ctx.formTag('form', {class: 'test'}, 'Form') %>
+Form: <%= ctx.formTag('special', {}, 'Form') %>
 `;
 
 function tagHelperPluginResult(baseURL, publicPath) {
@@ -98,6 +107,10 @@ Link1: <a href="/getter/setter" class="foo">Getter &amp; Setter</a>
 Link2: <a href="${wsURL}websocket/mixed">WebSocket link</a>
 Tag1: <div>Hello Mojo!</div>
 Tag2: <div class="test">Hello Mojo!</div>
+Form: <form action="/tag_helpers">  Form
+</form>
+Form: <form class="test" method="POST" action="/form">Form</form>
+Form: <form method="POST" action="/special/form?_method=PATCH">Form</form>
 `;
 }
 

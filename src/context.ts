@@ -4,7 +4,7 @@ import type {Plan} from './router/plan.js';
 import type {ServerRequest} from './server/request.js';
 import type {ServerResponse} from './server/response.js';
 import type {SessionData} from './types.js';
-import type {MojoAction, MojoContext, MojoModels, RenderOptions, ValidatorFunction} from './types.js';
+import type {MojoAction, MojoContext, MojoModels, RenderOptions, URLOptions, ValidatorFunction} from './types.js';
 import type {UserAgent} from './user-agent.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
@@ -12,8 +12,6 @@ import type {BusboyConfig} from 'busboy';
 import EventEmitter from 'events';
 import {Params} from './body/params.js';
 import {SafeString} from './util.js';
-
-type URLOptions = {absolute?: boolean; query?: Record<string, string>; values?: Record<string, string>};
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
 

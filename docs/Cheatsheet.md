@@ -442,6 +442,16 @@ These view helpers are currently available by default:
 
 Generate `<link>` tag for a favison, defaults to the [mojo.js](https://mojojs.org) favicon.
 
+#### formTag
+
+```
+%= ctx.formTag('some_route', {class: 'foo'}, 'Form content')
+```
+
+Generate portable `<form>` tag with `ctx.urlFor()`. For routes that do not allow `GET`, a `method` attribute with the
+value `POST` will be automatically added. And for methods other than `GET` or `POST`, an `_method` query parameter will
+be added as well.
+
 #### imageTag
 
 ```
