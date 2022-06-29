@@ -17,9 +17,11 @@ export type MojoApp = App;
 
 // With default helpers from plugins
 export interface MojoContext extends Context {
+  buttonTo(target: string, attrs: Record<string, string>, text: string): SafeString;
   currentRoute: () => string | null;
   exception: (error: Error) => Promise<boolean>;
   faviconTag: () => SafeString;
+  formTag(target: string, attrs: Record<string, string>, content: string | SafeString): SafeString;
   htmlException: (error: Error) => Promise<boolean>;
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;
@@ -31,6 +33,7 @@ export interface MojoContext extends Context {
   linkTo: (target: string, attrs: Record<string, string>, content: string | SafeString) => SafeString;
   scriptTag: (target: string) => SafeString;
   styleTag: (target: string) => SafeString;
+  submitButtonTag(text?: string, attrs?: Record<string, string>): SafeString;
   tag: (name: string, attrs?: Record<string, string>, content?: string | SafeString) => SafeString;
   txtException: (error: Error) => Promise<boolean>;
   txtNotFound: () => Promise<boolean>;
