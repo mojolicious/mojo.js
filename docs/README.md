@@ -77,10 +77,6 @@ to be used with it and are being developed under the same umbrella.
 
   A fast and minimalistic HTML/XML DOM parser with CSS selectors.
 
-* [@mojojs/template](https://www.npmjs.com/package/@mojojs/template)
-
-  A very fast embedded JavaScript template engine.
-
 * [@mojojs/path](https://www.npmjs.com/package/@mojojs/path)
 
   A convenient container class for file system paths.
@@ -92,6 +88,10 @@ to be used with it and are being developed under the same umbrella.
 
   **Examples:** A the well-structured [blog](https://github.com/mojolicious/pg.js/tree/main/examples/blog) application
   how to apply the MVC design pattern in practice.
+
+* [@mojojs/template](https://www.npmjs.com/package/@mojojs/template)
+
+  A very fast embedded JavaScript template engine.
 
 ## Support
 

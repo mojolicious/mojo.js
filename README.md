@@ -47,8 +47,8 @@ $ npm install @mojojs/core
 ```
 
 Maybe take a look at our high quality spin-off projects [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom),
-[@mojojs/template](https://www.npmjs.com/package/@mojojs/template) and
-[@mojojs/path](https://www.npmjs.com/package/@mojojs/path).
+[@mojojs/path](https://www.npmjs.com/package/@mojojs/path), [@mojojs/pg](https://www.npmjs.com/package/@mojojs/pg) and
+[@mojojs/template](https://www.npmjs.com/package/@mojojs/template).
 
 ## Getting Started
 
