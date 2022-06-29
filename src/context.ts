@@ -234,10 +234,10 @@ class Context extends EventEmitter {
   /**
    * Send `302` redirect response.
    */
-  async redirectTo(target: string, options: {status?: number; values?: Record<string, any>} = {}): Promise<void> {
+  async redirectTo(target: string, options: URLOptions & {status?: number} = {}): Promise<void> {
     await this.res
       .status(options.status ?? 302)
-      .set('Location', this.urlFor(target, {absolute: true, values: options.values}) ?? '')
+      .set('Location', this.urlFor(target, {absolute: true, ...options}) ?? '')
       .send();
   }
 

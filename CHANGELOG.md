@@ -1,6 +1,12 @@
 
 # Changelog
 
+## v1.1.1 (2022-06-29)
+
+### Bug Fixes
+
+  * Fixed a bug where `TestUserAgent` would not reset the DOM cache in between requests.
+
 ## v1.1.0 (2022-06-29)
 
 ### Features

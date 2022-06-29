@@ -370,6 +370,7 @@ export class TestUserAgent extends MockUserAgent {
     options?: UserAgentRequestOptions
   ): Promise<this> {
     this._res = await this.request({method, url, ...options});
+    this._dom = undefined;
     this.body = await this.res.buffer();
     this.assert('ok', [true], `${method.toUpperCase()} request for ${url.toString()}`, skip);
     return this;

@@ -8,7 +8,9 @@ t.test('TestUserAgent', async t => {
 
   app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
-  app.any('/index.html', ctx => ctx.render({text: '<p>One</p><div>Two</div>'}));
+  app.any('/first.html', ctx => ctx.render({text: '<p>One</p><div>Two</div>'}));
+
+  app.any('/second.html', ctx => ctx.render({text: '<b>Three</b><i>Four</i>'}));
 
   app.any('/index.json', ctx => ctx.render({json: {a: ['b', 'c']}}));
 
@@ -112,10 +114,10 @@ t.test('TestUserAgent', async t => {
   });
 
   await t.test('HTML', async t => {
-    const results = [];
+    let results = [];
     ua.assert = (name, args, msg) => results.push([name, args, msg]);
 
-    (await ua.getOk('/index.html'))
+    (await ua.getOk('/first.html'))
       .elementExists('p')
       .elementExists('h1')
       .elementExistsNot('h1')
@@ -124,13 +126,22 @@ t.test('TestUserAgent', async t => {
       .textLike('nothing', /123/);
 
     t.same(results, [
-      ['ok', [true], 'GET request for /index.html'],
+      ['ok', [true], 'GET request for /first.html'],
       ['ok', [true], 'element for selector "p" exists'],
       ['ok', [false], 'element for selector "h1" exists'],
       ['ok', [true], 'no element for selector "h1"'],
       ['ok', [false], 'no element for selector "div"'],
       ['match', ['Two', /test/], 'similar match for selector "div"'],
       ['match', ['', /123/], 'similar match for selector "nothing"']
+    ]);
+
+    results = [];
+    (await ua.getOk('/second.html')).elementExists('b').elementExistsNot('div');
+
+    t.same(results, [
+      ['ok', [true], 'GET request for /second.html'],
+      ['ok', [true], 'element for selector "b" exists'],
+      ['ok', [true], 'no element for selector "div"']
     ]);
   });
 
