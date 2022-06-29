@@ -26,6 +26,8 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 
   app.addHelper('include', include);
 
+  app.addHelper('inputTag', inputTag);
+
   app.addHelper('buttonTo', buttonTo);
   app.addHelper('faviconTag', faviconTag);
   app.addHelper('formFor', formFor);
@@ -116,6 +118,29 @@ async function httpException(ctx: MojoContext, error: any): Promise<boolean> {
 
 function imageTag(ctx: MojoContext, target: string, attrs: Record<string, string> = {}): SafeString {
   return ctx.tag('img', {src: ctx.urlForFile(target), ...attrs});
+}
+
+async function inputTag(ctx: MojoContext, name: string, attrs: Record<string, string> = {}): Promise<SafeString> {
+  attrs.name = name;
+
+  const params = await ctx.params();
+  const values = params.getAll(name);
+  if (values.length > 0) {
+    // Checkbox and radiobutton
+    const type = attrs.type;
+    if (type === 'checkbox' || type === 'radio') {
+      const value = attrs.value ?? 'on';
+      delete attrs.checked;
+      if (values.includes(value)) attrs.checked = '';
+    }
+
+    // Others
+    else {
+      attrs.value = values[values.length - 1];
+    }
+  }
+
+  return ctx.tag('input', attrs);
 }
 
 async function include(

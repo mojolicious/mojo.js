@@ -28,6 +28,7 @@ export interface MojoContext extends Context {
   imageTag: (target: string, attrs?: Record<string, string>) => SafeString;
   include: (options: RenderOptions, stash: Record<string, any>) => Promise<SafeString | null>;
   inpsect: (object: Record<string, any>, options: InspectOptions) => string;
+  inputTag: (ctx: MojoContext, name: string, attrs: Record<string, string>) => Promise<SafeString>;
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
   linkTo: (target: URLTarget, attrs: Record<string, string>, content: string | SafeString) => SafeString;

@@ -478,6 +478,15 @@ Generate `<img>` tag for image file.
 
 Include a partial template.
 
+#### inputTag
+
+```
+%= await ctx.inputTag('first_name')
+%= await ctx.inputTag('employed', {type: 'checkbox'})
+```
+
+Generate `<input>` tag. Previous input values will automatically get picked up and shown as default.
+
 #### linkTo
 
 ```
