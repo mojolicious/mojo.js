@@ -90,6 +90,9 @@ to be used with it and are being developed under the same umbrella.
   A tiny wrapper around [pg](https://www.npmjs.com/package/pg) that makes [PostgreSQL](http://www.postgresql.org/) a
   lot of fun to use.
 
+  **Examples:** A the well-structured [blog](https://github.com/mojolicious/pg.js/tree/main/examples/blog) application
+  how to apply the MVC design pattern in practice.
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
