@@ -30,6 +30,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('textFieldTag', async (ctx: MojoContext, name: string, attrs: Record<string, string> = {}) => {
     return await inputTag(ctx, name, {...attrs, type: 'text'});
   });
+  app.addHelper('textAreaTag', textAreaTag);
 
   app.addHelper('buttonTo', buttonTo);
   app.addHelper('faviconTag', faviconTag);
@@ -213,6 +214,21 @@ function tag(
   content: string | SafeString = ''
 ): SafeString {
   return new SafeString(DOM.newTag(name, attrs, content).toString());
+}
+
+async function textAreaTag(
+  ctx: MojoContext,
+  name: string,
+  attrs: Record<string, string> = {},
+  content?: string | SafeString
+): Promise<SafeString> {
+  attrs.name = name;
+
+  const params = await ctx.params();
+  const value = params.get(name);
+  if (value !== null) content = value;
+
+  return ctx.tag('textarea', {...attrs, name}, content);
 }
 
 async function txtException(ctx: MojoContext, error: Error): Promise<boolean> {

@@ -532,6 +532,16 @@ Generate `input` tag of type `submit`.
 
 Generate HTML tag.
 
+#### textAreaTag
+
+```
+%= await ctx.textAreaTag('story')
+%= await ctx.textAreaTag('story', {cold: '40'})
+%= await ctx.textAreaTag('story', {cold: '40'}, 'Default value')
+```
+
+Generate `<textarea>` tag. Previous input values will automatically get picked up and shown as default.
+
 #### textFieldTag
 
 ```

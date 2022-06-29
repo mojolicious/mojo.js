@@ -36,6 +36,7 @@ export interface MojoContext extends Context {
   styleTag: (target: string) => SafeString;
   submitButtonTag(text?: string, attrs?: Record<string, string>): SafeString;
   tag: (name: string, attrs?: Record<string, string>, content?: string | SafeString) => SafeString;
+  textAreaTag: (name: string, attrs?: Record<string, string>, content?: string | SafeString) => Promise<SafeString>;
   textFieldTag: (ctx: MojoContext, name: string, attrs: Record<string, string>) => Promise<SafeString>;
   txtException: (error: Error) => Promise<boolean>;
   txtNotFound: () => Promise<boolean>;

@@ -47,7 +47,17 @@ t.test('Plugin app', async t => {
     (await ua.getOk('/tag_helpers')).statusIs(200).bodyIs(tagHelperPluginResult(baseURL, publicPath));
 
     (await ua.getOk('/form_helpers', {form: {}})).statusIs(200).bodyIs(formTagHelpersResult);
-    const form = {one: 'One', two: 'Two', three: 'Three', four: 'Four', five: 'Five', six: 'Six'};
+    const form = {
+      one: 'One',
+      two: 'Two',
+      three: 'Three',
+      four: 'Four',
+      five: 'Five',
+      six: 'Six',
+      seven: 'Sev&en',
+      eight: 'Eight&',
+      nine: 'Nine&'
+    };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
 
@@ -79,6 +89,9 @@ Input3: <%= await ctx.inputTag('three', {class: 'bar', value: 'Default'}) %>
 Text1: <%= await ctx.textFieldTag('four') %>
 Text2: <%= await ctx.textFieldTag('five', {class: 'bar'}) %>
 Text3: <%= await ctx.textFieldTag('six', {class: 'bar', value: 'Default'}) %>
+Area1: <%= await ctx.textAreaTag('seven') %>
+Area2: <%= await ctx.textAreaTag('eight', {class: 'bar'}) %>
+Area3: <%= await ctx.textAreaTag('nine', {class: 'bar'}, 'Default&') %>
 `;
 
 const formTagHelpersResult = `
@@ -88,6 +101,9 @@ Input3: <input class="bar" value="Default" name="three">
 Text1: <input type="text" name="four">
 Text2: <input class="bar" type="text" name="five">
 Text3: <input class="bar" value="Default" type="text" name="six">
+Area1: <textarea name="seven"></textarea>
+Area2: <textarea class="bar" name="eight"></textarea>
+Area3: <textarea class="bar" name="nine">Default&amp;</textarea>
 `;
 
 const formTagHelpersFilledResult = `
@@ -97,6 +113,9 @@ Input3: <input class="bar" value="Three" name="three">
 Text1: <input type="text" name="four" value="Four">
 Text2: <input class="bar" type="text" name="five" value="Five">
 Text3: <input class="bar" value="Six" type="text" name="six">
+Area1: <textarea name="seven">Sev&amp;en</textarea>
+Area2: <textarea class="bar" name="eight">Eight&amp;</textarea>
+Area3: <textarea class="bar" name="nine">Nine&amp;</textarea>
 `;
 
 const tagHelperPlugin = `
