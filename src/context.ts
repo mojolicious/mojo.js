@@ -254,7 +254,6 @@ class Context extends EventEmitter {
    * await ctx.render({view: 'users/list'}, {foo: 'bar'});
    */
   async render(options: RenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
-    if (typeof options === 'string') options = {view: options};
     if (stash !== undefined) Object.assign(this.stash, stash);
 
     const app = this.app;
