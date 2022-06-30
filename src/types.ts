@@ -17,12 +17,12 @@ export type MojoApp = App;
 
 // With default helpers from plugins
 export interface MojoContext extends Context {
-  buttonTo(target: URLTarget, attrs: TagAttrs, text: string): SafeString;
+  buttonTo: (target: URLTarget, attrs: TagAttrs, text: string) => SafeString;
   checkBoxTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   currentRoute: () => string | null;
   exception: (error: Error) => Promise<boolean>;
   faviconTag: (file?: string) => SafeString;
-  formFor(target: URLTarget, attrs: TagAttrs, content: string | SafeString): SafeString;
+  formFor: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
   htmlException: (error: Error) => Promise<boolean>;
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;
@@ -36,7 +36,7 @@ export interface MojoContext extends Context {
   radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   scriptTag: (target: string) => SafeString;
   styleTag: (target: string) => SafeString;
-  submitButtonTag(text?: string, attrs?: TagAttrs): SafeString;
+  submitButtonTag: (text?: string, attrs?: TagAttrs) => SafeString;
   tag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => SafeString;
   textAreaTag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => Promise<SafeString>;
   textFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
@@ -150,7 +150,7 @@ export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
   ca?: string | string[] | Buffer | Buffer[];
   body?: string | Buffer | NodeJS.ReadableStream;
   form?: Record<string, string>;
-  formData?: Record<string, string> | FormData;
+  formData?: Record<string, any>;
   insecure?: boolean;
   json?: JSONValue;
   method?: string;
