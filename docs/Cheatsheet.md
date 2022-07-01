@@ -584,7 +584,7 @@ app.addAppHook('command:before', async (app, args) => {
 ```
 
 Useful for reconfiguring the application before running a command or to modify the behavior of a command. Passed the
-application object and command arguments.
+application object and command arguments. Can return `true` to intercept the command line interface.
 
 ### server:start
 

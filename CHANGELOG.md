@@ -1,6 +1,12 @@
 
 # Changelog
 
+## v1.2.0 (2022-07-02)
+
+### Features
+
+  * Added support for intercepting the command line interface with the `command:before` hook.
+
 ## v1.1.2 (2022-06-30)
 
 ### Bug Fixes

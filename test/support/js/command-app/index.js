@@ -12,6 +12,13 @@ app.addAppHook('command:before', (app, args) => {
   }
 });
 
+app.addAppHook('command:before', async () => {
+  if (process.env.MOJO_COMMAND_TEST !== undefined) {
+    process.stdout.write(Buffer.from(`command:before: skip cli`));
+    return true;
+  }
+});
+
 app.addAppHook('app:start', app => {
   const mode = app.mode;
   process.stdout.write(Buffer.from(`app:start: ${mode}`));

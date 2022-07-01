@@ -61,7 +61,7 @@ export class CLI {
 
     const app = this._app.deref();
     if (app === undefined) return;
-    await app.hooks.commandBefore(app, commandArgs);
+    if ((await app.hooks.commandBefore(app, commandArgs)) === true) return;
 
     const parsed = nopt({help: Boolean}, {h: '--help'}, commandArgs);
     const argv = parsed.argv;

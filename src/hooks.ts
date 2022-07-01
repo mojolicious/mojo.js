@@ -20,9 +20,10 @@ export class Hooks {
    * Run `command:start` hook with dependencies. Note that this method is EXPERIMENTAL and might change without
    * warning!
    */
-  async commandBefore(app: MojoApp, commandArgs: string[]): Promise<void> {
-    await this.runHook('command:before', app, commandArgs);
+  async commandBefore(app: MojoApp, commandArgs: string[]): Promise<any> {
+    const result = await this.runHook('command:before', app, commandArgs);
     await this._appStart(app);
+    return result;
   }
 
   /**

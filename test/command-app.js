@@ -54,6 +54,13 @@ t.test('Command app', async t => {
         'Hello Mojo!' +
         'server:stop: developmentcommand:after: developmentapp:stop: development'
     );
+
+    process.env.MOJO_COMMAND_TEST = '1';
+    const output2 = await captureOutput(async () => {
+      await app.cli.start();
+    });
+    t.match(output2.toString(), 'command:before: skip cliapp:start: development');
+    delete process.env.MOJO_COMMAND_TEST;
   });
 
   await t.test('Custom command', async t => {
@@ -98,7 +105,7 @@ t.test('Command app', async t => {
     const output2 = await captureOutput(async () => {
       await app.cli.start('eval', 'await 100 + 924');
     });
-    t.equal(output2.toString(), 'app:start: developmentapp:stop: development');
+    t.equal(output2.toString(), '');
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('eval', '-v', 'await 100 + 924');
