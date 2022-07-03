@@ -77,7 +77,7 @@ class WebSocket extends EventEmitter {
   /**
    * Send WebSocket message.
    */
-  async send(message: JSONValue | Buffer): Promise<void> {
+  async send(message: any): Promise<void> {
     if (this.jsonMode === false) return await new Promise(resolve => this._ws.send(message, () => resolve()));
     return new Promise(resolve => this._ws.send(JSON.stringify(message), () => resolve()));
   }

@@ -259,7 +259,7 @@ export class TestUserAgent extends MockUserAgent {
   /**
    * Send message or frame via WebSocket.
    */
-  async sendOk(message: JSONValue | Buffer): Promise<void> {
+  async sendOk(message: any): Promise<void> {
     await this.ws.send(message);
     this.assert('ok', [true], 'send message', this.sendOk);
   }

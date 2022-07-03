@@ -1,11 +1,10 @@
-import type {JSONValue} from './types.js';
 import type {WriteStream} from 'fs';
 import assert from 'assert';
 import chalk from 'chalk';
 
 interface LogContext {
   requestId?: string;
-  [key: string]: JSONValue | undefined;
+  [key: string]: any;
 }
 interface LogEvent extends LogContext {
   level: string;
