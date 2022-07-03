@@ -1,5 +1,5 @@
 import mojo, {Server} from '../lib/core.js';
-import {captureOutput} from '../lib/util.js';
+import {captureOutput} from '@mojojs/util';
 import t from 'tap';
 
 t.test('Server', async t => {

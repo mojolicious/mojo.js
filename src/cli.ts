@@ -1,6 +1,7 @@
 import type {App} from './app.js';
-import * as util from './util.js';
+import {loadModules} from './util.js';
 import Path from '@mojojs/path';
+import {tablify} from '@mojojs/util';
 import nopt from 'nopt';
 
 interface Command {
@@ -87,12 +88,12 @@ export class CLI {
     const commands = Object.keys(this.commands)
       .sort()
       .map(name => [` ${name}`, this.commands[name].description]);
-    process.stdout.write(header + util.tablify(commands) + footer);
+    process.stdout.write(header + tablify(commands) + footer);
   }
 
   async _loadCommands(): Promise<void> {
     this._loaded = true;
-    for (const [name, command] of Object.entries(await util.loadModules(this.commandPaths))) {
+    for (const [name, command] of Object.entries(await loadModules(this.commandPaths))) {
       this.addCommand(name, command);
     }
   }

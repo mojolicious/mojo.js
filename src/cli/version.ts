@@ -1,5 +1,5 @@
 import {version} from '../core.js';
-import {tablify} from '../util.js';
+import {tablify} from '@mojojs/util';
 
 /**
  * Version command.

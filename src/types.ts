@@ -9,9 +9,7 @@ import type {CookieJar} from 'tough-cookie';
 import type {URL} from 'url';
 import type {InspectOptions} from 'util';
 
-// Plain JSON
-export type JSONValue = string | number | boolean | null | JSONValue[] | {[key: string]: JSONValue};
-export type JSONObject = {[key: string]: JSONValue};
+export type {JSONValue, JSONObject} from '@mojojs/util';
 
 export type MojoApp = App;
 
@@ -152,7 +150,7 @@ export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
   form?: Record<string, string>;
   formData?: Record<string, any>;
   insecure?: boolean;
-  json?: JSONValue;
+  json?: any;
   method?: string;
   servername?: string;
   yaml?: any;
@@ -174,7 +172,7 @@ export interface ValidationError {
   schemaPath: string;
 }
 
-export type ValidatorFunction = (data: JSONObject) => ValidatorResult;
+export type ValidatorFunction = (data: any) => ValidatorResult;
 
 interface WebSocketBackendEvents {
   close: () => void;

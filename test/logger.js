@@ -1,6 +1,7 @@
 import {Logger} from '../lib/core.js';
-import {captureOutput, sleep} from '../lib/util.js';
+import {sleep} from '../lib/util.js';
 import Path from '@mojojs/path';
+import {captureOutput} from '@mojojs/util';
 import chalk from 'chalk';
 import t from 'tap';
 

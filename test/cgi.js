@@ -1,7 +1,7 @@
 import {Stream} from 'stream';
 import mojo, {CGI} from '../lib/core.js';
-import {captureOutput} from '../lib/util.js';
 import * as util from '../lib/util.js';
+import {captureOutput} from '@mojojs/util';
 import t from 'tap';
 
 t.test('CGI', async t => {

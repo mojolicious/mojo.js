@@ -2,8 +2,8 @@ import http from 'http';
 import mojo from '../lib/core.js';
 import {Server} from '../lib/server.js';
 import {UserAgent} from '../lib/user-agent.js';
-import {captureOutput} from '../lib/util.js';
 import Path from '@mojojs/path';
+import {captureOutput} from '@mojojs/util';
 import t from 'tap';
 
 t.test('UserAgent', async t => {

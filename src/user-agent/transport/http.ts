@@ -3,8 +3,8 @@ import type {Socket} from 'net';
 import type {URL} from 'url';
 import http from 'http';
 import Stream from 'stream';
-import {termEscape} from '../../util.js';
 import {UserAgentResponse} from '../response.js';
+import {termEscape} from '@mojojs/util';
 
 /**
  * HTTP transport class.

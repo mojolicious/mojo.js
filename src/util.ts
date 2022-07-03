@@ -1,11 +1,9 @@
-import type {JSONValue} from './types.js';
 import type {Mode} from 'fs';
-import stream from 'stream';
 import {setTimeout} from 'timers/promises';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
 import chalk from 'chalk';
-export {SafeString} from '@mojojs/util';
+export * from '@mojojs/util';
 
 type FixOptions = {
   author?: string;
@@ -88,37 +86,6 @@ export const httpStatusMessages: Record<number, string> = {
 };
 
 /**
- * Capture STDOUT/STDERR output.
- */
-export async function captureOutput(
-  fn: () => Promise<void> | void,
-  options: {stderr?: boolean; stdout?: boolean} = {}
-): Promise<string | Buffer> {
-  if (options.stdout === undefined) options.stdout = true;
-
-  const stream = new CaptureStream();
-  const stdoutWrite = process.stdout.write;
-  const stderrWrite = process.stderr.write;
-
-  if (options.stdout === true) {
-    process.stdout.write = stdoutWrite.bind(stream);
-  }
-  if (options.stderr === true) {
-    process.stderr.write = stderrWrite.bind(stream);
-  }
-
-  try {
-    await fn();
-  } finally {
-    process.stdout.write = stdoutWrite;
-    process.stderr.write = stderrWrite;
-  }
-
-  const output = stream.output;
-  return output.length > 0 && Buffer.isBuffer(output[0]) ? Buffer.concat(output) : output.join('');
-}
-
-/**
  * Create directory for generator commands.
  */
 export async function cliCreateDir(path: string): Promise<void> {
@@ -197,17 +164,6 @@ export async function cliFixPackage(options: FixOptions = {}): Promise<void> {
 }
 
 /**
- * Decode URI component, but do not throw an exception if it fails.
- */
-export function decodeURIComponentSafe(value: string): string | null {
-  try {
-    return decodeURIComponent(value);
-  } catch (error) {
-    return null;
-  }
-}
-
-/**
  * Generate exception context.
  */
 export async function exceptionContext(
@@ -241,28 +197,6 @@ export async function exceptionContext(
 }
 
 /**
- * JSON pointers.
- */
-export function jsonPointer(value: JSONValue, pointer: string): JSONValue | undefined {
-  if (pointer.startsWith('/') === false) return pointer.length > 0 ? null : value;
-
-  let data: any = value;
-  for (const part of pointer.replace(/^\//, '').split('/')) {
-    const unescaped = part.replaceAll('~1', '/').replaceAll('~0', '~');
-
-    if (typeof data === 'object' && data !== null && data[unescaped] !== undefined) {
-      data = data[unescaped];
-    } else if (Array.isArray(data) && /^\d+$/.test(unescaped) === true) {
-      data = data[parseInt(unescaped)];
-    } else {
-      return undefined;
-    }
-  }
-
-  return data;
-}
-
-/**
  * Load modules.
  */
 export async function loadModules(dirs: string[]): Promise<Record<string, any>> {
@@ -289,42 +223,3 @@ export async function loadModules(dirs: string[]): Promise<Record<string, any>> 
  * Sleep asynchronously.
  */
 export const sleep = setTimeout;
-
-/**
- * Tablify data structure.
- */
-export function tablify(rows: string[][] = []): string {
-  const spec: number[] = [];
-
-  const table = rows.map(row => {
-    return row.map((col, i) => {
-      col = `${col ?? ''}`.replace(/[\r\n]/g, '');
-      if (col.length >= (spec[i] ?? 0)) spec[i] = col.length;
-      return col;
-    });
-  });
-
-  const lines = table.map(row => row.map((col, i) => (i === row.length - 1 ? col : col.padEnd(spec[i]))).join('  '));
-  return lines.join('\n') + '\n';
-}
-
-/**
- * Escape all POSIX control characters except for `\n`.
- */
-export function termEscape(value: string): string {
-  return [...value]
-    .map(char =>
-      // eslint-disable-next-line no-control-regex
-      /^[\x00-\x09\x0b-\x1f\x7f\x80-\x9f]$/.test(char) ? '\\x' + char.charCodeAt(0).toString(16).padStart(2, '0') : char
-    )
-    .join('');
-}
-
-class CaptureStream extends stream.Writable {
-  output: Uint8Array[] = [];
-
-  _write(chunk: Uint8Array, enc: string, next: () => void) {
-    this.output.push(chunk);
-    next();
-  }
-}

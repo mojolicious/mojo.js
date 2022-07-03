@@ -1,5 +1,5 @@
 import type {CookieOptions} from '../types.js';
-import {decodeURIComponentSafe} from '../util.js';
+import {decodeURIComponentSafe} from '@mojojs/util';
 
 /**
  * Parse cookie.

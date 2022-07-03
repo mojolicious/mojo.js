@@ -11,9 +11,9 @@ import type {UserAgentResponse} from './response.js';
 import type {URL} from 'url';
 import assert from 'assert/strict';
 import {on} from 'events';
-import {jsonPointer} from '../util.js';
 import {MockUserAgent} from './mock.js';
 import DOM from '@mojojs/dom';
+import {jsonPointer} from '@mojojs/util';
 import yaml from 'js-yaml';
 import StackUtils from 'stack-utils';
 

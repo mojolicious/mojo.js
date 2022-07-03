@@ -8,9 +8,9 @@ import {Stream} from 'stream';
 import {URL} from 'url';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
-import {termEscape} from './util.js';
 import {WebSocket} from './websocket.js';
 import Path from '@mojojs/path';
+import {termEscape} from '@mojojs/util';
 import {WebSocketServer} from 'ws';
 
 type ListenArgs = any[];
