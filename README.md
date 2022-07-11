@@ -98,7 +98,7 @@ app.websocket('/title', ctx => {
       const res   = await ctx.ua.get(url);
       const html  = await res.html();
       const title = html.at('title').text();
-      ws.send(title);
+      await ws.send(title);
     }
   });
 });
