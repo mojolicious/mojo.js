@@ -2,12 +2,12 @@ import type {App} from './app.js';
 import type {Context} from './context.js';
 import type {SafeString} from './util.js';
 import type {ValidatorResult} from './validator/result.js';
-import type {Agent} from 'http';
-import type {Readable} from 'stream';
-import type {Stream} from 'stream';
+import type {Agent} from 'node:http';
+import type {Readable} from 'node:stream';
+import type {Stream} from 'node:stream';
+import type {URL} from 'node:url';
+import type {InspectOptions} from 'node:util';
 import type {CookieJar} from 'tough-cookie';
-import type {URL} from 'url';
-import type {InspectOptions} from 'util';
 
 export type {JSONValue, JSONObject} from '@mojojs/util';
 

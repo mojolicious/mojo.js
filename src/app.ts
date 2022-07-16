@@ -10,7 +10,7 @@ import type {
   ServerOptions,
   TestUserAgentOptions
 } from './types.js';
-import {Readable} from 'stream';
+import {Readable} from 'node:stream';
 import {CLI} from './cli.js';
 import {Context} from './context.js';
 import {Hooks} from './hooks.js';

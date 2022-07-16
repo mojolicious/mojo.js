@@ -1,7 +1,7 @@
 import type {UserAgentRequestOptions} from '../../types.js';
-import type http from 'http';
-import type {URL} from 'url';
-import https from 'https';
+import type http from 'node:http';
+import type {URL} from 'node:url';
+import https from 'node:https';
 import {HTTPTransport} from './http.js';
 
 /**

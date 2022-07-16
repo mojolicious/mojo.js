@@ -1,7 +1,7 @@
 import type {Context} from '../context.js';
 import type {CookieOptions} from '../types.js';
-import type {Stream} from 'stream';
-import EventEmitter from 'events';
+import type {Stream} from 'node:stream';
+import EventEmitter from 'node:events';
 import {Headers} from '../headers.js';
 import {stringifyCookie} from './cookie.js';
 

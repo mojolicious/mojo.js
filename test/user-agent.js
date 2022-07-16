@@ -1,4 +1,4 @@
-import http from 'http';
+import http from 'node:http';
 import mojo from '../lib/core.js';
 import {Server} from '../lib/server.js';
 import {UserAgent} from '../lib/user-agent.js';

@@ -1,8 +1,8 @@
 import type {App} from './app.js';
 import type {Context} from './context.js';
 import type {SessionData} from './types.js';
-import crypto from 'crypto';
-import {promisify} from 'util';
+import crypto from 'node:crypto';
+import {promisify} from 'node:util';
 
 const scrypt = promisify(crypto.scrypt);
 const randomBytes = promisify(crypto.randomBytes);

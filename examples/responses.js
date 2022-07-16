@@ -1,7 +1,7 @@
 /*
  * Application demonstrating the various HTTP response variants for debugging
  */
-import {Stream} from 'stream';
+import {Stream} from 'node:stream';
 import mojo from '../lib/core.js';
 
 const app = mojo();

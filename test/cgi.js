@@ -1,4 +1,4 @@
-import {Stream} from 'stream';
+import {Stream} from 'node:stream';
 import mojo, {CGI} from '../lib/core.js';
 import * as util from '../lib/util.js';
 import {captureOutput} from '@mojojs/util';

@@ -9,7 +9,7 @@ import type {UserAgent} from './user-agent.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
 import type {BusboyConfig} from 'busboy';
-import EventEmitter from 'events';
+import EventEmitter from 'node:events';
 import {Params} from './body/params.js';
 import {SafeString} from './util.js';
 

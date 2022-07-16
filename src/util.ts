@@ -1,5 +1,5 @@
-import type {Mode} from 'fs';
-import {setTimeout} from 'timers/promises';
+import type {Mode} from 'node:fs';
+import {setTimeout} from 'node:timers/promises';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
 import chalk from 'chalk';

@@ -1,5 +1,5 @@
 import type {App} from '../app.js';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import {version} from '../core.js';
 import * as util from '../util.js';
 import Path from '@mojojs/path';

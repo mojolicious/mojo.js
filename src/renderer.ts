@@ -1,6 +1,6 @@
 import type {MojoContext, RenderOptions} from './types.js';
-import {promisify} from 'util';
-import {gzip} from 'zlib';
+import {promisify} from 'node:util';
+import {gzip} from 'node:zlib';
 import Path from '@mojojs/path';
 import yaml from 'js-yaml';
 

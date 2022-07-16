@@ -8,9 +8,9 @@ import type {
 } from '../types.js';
 import type {WebSocket} from '../websocket.js';
 import type {UserAgentResponse} from './response.js';
-import type {URL} from 'url';
-import assert from 'assert/strict';
-import {on} from 'events';
+import type {URL} from 'node:url';
+import assert from 'node:assert/strict';
+import {on} from 'node:events';
 import {MockUserAgent} from './mock.js';
 import DOM from '@mojojs/dom';
 import {jsonPointer} from '@mojojs/util';

@@ -861,7 +861,7 @@ encoding comes in handy.
 
 ```js
 import mojo from '@mojojs/core';
-import {Stream} from 'stream';
+import {Stream} from 'node:stream';
 
 const app = mojo();
 

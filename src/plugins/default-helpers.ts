@@ -1,6 +1,6 @@
 import type {MojoApp, MojoContext, RenderOptions, TagAttrs, URLOptions, URLTarget} from '../types.js';
-import type {InspectOptions} from 'util';
-import {inspect} from 'util';
+import type {InspectOptions} from 'node:util';
+import {inspect} from 'node:util';
 import {Logger} from '../logger.js';
 import {SafeString} from '../util.js';
 import {exceptionContext} from '../util.js';

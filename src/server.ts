@@ -1,11 +1,11 @@
 import type {MojoApp, ServerOptions, ServerResponseBody} from './types.js';
-import type {Socket} from 'net';
-import cluster from 'cluster';
-import http from 'http';
-import https from 'https';
-import os from 'os';
-import {Stream} from 'stream';
-import {URL} from 'url';
+import type {Socket} from 'node:net';
+import cluster from 'node:cluster';
+import http from 'node:http';
+import https from 'node:https';
+import os from 'node:os';
+import {Stream} from 'node:stream';
+import {URL} from 'node:url';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
 import {WebSocket} from './websocket.js';

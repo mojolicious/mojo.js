@@ -1,8 +1,8 @@
 import type {UserAgentOptions, UserAgentRequestOptions, UserAgentWebSocketOptions} from './types.js';
 import type {UserAgentResponse} from './user-agent/response.js';
 import type {WebSocket} from './websocket.js';
-import EventEmitter from 'events';
-import {URL} from 'url';
+import EventEmitter from 'node:events';
+import {URL} from 'node:url';
 import {CookieJar} from './user-agent/cookie-jar.js';
 import {HTTPTransport} from './user-agent/transport/http.js';
 import {HTTPSTransport} from './user-agent/transport/https.js';

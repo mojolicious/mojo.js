@@ -1,4 +1,4 @@
-import {Stream} from 'stream';
+import {Stream} from 'node:stream';
 import mojo, {Session} from '../lib/core.js';
 import t from 'tap';
 

@@ -1,6 +1,6 @@
 import type {JSONValue, WebSocketBackend} from './types.js';
 import type {UserAgentResponse} from './user-agent/response.js';
-import EventEmitter, {on} from 'events';
+import EventEmitter, {on} from 'node:events';
 
 interface WebSocketControlEvents {
   close: (this: WebSocket, ...args: any[]) => void;

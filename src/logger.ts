@@ -1,5 +1,5 @@
-import type {WriteStream} from 'fs';
-import assert from 'assert';
+import type {WriteStream} from 'node:fs';
+import assert from 'node:assert';
 import chalk from 'chalk';
 
 interface LogContext {

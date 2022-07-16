@@ -1,5 +1,5 @@
 import type {MojoApp} from '../types.js';
-import repl from 'repl';
+import repl from 'node:repl';
 
 /**
  * Repl command.

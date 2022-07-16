@@ -1,5 +1,5 @@
 import type {MojoContext} from './types.js';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import Path from '@mojojs/path';
 
 /**

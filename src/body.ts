@@ -1,7 +1,7 @@
 import type {JSONValue} from './types.js';
-import type {Readable, Writable} from 'stream';
-import {on} from 'events';
-import zlib from 'zlib';
+import type {Readable, Writable} from 'node:stream';
+import {on} from 'node:events';
+import zlib from 'node:zlib';
 import {Params} from './body/params.js';
 import {Headers} from './headers.js';
 import DOM from '@mojojs/dom';
