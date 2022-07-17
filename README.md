@@ -14,8 +14,9 @@
 The [Mojolicious](https://mojolicious.org) real-time web framework for [Node.js](https://nodejs.org/). Written in
 TypeScript. Meticulously designed for hypermedia-driven backend web services using all the latest JavaScript features.
 
-If you want to stay up to date on the latest developments join us on [Matrix](https://matrix.to/#/#mojo:matrix.org) or
-[IRC](https://web.libera.chat/#mojo).
+If you want to stay up to date on the
+[latest developments](https://github.com/mojolicious/mojo.js/blob/main/CHANGELOG.md) join us on
+[Matrix](https://matrix.to/#/#mojo:matrix.org) or [IRC](https://web.libera.chat/#mojo).
 
 ## Features
 
