@@ -106,7 +106,7 @@ const header = `Usage: APPLICATION COMMAND [OPTIONS]
   node index.js server -l http://*:8080
   node index.js get /foo
 
-Options (for all commands):
+Options:
   -h, --help       Get more information on a specific command
       --show-all   Include developer commands in the list
 
