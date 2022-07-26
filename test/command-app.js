@@ -316,7 +316,7 @@ t.test('Command app', async t => {
     t.match(await file.readFile('utf8'), /import mojo from '@mojojs\/core'/);
     t.match(output2.toString(), /\[fixed\].+package\.json/);
     t.same(await dir.child('package.json').exists(), true);
-    t.match(await dir.child('package.json').readFile('utf8'), /module/);
+    t.match(await dir.child('package.json').readFile('utf8'), /@mojojs/);
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('create-lite-app', 'myapp.js');

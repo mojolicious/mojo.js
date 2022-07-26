@@ -1,4 +1,5 @@
 import type {App} from '../app.js';
+import {version} from '../core.js';
 import * as util from '../util.js';
 
 /**
@@ -9,6 +10,7 @@ export default async function createLiteAppCommand(app: App, args: string[]): Pr
   stdout.write('Generating single file application:\n');
   await util.cliCreateFile(args[1] ?? 'index.js', liteApp);
   await util.cliFixPackage();
+  await util.cliFixPackage({dependencies: {'@mojojs/core': `^${version}`}});
   stdout.write(tip);
 }
 
