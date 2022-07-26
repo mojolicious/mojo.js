@@ -162,14 +162,14 @@ myapp                            // Application directory (created manually)
         `-- default.html.tmpl    // Layout template
 ```
 
-Both application skeletons can be automatically generated with the commands `npx mojo create-lite-app` and
-`npx mojo create-full-app`.
+Both application skeletons can be automatically generated with the commands `npm create @mojojs/lite-app` and
+`npm create @mojojs/full-app`.
 
 ```
 $ mkdir myapp && cd myapp
-$ npm install @mojojs/core
-$ npx mojo create-full-app   # or
-$ npx mojo create-lite-app
+$ npm create @mojojs/full-app   # or
+$ npm create @mojojs/lite-app
+$ npm install
 ```
 
 Feature-wise both are almost equal, the only real differences are organizational, so each one can be gradually
@@ -207,12 +207,12 @@ myapp                            // Application directory (created manually)
         `-- default.html.tmpl    // Layout template
 ```
 
-A fully functional TypeScript mojo.js application can be generated with the command `npx mojo create-full-app --ts`.
+A fully functional TypeScript mojo.js application can be generated with the command
+`npm create @mojojs/full-app -- --ts`.
 
 ```
 $ mkdir myapp && cd myapp
-$ npm install @mojojs/core
-$ npx mojo create-full-app --ts
+$ npm create @mojojs/full-app -- --ts
 $ npm install
 $ npm run build:test
 ```
