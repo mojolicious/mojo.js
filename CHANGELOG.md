@@ -1,6 +1,13 @@
 
 # Changelog
 
+## v1.3.0 (NOT YET RELEASED)
+
+### Features
+
+  * Added support for hiding developer commands from the command list (can be included again with the `--show-all`
+    option).
+
 ## v1.2.0 (2022-07-16)
 
 ### Features

@@ -25,6 +25,7 @@ t.test('Command app', async t => {
       await app.cli.start();
     });
     t.match(output, /eval.*get.*server.*version/s);
+    t.notMatch(output, /create-/s);
 
     const output2 = await captureOutput(async () => {
       await app.cli.start('get', '-h');
@@ -35,6 +36,17 @@ t.test('Command app', async t => {
       await app.cli.start('-h');
     });
     t.match(output3, /eval.*get.*server.*version/s);
+    t.notMatch(output3, /create-/s);
+
+    const output4 = await captureOutput(async () => {
+      await app.cli.start('--show-all');
+    });
+    t.match(output4.toString(), /create-.+eval.*get.*server.*version/s);
+
+    const output5 = await captureOutput(async () => {
+      await app.cli.start('--help', '--show-all');
+    });
+    t.match(output5.toString(), /create-.+eval.*get.*server.*version/s);
   });
 
   await t.test('Unknown command', async t => {

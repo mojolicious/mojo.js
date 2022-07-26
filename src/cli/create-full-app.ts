@@ -88,6 +88,7 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
   }
 }
 
+createFullAppCommand.hidden = true;
 createFullAppCommand.description = 'Create application directory structure';
 createFullAppCommand.usage = `Usage: APPLICATION create-full-app [OPTIONS]
 

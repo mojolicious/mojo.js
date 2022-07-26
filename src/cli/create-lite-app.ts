@@ -14,6 +14,7 @@ export default async function createLiteAppCommand(app: App, args: string[]): Pr
   stdout.write(tip);
 }
 
+createLiteAppCommand.hidden = true;
 createLiteAppCommand.description = 'Create single file application';
 createLiteAppCommand.usage = `Usage: APPLICATION create-lite-app [OPTIONS] [NAME]
 

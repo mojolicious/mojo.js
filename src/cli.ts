@@ -7,6 +7,7 @@ import nopt from 'nopt';
 interface Command {
   (app: App, args: string[]): Promise<void>;
   description: string;
+  hidden?: boolean;
   usage: string;
 }
 
@@ -64,7 +65,7 @@ export class CLI {
     if (app === undefined) return;
     if ((await app.hooks.commandBefore(app, commandArgs)) === true) return;
 
-    const parsed = nopt({help: Boolean}, {h: '--help'}, commandArgs);
+    const parsed = nopt({help: Boolean, 'show-all': Boolean}, {h: '--help'}, commandArgs);
     const argv = parsed.argv;
 
     if (argv.remain.length > 0) {
@@ -78,15 +79,16 @@ export class CLI {
         await command(app, argv.original);
       }
     } else {
-      await this._listCommands();
+      await this._listCommands(parsed['show-all']);
     }
 
     await app.hooks.commandAfter(app, commandArgs);
   }
 
-  async _listCommands(): Promise<void> {
+  async _listCommands(showAll = false): Promise<void> {
     const commands = Object.keys(this.commands)
       .sort()
+      .filter(name => showAll === true || this.commands[name].hidden !== true)
       .map(name => [` ${name}`, this.commands[name].description]);
     process.stdout.write(header + tablify(commands) + footer);
   }
@@ -103,6 +105,10 @@ const header = `Usage: APPLICATION COMMAND [OPTIONS]
 
   node index.js server -l http://*:8080
   node index.js get /foo
+
+Options (for all commands):
+  -h, --help       Get more information on a specific command
+      --show-all   Include developer commands in the list
 
 Commands:
 `;

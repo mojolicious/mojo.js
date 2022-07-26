@@ -34,6 +34,7 @@ export default async function createPluginCommand(app: App, args: string[]): Pro
   });
 }
 
+createPluginCommand.hidden = true;
 createPluginCommand.description = 'Create plugin';
 createPluginCommand.usage = `Usage: APPLICATION create-plugin [OPTIONS] [NAME]
 
