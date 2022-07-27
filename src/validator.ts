@@ -19,7 +19,7 @@ export class Validator {
   /**
    * Get JSON schema validation function.
    */
-  schema(schema: JSONObject | string): ValidatorFunction | null {
+  schema(schema: JSONObject | string): ValidatorFunction {
     const ajv = this._ajv;
 
     let validate: ValidateFunction | undefined;
@@ -30,7 +30,8 @@ export class Validator {
     } else {
       validate = ajv.compile(schema);
     }
-    if (validate === undefined) return null;
+
+    if (validate === undefined) throw new Error(`Invalid schema: '${schema}'`);
 
     return function (data: JSONObject): ValidatorResult {
       const isValid = (validate as ValidateFunction)(data);

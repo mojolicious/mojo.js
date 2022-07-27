@@ -311,7 +311,7 @@ class Context extends EventEmitter {
   /**
    * Get JSON schema validation function.
    */
-  schema(schema: Record<string, any> | string): ValidatorFunction | null {
+  schema(schema: Record<string, any> | string): ValidatorFunction {
     return this.app.validator.schema(schema);
   }
 
