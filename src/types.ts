@@ -9,7 +9,7 @@ import type {URL} from 'node:url';
 import type {InspectOptions} from 'node:util';
 import type {CookieJar} from 'tough-cookie';
 
-export type {JSONValue, JSONObject} from '@mojojs/util';
+export type {JSONValue} from '@mojojs/util';
 
 export interface JSONSchema {
   $id?: string;
