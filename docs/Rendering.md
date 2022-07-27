@@ -814,14 +814,15 @@ app.get('/', async ctx => {
 app.start();
 ```
 
-A skeleton for a full [npm](https://npmjs.org) compatible plugin can also be generated with the `create-plugin`
-command. We recommend the use of a `mojo-plugin-*` naming prefix to make the package easier to identify.
+A skeleton for a full [npm](https://npmjs.org) compatible plugin can also be generated with the command
+`npm create @mojojs/plugin`. We recommend the use of a `mojo-plugin-*` naming prefix to make the package easier to
+identify.
 
 ```
 $ mkdir mojo-plugin-caching-helpers
 $ cd mojo-plugin-caching-helpers
-$ npm install @mojojs/core
-$ npx mojo create-plugin mojo-plugin-caching-helpers
+$ npm create @mojojs/plugin -- mojo-plugin-caching-helpers
+$ npm install
 ```
 
 The generated test file `test/basic.js` uses [tap](https://www.npmjs.com/package/tap) by default and contains enough
