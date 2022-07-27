@@ -833,10 +833,7 @@ t.test('App', async t => {
     (await ua.putOk('/schema/user', {json: {user: 'kraih'}})).statusIs(200).jsonIs({valid: false});
     (await ua.putOk('/schema/user', {json: {username: 'sri'}})).statusIs(200).jsonIs({valid: true});
 
-    const schema = 'test123';
-    t.throws(() => {
-      app.validator.schema(schema);
-    }, new Error(`Invalid schema: '${schema}'`));
+    t.throws(() => app.validator.schema('test123'), new Error('Invalid schema: test123'));
 
     (await ua.putOk('/schema/dynamic', {json: {test: 123}})).statusIs(200).jsonIs({valid: true, errors: []});
     (await ua.putOk('/schema/dynamic', {json: {test: '123'}})).statusIs(200).jsonIs({valid: true, errors: []});

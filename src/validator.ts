@@ -31,7 +31,7 @@ export class Validator {
       validate = ajv.compile(schema);
     }
 
-    if (validate === undefined) throw new Error(`Invalid schema: '${schema}'`);
+    if (validate === undefined) throw new Error(`Invalid schema: ${schema}`);
 
     return function (data: JSONObject): ValidatorResult {
       const isValid = (validate as ValidateFunction)(data);

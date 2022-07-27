@@ -8,6 +8,10 @@
   * Added support for hiding developer commands from the command list (can be included again with the `--show-all`
     option).
 
+### Bug Fixes
+
+  * Fixed `app.validator.schema()` to throw an exception for invalid schemas. (@carragom)
+
 ## v1.2.0 (2022-07-16)
 
 ### Features
