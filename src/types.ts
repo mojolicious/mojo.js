@@ -11,6 +11,11 @@ import type {CookieJar} from 'tough-cookie';
 
 export type {JSONValue, JSONObject} from '@mojojs/util';
 
+export interface JSONSchema {
+  $id?: string;
+  [key: string]: any;
+}
+
 export type MojoApp = App;
 
 // With default helpers from plugins

@@ -1,4 +1,4 @@
-import type {JSONObject, ValidatorFunction} from './types.js';
+import type {JSONSchema, ValidatorFunction} from './types.js';
 import type {ValidateFunction} from 'ajv';
 import {ValidatorResult} from './validator/result.js';
 import Ajv from 'ajv';
@@ -12,14 +12,14 @@ export class Validator {
   /**
    * Add JSON schema.
    */
-  addSchema(schema: JSONObject, name?: string): void {
+  addSchema(schema: JSONSchema, name?: string): void {
     this._ajv.addSchema(schema, name);
   }
 
   /**
    * Get JSON schema validation function.
    */
-  schema(schema: JSONObject | string): ValidatorFunction {
+  schema(schema: JSONSchema | string): ValidatorFunction {
     const ajv = this._ajv;
 
     let validate: ValidateFunction | undefined;
@@ -33,7 +33,7 @@ export class Validator {
 
     if (validate === undefined) throw new Error(`Invalid schema: ${schema}`);
 
-    return function (data: JSONObject): ValidatorResult {
+    return function (data: JSONSchema): ValidatorResult {
       const isValid = (validate as ValidateFunction)(data);
 
       const errors = [];
