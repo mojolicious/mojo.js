@@ -1,7 +1,7 @@
 
 # Changelog
 
-## v1.3.0 (NOT YET RELEASED)
+## v1.3.0 (2022-08-03)
 
 ### Features
 
@@ -10,7 +10,8 @@
 
 ### Bug Fixes
 
-  * Fixed `app.validator.schema()` to throw an exception for invalid schemas. (@carragom)
+  * Fixed `app.validator.schema()` to throw an exception for invalid schemas.
+    ([@carragom](https://github.com/carragom))
 
 ## v1.2.0 (2022-07-16)
 
