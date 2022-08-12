@@ -12,7 +12,13 @@ export default class FooController {
     await ctx.render();
   }
 
-  async echo(ctx: MojoContext): Promise<void> {
+  async formEcho(ctx: MojoContext): Promise<void> {
+    const form = await ctx.req.form();
+    const {foo, bar} = form.toObject<EchoData>();
+    await ctx.render({json: {foo, bar}});
+  }
+
+  async jsonEcho(ctx: MojoContext): Promise<void> {
     const {foo, bar} = await ctx.req.json<EchoData>();
     await ctx.render({json: {foo, bar}});
   }

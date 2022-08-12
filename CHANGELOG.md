@@ -1,6 +1,12 @@
 
 # Changelog
 
+## v1.3.2 (2022-08-14)
+
+### Bug Fixes
+
+  * Fixed types to allow for generics to be used with forms, like `const {foo, bar} = form.toObject<MyData>()`.
+
 ## v1.3.1 (2022-08-13)
 
 ### Bug Fixes

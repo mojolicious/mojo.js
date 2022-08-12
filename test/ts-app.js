@@ -13,7 +13,11 @@ t.test('TypeScript app', async t => {
   });
 
   await t.test('JSON', async () => {
-    (await ua.putOk('/echo', {json: {foo: 'works', bar: 23}})).statusIs(200).jsonIs({foo: 'works', bar: 23});
+    (await ua.putOk('/echo/json', {json: {foo: 'works', bar: 23}})).statusIs(200).jsonIs({foo: 'works', bar: 23});
+  });
+
+  await t.test('Form', async () => {
+    (await ua.postOk('/echo/form', {form: {foo: 'works', bar: 23}})).statusIs(200).jsonIs({foo: 'works', bar: 23});
   });
 
   await t.test('Context decorator', async () => {

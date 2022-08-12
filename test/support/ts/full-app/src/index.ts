@@ -20,7 +20,8 @@ app.get('/', async ctx => {
 
 app.get('/hello').to('foo#hello');
 
-app.put('/echo').to('foo#echo');
+app.put('/echo/json').to('foo#jsonEcho');
+app.post('/echo/form').to('foo#formEcho');
 
 app.get('/decorate/hello', ctx => ctx.res.send(ctx.helloWorld));
 
