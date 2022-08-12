@@ -1,6 +1,12 @@
 
 # Changelog
 
+## v1.3.1 (2022-08-13)
+
+### Bug Fixes
+
+  * Fixed types to allow for generics to be used with JSON, like `const {foo, bar} = await ctx.req.json<MyData>()`.
+
 ## v1.3.0 (2022-08-03)
 
 ### Features

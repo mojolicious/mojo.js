@@ -116,7 +116,7 @@ export class Body {
   /**
    * Get JSON message body as parsed data structure.
    */
-  async json(): Promise<JSONValue> {
+  async json<T = JSONValue>(): Promise<T> {
     return JSON.parse((await this.buffer()).toString());
   }
 
