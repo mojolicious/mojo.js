@@ -35,6 +35,10 @@ t.test('Hook app', async t => {
     await util.sleep(1);
     serverHooks.push(`app:stop: ${app.config.serverHooks}`);
   });
+  app.addAppHook('app:warmup', async app => {
+    await util.sleep(1);
+    serverHooks.push(`app:warmup: ${app.config.serverHooks}`);
+  });
 
   app.addContextHook('dispatch:before', async ctx => {
     const first = ctx.req.query.get('first');
@@ -118,7 +122,7 @@ t.test('Hook app', async t => {
 
   t.same(serverHooks, []);
   const ua = await app.newTestUserAgent({tap: t});
-  t.same(serverHooks, ['server:start: works', 'app:start: works']);
+  t.same(serverHooks, ['server:start: works', 'app:start: works', 'app:warmup: works']);
 
   await t.test('Dispatch hooks (HTTP)', async () => {
     (await ua.getOk('/')).statusIs(200).headerIs('X-Hook', 'works').bodyIs('Hello Mojo!');
@@ -196,7 +200,13 @@ t.test('Hook app', async t => {
       .bodyIs('Hijacked: favicon.ico');
   });
 
-  t.same(serverHooks, ['server:start: works', 'app:start: works']);
+  t.same(serverHooks, ['server:start: works', 'app:start: works', 'app:warmup: works']);
   await ua.stop();
-  t.same(serverHooks, ['server:start: works', 'app:start: works', 'server:stop: works', 'app:stop: works']);
+  t.same(serverHooks, [
+    'server:start: works',
+    'app:start: works',
+    'app:warmup: works',
+    'server:stop: works',
+    'app:stop: works'
+  ]);
 });

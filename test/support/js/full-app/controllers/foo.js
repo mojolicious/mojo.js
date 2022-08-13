@@ -26,4 +26,13 @@ export default class FooController {
     const variant = params.get('device');
     await ctx.render({view: 'variants', layout: 'variants', variant});
   }
+
+  async websocket(ctx) {
+    ctx.json(async ws => {
+      for await (const message of ws) {
+        message.hello = message.hello + '!';
+        ws.send(message);
+      }
+    });
+  }
 }

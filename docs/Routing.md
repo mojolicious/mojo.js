@@ -796,6 +796,28 @@ router.addCondition('query', async (ctx, values) => {
 router.get('/hello').requires('query', {test: '1', to: 'world'}).to('foo#bar');
 ```
 
+### Mount applications
+
+The easiest way to embed one application into another is the `mountPlugin`, which allows you to mount whole
+self-contained applications under a path prefix.
+
+```js
+import mojo, {mountPlugin} from '@mojojs/core';
+import {app as myOtherApp} from '../myapp/index.js';
+
+const app = mojo();
+
+// Mount application under "/prefix"
+app.plugin(mountPlugin, {app: myOtherApp, path: '/prefix'});
+
+// Normal route
+app.get('/', async ctx => {
+  await ctx.render({text: 'Hello World!'});
+});
+
+app.start();
+```
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the

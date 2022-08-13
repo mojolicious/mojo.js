@@ -1,5 +1,6 @@
 import type {App} from './app.js';
 import type {Context} from './context.js';
+import type {Route} from './router/route.js';
 import type {SafeString} from './util.js';
 import type {ValidatorResult} from './validator/result.js';
 import type {Agent} from 'node:http';
@@ -17,6 +18,7 @@ export interface JSONSchema {
 }
 
 export type MojoApp = App;
+export type MojoRoute = Route;
 
 // With default helpers from plugins
 export interface MojoContext extends Context {

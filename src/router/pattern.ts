@@ -1,5 +1,5 @@
 import type {PlaceholderType} from '../types.js';
-import {escapeRegExp} from '@mojojs/dom';
+import {escapeRegExp} from '@mojojs/util';
 
 interface MatchOptions {
   isEndpoint: boolean;

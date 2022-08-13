@@ -78,5 +78,20 @@ t.test('Full app', async t => {
     (await ua.getOk('/test.txt')).statusIs(404);
   });
 
+  await t.test('Session', async () => {
+    (await ua.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
+    (await ua.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
+  });
+
+  await t.test('WebSocket', async t => {
+    await ua.websocketOk('/echo.json', {json: true});
+    await ua.sendOk({hello: 'world'});
+    t.same(await ua.messageOk(), {hello: 'world!'});
+    await ua.sendOk({hello: 'mojo'});
+    t.same(await ua.messageOk(), {hello: 'mojo!'});
+    await ua.closeOk(1000);
+    await ua.closedOk(1000);
+  });
+
   await ua.stop();
 });

@@ -1,7 +1,13 @@
 
 # Changelog
 
-## v1.3.2 (2022-08-14)
+## v1.4.0 (2022-08-14)
+
+### Features
+
+  * Added support for embedding mojo.js applications with `mountPlugin`.
+  * Added supprt for rewriting `ctx.req.path`.
+  * Added `app:warmup` application hook.
 
 ### Bug Fixes
 

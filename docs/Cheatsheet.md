@@ -613,6 +613,18 @@ app.addAppHook('app:start', async app => {
 Useful for reconfiguring the application, warming up caches or preparing database connections. Passed the application
 object.
 
+### app:warmup
+
+Runs whenever the application warms up caches, usually that is less often than `app:start`.
+
+```js
+app.addAppHook('app:warmup', async app => {
+  await app.models.bar.warmup();
+});
+```
+
+Useful for warming up caches and application embedding. Passed the application object.
+
 ### server:stop
 
 Runs whenever a server has been stopped.

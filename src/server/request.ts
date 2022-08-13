@@ -26,6 +26,10 @@ export class ServerRequest extends Body {
    */
   method: string | null;
   /**
+   * Request path.
+   */
+  path: string | null;
+  /**
    * Peer address.
    */
   remoteAddress: string | null;
@@ -44,7 +48,6 @@ export class ServerRequest extends Body {
 
   _cookies: Record<string, string> | undefined = undefined;
   _ip: string | null | undefined = undefined;
-  _path: string | null | undefined = undefined;
   _protocol: string | undefined = undefined;
   _query: Params | undefined = undefined;
   _userinfo: string | null | undefined = undefined;
@@ -53,7 +56,10 @@ export class ServerRequest extends Body {
     super(options.headers, options.body);
 
     this.method = options.method ?? null;
-    this.url = options.url ?? null;
+    const url = (this.url = options.url ?? null);
+
+    const pathMatch = (url ?? '').match(URL_RE);
+    this.path = pathMatch === null ? null : decodeURIComponentSafe(pathMatch[5]);
 
     this.isWebSocket = options.isWebSocket;
     this.isSecure = options.isSecure;
@@ -99,17 +105,6 @@ export class ServerRequest extends Body {
     }
 
     return this._ip;
-  }
-
-  /**
-   * Request path.
-   */
-  get path(): string | null {
-    if (this._path === undefined) {
-      const match = (this.url ?? '').match(URL_RE);
-      this._path = match === null ? null : decodeURIComponentSafe(match[5]);
-    }
-    return this._path;
   }
 
   /**
