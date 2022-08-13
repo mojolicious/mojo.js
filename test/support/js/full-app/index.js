@@ -9,6 +9,11 @@ app.config.name = 'Full';
 
 app.models.users = new Users();
 
+app.config.hooksCalled = [];
+app.addAppHook('app:start', app => app.config.hooksCalled.push(`app:start: ${app.config.name}`));
+app.addAppHook('app:stop', app => app.config.hooksCalled.push(`app:stop: ${app.config.name}`));
+app.addAppHook('app:warmup', app => app.config.hooksCalled.push(`app:warmup: ${app.config.name}`));
+
 app.any('/', ctx => ctx.render({text: 'Hello Mojo!'}));
 
 app.any('/foo').to('foo#works');
@@ -33,6 +38,8 @@ app.get('/static').to(ctx => ctx.sendFile(ctx.home.child('public', 'test.txt')))
 app.get('/default/view').to('foo#defaultView');
 
 app.websocket('/echo.json').to('foo#websocket');
+
+app.get('/hooks').to('foo#hooks');
 
 app.get('/session/login/:name').to('auth#login');
 app.get('/session/logout').to('auth#logout');

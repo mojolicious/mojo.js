@@ -94,4 +94,12 @@ t.test('Full app', async t => {
   });
 
   await ua.stop();
+
+  await t.test('Hooks', async () => {
+    const ua = await app.newTestUserAgent({tap: t});
+    (await ua.getOk('/hooks'))
+      .statusIs(200)
+      .jsonIs(['app:start: Full', 'app:warmup: Full', 'app:stop: Full', 'app:start: Full', 'app:warmup: Full']);
+    await ua.stop();
+  });
 });

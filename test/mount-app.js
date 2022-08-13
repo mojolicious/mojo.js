@@ -72,4 +72,20 @@ t.test('Mount app', async t => {
   });
 
   await ua.stop();
+
+  await t.test('Full app (hooks)', async () => {
+    const ua = await app.newTestUserAgent({tap: t});
+    (await ua.getOk('/mount/full/hooks'))
+      .statusIs(200)
+      .jsonIs([
+        'app:start: Full',
+        'app:warmup: Full',
+        'app:warmup: Full',
+        'app:stop: Full',
+        'app:start: Full',
+        'app:warmup: Full',
+        'app:warmup: Full'
+      ]);
+    await ua.stop();
+  });
 });

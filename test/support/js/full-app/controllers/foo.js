@@ -35,4 +35,8 @@ export default class FooController {
       }
     });
   }
+
+  async hooks(ctx) {
+    await ctx.render({json: ctx.app.config.hooksCalled});
+  }
 }
