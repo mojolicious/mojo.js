@@ -17,7 +17,6 @@ t.test('Mount app', async t => {
   await t.test('Full app', async () => {
     (await ua.getOk('/mount/full')).statusIs(200).bodyIs('Hello Mojo!');
     (await ua.getOk('/mount/full/foo')).statusIs(200).bodyIs('Action works!');
-    (await ua.getOk('/mount/full/FOO')).statusIs(200).bodyIs('Action works!');
     (await ua.getOk('/mount/full/foo/baz')).statusIs(200).bodyIs('Multiple levels');
     (await ua.getOk('mount/full/variants?device=tablet')).statusIs(200).bodyIs('Variant: Tablet!\n\n');
 
@@ -48,9 +47,13 @@ t.test('Mount app', async t => {
       .bodyLike(/ws:.+\d+\/mount\/full-two\/echo.json/);
   });
 
-  await t.test('Full app (extended)', async () => {
+  await t.test('Full app (extended)', async t => {
     (await ua.getOk('/mount/full/extended')).statusIs(200).bodyIs('sharing works!');
 
+    let called = false;
+    app.addContextHook('send:before', () => {
+      called = true;
+    });
     const logs = app.log.capture();
     (await ua.getOk('/mount/full/fails'))
       .typeIs('text/plain; charset=utf-8')
@@ -58,6 +61,17 @@ t.test('Mount app', async t => {
       .bodyLike(/Error: Intentional error/);
     logs.stop();
     t.match(logs.toString(), /\[error\].+Intentional error/);
+    t.same(called, true);
+  });
+
+  await t.test('Full app (reset paths)', async t => {
+    let outerContext;
+    app.addContextHook('dispatch:before', async ctx => {
+      outerContext = ctx;
+    });
+    (await ua.getOk('/mount/full/FOO')).statusIs(200).bodyIs('Action works!');
+    t.equal(outerContext.req.basePath, '');
+    t.equal(outerContext.req.path, '/mount/full/FOO');
   });
 
   await t.test('Full app (shared session)', async () => {
