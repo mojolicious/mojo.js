@@ -37,11 +37,13 @@ app.get('/static').to(ctx => ctx.sendFile(ctx.home.child('public', 'test.txt')))
 
 app.get('/default/view').to('foo#defaultView');
 
-app.websocket('/echo.json').to('foo#websocket');
+app.websocket('/echo.json').to('foo#websocket').name('websocket_echo');
 
 app.get('/hooks').to('foo#hooks');
 
 app.get('/session/login/:name').to('auth#login');
 app.get('/session/logout').to('auth#logout');
+
+app.get('/url').to('foo#url');
 
 app.start();

@@ -14,6 +14,10 @@ let requestId = 0;
  */
 export class ServerRequest extends Body {
   /**
+   * Request base path.
+   */
+  basePath = '';
+  /**
    * Check if underlying socket was encrypted with TLS.
    */
   isSecure: boolean;
@@ -28,7 +32,7 @@ export class ServerRequest extends Body {
   /**
    * Request path.
    */
-  path: string | null;
+  path = '/';
   /**
    * Peer address.
    */
@@ -59,7 +63,7 @@ export class ServerRequest extends Body {
     const url = (this.url = options.url ?? null);
 
     const pathMatch = (url ?? '').match(URL_RE);
-    this.path = pathMatch === null ? null : decodeURIComponentSafe(pathMatch[5]);
+    this.path = pathMatch === null ? '' : decodeURIComponentSafe(pathMatch[5]) ?? '';
 
     this.isWebSocket = options.isWebSocket;
     this.isSecure = options.isSecure;

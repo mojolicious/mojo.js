@@ -20,11 +20,17 @@ t.test('Mount app', async t => {
     (await ua.getOk('/mount/full/FOO')).statusIs(200).bodyIs('Action works!');
     (await ua.getOk('/mount/full/foo/baz')).statusIs(200).bodyIs('Multiple levels');
     (await ua.getOk('mount/full/variants?device=tablet')).statusIs(200).bodyIs('Variant: Tablet!\n\n');
+
     (await ua.getOk('mount/full/static/test.txt'))
       .statusIs(200)
       .headerExists('Content-Length')
       .bodyLike(/Static file\r?\n/);
     (await ua.getOk('/mount/full/does/not/exist')).statusIs(404);
+
+    (await ua.getOk('/mount/full/url?target=/foo')).statusIs(200).bodyIs('/mount/full/foo');
+    (await ua.getOk('/mount/full/url?target=websocket_echo'))
+      .statusIs(200)
+      .bodyLike(/ws:.+\d+\/mount\/full\/echo.json/);
   });
 
   await t.test('Full app (mounted again)', async () => {
@@ -35,6 +41,11 @@ t.test('Mount app', async t => {
       .headerExists('Content-Length')
       .bodyLike(/Static file\r?\n/);
     (await ua.getOk('/mount/full/does/not/exist')).statusIs(404);
+
+    (await ua.getOk('/mount/full-two/url?target=/foo')).statusIs(200).bodyIs('/mount/full-two/foo');
+    (await ua.getOk('/mount/full-two/url?target=websocket_echo'))
+      .statusIs(200)
+      .bodyLike(/ws:.+\d+\/mount\/full-two\/echo.json/);
   });
 
   await t.test('Full app (extended)', async () => {

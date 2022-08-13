@@ -21,7 +21,7 @@ export class Static {
   async dispatch(ctx: MojoContext): Promise<boolean> {
     const req = ctx.req;
     const unsafePath = req.path;
-    if (unsafePath === null || !unsafePath.startsWith(this.prefix)) return false;
+    if (unsafePath.startsWith(this.prefix) === false) return false;
 
     const method = req.method;
     if (method !== 'GET' && method !== 'HEAD') return false;

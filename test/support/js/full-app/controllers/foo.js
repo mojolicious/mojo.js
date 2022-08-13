@@ -27,6 +27,12 @@ export default class FooController {
     await ctx.render({view: 'variants', layout: 'variants', variant});
   }
 
+  async url(ctx) {
+    const params = await ctx.params();
+    const target = params.get('target') ?? undefined;
+    await ctx.render({text: ctx.urlFor(target)});
+  }
+
   async websocket(ctx) {
     ctx.json(async ws => {
       for await (const message of ws) {

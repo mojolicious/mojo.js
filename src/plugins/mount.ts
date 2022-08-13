@@ -21,9 +21,10 @@ export default function mountPlugin(app: MojoApp, options: MountOptions): MojoRo
     .any(`${path}/*mountPath`, async ctx => {
       const {req, res, stash} = ctx;
 
-      // The embedded application does not use the path prefix
+      const originalBasePath = req.basePath;
       const originalPath = req.path;
-      req.path = '/' + stash.mountPath;
+      const path = (req.path = '/' + stash.mountPath);
+      req.basePath = originalPath.substring(0, originalPath.length - path.length);
 
       const mountContext = mountApp.newContext(req, res);
       Object.assign(mountContext.stash, stash);
@@ -37,7 +38,7 @@ export default function mountPlugin(app: MojoApp, options: MountOptions): MojoRo
           ctx.on('connection', ws => mountContext.handleUpgrade(ws));
         }
       } finally {
-        // Application specific information needs to be reset
+        req.basePath = originalBasePath;
         req.path = originalPath;
         res.bindContext(ctx);
       }

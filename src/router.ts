@@ -158,7 +158,6 @@ export class Router extends Route {
     if (method === 'HEAD') method = 'GET';
 
     const path = req.path;
-    if (path === null) return null;
     const isWebSocket = ctx.isWebSocket;
     ctx.log.trace(`${realMethod} "${path}"`);
 

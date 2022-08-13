@@ -34,6 +34,9 @@ t.test('Full app', async t => {
     (await ua.putOk('/bar/world')).statusIs(404);
     (await ua.getOk('/foo/baz')).statusIs(200).bodyIs('Multiple levels');
     (await ua.postOk('/foo/baz')).statusIs(404);
+
+    (await ua.getOk('/url?target=/foo')).statusIs(200).bodyIs('/foo');
+    (await ua.getOk('/url?target=websocket_echo')).statusIs(200).bodyLike(/ws:.+\d+\/echo.json/);
   });
 
   await t.test('View', async () => {

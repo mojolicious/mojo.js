@@ -387,6 +387,8 @@ class Context extends EventEmitter {
   }
 
   _urlForPath(path: string, isWebSocket: boolean, options: URLOptions): string {
+    path = this.req.basePath + path;
+
     let query = '';
     if (options.query !== undefined && Object.keys(options.query).length > 0) {
       query = '?' + new Params(options.query).toString();
