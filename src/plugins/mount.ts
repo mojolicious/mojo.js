@@ -19,12 +19,10 @@ export default function mountPlugin(app: MojoApp, options: MountOptions): MojoRo
   const path = options.path;
   return app
     .any(`${path}/*mountPath`, async ctx => {
-      const req = ctx.req;
-      const res = ctx.res;
+      const {req, res, stash} = ctx;
 
       // The embedded application does not use the path prefix
       const originalPath = req.path;
-      const stash = ctx.stash;
       req.path = '/' + stash.mountPath;
 
       const mountContext = mountApp.newContext(req, res);
