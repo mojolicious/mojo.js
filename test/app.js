@@ -342,6 +342,12 @@ t.test('App', async t => {
   // GET /gzip
   app.get('/gzip', ctx => ctx.render({text: 'a'.repeat(2048)}));
 
+  // Can't read request twice
+  app.post('/req-twice', async ctx => {
+    ctx.log.debug(await ctx.req.text());
+    ctx.render({json: await ctx.req.json()});
+  });
+
   const ua = await app.newTestUserAgent({tap: t});
 
   t.test('Options', t => {
@@ -911,6 +917,16 @@ t.test('App', async t => {
       .headerIsnt('Content-Encoding', 'gzip')
       .headerIs('Vary', 'Accept-Encoding')
       .bodyIs('a'.repeat(2048));
+  });
+
+  await t.test('Request parsed twice', async () => {
+    const logs = app.log.capture('trace');
+    (await ua.postOk('/req-twice'))
+      .statusIs(500)
+      .typeIs('text/plain; charset=utf-8')
+      .bodyLike(/Error: Request already parsed/);
+    logs.stop();
+    t.match(logs.toString(), /\[error\].+Request already parsed/);
   });
 
   await t.test('Mock context', async () => {

@@ -64,10 +64,12 @@ export class Body {
    * Get message body as a readable stream.
    */
   createReadStream(): Readable {
-    if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return this._stream;
+    const stream = this._stream;
+    if (stream.readableEnded) throw 'Request already parsed, trying to read more than once?';
+    if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return stream;
 
     const gunzip = zlib.createGunzip();
-    this._stream.pipe(gunzip);
+    stream.pipe(gunzip);
     return gunzip;
   }
 
