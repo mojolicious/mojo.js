@@ -35,7 +35,7 @@ If you want to stay up to date on the
   * HTML/XML parser with CSS selector support.
 
 * Very clean, `class` and `async`/`await` based API, written in TypeScript, with very few requirements to avoid NPM
-  dependency hell and allow for "Perl-grade" long term support.
+  dependency hell and allow for "Perl-grade" **long term support**.
 
 * Fresh code based upon decades of experience developing [Mojolicious](https://mojolicious.org) and
   [Catalyst](http://catalyst.perl.org), free and open source.
