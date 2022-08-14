@@ -14,7 +14,7 @@ fullApp.get('/fails', () => {
 });
 
 app.plugin(mountPlugin, {app: fullApp, host: /^test1\.example\.com$/});
-app.plugin(mountPlugin, {app: fullApp, host: /^test2\.example\.com$/, path: '/mount/full-three'});
+app.plugin(mountPlugin, {app: fullApp, host: /test2\.example\.com$/, path: '/mount/full-three'});
 app.plugin(mountPlugin, {app: fullApp, path: '/mount/full'});
 app.plugin(mountPlugin, {app: fullApp, path: '/mount/full-two'});
 app.plugin(mountPlugin, {app: configApp, path: '/config'});

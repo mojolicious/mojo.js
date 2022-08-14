@@ -63,6 +63,9 @@ t.test('Mount app', async t => {
     (await ua.getOk('/mount/full-three/url?target=websocket_echo', {headers: {Host: 'test2.example.com'}}))
       .statusIs(200)
       .bodyLike(/ws:\/\/test2\.example\.com\/mount\/full-three\/echo.json/);
+    (await ua.getOk('/mount/full-three/url?target=websocket_echo', {headers: {Host: 'some-test2.example.com'}}))
+      .statusIs(200)
+      .bodyLike(/ws:\/\/some-test2\.example\.com\/mount\/full-three\/echo.json/);
   });
 
   await t.test('Full app (extended)', async t => {
