@@ -65,7 +65,7 @@ export class Body {
    */
   createReadStream(): Readable {
     const stream = this._stream;
-    if (stream.readableEnded) throw 'Request already parsed, trying to read more than once?';
+    if (stream.readableEnded) throw new Error('Request body already consumed, trying to read it more than once?');
     if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return stream;
 
     const gunzip = zlib.createGunzip();

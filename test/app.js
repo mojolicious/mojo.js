@@ -342,10 +342,10 @@ t.test('App', async t => {
   // GET /gzip
   app.get('/gzip', ctx => ctx.render({text: 'a'.repeat(2048)}));
 
-  // Can't read request twice
-  app.post('/req-twice', async ctx => {
+  // GET /read-twice (body consumed twice)
+  app.post('/read-twice', async ctx => {
     ctx.log.debug(await ctx.req.text());
-    ctx.render({json: await ctx.req.json()});
+    await ctx.render({json: await ctx.req.json()});
   });
 
   const ua = await app.newTestUserAgent({tap: t});
@@ -919,16 +919,6 @@ t.test('App', async t => {
       .bodyIs('a'.repeat(2048));
   });
 
-  await t.test('Request parsed twice', async () => {
-    const logs = app.log.capture('trace');
-    (await ua.postOk('/req-twice'))
-      .statusIs(500)
-      .typeIs('text/plain; charset=utf-8')
-      .bodyLike(/Error: Request already parsed/);
-    logs.stop();
-    t.match(logs.toString(), /\[error\].+Request already parsed/);
-  });
-
   await t.test('Mock context', async () => {
     app.defaults.test = 'works';
     const ctx = app.newMockContext();
@@ -1009,6 +999,16 @@ t.test('App', async t => {
     t.equal(ctx.content.header.toString(), 'Hello Mojo!!!');
 
     t.end();
+  });
+
+  await t.test('Request body consumed twice', async () => {
+    const logs = app.log.capture('trace');
+    (await ua.postOk('/read-twice'))
+      .statusIs(500)
+      .typeIs('text/plain; charset=utf-8')
+      .bodyLike(/Error: Request body already consumed/);
+    logs.stop();
+    t.match(logs.toString(), /\[error\].+Request body already consumed/);
   });
 
   t.test('Forbidden helpers', t => {

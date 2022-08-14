@@ -12,6 +12,8 @@
 
 ### Bug Fixes
 
+  * Fixed a bug where trying to consume a request body would not result in an exception.
+    ([@marcusramberg](https://github.com/marcusramberg))
   * Fixed types to allow for generics to be used with forms, like `const {foo, bar} = form.toObject<MyData>()`.
 
 ## v1.3.1 (2022-08-13)
