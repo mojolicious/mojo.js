@@ -33,7 +33,7 @@ export interface MojoContext extends Context {
   httpException: (error: any) => Promise<boolean>;
   imageTag: (target: string, attrs?: TagAttrs) => SafeString;
   include: (options: RenderOptions, stash: Record<string, any>) => Promise<SafeString | null>;
-  inpsect: (object: Record<string, any>, options: InspectOptions) => string;
+  inspect: (object: Record<string, any>, options: InspectOptions) => string;
   inputTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
