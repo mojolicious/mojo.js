@@ -33,7 +33,11 @@ t.test('Full app', async t => {
     (await ua.getOk('/bar/mojo')).statusIs(200).bodyIs('mojo');
     (await ua.putOk('/bar/world')).statusIs(404);
     (await ua.getOk('/foo/baz')).statusIs(200).bodyIs('Multiple levels');
-    (await ua.getOk('/not/found')).headerIs('X-Not', 'found').statusIs(404).bodyIs('Not Found');
+    (await ua.getOk('/not/found'))
+      .typeIs('text/plain; charset=utf-8')
+      .headerIs('X-Not', 'found')
+      .statusIs(404)
+      .bodyIs('Not Found');
     (await ua.postOk('/foo/baz')).statusIs(404);
 
     (await ua.getOk('/url?target=/foo')).statusIs(200).bodyIs('/foo');
