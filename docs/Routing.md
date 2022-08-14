@@ -810,6 +810,9 @@ const app = mojo();
 // Mount application under "/prefix"
 app.plugin(mountPlugin, {app: myOtherApp, path: '/prefix'});
 
+// Mount application with subdomain
+app.plugin(mountPlugin, {app: myOtherApp, host: /^test\.example\.com$/});
+
 // Normal route
 app.get('/', async ctx => {
   await ctx.render({text: 'Hello World!'});

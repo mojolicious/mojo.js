@@ -2,7 +2,8 @@ import type {MojoApp, MojoRoute, ConfigOptions} from '../types.js';
 
 interface MountOptions extends ConfigOptions {
   app: MojoApp;
-  path: string;
+  host?: RegExp;
+  path?: string;
 }
 
 /**
@@ -16,8 +17,8 @@ export default function mountPlugin(app: MojoApp, options: MountOptions): MojoRo
   app.addAppHook('app:start', () => mountApp.hooks.serverStart(mountApp));
   app.addAppHook('app:stop', () => mountApp.hooks.serverStop(mountApp));
 
-  const path = options.path;
-  return app
+  const path = options.path ?? '/';
+  const route = app
     .any(`${path}/*mountPath`, async ctx => {
       const {req, res, stash} = ctx;
 
@@ -44,4 +45,9 @@ export default function mountPlugin(app: MojoApp, options: MountOptions): MojoRo
       }
     })
     .to({mountPath: ''});
+
+  const host = options.host;
+  if (host !== undefined) route.requires('host', host);
+
+  return route;
 }

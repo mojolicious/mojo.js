@@ -47,6 +47,24 @@ t.test('Mount app', async t => {
       .bodyLike(/ws:.+\d+\/mount\/full-two\/echo.json/);
   });
 
+  await t.test('Full app (host)', async () => {
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello MountApp!');
+    (await ua.getOk('/', {headers: {Host: 'test1.example.com'}})).statusIs(200).bodyIs('Hello Mojo!');
+    (await ua.getOk('/mount/full-three', {headers: {Host: 'test1.example.com'}})).statusIs(404);
+    (await ua.getOk('/mount/full-three', {headers: {Host: 'test2.example.com'}})).statusIs(200).bodyIs('Hello Mojo!');
+
+    (await ua.getOk('/url?target=/foo', {headers: {Host: 'test1.example.com'}})).statusIs(200).bodyIs('/foo');
+    (await ua.getOk('/url?target=websocket_echo', {headers: {Host: 'test1.example.com'}}))
+      .statusIs(200)
+      .bodyLike(/ws:\/\/test1\.example\.com\/echo.json/);
+    (await ua.getOk('/mount/full-three/url?target=/foo', {headers: {Host: 'test2.example.com'}}))
+      .statusIs(200)
+      .bodyIs('/mount/full-three/foo');
+    (await ua.getOk('/mount/full-three/url?target=websocket_echo', {headers: {Host: 'test2.example.com'}}))
+      .statusIs(200)
+      .bodyLike(/ws:\/\/test2\.example\.com\/mount\/full-three\/echo.json/);
+  });
+
   await t.test('Full app (extended)', async t => {
     (await ua.getOk('/mount/full/extended')).statusIs(200).bodyIs('sharing works!');
 
@@ -106,8 +124,12 @@ t.test('Mount app', async t => {
         'app:start: Full',
         'app:warmup: Full',
         'app:warmup: Full',
+        'app:warmup: Full',
+        'app:warmup: Full',
         'app:stop: Full',
         'app:start: Full',
+        'app:warmup: Full',
+        'app:warmup: Full',
         'app:warmup: Full',
         'app:warmup: Full'
       ]);
