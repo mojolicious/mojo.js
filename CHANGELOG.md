@@ -6,8 +6,8 @@
 ### Features
 
   * Added support for embedding mojo.js applications with `mountPlugin`.
-  * Added supprt for rewriting `ctx.req.path`.
-  * Added supprt relative paths with `ctx.req.basePath` to `ctx.urlFor`.
+  * Added support for rewriting `ctx.req.path`.
+  * Added support relative paths with `ctx.req.basePath` to `ctx.urlFor`.
   * Added `app:warmup` application hook.
 
 ### Bug Fixes
