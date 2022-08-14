@@ -799,7 +799,7 @@ router.get('/hello').requires('query', {test: '1', to: 'world'}).to('foo#bar');
 ### Mount applications
 
 The easiest way to embed one application into another is the plugin `mountPlugin`, which allows you to mount whole
-self-contained applications under a path prefix.
+self-contained applications under a domain and/or path prefix.
 
 ```js
 import mojo, {mountPlugin} from '@mojojs/core';
