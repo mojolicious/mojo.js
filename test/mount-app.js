@@ -40,6 +40,11 @@ t.test('Mount app', async t => {
   await t.test('Full app (mounted again)', async () => {
     (await ua.getOk('/mount/full-two')).statusIs(200).bodyIs('Hello Mojo!');
     (await ua.getOk('mount/full-two/variants?device=tablet')).statusIs(200).bodyIs('Variant: Tablet!\n\n');
+    (await ua.getOk('mount/full-two/not/found'))
+      .typeIs('text/plain; charset=utf-8')
+      .headerIs('X-Not', 'found')
+      .statusIs(404)
+      .bodyIs('Not Found');
     (await ua.getOk('mount/full-two/static/test.txt'))
       .statusIs(200)
       .headerExists('Content-Length')
