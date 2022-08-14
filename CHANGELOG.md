@@ -12,7 +12,7 @@
 
 ### Bug Fixes
 
-  * Fixed a bug where trying to consume a request body would not result in an exception.
+  * Fixed a bug where trying to consume a request body more than once would not result in an exception.
     ([@marcusramberg](https://github.com/marcusramberg))
   * Fixed types to allow for generics to be used with forms, like `const {foo, bar} = form.toObject<MyData>()`.
 
