@@ -46,4 +46,6 @@ app.get('/session/logout').to('auth#logout');
 
 app.get('/url').to('foo#url');
 
+app.get('/not/found').to('foo#notFound');
+
 app.start();

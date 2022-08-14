@@ -19,6 +19,7 @@ t.test('Mount app', async t => {
     (await ua.getOk('/mount/full/foo')).statusIs(200).bodyIs('Action works!');
     (await ua.getOk('/mount/full/foo/baz')).statusIs(200).bodyIs('Multiple levels');
     (await ua.getOk('mount/full/variants?device=tablet')).statusIs(200).bodyIs('Variant: Tablet!\n\n');
+    (await ua.getOk('mount/full/not/found')).headerIs('X-Not', 'found').statusIs(404).bodyIs('Not Found');
 
     (await ua.getOk('mount/full/static/test.txt'))
       .statusIs(200)

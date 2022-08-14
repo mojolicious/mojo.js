@@ -21,6 +21,11 @@ export default class FooController {
     return ctx.render();
   }
 
+  async notFound(ctx) {
+    ctx.res.set('X-Not', 'found');
+    await ctx.notFound();
+  }
+
   async variants(ctx) {
     const params = await ctx.params();
     const variant = params.get('device');

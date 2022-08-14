@@ -28,6 +28,7 @@ export default function mountPlugin(app: MojoApp, options: MountOptions): MojoRo
       req.basePath = originalPath.substring(0, originalPath.length - path.length);
 
       const mountContext = mountApp.newContext(req, res);
+      mountContext.exceptionFormat = ctx.exceptionFormat;
       Object.assign(mountContext.stash, stash);
 
       try {
