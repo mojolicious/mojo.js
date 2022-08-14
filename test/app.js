@@ -1006,9 +1006,9 @@ t.test('App', async t => {
     (await ua.postOk('/read-twice'))
       .statusIs(500)
       .typeIs('text/plain; charset=utf-8')
-      .bodyLike(/Error: Request body already consumed/);
+      .bodyLike(/Error: Request body has already been consumed/);
     logs.stop();
-    t.match(logs.toString(), /\[error\].+Request body already consumed/);
+    t.match(logs.toString(), /\[error\].+Request body has already been consumed/);
   });
 
   t.test('Forbidden helpers', t => {
