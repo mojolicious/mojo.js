@@ -16,8 +16,8 @@ with `package-lock.json` files.
 
 Of course you want your IDE to autocomplete helpers when you start typing `ctx.`. Helpers are very dynamic code
 however, so the IDE will need a little help. For this purpose TypeScript supports a feature called
-[declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html). With it you can add your
-helpers to the `MojoContext` interface, which is exported by `@mojojs/core`.
+[declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html). Simply add your helpers
+to the `MojoContext` interface and the IDE will know what to do.
 
 ```
 declare module '@mojojs/core' {
