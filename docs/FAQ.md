@@ -12,9 +12,9 @@ undocumented, you can always count on backwards compatibility, everything else w
 completely avoid any risk of accidental breakage, we do recommend following current best practices for version pinning
 with `package-lock.json` files.
 
-### How do i get my IDE to auto-complete helpers?
+### How do i get my IDE to autocomplete helpers?
 
-Of course you want your IDE to auto-complete helpers when you start typing `ctx.`. Helpers are very dynamic code
+Of course you want your IDE to autocomplete helpers when you start typing `ctx.`. Helpers are very dynamic code
 however, so the IDE will need a little help. For this purpose TypeScript supports a feature called
 [declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html). With it you can add your
 helpers to the `MojoContext` interface, which is exported by `@mojojs/core`.
