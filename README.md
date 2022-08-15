@@ -34,6 +34,8 @@ If you want to stay up to date on the
     domain sockets and gzip compression.
   * HTML/XML parser with CSS selector support.
 
+* No frontend framework, mojo.js is for the **backend**.
+
 * Very clean, `class` and `async`/`await` based API, written in TypeScript, with very few requirements to avoid NPM
   dependency hell and allow for "Perl-grade" **long term support**.
 
