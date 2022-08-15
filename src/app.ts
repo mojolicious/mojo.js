@@ -1,3 +1,4 @@
+import type {Route} from './router/route.js';
 import type {
   AnyArguments,
   AppOptions,
@@ -5,7 +6,6 @@ import type {
   MojoAction,
   MojoContext,
   MojoModels,
-  MojoRoute,
   RouteArguments,
   ServerOptions,
   TestUserAgentOptions
@@ -158,7 +158,7 @@ export class App {
   /**
    * Generate route matching any of the listed HTTP request methods or all.
    */
-  any(...args: AnyArguments): MojoRoute {
+  any(...args: AnyArguments): Route {
     return this.router.any(...args);
   }
 
@@ -183,14 +183,14 @@ export class App {
   /**
    * Generate route matching only `DELETE` requests.
    */
-  delete(...args: RouteArguments): MojoRoute {
+  delete(...args: RouteArguments): Route {
     return this.router.delete(...args);
   }
 
   /**
    * Generate route matching only `GET` requests.
    */
-  get(...args: RouteArguments): MojoRoute {
+  get(...args: RouteArguments): Route {
     return this.router.get(...args);
   }
 
@@ -262,14 +262,14 @@ export class App {
   /**
    * Generate route matching only `OPTIONS` requests.
    */
-  options(...args: RouteArguments): MojoRoute {
+  options(...args: RouteArguments): Route {
     return this.router.options(...args);
   }
 
   /**
    * Generate route matching only `PATCH` requests.
    */
-  patch(...args: RouteArguments): MojoRoute {
+  patch(...args: RouteArguments): Route {
     return this.router.patch(...args);
   }
 
@@ -283,14 +283,14 @@ export class App {
   /**
    * Generate route matching only `POST` requests.
    */
-  post(...args: RouteArguments): MojoRoute {
+  post(...args: RouteArguments): Route {
     return this.router.post(...args);
   }
 
   /**
    * Generate route matching only `PUT` requests.
    */
-  put(...args: RouteArguments): MojoRoute {
+  put(...args: RouteArguments): Route {
     return this.router.put(...args);
   }
 
@@ -305,7 +305,7 @@ export class App {
   /**
    * Generate route for a nested route with its own intermediate destination.
    */
-  under(...args: AnyArguments): MojoRoute {
+  under(...args: AnyArguments): Route {
     return this.router.under(...args);
   }
 
@@ -321,7 +321,7 @@ export class App {
   /**
    * Generate route matching only WebSocket handshake requests.
    */
-  websocket(...args: RouteArguments): MojoRoute {
+  websocket(...args: RouteArguments): Route {
     return this.router.websocket(...args);
   }
 }
