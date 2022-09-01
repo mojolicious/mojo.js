@@ -142,24 +142,26 @@ Full [mojo.js](https://mojojs.org) applications on the other hand follow the MVC
 concerns into different files to maximize maintainability:
 
 ```
-myapp                            // Application directory (created manually)
+myapp                               // Application directory (created manually)
 |-- node_modules
 |   `-- *lots of node files*
-|-- package.json                 // Node package information and settings
-|-- test                         // Test directory
-|   `-- example.js               // Random test
-|-- config.yml                   // Configuration file
-|-- public                       // Static file directory (served automatically)
-|   `-- index.html               // Static HTML file
-|-- index.js                     // Application script
-|-- controllers                  // Controller directory
-|   `-- example.js               // Controller class
-|-- models                       // Model directory
-`-- views                        // Views directory
-    |-- example                  // View directory for "example" controller
-    |    `-- welcome.html.tmpl   // Template for "welcome" action
-    `-- layouts                  // View directory for layout templates
-        `-- default.html.tmpl    // Layout template
+|-- package.json                    // Node package information and settings
+|-- test                            // Test directory
+|   `-- example.js                  // Random test
+|-- config.yml                      // Configuration file
+|-- public                          // Static file directory (served automatically)
+|   |-- assets                      // Static assets created by bundlers
+|   |   `-- *generated assets*
+|   `-- index.html                  // Static HTML file
+|-- index.js                        // Application script
+|-- controllers                     // Controller directory
+|   `-- example.js                  // Controller class
+|-- models                          // Model directory
+`-- views                           // Views directory
+    |-- example                     // View directory for "example" controller
+    |    `-- welcome.html.tmpl      // Template for "welcome" action
+    `-- layouts                     // View directory for layout templates
+        `-- default.html.tmpl       // Layout template
 ```
 
 Both application skeletons can be automatically generated with the commands `npm create @mojojs/lite-app` and
@@ -183,28 +185,30 @@ applications that are planning to use it. With a `src` directory for `.ts` sourc
 compiled `.js` output files.
 
 ```
-myapp                            // Application directory (created manually)
+myapp                               // Application directory (created manually)
 |-- node_modules
 |   `-- *lots of node files*
-|-- package.json                 // Node package information and settings
-|-- tsconfig.json                // TypeScript configuration
-|-- test                         // Test directory
-|   `-- example.js               // Random test
-|-- config.yml                   // Configuration file
-|-- public                       // Static file directory (served automatically)
-|   `-- index.html               // Static HTML file
-|-- src                          // TypeScript source directory
-|   |-- index.ts                 // Application script
-|   |-- controllers              // Controller directory
-|   |   `-- example.ts           // Controller class
-|   `-- models                   // Model directory
+|-- package.json                    // Node package information and settings
+|-- tsconfig.json                   // TypeScript configuration
+|-- test                            // Test directory
+|   `-- example.js                  // Random test
+|-- config.yml                      // Configuration file
+|-- public                          // Static file directory (served automatically)
+|   |-- assets                      // Static assets created by bundlers
+|   |   `-- *generated assets*
+|   `-- index.html                  // Static HTML file
+|-- src                             // TypeScript source directory
+|   |-- index.ts                    // Application script
+|   |-- controllers                 // Controller directory
+|   |   `-- example.ts              // Controller class
+|   `-- models                      // Model directory
 |-- lib
 |   `-- *compiled js files*
-`-- views                        // Views directory
-    |-- example                  // View directory for "example" controller
-    |    `-- welcome.html.tmpl   // Template for "welcome" action
-    `-- layouts                  // View directory for layout templates
-        `-- default.html.tmpl    // Layout template
+`-- views                           // Views directory
+    |-- example                     // View directory for "example" controller
+    |    `-- welcome.html.tmpl      // Template for "welcome" action
+    `-- layouts                     // View directory for layout templates
+        `-- default.html.tmpl       // Layout template
 ```
 
 A fully functional TypeScript mojo.js application can be generated with the command

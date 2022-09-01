@@ -79,6 +79,10 @@ export class App {
    */
   mime: Mime = new Mime();
   /**
+   * Operating mode for application. Defaults to the value of the `NODE_ENV` environment variable.
+   */
+  mode: string;
+  /**
    * Storage for user defined models.
    */
   models: MojoModels = {};
@@ -112,7 +116,6 @@ export class App {
   validator = new Validator();
 
   _contextClass: any = class extends ContextWrapper {};
-  _mode: string;
 
   constructor(options: AppOptions = {}) {
     this.config = options.config ?? {};
@@ -120,9 +123,9 @@ export class App {
     this.exceptionFormat = options.exceptionFormat ?? 'html';
     this.secrets = options.secrets ?? ['Insecure'];
 
-    this._mode = options.mode ?? process.env.NODE_ENV ?? 'development';
+    this.mode = options.mode ?? process.env.NODE_ENV ?? 'development';
 
-    const isDev = this._mode === 'development';
+    const isDev = this.mode === 'development';
     this.log = new Logger({historySize: isDev ? 10 : 0, level: isDev ? 'trace' : 'info'});
 
     this.plugin(defaultHelpersPlugin);
@@ -205,13 +208,6 @@ export class App {
     if ((await this.router.dispatch(ctx)) === true) return;
 
     if (ctx.isWebSocket !== true) await ctx.notFound();
-  }
-
-  /**
-   * Operating mode for application. Defaults to the value of the `NODE_ENV` environment variable.
-   */
-  get mode(): string {
-    return this._mode;
   }
 
   /**
@@ -313,8 +309,7 @@ export class App {
    * Warmup the cache, usually called automatically.
    */
   async warmup(): Promise<void> {
-    await this.renderer.warmup();
-    await this.router.warmup();
+    await Promise.all([this.static, this.renderer, this.router].map(component => component.warmup()));
     await this.hooks.runHook('app:warmup', this);
   }
 

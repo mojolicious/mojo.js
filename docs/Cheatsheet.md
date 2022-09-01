@@ -433,6 +433,15 @@ Log the exception and close the WebSocket connection with an `1011` error code.
 
 These view helpers are currently available by default:
 
+#### assetTag
+
+```
+%= ctx.assetTag('/app.js')
+%= ctx.assetTag('/app.js', {async: 'async'})
+```
+
+Generate `<script>`, `<link>` or `<img>` tag for static asset.
+
 #### buttonTo
 
 ```
@@ -475,6 +484,7 @@ be added as well.
 
 ```
 %= ctx.imageTag('/myapp/logo.png')
+%= ctx.imageTag('/myapp/logo.png', {alt: 'just a logo'})
 ```
 
 Generate `<img>` tag for image file.
@@ -518,6 +528,7 @@ Generate `<input>` tag of type `radio`. Previous input values will automatically
 
 ```
 %= ctx.scriptTag('/bootstrap/bootstrap.bundle.min.js')
+%= ctx.scriptTag('/bootstrap/bootstrap.bundle.min.js', {async: 'async'})
 ```
 
 Generate `<script>` tag for JavaScript file.
@@ -526,6 +537,7 @@ Generate `<script>` tag for JavaScript file.
 
 ```
 %= ctx.styleTag('/bootstrap/bootstrap.min.css')
+%= ctx.styleTag('/bootstrap/bootstrap.min.css', {media: 'foo'})
 ```
 
 Generate `<link>` tag for CSS file.

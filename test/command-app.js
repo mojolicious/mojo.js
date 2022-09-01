@@ -377,6 +377,8 @@ t.test('Command app', async t => {
     t.same(await dir.child('views', 'example', 'welcome.html.tmpl').exists(), true);
     t.match(await dir.child('views', 'example', 'welcome.html.tmpl').readFile('utf8'), /This page/);
     t.match(output2.toString(), /\[write\].+test.+example\.js/);
+    t.same(await dir.child('public', 'assets').exists(), true);
+    t.same(await dir.child('public', 'index.html').exists(), true);
     t.same(await dir.child('test', 'example.js').exists(), true);
     t.match(await dir.child('test', 'example.js').readFile('utf8'), /getOk/);
     t.match(output2.toString(), /\[fixed\].+package\.json/);

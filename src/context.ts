@@ -358,11 +358,17 @@ class Context extends EventEmitter {
   }
 
   /**
+   * Generate URL for static asset.
+   */
+  urlForAsset(path: string, options: URLOptions = {}): string {
+    return ABSOLUTE.test(path) === true ? path : this._urlForPath(this.app.static.assetPath(path), false, options);
+  }
+
+  /**
    * Generate URL for static file.
    */
-  urlForFile(path: string): string {
-    if (ABSOLUTE.test(path)) return path;
-    return this.app.static.filePath(path);
+  urlForFile(path: string, options: URLOptions = {}): string {
+    return ABSOLUTE.test(path) === true ? path : this._urlForPath(this.app.static.filePath(path), false, options);
   }
 
   /**

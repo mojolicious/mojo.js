@@ -22,6 +22,7 @@ export type MojoRoute = Route;
 
 // With default helpers from plugins
 export interface MojoContext extends Context {
+  assetTag: (path: string, attrs?: TagAttrs) => SafeString;
   buttonTo: (target: URLTarget, attrs: TagAttrs, text: string) => SafeString;
   checkBoxTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   currentRoute: () => string | null;
@@ -39,8 +40,8 @@ export interface MojoContext extends Context {
   jsonNotFound: () => Promise<boolean>;
   linkTo: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
   radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  scriptTag: (target: string) => SafeString;
-  styleTag: (target: string) => SafeString;
+  scriptTag: (target: string, attrs?: TagAttrs) => SafeString;
+  styleTag: (target: string, attrs?: TagAttrs) => SafeString;
   submitButtonTag: (text?: string, attrs?: TagAttrs) => SafeString;
   tag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => SafeString;
   textAreaTag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => Promise<SafeString>;

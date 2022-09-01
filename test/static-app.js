@@ -230,6 +230,7 @@ t.test('Static app', async t => {
       .headerExists('Accept-Ranges')
       .headerExists('Etag')
       .headerExists('Last-Modified')
+      .headerExistsNot('Cache-Control')
       .bodyLike(/Hello World!/);
 
     (await ua.headOk('/static/hello.txt'))
@@ -239,6 +240,7 @@ t.test('Static app', async t => {
       .headerExists('Accept-Ranges')
       .headerExists('Etag')
       .headerExists('Last-Modified')
+      .headerExistsNot('Cache-Control')
       .bodyIs('');
 
     (await ua.postOk('/static/hello.txt'))
@@ -248,6 +250,7 @@ t.test('Static app', async t => {
       .headerExistsNot('Accept-Ranges')
       .headerExistsNot('Etag')
       .headerExistsNot('Last-Modified')
+      .headerExistsNot('Cache-Control')
       .bodyIs('Route: POST');
 
     (await ua.putOk('/static/hello.txt'))
@@ -257,7 +260,73 @@ t.test('Static app', async t => {
       .headerExistsNot('Accept-Ranges')
       .headerExistsNot('Etag')
       .headerExistsNot('Last-Modified')
+      .headerExistsNot('Cache-Control')
       .bodyIs('Route: PUT');
+  });
+
+  await t.test('Assets', async t => {
+    const ctx = app.newMockContext();
+    t.equal(ctx.urlForAsset('http://example.com'), 'http://example.com');
+    t.equal(ctx.urlForAsset('/unknown.css'), '/static/assets/unknown.css');
+    t.equal(ctx.urlForAsset('foo.css'), '/static/assets/foo.ab1234cd5678ef.css');
+    t.equal(ctx.urlForAsset('/foo.css'), '/static/assets/foo.ab1234cd5678ef.css');
+    t.equal(ctx.urlForAsset('/foo.js'), '/static/assets/foo.ab1234cd5678ef.js');
+    t.equal(ctx.urlForAsset('/foo/bar/baz.js'), '/static/assets/foo/bar/baz.development.js');
+    t.equal(ctx.urlForAsset('/foo/bar.js'), '/static/assets/foo/bar.321.js');
+    t.equal(ctx.urlForAsset('/foo/bar/test.min.js'), '/static/assets/foo/bar/test.ab1234cd5678ef.min.js');
+    t.equal(ctx.urlForAsset('/foo/bar/yada.css'), '/static/assets/foo/bar/yada.css');
+
+    (await ua.getOk('/static/assets/unknown.css')).statusIs(404).headerExistsNot('Cache-Control');
+    (await ua.getOk('/static/assets/foo.ab1234cd5678ef.css'))
+      .statusIs(200)
+      .headerExists('Content-Type')
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'no-cache')
+      .bodyLike(/\* foo\.css asset/);
+    (await ua.getOk('/static/assets/foo.ab1234cd5678ef.js'))
+      .statusIs(200)
+      .headerExists('Content-Type')
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'no-cache')
+      .bodyLike(/\* foo\.js asset/);
+    (await ua.getOk('/static/assets/foo/bar.321.js'))
+      .statusIs(200)
+      .headerExists('Content-Type')
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'no-cache')
+      .bodyLike(/\* foo\/bar\.js asset/);
+    (await ua.getOk('/static/assets/foo/bar/baz.development.js'))
+      .statusIs(200)
+      .headerExists('Content-Type')
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'no-cache')
+      .bodyLike(/\* foo\/bar\/baz\.js development asset/);
+    (await ua.getOk('/static/assets/foo/bar/baz.123.js'))
+      .statusIs(200)
+      .headerExists('Content-Type')
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'no-cache')
+      .bodyLike(/\* foo\/bar\/baz\.js asset/);
+    (await ua.getOk('/static/assets/foo/bar/test.ab1234cd5678ef.min.js'))
+      .statusIs(200)
+      .headerExists('Content-Type')
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'no-cache')
+      .bodyLike(/\* foo\/bar\/test\.min\.js asset/);
+    (await ua.getOk('/static/assets/foo/bar/yada.css'))
+      .statusIs(200)
+      .headerExists('Content-Type')
+      .headerExists('Content-Length')
+      .headerIs('Cache-Control', 'no-cache')
+      .bodyLike(/\* foo\/bar\/yada\.css asset/);
+
+    app.mode = 'production';
+    (await ua.getOk('/static/assets/foo.ab1234cd5678ef.css'))
+      .statusIs(200)
+      .headerExists('Content-Type')
+      .headerExists('Content-Length')
+      .headerExistsNot('Cache-Control')
+      .bodyLike(/\* foo\.css asset/);
   });
 
   await ua.stop();

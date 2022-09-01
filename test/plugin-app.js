@@ -1,10 +1,13 @@
 import mojo from '../lib/core.js';
+import Path from '@mojojs/path';
 import t from 'tap';
 
 t.test('Plugin app', async t => {
   const app = mojo();
 
   if (app.mode === 'development') app.log.level = 'debug';
+
+  app.static.publicPaths.push(Path.currentFile().sibling('support', 'js', 'static-app', 'public').toString());
 
   app.plugin(mixedPlugin);
 
@@ -149,10 +152,16 @@ Favicon2: <%= ctx.faviconTag('/favicon.ico') %>
 Relative image1: <%= ctx.imageTag('/foo/bar.png') %>
 Relative image2: <%= ctx.imageTag('/foo/bar.png', {alt: 'Bar'}) %>
 Relative script: <%= ctx.scriptTag('/foo/bar.js') %>
-Relative style: <%= ctx.styleTag('/foo/bar.css') %>
+Relative style: <%= ctx.styleTag('/foo/bar.css', {media: 'foo'}) %>
 Absolute image: <%= ctx.imageTag('https://mojojs.org/static/foo/bar.png') %>
-Absolute script: <%= ctx.scriptTag('https://mojojs.org/static/foo/bar.js') %>
+Absolute script: <%= ctx.scriptTag('https://mojojs.org/static/foo/bar.js', {async: 'async'}) %>
 Absolute style: <%= ctx.styleTag('https://mojojs.org/static/foo/bar.css') %>
+Asset script1: <%= ctx.assetTag('/foo.js') %>
+Asset script2: <%= ctx.assetTag('/foo.js', {async: 'async'}) %>
+Asset style1: <%= ctx.assetTag('/foo.css') %>
+Asset style2: <%= ctx.assetTag('/foo.css', {media: 'foo'}) %>
+Asset image1: <%= ctx.assetTag('/foo.png') %>
+Asset image2: <%= ctx.assetTag('/foo.png', {alt: 'test'}) %>
 Link1: <%= ctx.linkTo('getter_setter', {class: 'foo'}, 'Getter & Setter') %>
 Link2: <%= ctx.linkTo('mix', {}, 'WebSocket link') %>
 Link3: <%= ctx.linkTo(['form', {values: {name: 'yada'}}], {id: 'baz'}, 'Placeholder') %>
@@ -177,10 +186,16 @@ Favicon2: <link rel="icon" href="/${publicPath}favicon.ico">
 Relative image1: <img src="/${publicPath}foo/bar.png">
 Relative image2: <img src="/${publicPath}foo/bar.png" alt="Bar">
 Relative script: <script src="/${publicPath}foo/bar.js"></script>
-Relative style: <link rel="stylesheet" href="/${publicPath}foo/bar.css">
+Relative style: <link rel="stylesheet" href="/${publicPath}foo/bar.css" media="foo">
 Absolute image: <img src="https://mojojs.org/static/foo/bar.png">
-Absolute script: <script src="https://mojojs.org/static/foo/bar.js"></script>
+Absolute script: <script src="https://mojojs.org/static/foo/bar.js" async="async"></script>
 Absolute style: <link rel="stylesheet" href="https://mojojs.org/static/foo/bar.css">
+Asset script1: <script src="/static/assets/foo.ab1234cd5678ef.js"></script>
+Asset script2: <script src="/static/assets/foo.ab1234cd5678ef.js" async="async"></script>
+Asset style1: <link rel="stylesheet" href="/static/assets/foo.ab1234cd5678ef.css">
+Asset style2: <link rel="stylesheet" href="/static/assets/foo.ab1234cd5678ef.css" media="foo">
+Asset image1: <img src="/static/assets/foo.png">
+Asset image2: <img src="/static/assets/foo.png" alt="test">
 Link1: <a href="/getter/setter" class="foo">Getter &amp; Setter</a>
 Link2: <a href="${wsURL}websocket/mixed">WebSocket link</a>
 Link3: <a href="/form/yada" id="baz">Placeholder</a>

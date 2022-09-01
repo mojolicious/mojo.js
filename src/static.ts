@@ -7,6 +7,10 @@ import Path from '@mojojs/path';
  */
 export class Static {
   /**
+   * Subdirectory used for all static assets.
+   */
+  assetDir = 'assets';
+  /**
    * Prefix to use for all static files.
    */
   prefix = '/static';
@@ -14,6 +18,18 @@ export class Static {
    * Directories to serve static files from, first one has the highest precedence.
    */
   publicPaths = [Path.currentFile().sibling('..', 'vendor', 'public').toString()];
+
+  _assets: Record<string, string> = {};
+
+  /**
+   * Get static asset path.
+   */
+  assetPath(path: string): string {
+    if (path.startsWith('/') === false) path = '/' + path;
+    const assets = this._assets;
+    if (assets[path] !== undefined) return this.prefix + '/' + this.assetDir + assets[path];
+    return this.prefix + '/' + this.assetDir + path;
+  }
 
   /**
    * Serve static files.
@@ -33,6 +49,12 @@ export class Static {
     for (const dir of this.publicPaths) {
       const file = new Path(dir, relativePath);
       if ((await file.isReadable()) !== true || (await file.stat()).isDirectory() === true) continue;
+
+      // Development assets will be rebuilt a lot, do not let browsers cache them
+      if (ctx.app.mode === 'development' && relativePath.startsWith(this.assetDir)) {
+        ctx.res.set('Cache-Control', 'no-cache');
+      }
+
       await this.serveFile(ctx, file);
       return true;
     }
@@ -53,8 +75,7 @@ export class Static {
    * and `Last-Modified` response headers.
    */
   isFresh(ctx: MojoContext, options: {etag?: string; lastModified?: Date} = {}): boolean {
-    const etag = options.etag;
-    const lastModified = options.lastModified;
+    const {etag, lastModified} = options;
 
     const res = ctx.res;
     if (etag !== undefined) res.set('Etag', `"${etag}"`);
@@ -97,9 +118,9 @@ export class Static {
     // Last-Modified and Etag
     const res = ctx.res;
     res.set('Accept-Ranges', 'bytes');
-    const mtime = stat.mtime;
-    const etag = crypto.createHash('md5').update(mtime.getTime().toString()).digest('hex');
-    if (this.isFresh(ctx, {etag, lastModified: mtime})) {
+    const lastModified = stat.mtime;
+    const etag = crypto.createHash('md5').update(lastModified.getTime().toString()).digest('hex');
+    if (this.isFresh(ctx, {etag, lastModified})) {
       await res.status(304).send();
       return;
     }
@@ -128,7 +149,35 @@ export class Static {
       .length(end - start + 1)
       .type(type)
       .set('Content-Range', `bytes ${start}-${end}/${length}`)
-      .send(file.createReadStream({start: start, end: end}));
+      .send(file.createReadStream({start, end}));
+  }
+
+  /**
+   * Prepare static assets.
+   */
+  async warmup(): Promise<void> {
+    const assets = this._assets;
+    const assetDir = this.assetDir;
+
+    for (const publicPath of this.publicPaths) {
+      const assetPath = new Path(publicPath, assetDir);
+      if ((await assetPath.exists()) === false) continue;
+
+      for await (const assetFile of assetPath.list({recursive: true})) {
+        const parts = assetPath.relative(assetFile).toArray();
+        const len = parts.length;
+        const prefix = len > 1 ? parts.slice(0, len - 1).join('/') : '';
+
+        const match = parts[len - 1].match(/^([^.]+)\.([^.]+)\.(.+)$/);
+        if (match === null) continue;
+
+        const name = `${match[1]}.${match[3]}`;
+        const short = prefix === '' ? `/${name}` : `/${prefix}/${name}`;
+        const long = '/' + parts.join('/');
+
+        if (assets[short] === undefined || match[2] === 'development') assets[short] = long;
+      }
+    }
   }
 
   async _rangeNotSatisfiable(ctx: MojoContext): Promise<void> {

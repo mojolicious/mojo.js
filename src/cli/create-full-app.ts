@@ -20,7 +20,7 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
   await util.cliCreateDir('views/example');
   await util.cliCreateFile('views/example/welcome.html.tmpl', tmplView);
 
-  await util.cliCreateDir('public');
+  await util.cliCreateDir('public/assets');
   await util.cliCreateFile('public/index.html', staticFile);
 
   // TypeScript

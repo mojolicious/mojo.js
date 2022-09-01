@@ -26,6 +26,8 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 
   app.addHelper('include', include);
 
+  app.addHelper('assetTag', assetTag);
+
   app.addHelper('inputTag', inputTag);
   app.addHelper('checkBoxTag', async (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
     return await inputTag(ctx, name, {...attrs, type: 'checkbox'});
@@ -49,6 +51,13 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('tag', tag);
 
   app.decorateContext('inspect', (object: Record<string, any>, options: InspectOptions) => inspect(object, options));
+}
+
+function assetTag(ctx: MojoContext, path: string, attrs?: TagAttrs): SafeString {
+  const url = ctx.urlForAsset(path);
+  if (/\.js$/.test(url)) return ctx.tag('script', {src: url, ...attrs});
+  if (/\.css$/.test(url)) return ctx.tag('link', {rel: 'stylesheet', href: url, ...attrs});
+  return ctx.tag('img', {src: url, ...attrs});
 }
 
 function buttonTo(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, text: string): SafeString {
@@ -191,12 +200,12 @@ async function notFound(ctx: MojoContext): Promise<boolean> {
   return ctx.htmlNotFound();
 }
 
-function scriptTag(ctx: MojoContext, target: string): SafeString {
-  return ctx.tag('script', {src: ctx.urlForFile(target)});
+function scriptTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): SafeString {
+  return ctx.tag('script', {src: ctx.urlForFile(target), ...attrs});
 }
 
-function styleTag(ctx: MojoContext, target: string): SafeString {
-  return ctx.tag('link', {rel: 'stylesheet', href: ctx.urlForFile(target)});
+function styleTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): SafeString {
+  return ctx.tag('link', {rel: 'stylesheet', href: ctx.urlForFile(target), ...attrs});
 }
 
 function submitButtonTag(ctx: MojoContext, text = 'Ok', attrs: TagAttrs = {}): SafeString {

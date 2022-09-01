@@ -304,6 +304,92 @@ const serialized = ctx.inspect([1, 2, 3]);
 
 See the [Cheatsheet](Cheatsheet.md#helpers) for a full list of helpers that are currently available by default.
 
+### Static Files
+
+Static files are automatically served from the `public` directories of the application, which can be customized with
+`app.static.publicPaths`. And if that's not enough you can also serve them manually with `ctx.sendFile()`.
+
+```js
+import mojo from '@mojojs/core';
+import Path from '@mojojs/path';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  await ctx.sendFile(ctx.home.child('public', 'index.html'));
+});
+
+app.get('/some_download', async ctx => {
+  ctx.res.set('Content-Disposition', 'attachment; filename=bar.png;');
+  await ctx.sendFile(ctx.home.child('public', 'foo', 'bar.png'));
+});
+
+app.get('/leak', async ctx => {
+  await ctx.sendFile(new Path('/etc/passwd'));
+});
+
+app.start();
+```
+
+To improve performance all static files have a prefix, which defaults to `/static`, and can be customized with
+`app.static.prefix`. That means the file `public/foo/bar.txt` would be served as `/static/foo/bar.txt`. Since the
+prefix is dynamic, you can use `ctx.urlForFile()` to generate URLs.
+
+```js
+// "/static/foo/bar.txt"
+ctx.urlForFile('/foo/bar.txt');
+```
+
+### Static Assets
+
+While mojo.js does not have any special support for frontend frameworks like [Vue.js](https://vuejs.org) and
+[React](https://reactjs.org), the `public/assets` directory is reserved for static assets created by bundlers like
+[Webpack](https://webpack.js.org) and [Rollup.js](https://rollupjs.org) ahead of time. Asset files can be of any type,
+they just have to follow the `[name].[checksum].[extensions]` naming scheme, like `myapp.ab1234cd5678ef.js`. You can
+then use `ctx.urlForAsset()` or `ctx.assetTag()` to generate URLs without having to know the checksum.
+
+```js
+// "/static/assets/myapp.ab1234cd5678ef.js"
+ctx.urlForAsset('/myapp.js');
+
+// "<script src="/static/assets/myapp.ab1234cd5678ef.js"></script>"
+ctx.assetTag('/myapp.js');
+```
+
+If your application runs in `development` mode, all assets will be served with a `Cache-Control: no-cache` header, to
+speed up development by preventing browser caching. Additionally all assets following the
+`[name].development.[extensions]` naming scheme, like `myapp.development.js`, have a higher precedence than assets with
+checksums. That way you can just overwrite your assets during development, instead of having to manually delete them
+each time they are rebuilt with a different checksum.
+
+```js
+// "/static/assets/foo/bar.development.js"
+ctx.urlForAsset('/foo/bar.js');
+```
+
+With Webpack, for example, this scenario is very easy to set up with a `webpack.config.js`
+[configuration file](https://webpack.js.org/configuration/).
+
+```js
+import Path from '@mojojs/path';
+
+const isDev = process.env.NODE_ENV === 'development';
+
+export default {
+  output: {
+    filename: isDev ? '[name].development.js' : '[name].[chunkhash].js',
+    path: Path.currentFile().sibling('public', 'assets').toString(),
+    publicPath: ''
+  },
+
+  // Add your own rules and entry point here
+};
+```
+
+Everything else is up to your bundler of choice, so you need to consult its documentation for further information. And
+where your keep your asset sources, such as `.vue` and `.jsx` files, is not important, as long as your bundler can find
+them. Using a directory named `assets` or `frontend` in your application root directory is a good best practice though.
+
 ### Content Negotiation
 
 For resources with different representations and that require truly RESTful content negotiation you can also use
@@ -718,33 +804,6 @@ receive a confirmation message that will vanish if they decide to reload the pag
 ## Advanced
 
 Less commonly used and more powerful features.
-
-### Serving Static Files
-
-Static files are automatically served from the `public` directories of the application, which can be customized with
-`app.static.publicPaths`. And if that's not enough you can also serve them manually with `ctx.sendFile()`.
-
-```js
-import mojo from '@mojojs/core';
-import Path from '@mojojs/path';
-
-const app = mojo();
-
-app.get('/', async ctx => {
-  await ctx.sendFile(ctx.home.child('public', 'index.html'));
-});
-
-app.get('/some_download', async ctx => {
-  ctx.res.set('Content-Disposition', 'attachment; filename=bar.png;');
-  await ctx.sendFile(ctx.home.child('public', 'foo', 'bar.png'));
-});
-
-app.get('/leak', async ctx => {
-  await ctx.sendFile(new Path('/etc/passwd'));
-});
-
-app.start();
-```
 
 ### Custom Responses
 
