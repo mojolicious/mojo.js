@@ -103,7 +103,7 @@ t.test('Command app', async t => {
     });
     logs.stop();
     t.match(logs.toString(), /error.+Just a test/);
-    t.equal(output2, '');
+    t.equal(output2.toString(), '');
   });
 
   await t.test('eval', async t => {
