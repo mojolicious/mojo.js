@@ -36,8 +36,9 @@ If you want to stay up to date on the
 
 * No frontend framework, mojo.js is for the **backend**.
 
-* Very clean, `class` and `async`/`await` based API, written in TypeScript, with very few requirements to avoid supply
-  chain attacks and allow for "Perl-grade" **long term support**.
+* Written in [TypeScript](https://www.typescriptlang.org), with very clean `class` and `async`/`await` based APIs.
+
+* Very few requirements, to avoid supply chain attacks and allow for "Perl-grade" **long term support**.
 
 * Fresh code based upon decades of experience developing [Mojolicious](https://mojolicious.org) and
   [Catalyst](http://catalyst.perl.org), free and open source.
