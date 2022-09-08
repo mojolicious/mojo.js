@@ -150,7 +150,7 @@ export class Server {
     await this.app.warmup();
 
     const wss = new WebSocketServer({noServer: true});
-    const server = (isHttps ? https : http).createServer(options, this._handleRequest.bind(this));
+    const server = ((isHttps ? https : http) as any).createServer(options, this._handleRequest.bind(this));
     this._servers.push(server);
 
     if (this.maxRequestsPerSocket !== undefined) server.maxRequestsPerSocket = this.maxRequestsPerSocket;
