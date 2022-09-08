@@ -1,6 +1,16 @@
 
 # Changelog
 
+## v1.5.0 (2022-09-08)
+
+### Features
+
+  * Added support for static assets.
+  * Added `urlForAsset` method to `Context` class.
+  * Added `assetDir` property and `assetPath` method to `Static` class.
+  * Added `assetTag` helper.
+  * Added tag attributes to `scriptTag` and `styleTag` helpers.
+
 ## v1.4.0 (2022-08-15)
 
 ### Features
