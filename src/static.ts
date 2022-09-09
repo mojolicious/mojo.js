@@ -2,6 +2,8 @@ import type {MojoContext} from './types.js';
 import crypto from 'node:crypto';
 import Path from '@mojojs/path';
 
+type AssetIndex = Record<string, string>;
+
 /**
  * Static file server class.
  */
@@ -19,7 +21,7 @@ export class Static {
    */
   publicPaths = [Path.currentFile().sibling('..', 'vendor', 'public').toString()];
 
-  _assets: Record<string, string> = {};
+  _assets: AssetIndex | undefined;
 
   /**
    * Get static asset path.
@@ -27,7 +29,7 @@ export class Static {
   assetPath(path: string): string {
     if (path.startsWith('/') === false) path = '/' + path;
     const assets = this._assets;
-    if (assets[path] !== undefined) return this.prefix + '/' + this.assetDir + assets[path];
+    if (assets !== undefined && assets[path] !== undefined) return this.prefix + '/' + this.assetDir + assets[path];
     return this.prefix + '/' + this.assetDir + path;
   }
 
@@ -156,9 +158,9 @@ export class Static {
    * Prepare static assets.
    */
   async warmup(): Promise<void> {
-    const assets = this._assets;
-    const assetDir = this.assetDir;
+    const assets: AssetIndex = (this._assets = {});
 
+    const assetDir = this.assetDir;
     for (const publicPath of this.publicPaths) {
       const assetPath = new Path(publicPath, assetDir);
       if ((await assetPath.exists()) === false) continue;
