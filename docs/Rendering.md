@@ -367,8 +367,7 @@ each time they are rebuilt with a different checksum.
 ctx.urlForAsset('/foo/bar.js');
 ```
 
-With Webpack, for example, this scenario is very easy to set up with a `webpack.config.js`
-[configuration file](https://webpack.js.org/configuration/).
+Webpack [configuration](https://webpack.js.org/configuration/) example (`webpack.config.js`):
 
 ```js
 import Path from '@mojojs/path';
@@ -380,6 +379,24 @@ export default {
     filename: isDev ? '[name].development.js' : '[name].[chunkhash].js',
     path: Path.currentFile().sibling('public', 'assets').toString(),
     publicPath: ''
+  },
+
+  // Add your own rules and entry point here
+};
+```
+
+Rollup [configuration](https://rollupjs.org/guide/en/#configuration-files) example (`rollup.config.js`):
+
+```js
+import Path from '@mojojs/path';
+
+const isDev = process.env.NODE_ENV === 'development';
+
+export default {
+  output: {
+    format: 'iife',
+    dir: Path.currentFile().sibling('public', 'assets').toString(),
+    entryFileNames: isDev ? '[name].development.js' : '[name].[hash].js',
   },
 
   // Add your own rules and entry point here
