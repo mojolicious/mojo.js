@@ -396,7 +396,7 @@ export default {
   output: {
     entryFileNames: isDev ? '[name].development.js' : '[name].[hash].js',
     dir: Path.currentFile().sibling('public', 'assets').toString(),
-    format: 'iife',
+    format: 'iife'
   },
 
   // Add your own rules and entry point here
