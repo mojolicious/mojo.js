@@ -404,7 +404,7 @@ export default {
 ```
 
 Everything else is up to your bundler of choice, so you need to consult its documentation for further information. And
-where your keep your asset sources, such as `.vue` and `.jsx` files, is not important, as long as your bundler can find
+where you keep your asset sources, such as `.vue` and `.jsx` files, is not important, as long as your bundler can find
 them. Using a directory named `assets` or `frontend` in your application root directory is a good best practice though.
 
 ### Content Negotiation
