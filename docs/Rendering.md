@@ -394,9 +394,9 @@ const isDev = process.env.NODE_ENV === 'development';
 
 export default {
   output: {
-    format: 'iife',
-    dir: Path.currentFile().sibling('public', 'assets').toString(),
     entryFileNames: isDev ? '[name].development.js' : '[name].[hash].js',
+    dir: Path.currentFile().sibling('public', 'assets').toString(),
+    format: 'iife',
   },
 
   // Add your own rules and entry point here
