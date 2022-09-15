@@ -20,26 +20,21 @@ If you want to stay up to date on the
 
 ## Features
 
+* 3x faster than Express.js.
 * A **real-time web framework**, allowing you to easily grow single file prototypes into well-structured MVC web
   applications.
-  * 3x faster than Express.js.
   * Powerful out of the box with RESTful routes, WebSockets, plugins, commands, logging, templates, content negotiation,
     session management, form and JSON validation, testing framework, static file server, cluster mode, CGI detection,
     first class Unicode support and much more for you to discover.
-
 * A powerful **web development toolkit**, that you can use for all kinds of applications, independently of the web
   framework.
   * High performance HTTP and WebSocket client/server implementation with support for HTTPS/WSS, cookies, redirects,
     urlencoded/multi-part forms, file uploads, JSON/YAML, HTML/XML, mocking, API testing, HTTP/SOCKS proxies, UNIX
     domain sockets and gzip compression.
   * HTML/XML parser with CSS selector support.
-
 * No frontend framework, mojo.js is for the **backend**.
-
 * Written in [TypeScript](https://www.typescriptlang.org), with very clean `class` and `async`/`await` based APIs.
-
 * Very few dependencies, to avoid supply chain attacks and allow for "Perl-grade" **long term support**.
-
 * Fresh code based upon decades of experience developing [Mojolicious](https://mojolicious.org) and
   [Catalyst](http://catalyst.perl.org), free and open source.
 
