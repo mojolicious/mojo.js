@@ -267,11 +267,11 @@ t.test('Static app', async t => {
   await t.test('Assets', async t => {
     const ctx = app.newMockContext();
     t.equal(ctx.urlForAsset('http://example.com'), 'http://example.com');
-    t.equal(ctx.urlForAsset('/unknown.css'), '/static/assets/unknown.css');
+    t.equal(ctx.urlForAsset('unknown.css'), '/static/assets/unknown.css');
     t.equal(ctx.urlForAsset('foo.css'), '/static/assets/foo.ab1234cd5678ef.css');
     t.equal(ctx.urlForAsset('/foo.css'), '/static/assets/foo.ab1234cd5678ef.css');
     t.equal(ctx.urlForAsset('/foo.js'), '/static/assets/foo.ab1234cd5678ef.js');
-    t.equal(ctx.urlForAsset('/foo/bar/baz.js'), '/static/assets/foo/bar/baz.development.js');
+    t.equal(ctx.urlForAsset('foo/bar/baz.js'), '/static/assets/foo/bar/baz.development.js');
     t.equal(ctx.urlForAsset('/foo/bar.js'), '/static/assets/foo/bar.321.js');
     t.equal(ctx.urlForAsset('/foo/bar/test.min.js'), '/static/assets/foo/bar/test.ab1234cd5678ef.min.js');
     t.equal(ctx.urlForAsset('/foo/bar/yada.css'), '/static/assets/foo/bar/yada.css');

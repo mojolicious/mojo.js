@@ -337,7 +337,7 @@ prefix is dynamic, you can use `ctx.urlForFile()` to generate URLs.
 
 ```js
 // "/static/foo/bar.txt"
-ctx.urlForFile('/foo/bar.txt');
+ctx.urlForFile('foo/bar.txt');
 ```
 
 ### Static Assets
@@ -350,10 +350,10 @@ then use `ctx.urlForAsset()` or `ctx.assetTag()` to generate URLs without having
 
 ```js
 // "/static/assets/myapp.ab1234cd5678ef.js"
-ctx.urlForAsset('/myapp.js');
+ctx.urlForAsset('myapp.js');
 
 // "<script src="/static/assets/myapp.ab1234cd5678ef.js"></script>"
-ctx.assetTag('/myapp.js');
+ctx.assetTag('myapp.js');
 ```
 
 If your application runs in `development` mode, all assets will be served with a `Cache-Control: no-cache` header, to
@@ -364,7 +364,7 @@ each time they are rebuilt with a different checksum.
 
 ```js
 // "/static/assets/foo/bar.development.js"
-ctx.urlForAsset('/foo/bar.js');
+ctx.urlForAsset('foo/bar.js');
 ```
 
 Webpack [configuration](https://webpack.js.org/configuration/) example (`webpack.config.js`):

@@ -706,7 +706,7 @@ const app = mojo();
 
 // Redirect to static file
 app.get('/file', async ctx => {
-  const url = ctx.urlForFile('/test.txt');
+  const url = ctx.urlForFile('test.txt');
   await ctx.redirectTo(url, {status: 301});
 });
 

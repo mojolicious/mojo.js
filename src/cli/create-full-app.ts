@@ -165,7 +165,7 @@ const tmplView = `%% view.layout = 'default';
 <p>
   This page was generated from the template "views/example/welcome.html.tmpl" and the layout
   "views/layouts/default.html.tmpl", <a href="<%%= ctx.urlFor() %>">click here</a> to reload the page or
-  <a href="<%%= ctx.urlForFile('/index.html') %>">here</a> to move forward to a static page.
+  <a href="<%%= ctx.urlForFile('index.html') %>">here</a> to move forward to a static page.
 </p>
 `;
 

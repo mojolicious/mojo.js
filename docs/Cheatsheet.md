@@ -144,7 +144,7 @@ ctx.log.debug('Shut up and take my money!');
 const url = ctx.urlFor('index');
 
 // urlForFile: generate URL for static file
-const url = ctx.urlForFile('/foo/app.css');
+const url = ctx.urlForFile('foo/app.css');
 
 // urlWith: generate URL for route or path and preserve the current query parameters
 const url = ctx.urlWith('index');
@@ -436,8 +436,8 @@ These view helpers are currently available by default:
 #### assetTag
 
 ```
-%= ctx.assetTag('/app.js')
-%= ctx.assetTag('/app.js', {async: 'async'})
+%= ctx.assetTag('app.js')
+%= ctx.assetTag('app.js', {async: 'async'})
 ```
 
 Generate `<script>`, `<link>` or `<img>` tag for static asset.
@@ -464,7 +464,7 @@ Generate `<input>` tag of type `checkbox`. Previous input values will automatica
 
 ```
 %= ctx.faviconTag()
-%= ctx.faviconTag('/favicon.ico')
+%= ctx.faviconTag('favicon.ico')
 ```
 
 Generate `<link>` tag for a favison, defaults to the [mojo.js](https://mojojs.org) favicon.
@@ -483,8 +483,8 @@ be added as well.
 #### imageTag
 
 ```
-%= ctx.imageTag('/myapp/logo.png')
-%= ctx.imageTag('/myapp/logo.png', {alt: 'just a logo'})
+%= ctx.imageTag('myapp/logo.png')
+%= ctx.imageTag('myapp/logo.png', {alt: 'just a logo'})
 ```
 
 Generate `<img>` tag for image file.
@@ -527,8 +527,8 @@ Generate `<input>` tag of type `radio`. Previous input values will automatically
 #### scriptTag
 
 ```
-%= ctx.scriptTag('/bootstrap/bootstrap.bundle.min.js')
-%= ctx.scriptTag('/bootstrap/bootstrap.bundle.min.js', {async: 'async'})
+%= ctx.scriptTag('bootstrap/bootstrap.bundle.min.js')
+%= ctx.scriptTag('bootstrap/bootstrap.bundle.min.js', {async: 'async'})
 ```
 
 Generate `<script>` tag for JavaScript file.
@@ -536,8 +536,8 @@ Generate `<script>` tag for JavaScript file.
 #### styleTag
 
 ```
-%= ctx.styleTag('/bootstrap/bootstrap.min.css')
-%= ctx.styleTag('/bootstrap/bootstrap.min.css', {media: 'foo'})
+%= ctx.styleTag('bootstrap/bootstrap.min.css')
+%= ctx.styleTag('bootstrap/bootstrap.min.css', {media: 'foo'})
 ```
 
 Generate `<link>` tag for CSS file.
