@@ -57,10 +57,12 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
     await util.cliCreateFile('tsconfig.json', JSON.stringify(tsConfig, null, 2));
     await util.cliFixPackage({
       dependencies: {'@mojojs/core': `^${version}`},
-      devDependencies: await devDependencies(/^(@types\/.+|tap|typescript)$/),
+      devDependencies: await devDependencies(/^(@types\/.+|nodemon|tap|typescript)$/),
       scripts: {
         build: 'npx tsc --build ./',
         'build:test': 'npm run build && npm test',
+        dev: 'npx nodemon lib/index.js server',
+        start: 'NODE_ENV=production node lib/index.js server -l http://*:8080',
         test: 'tap --no-coverage test/*.js'
       }
     });
@@ -80,8 +82,10 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
 
     await util.cliFixPackage({
       dependencies: {'@mojojs/core': `^${version}`},
-      devDependencies: await devDependencies(/^tap$/),
+      devDependencies: await devDependencies(/^(nodemon|tap)$/),
       scripts: {
+        dev: 'npx nodemon index.js server',
+        start: 'NODE_ENV=production node index.js server -l http://*:8080',
         test: 'tap --no-coverage test/*.js'
       }
     });
