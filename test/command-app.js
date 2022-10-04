@@ -438,6 +438,8 @@ t.test('Command app', async t => {
     const pkg2 = JSON.parse(await dir2.child('package.json').readFile('utf8'));
     t.equal(pkg2.type, 'module');
     t.equal(typeof pkg2.scripts.build, 'string');
+    t.equal(typeof pkg2.scripts['build:test'], 'string');
+    t.equal(typeof pkg2.scripts['build:watch'], 'string');
     t.equal(typeof pkg2.scripts.dev, 'string');
     t.match(pkg2.scripts.dev, /nodemon lib\/index\.js/);
     t.equal(typeof pkg2.scripts.start, 'string');

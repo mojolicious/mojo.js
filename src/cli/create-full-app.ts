@@ -61,6 +61,7 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
       scripts: {
         build: 'npx tsc --build ./',
         'build:test': 'npm run build && npm test',
+        'build:watch': 'npm run build -- --watch',
         dev: 'npx nodemon lib/index.js server',
         start: 'NODE_ENV=production node lib/index.js server -l http://*:8080',
         test: 'tap --no-coverage test/*.js'
