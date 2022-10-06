@@ -1,7 +1,5 @@
 import http from 'node:http';
-import mojo from '../lib/core.js';
-import {Server} from '../lib/server.js';
-import {UserAgent} from '../lib/user-agent.js';
+import mojo, {Server, UserAgent} from '../lib/core.js';
 import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';
