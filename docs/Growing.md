@@ -545,7 +545,7 @@ app.start();
 const indexTemplate = `
 % const params = await ctx.params();
 <form method="post">
-  % if (params.user !== null) {
+  % if (params.get('user') !== null) {
     <b>Wrong name or password, please try again.</b><br>
   % }
   User:<br>
@@ -562,7 +562,8 @@ const protectedTemplate = `
 % if (flash.message != null) {
   <b><%= flash.message %></b><br>
 % }
-Welcome <%= ctx.stash.session.user %>.<br>
+% const session = await ctx.session();
+Welcome <%= session.user %>.<br>
 %= ctx.linkTo('logout', {}, 'Logout')
 `;
 
