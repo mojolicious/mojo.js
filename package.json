@@ -80,7 +80,7 @@
     "node": ">= 16"
   },
   "dependencies": {
-    "@mojojs/dom": "^1.4.0",
+    "@mojojs/dom": "^1.6.0",
     "@mojojs/path": "^1.4.0",
     "@mojojs/template": "^2.1.0",
     "@mojojs/util": "^1.4.1",

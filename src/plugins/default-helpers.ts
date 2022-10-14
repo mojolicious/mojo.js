@@ -145,7 +145,7 @@ async function inputTag(ctx: MojoContext, name: string, attrs: TagAttrs = {}): P
     if (type === 'checkbox' || type === 'radio') {
       const value = attrs.value ?? 'on';
       delete attrs.checked;
-      if (values.includes(value)) attrs.checked = '';
+      if (typeof value === 'string' && values.includes(value)) attrs.checked = true;
     }
 
     // Others

@@ -63,7 +63,7 @@ export type AnyArguments = Array<string | string[] | MojoAction | Record<string,
 export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
 export type PlaceholderType = RegExp | string | string[];
 
-export type TagAttrs = Record<string, string>;
+export type TagAttrs = Record<string, string | boolean | Record<string, string>>;
 
 export interface SessionData {
   expiration?: number;
