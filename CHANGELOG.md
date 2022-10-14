@@ -1,7 +1,7 @@
 
 # Changelog
 
-## v1.6.0 (NOT YET RELEASED)
+## v1.7.0 (2022-10-14)
 
 ### Features
 
