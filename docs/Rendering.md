@@ -842,22 +842,23 @@ app.get('/', async ctx => {
 
   // Check if pramameters have been submitted
   const params = await ctx.params();
-  if (params.isEmpty === true) return ctx.render({inline: formTemplate});
+  if (params.isEmpty === true) return ctx.render({view: 'form'});
 
   // Validate parameters
   const validate = ctx.schema('loginForm');
   const result = validate(params.toObject());
 
   // Check if validation failed
-  if (result.isValid === false ) return await ctx.render({inline: formTemplate}, {errors: result.errors});
+  if (result.isValid === false ) return await ctx.render({view: 'form'}, {errors: result.errors});
 
   // Render confirmation
-  await ctx.render({inline: welcomeTemplate});
+  await ctx.render({view: 'welcome'});
 }).name('index');
 
 app.start();
-
-const formTemplate = `
+```
+```
+%# views/form.html.tmpl
 <!DOCTYPE html>
 <html>
   <body>
@@ -882,13 +883,12 @@ const formTemplate = `
     </form>
   </body>
 </html>
-`;
-
-const welcomeTemplate = `
+```
+```
+%# views/welcome.html.tmpl
 <!DOCTYPE html>
 % const params = await ctx.params();
 <html><body>Welcome <%= params.get('user') %>.</body></html>
-`;
 ```
 
 Form elements generated with tag helpers will automatically remember their previous values. See the
