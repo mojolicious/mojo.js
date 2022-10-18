@@ -104,6 +104,8 @@ Check3: <%= await ctx.checkBoxTag('twelve') %>
 Radio1: <%= await ctx.radioButtonTag('ten', {value: 'Ten'}) %>
 Radio2: <%= await ctx.radioButtonTag('eleven', {class: 'bar'}) %>
 Radio3: <%= await ctx.radioButtonTag('twelve') %>
+Pass1: <%= await ctx.passwordFieldTag('thirteen') %>
+Pass2: <%= await ctx.passwordFieldTag('fourteen', {class: 'bar'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -122,6 +124,8 @@ Check3: <input type="checkbox" name="twelve">
 Radio1: <input value="Ten" type="radio" name="ten">
 Radio2: <input class="bar" type="radio" name="eleven">
 Radio3: <input type="radio" name="twelve">
+Pass1: <input type="password" name="thirteen">
+Pass2: <input class="bar" type="password" name="fourteen">
 `;
 
 const formTagHelpersFilledResult = `
@@ -140,6 +144,8 @@ Check3: <input type="checkbox" name="twelve" checked>
 Radio1: <input value="Ten" type="radio" name="ten" checked>
 Radio2: <input class="bar" type="radio" name="eleven" checked>
 Radio3: <input type="radio" name="twelve" checked>
+Pass1: <input type="password" name="thirteen">
+Pass2: <input class="bar" type="password" name="fourteen">
 `;
 
 const tagHelperPlugin = `

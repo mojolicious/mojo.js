@@ -39,6 +39,7 @@ export interface MojoContext extends Context {
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
   linkTo: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
+  passwordFieldTag: (name: string, attrs?: TagAttrs) => SafeString;
   radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   scriptTag: (target: string, attrs?: TagAttrs) => SafeString;
   styleTag: (target: string, attrs?: TagAttrs) => SafeString;

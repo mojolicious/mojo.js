@@ -1,6 +1,13 @@
 
 # Changelog
 
+## v1.8.0 (2022-10-18)
+
+### Features
+
+  * Added `isEmpty` getter to `Params` class.
+  * Added `passwordFieldTag` helper.
+
 ## v1.7.0 (2022-10-14)
 
 ### Features

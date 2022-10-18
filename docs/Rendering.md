@@ -818,6 +818,82 @@ app.start();
 `ctx.flash()` and `ctx.redirectTo()` are often used together to prevent double form submission, allowing users to
 receive a confirmation message that will vanish if they decide to reload the page they've been redirected to.
 
+### Form Validation
+
+To validate GET and POST parameters submitted to your application you can use [JSON Schema](https://json-schema.org/).
+Schemas can be registered with a name during application startup via `app.validator.addSchema()`, or ad-hoc via
+`ctx.schema()`, which is also be used to retrive named schemas.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.validator.addSchema({
+  type: 'object',
+  properties: {
+    user: {type: 'string', minLength: 1, maxLength: 20},
+    pass: {type: 'string', minLength: 1, maxLength: 20}
+  },
+  required: ['user', 'pass']
+}, 'loginForm');
+
+app.get('/', async ctx => {
+
+  // Check if pramameters have been submitted
+  const params = await ctx.params();
+  if (params.isEmpty === true) return ctx.render({inline: formTemplate});
+
+  // Validate parameters
+  const validate = ctx.schema('loginForm');
+  const result = validate(params.toObject());
+
+  // Check if validation failed
+  if (result.isValid === false ) return await ctx.render({inline: formTemplate}, {errors: result.errors});
+
+  // Render confirmation
+  await ctx.render({inline: welcomeTemplate});
+}).name('index');
+
+app.start();
+
+const formTemplate = `
+<!DOCTYPE html>
+<html>
+  <body>
+    % if (ctx.stash.errors !== undefined) {
+      Errors:
+      <ul>
+      % for (const error of errors) {
+        <li><%= error.instancePath %>: <%= error.message %></li>
+      % }
+      </ul>
+    % }
+    <form action="<%= ctx.urlFor('index') %>">
+      <label for="user">Username (required, 1-20 characters)</label>
+      <br>
+      %= await ctx.textFieldTag('user')
+      <br>
+      <label for="pass">Password (required, 1-20 characters)</label>
+      <br>
+      %= ctx.passwordFieldTag('pass')
+      <br>
+      %= ctx.submitButtonTag('Login')
+    </form>
+  </body>
+</html>
+`;
+
+const welcomeTemplate = `
+<!DOCTYPE html>
+% const params = await ctx.params();
+<html><body>Welcome <%= params.get('user') %>.</body></html>
+`;
+```
+
+Form elements generated with tag helpers will automatically remember their previous values. See the
+[Cheatsheet](Cheatsheet.md#view-helpers) for a full list of tag helpers that are currently available by default.
+
 ## Advanced
 
 Less commonly used and more powerful features.

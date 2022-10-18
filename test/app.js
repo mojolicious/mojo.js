@@ -929,6 +929,11 @@ t.test('App', async t => {
     ctx.stash.test = null;
     t.equal(app.defaults.test, 'works');
 
+    const params = await ctx.params();
+    t.same(params.isEmpty, true);
+    params.set('foo', 'bar');
+    t.same(params.isEmpty, false);
+
     ctx.stash.hello = 'mojo';
     t.equal(ctx.stash.hello, 'mojo');
     t.equal(await ctx.renderToString({inline: 'Test: <%= hello %>'}), 'Test: mojo');

@@ -515,6 +515,15 @@ Generate `<input>` tag. Previous input values will automatically get picked up a
 
 Generate portable `a` tag with `ctx.urlFor()`.
 
+#### passwordFieldTag
+
+```
+%= await ctx.passwordFieldTag('pass')
+%= await ctx.passwordFieldTag('pass', {class: 'password'})
+```
+
+Generate `<input>` tag of type `password`.
+
 #### radioButtonTag
 
 ```
