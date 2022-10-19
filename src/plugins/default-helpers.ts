@@ -28,15 +28,18 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 
   app.addHelper('assetTag', assetTag);
 
+  for (const type of ['search', 'text']) {
+    app.addHelper(`${type}FieldTag`, async (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
+      return await inputTag(ctx, name, {...attrs, type});
+    });
+  }
+
   app.addHelper('inputTag', inputTag);
   app.addHelper('checkBoxTag', async (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
     return await inputTag(ctx, name, {...attrs, type: 'checkbox'});
   });
   app.addHelper('radioButtonTag', async (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
     return await inputTag(ctx, name, {...attrs, type: 'radio'});
-  });
-  app.addHelper('textFieldTag', async (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
-    return await inputTag(ctx, name, {...attrs, type: 'text'});
   });
   app.addHelper('textAreaTag', textAreaTag);
 

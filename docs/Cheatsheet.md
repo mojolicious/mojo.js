@@ -551,6 +551,15 @@ Generate `<input>` tag of type `radio`. Previous input values will automatically
 
 Generate `<script>` tag for JavaScript file.
 
+#### searchFieldTag
+
+```
+%= await ctx.searchFieldTag('first_name')
+%= await ctx.searchFieldTag('first_name', {class: 'user'})
+```
+
+Generate `<input>` tag of type `search`. Previous input values will automatically get picked up and shown as default.
+
 #### styleTag
 
 ```

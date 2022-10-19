@@ -66,7 +66,10 @@ t.test('Plugin app', async t => {
       thirteen: 'Thirteen',
       fourteen: 'Fourteen',
       fifteen: 'Fifteen',
-      sixteen: 'Sixteen'
+      sixteen: 'Sixteen',
+      seventeen: 'Seventeen',
+      eightteen: 'Eightteen',
+      nineteen: 'Nineteen'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -112,6 +115,9 @@ Pass1: <%= await ctx.passwordFieldTag('thirteen') %>
 Pass2: <%= await ctx.passwordFieldTag('fourteen', {class: 'bar'}) %>
 File1: <%= await ctx.fileFieldTag('fifteen') %>
 File2: <%= await ctx.fileFieldTag('sixteen', {class: 'bar'}) %>
+Search1: <%= await ctx.searchFieldTag('seventeen') %>
+Search2: <%= await ctx.searchFieldTag('eightteen', {class: 'bar'}) %>
+Search3: <%= await ctx.searchFieldTag('nineteen', {class: 'bar', value: 'Default'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -134,6 +140,9 @@ Pass1: <input type="password" name="thirteen">
 Pass2: <input class="bar" type="password" name="fourteen">
 File1: <input type="file" name="fifteen">
 File2: <input class="bar" type="file" name="sixteen">
+Search1: <input type="search" name="seventeen">
+Search2: <input class="bar" type="search" name="eightteen">
+Search3: <input class="bar" value="Default" type="search" name="nineteen">
 `;
 
 const formTagHelpersFilledResult = `
@@ -156,6 +165,9 @@ Pass1: <input type="password" name="thirteen">
 Pass2: <input class="bar" type="password" name="fourteen">
 File1: <input type="file" name="fifteen">
 File2: <input class="bar" type="file" name="sixteen">
+Search1: <input type="search" name="seventeen" value="Seventeen">
+Search2: <input class="bar" type="search" name="eightteen" value="Eightteen">
+Search3: <input class="bar" value="Nineteen" type="search" name="nineteen">
 `;
 
 const tagHelperPlugin = `
