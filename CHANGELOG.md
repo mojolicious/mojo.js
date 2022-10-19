@@ -6,7 +6,7 @@
 ### Features
 
   * Added `isEmpty` getter to `Params` class.
-  * Added `passwordFieldTag` helper.
+  * Added `fileFieldTag` and `passwordFieldTag` helpers.
 
 ## v1.7.0 (2022-10-14)
 

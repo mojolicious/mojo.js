@@ -62,7 +62,11 @@ t.test('Plugin app', async t => {
       nine: 'Nine&',
       ten: 'Ten',
       eleven: 'on',
-      twelve: 'on'
+      twelve: 'on',
+      thirteen: 'Thirteen',
+      fourteen: 'Fourteen',
+      fifteen: 'Fifteen',
+      sixteen: 'Sixteen'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -106,6 +110,8 @@ Radio2: <%= await ctx.radioButtonTag('eleven', {class: 'bar'}) %>
 Radio3: <%= await ctx.radioButtonTag('twelve') %>
 Pass1: <%= await ctx.passwordFieldTag('thirteen') %>
 Pass2: <%= await ctx.passwordFieldTag('fourteen', {class: 'bar'}) %>
+File1: <%= await ctx.fileFieldTag('fifteen') %>
+File2: <%= await ctx.fileFieldTag('sixteen', {class: 'bar'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -126,6 +132,8 @@ Radio2: <input class="bar" type="radio" name="eleven">
 Radio3: <input type="radio" name="twelve">
 Pass1: <input type="password" name="thirteen">
 Pass2: <input class="bar" type="password" name="fourteen">
+File1: <input type="file" name="fifteen">
+File2: <input class="bar" type="file" name="sixteen">
 `;
 
 const formTagHelpersFilledResult = `
@@ -146,6 +154,8 @@ Radio2: <input class="bar" type="radio" name="eleven" checked>
 Radio3: <input type="radio" name="twelve" checked>
 Pass1: <input type="password" name="thirteen">
 Pass2: <input class="bar" type="password" name="fourteen">
+File1: <input type="file" name="fifteen">
+File2: <input class="bar" type="file" name="sixteen">
 `;
 
 const tagHelperPlugin = `

@@ -42,6 +42,9 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 
   app.addHelper('buttonTo', buttonTo);
   app.addHelper('faviconTag', faviconTag);
+  app.addHelper('fileFieldTag', (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
+    return tag(ctx, 'input', {...attrs, type: 'file', name});
+  });
   app.addHelper('formFor', formFor);
   app.addHelper('imageTag', imageTag);
   app.addHelper('linkTo', linkTo);

@@ -469,6 +469,15 @@ Generate `<input>` tag of type `checkbox`. Previous input values will automatica
 
 Generate `<link>` tag for a favison, defaults to the [mojo.js](https://mojojs.org) favicon.
 
+#### fileFieldTag
+
+```
+%= await ctx.fileFieldTag('pass')
+%= await ctx.fileFieldTag('pass', {class: 'password'})
+```
+
+Generate `<input>` tag of type `file`.
+
 #### formFor
 
 ```
