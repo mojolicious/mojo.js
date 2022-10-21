@@ -69,7 +69,10 @@ t.test('Plugin app', async t => {
       sixteen: 'Sixteen',
       seventeen: 'Seventeen',
       eightteen: 'Eightteen',
-      nineteen: 'Nineteen'
+      nineteen: 'Nineteen',
+      twenty: 'Twenty',
+      twentyone: 'Twentyone',
+      twentytwo: 'Twentytwo'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -118,6 +121,9 @@ File2: <%= await ctx.fileFieldTag('sixteen', {class: 'bar'}) %>
 Search1: <%= await ctx.searchFieldTag('seventeen') %>
 Search2: <%= await ctx.searchFieldTag('eightteen', {class: 'bar'}) %>
 Search3: <%= await ctx.searchFieldTag('nineteen', {class: 'bar', value: 'Default'}) %>
+Color1: <%= await ctx.colorFieldTag('twenty') %>
+Color2: <%= await ctx.colorFieldTag('twentyone', {class: 'bar'}) %>
+Color3: <%= await ctx.colorFieldTag('twentytwo', {class: 'bar', value: 'Default'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -143,6 +149,9 @@ File2: <input class="bar" type="file" name="sixteen">
 Search1: <input type="search" name="seventeen">
 Search2: <input class="bar" type="search" name="eightteen">
 Search3: <input class="bar" value="Default" type="search" name="nineteen">
+Color1: <input type="color" name="twenty">
+Color2: <input class="bar" type="color" name="twentyone">
+Color3: <input class="bar" value="Default" type="color" name="twentytwo">
 `;
 
 const formTagHelpersFilledResult = `
@@ -168,6 +177,9 @@ File2: <input class="bar" type="file" name="sixteen">
 Search1: <input type="search" name="seventeen" value="Seventeen">
 Search2: <input class="bar" type="search" name="eightteen" value="Eightteen">
 Search3: <input class="bar" value="Nineteen" type="search" name="nineteen">
+Color1: <input type="color" name="twenty" value="Twenty">
+Color2: <input class="bar" type="color" name="twentyone" value="Twentyone">
+Color3: <input class="bar" value="Twentytwo" type="color" name="twentytwo">
 `;
 
 const tagHelperPlugin = `

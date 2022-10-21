@@ -460,6 +460,15 @@ Generate portable `<form>` tag with `ctx.formFor()`, containing a single button.
 
 Generate `<input>` tag of type `checkbox`. Previous input values will automatically get picked up and shown as default.
 
+#### colorFieldTag
+
+```
+%= await ctx.colorFieldTag('background')
+%= await ctx.colorFieldTag('background', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `color`. Previous input values will automatically get picked up and shown as default.
+
 #### faviconTag
 
 ```
