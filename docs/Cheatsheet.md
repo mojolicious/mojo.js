@@ -487,6 +487,15 @@ Generate `<input>` tag of type `date`. Previous input values will automatically 
 
 Generate `<input>` tag of type `datetime`. Previous input values will automatically get picked up and shown as default.
 
+#### emailFieldTag
+
+```
+%= await ctx.emailFieldTag('notify')
+%= await ctx.emailFieldTag('notify', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `email`. Previous input values will automatically get picked up and shown as default.
+
 #### faviconTag
 
 ```

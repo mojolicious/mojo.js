@@ -80,7 +80,10 @@ t.test('Plugin app', async t => {
       twentyseven: 'Twentyseven',
       twentyeight: 'Twentyeight',
       twentynine: 'Twentynine',
-      thirty: 'Thirty'
+      thirty: 'Thirty',
+      thirtyone: 'Thirtyone',
+      thirtytwo: 'Thirtytwo',
+      thirtythree: 'Thirtythree'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -140,6 +143,9 @@ Date3: <%= await ctx.dateFieldTag('twentyseven', {class: 'bar', value: 'Default'
 Datetime1: <%= await ctx.datetimeFieldTag('twentyeight') %>
 Datetime2: <%= await ctx.datetimeFieldTag('twentynine', {class: 'bar'}) %>
 Datetime3: <%= await ctx.datetimeFieldTag('thirty', {class: 'bar', value: 'Default'}) %>
+Email1: <%= await ctx.emailFieldTag('thirtyone') %>
+Email2: <%= await ctx.emailFieldTag('thirtytwo', {class: 'bar'}) %>
+Email3: <%= await ctx.emailFieldTag('thirtythree', {class: 'bar', value: 'Default'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -176,6 +182,9 @@ Date3: <input class="bar" value="Default" type="date" name="twentyseven">
 Datetime1: <input type="datetime" name="twentyeight">
 Datetime2: <input class="bar" type="datetime" name="twentynine">
 Datetime3: <input class="bar" value="Default" type="datetime" name="thirty">
+Email1: <input type="email" name="thirtyone">
+Email2: <input class="bar" type="email" name="thirtytwo">
+Email3: <input class="bar" value="Default" type="email" name="thirtythree">
 `;
 
 const formTagHelpersFilledResult = `
@@ -212,6 +221,9 @@ Date3: <input class="bar" value="Twentyseven" type="date" name="twentyseven">
 Datetime1: <input type="datetime" name="twentyeight" value="Twentyeight">
 Datetime2: <input class="bar" type="datetime" name="twentynine" value="Twentynine">
 Datetime3: <input class="bar" value="Thirty" type="datetime" name="thirty">
+Email1: <input type="email" name="thirtyone" value="Thirtyone">
+Email2: <input class="bar" type="email" name="thirtytwo" value="Thirtytwo">
+Email3: <input class="bar" value="Thirtythree" type="email" name="thirtythree">
 `;
 
 const tagHelperPlugin = `
