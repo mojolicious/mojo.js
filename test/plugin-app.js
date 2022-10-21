@@ -72,7 +72,9 @@ t.test('Plugin app', async t => {
       nineteen: 'Nineteen',
       twenty: 'Twenty',
       twentyone: 'Twentyone',
-      twentytwo: 'Twentytwo'
+      twentytwo: 'Twentytwo',
+      twentythree: 'Twentythree',
+      twentyfour: 'Twentyfour'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -124,6 +126,8 @@ Search3: <%= await ctx.searchFieldTag('nineteen', {class: 'bar', value: 'Default
 Color1: <%= await ctx.colorFieldTag('twenty') %>
 Color2: <%= await ctx.colorFieldTag('twentyone', {class: 'bar'}) %>
 Color3: <%= await ctx.colorFieldTag('twentytwo', {class: 'bar', value: 'Default'}) %>
+Hidden1: <%= await ctx.hiddenFieldTag('twentythree', 'Default') %>
+Hidden2: <%= await ctx.hiddenFieldTag('twentyfour', 'Default', {class: 'bar'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -152,6 +156,8 @@ Search3: <input class="bar" value="Default" type="search" name="nineteen">
 Color1: <input type="color" name="twenty">
 Color2: <input class="bar" type="color" name="twentyone">
 Color3: <input class="bar" value="Default" type="color" name="twentytwo">
+Hidden1: <input type="hidden" name="twentythree" value="Default">
+Hidden2: <input class="bar" type="hidden" name="twentyfour" value="Default">
 `;
 
 const formTagHelpersFilledResult = `
@@ -180,6 +186,8 @@ Search3: <input class="bar" value="Nineteen" type="search" name="nineteen">
 Color1: <input type="color" name="twenty" value="Twenty">
 Color2: <input class="bar" type="color" name="twentyone" value="Twentyone">
 Color3: <input class="bar" value="Twentytwo" type="color" name="twentytwo">
+Hidden1: <input type="hidden" name="twentythree" value="Default">
+Hidden2: <input class="bar" type="hidden" name="twentyfour" value="Default">
 `;
 
 const tagHelperPlugin = `

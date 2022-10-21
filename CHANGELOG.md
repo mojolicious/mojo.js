@@ -6,7 +6,7 @@
 ### Features
 
   * Added `isEmpty` getter to `Params` class.
-  * Added `colorFieldTag`, `fileFieldTag`, `searchFieldTag` and `passwordFieldTag` helpers.
+  * Added `colorFieldTag`, `fileFieldTag`, `hiddenFieldTag`, `searchFieldTag` and `passwordFieldTag` helpers.
 
 ## v1.7.0 (2022-10-14)
 

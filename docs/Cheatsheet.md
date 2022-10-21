@@ -498,6 +498,15 @@ Generate portable `<form>` tag with `ctx.urlFor()`. For routes that do not allow
 value `POST` will be automatically added. And for methods other than `GET` or `POST`, an `_method` query parameter will
 be added as well.
 
+#### hiddenFieldTag
+
+```
+%= await ctx.hiddenFieldTag('foo', 'bar')
+%= await ctx.hiddenFieldTag('foo', 'bar', {class: 'yada'})
+```
+
+Generate `<input>` tag of type `hidden`.
+
 #### imageTag
 
 ```
