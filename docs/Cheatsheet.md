@@ -469,6 +469,24 @@ Generate `<input>` tag of type `checkbox`. Previous input values will automatica
 
 Generate `<input>` tag of type `color`. Previous input values will automatically get picked up and shown as default.
 
+#### dateFieldTag
+
+```
+%= await ctx.dateFieldTag('end')
+%= await ctx.dateFieldTag('end', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `date`. Previous input values will automatically get picked up and shown as default.
+
+#### datetimeFieldTag
+
+```
+%= await ctx.datetimeFieldTag('end')
+%= await ctx.datetimeFieldTag('end', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `datetime`. Previous input values will automatically get picked up and shown as default.
+
 #### faviconTag
 
 ```

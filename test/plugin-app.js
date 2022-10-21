@@ -74,7 +74,13 @@ t.test('Plugin app', async t => {
       twentyone: 'Twentyone',
       twentytwo: 'Twentytwo',
       twentythree: 'Twentythree',
-      twentyfour: 'Twentyfour'
+      twentyfour: 'Twentyfour',
+      twentyfive: 'Twentyfive',
+      twentysix: 'Twentysix',
+      twentyseven: 'Twentyseven',
+      twentyeight: 'Twentyeight',
+      twentynine: 'Twentynine',
+      thirty: 'Thirty'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -128,6 +134,12 @@ Color2: <%= await ctx.colorFieldTag('twentyone', {class: 'bar'}) %>
 Color3: <%= await ctx.colorFieldTag('twentytwo', {class: 'bar', value: 'Default'}) %>
 Hidden1: <%= await ctx.hiddenFieldTag('twentythree', 'Default') %>
 Hidden2: <%= await ctx.hiddenFieldTag('twentyfour', 'Default', {class: 'bar'}) %>
+Date1: <%= await ctx.dateFieldTag('twentyfive') %>
+Date2: <%= await ctx.dateFieldTag('twentysix', {class: 'bar'}) %>
+Date3: <%= await ctx.dateFieldTag('twentyseven', {class: 'bar', value: 'Default'}) %>
+Datetime1: <%= await ctx.datetimeFieldTag('twentyeight') %>
+Datetime2: <%= await ctx.datetimeFieldTag('twentynine', {class: 'bar'}) %>
+Datetime3: <%= await ctx.datetimeFieldTag('thirty', {class: 'bar', value: 'Default'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -158,6 +170,12 @@ Color2: <input class="bar" type="color" name="twentyone">
 Color3: <input class="bar" value="Default" type="color" name="twentytwo">
 Hidden1: <input type="hidden" name="twentythree" value="Default">
 Hidden2: <input class="bar" type="hidden" name="twentyfour" value="Default">
+Date1: <input type="date" name="twentyfive">
+Date2: <input class="bar" type="date" name="twentysix">
+Date3: <input class="bar" value="Default" type="date" name="twentyseven">
+Datetime1: <input type="datetime" name="twentyeight">
+Datetime2: <input class="bar" type="datetime" name="twentynine">
+Datetime3: <input class="bar" value="Default" type="datetime" name="thirty">
 `;
 
 const formTagHelpersFilledResult = `
@@ -188,6 +206,12 @@ Color2: <input class="bar" type="color" name="twentyone" value="Twentyone">
 Color3: <input class="bar" value="Twentytwo" type="color" name="twentytwo">
 Hidden1: <input type="hidden" name="twentythree" value="Default">
 Hidden2: <input class="bar" type="hidden" name="twentyfour" value="Default">
+Date1: <input type="date" name="twentyfive" value="Twentyfive">
+Date2: <input class="bar" type="date" name="twentysix" value="Twentysix">
+Date3: <input class="bar" value="Twentyseven" type="date" name="twentyseven">
+Datetime1: <input type="datetime" name="twentyeight" value="Twentyeight">
+Datetime2: <input class="bar" type="datetime" name="twentynine" value="Twentynine">
+Datetime3: <input class="bar" value="Thirty" type="datetime" name="thirty">
 `;
 
 const tagHelperPlugin = `
