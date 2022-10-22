@@ -1,7 +1,7 @@
 /*
  * Minimal single-process WebSocket chat application for browser testing
  */
-import {EventEmitter} from 'events';
+import {EventEmitter} from 'node:events';
 import mojo from '../lib/core.js';
 
 export const app = mojo();
