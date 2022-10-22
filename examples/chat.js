@@ -16,9 +16,11 @@ app.websocket('/channel', async ctx => {
   ctx.plain(async ws => {
     const listener = msg => ws.send(msg);
     ctx.models.events.on('mojochat', listener);
+
     for await (const msg of ws) {
       ctx.models.events.emit('mojochat', msg);
     }
+
     ctx.models.events.removeListener('mojochat', listener);
   });
 });
@@ -29,7 +31,7 @@ const inlineTemplate = `
 <form onsubmit="sendChat(this.children[0]); return false"><input></form>
 <div id="log"></div>
 <script>
-  const ws  = new WebSocket('<%= ctx.urlFor('channel') %>');
+  const ws = new WebSocket('<%= ctx.urlFor('channel') %>');
   ws.onmessage = function (e) {
     document.getElementById('log').innerHTML += '<p>' + e.data + '</p>';
   };
