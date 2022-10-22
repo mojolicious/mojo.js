@@ -1,6 +1,12 @@
 
 # Changelog
 
+## v1.9.0 (2022-10-23)
+
+### Features
+
+  * Added `examples/chat.js` WebSocket chat example application.
+
 ## v1.8.0 (2022-10-22)
 
 ### Features
