@@ -7,6 +7,7 @@ import mojo from '../lib/core.js';
 export const app = mojo();
 
 app.models.events = new EventEmitter();
+app.models.events.setMaxListeners(1000);
 
 app.get('/', async ctx => {
   await ctx.render({inline: inlineTemplate});
