@@ -643,6 +643,15 @@ Generate `input` tag of type `submit`.
 
 Generate HTML tag.
 
+#### telFieldTag
+
+```
+%= await ctx.telFieldTag('work')
+%= await ctx.telFieldTag('work', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `tel`. Previous input values will automatically get picked up and shown as default.
+
 #### textAreaTag
 
 ```
