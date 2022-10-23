@@ -569,6 +569,15 @@ Generate `<input>` tag. Previous input values will automatically get picked up a
 
 Generate portable `a` tag with `ctx.urlFor()`.
 
+#### numberFieldTag
+
+```
+%= await ctx.numberFieldTag('age')
+%= await ctx.numberFieldTag('age', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `number`. Previous input values will automatically get picked up and shown as default.
+
 #### passwordFieldTag
 
 ```

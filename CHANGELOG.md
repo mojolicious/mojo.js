@@ -6,7 +6,7 @@
 ### Features
 
   * Added `examples/chat.js` WebSocket chat example application.
-  * Added `urlFieldTag` helper.
+  * Added `urlFieldTag` and `numberFieldTag` helper.
 
 ## v1.8.0 (2022-10-22)
 

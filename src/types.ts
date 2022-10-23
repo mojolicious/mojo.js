@@ -46,6 +46,7 @@ export interface MojoContext extends Context {
   jsonNotFound: () => Promise<boolean>;
   linkTo: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
   notFound: () => Promise<boolean>;
+  numberFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   passwordFieldTag: (name: string, attrs?: TagAttrs) => SafeString;
   radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   scriptTag: (target: string, attrs?: TagAttrs) => SafeString;

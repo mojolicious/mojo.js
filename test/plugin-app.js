@@ -86,7 +86,10 @@ t.test('Plugin app', async t => {
       thirtythree: 'Thirtythree',
       thirtyfour: 'Thirtyfour',
       thirtyfive: 'Thirtyfive',
-      thirtysix: 'Thirtysix'
+      thirtysix: 'Thirtysix',
+      thirtyseven: 'Thirtyseven',
+      thirtyeight: 'Thirtyeight',
+      thirtynine: 'Thirtynine'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -152,6 +155,9 @@ Email3: <%= await ctx.emailFieldTag('thirtythree', {class: 'bar', value: 'Defaul
 URL1: <%= await ctx.urlFieldTag('thirtyfour') %>
 URL2: <%= await ctx.urlFieldTag('thirtyfive', {class: 'bar'}) %>
 URL3: <%= await ctx.urlFieldTag('thirtysix', {class: 'bar', value: 'Default'}) %>
+Number1: <%= await ctx.numberFieldTag('thirtyseven') %>
+Number2: <%= await ctx.numberFieldTag('thirtyeight', {class: 'bar'}) %>
+Number3: <%= await ctx.numberFieldTag('thirtynine', {class: 'bar', value: 'Default'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -194,6 +200,9 @@ Email3: <input class="bar" value="Default" type="email" name="thirtythree">
 URL1: <input type="url" name="thirtyfour">
 URL2: <input class="bar" type="url" name="thirtyfive">
 URL3: <input class="bar" value="Default" type="url" name="thirtysix">
+Number1: <input type="number" name="thirtyseven">
+Number2: <input class="bar" type="number" name="thirtyeight">
+Number3: <input class="bar" value="Default" type="number" name="thirtynine">
 `;
 
 const formTagHelpersFilledResult = `
@@ -236,6 +245,9 @@ Email3: <input class="bar" value="Thirtythree" type="email" name="thirtythree">
 URL1: <input type="url" name="thirtyfour" value="Thirtyfour">
 URL2: <input class="bar" type="url" name="thirtyfive" value="Thirtyfive">
 URL3: <input class="bar" value="Thirtysix" type="url" name="thirtysix">
+Number1: <input type="number" name="thirtyseven" value="Thirtyseven">
+Number2: <input class="bar" type="number" name="thirtyeight" value="Thirtyeight">
+Number3: <input class="bar" value="Thirtynine" type="number" name="thirtynine">
 `;
 
 const tagHelperPlugin = `
