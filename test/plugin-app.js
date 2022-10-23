@@ -83,7 +83,10 @@ t.test('Plugin app', async t => {
       thirty: 'Thirty',
       thirtyone: 'Thirtyone',
       thirtytwo: 'Thirtytwo',
-      thirtythree: 'Thirtythree'
+      thirtythree: 'Thirtythree',
+      thirtyfour: 'Thirtyfour',
+      thirtyfive: 'Thirtyfive',
+      thirtysix: 'Thirtysix'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -146,6 +149,9 @@ Datetime3: <%= await ctx.datetimeFieldTag('thirty', {class: 'bar', value: 'Defau
 Email1: <%= await ctx.emailFieldTag('thirtyone') %>
 Email2: <%= await ctx.emailFieldTag('thirtytwo', {class: 'bar'}) %>
 Email3: <%= await ctx.emailFieldTag('thirtythree', {class: 'bar', value: 'Default'}) %>
+URL1: <%= await ctx.urlFieldTag('thirtyfour') %>
+URL2: <%= await ctx.urlFieldTag('thirtyfive', {class: 'bar'}) %>
+URL3: <%= await ctx.urlFieldTag('thirtysix', {class: 'bar', value: 'Default'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -185,6 +191,9 @@ Datetime3: <input class="bar" value="Default" type="datetime" name="thirty">
 Email1: <input type="email" name="thirtyone">
 Email2: <input class="bar" type="email" name="thirtytwo">
 Email3: <input class="bar" value="Default" type="email" name="thirtythree">
+URL1: <input type="url" name="thirtyfour">
+URL2: <input class="bar" type="url" name="thirtyfive">
+URL3: <input class="bar" value="Default" type="url" name="thirtysix">
 `;
 
 const formTagHelpersFilledResult = `
@@ -224,6 +233,9 @@ Datetime3: <input class="bar" value="Thirty" type="datetime" name="thirty">
 Email1: <input type="email" name="thirtyone" value="Thirtyone">
 Email2: <input class="bar" type="email" name="thirtytwo" value="Thirtytwo">
 Email3: <input class="bar" value="Thirtythree" type="email" name="thirtythree">
+URL1: <input type="url" name="thirtyfour" value="Thirtyfour">
+URL2: <input class="bar" type="url" name="thirtyfive" value="Thirtyfive">
+URL3: <input class="bar" value="Thirtysix" type="url" name="thirtysix">
 `;
 
 const tagHelperPlugin = `

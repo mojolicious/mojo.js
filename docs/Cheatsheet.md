@@ -653,6 +653,15 @@ Generate `<textarea>` tag. Previous input values will automatically get picked u
 
 Generate `<input>` tag of type `text`. Previous input values will automatically get picked up and shown as default.
 
+#### urlFieldTag
+
+```
+%= await ctx.urkFieldTag('address')
+%= await ctx.urlFieldTag('address', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `url`. Previous input values will automatically get picked up and shown as default.
+
 ## Hooks
 
 These are all application hooks that are currently available, in the same order they usually run:
