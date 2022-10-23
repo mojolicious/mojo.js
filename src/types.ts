@@ -25,10 +25,16 @@ export interface MojoContext extends Context {
   assetTag: (path: string, attrs?: TagAttrs) => SafeString;
   buttonTo: (target: URLTarget, attrs: TagAttrs, text: string) => SafeString;
   checkBoxTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  colorFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   currentRoute: () => string | null;
+  dateFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  datetimeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  emailFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   exception: (error: Error) => Promise<boolean>;
   faviconTag: (file?: string) => SafeString;
+  fileFieldTag: (name: string, attrs?: TagAttrs) => SafeString;
   formFor: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
+  hiddenFieldTag: (name: string, value: string, attrs?: TagAttrs) => SafeString;
   htmlException: (error: Error) => Promise<boolean>;
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;
@@ -39,9 +45,11 @@ export interface MojoContext extends Context {
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
   linkTo: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
+  notFound: () => Promise<boolean>;
   passwordFieldTag: (name: string, attrs?: TagAttrs) => SafeString;
   radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   scriptTag: (target: string, attrs?: TagAttrs) => SafeString;
+  searchFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   styleTag: (target: string, attrs?: TagAttrs) => SafeString;
   submitButtonTag: (text?: string, attrs?: TagAttrs) => SafeString;
   tag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => SafeString;
@@ -49,7 +57,7 @@ export interface MojoContext extends Context {
   textFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   txtException: (error: Error) => Promise<boolean>;
   txtNotFound: () => Promise<boolean>;
-  notFound: () => Promise<boolean>;
+  urlFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   websocketException: (error: any) => Promise<boolean>;
   [key: string]: any;
 }
