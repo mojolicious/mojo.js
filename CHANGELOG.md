@@ -3,12 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
-## v1.9.0 (2022-10-23)
+## v1.9.0 (NOT YET RELEASED)
 
 ### Features
 
   * Added `examples/chat.js` WebSocket chat example application.
-  * Added `numberFieldTag`, `telFieldTag` and `urlFieldTag` helpers.
+  * Added `numberFieldTag`, `rangeFieldTag`, `telFieldTag` and `urlFieldTag` helpers.
 
 ## v1.8.0 (2022-10-22)
 

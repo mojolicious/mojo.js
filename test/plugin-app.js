@@ -92,7 +92,10 @@ t.test('Plugin app', async t => {
       thirtynine: 'Thirtynine',
       forty: 'Forty',
       fortyone: 'Fortyone',
-      fortytwo: 'Fortytwo'
+      fortytwo: 'Fortytwo',
+      fortythree: 'Fortythree',
+      fortyfour: 'Fortyfour',
+      fortyfive: 'Fortyfive'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -164,6 +167,9 @@ Number3: <%= await ctx.numberFieldTag('thirtynine', {class: 'bar', value: 'Defau
 Tel1: <%= await ctx.telFieldTag('forty') %>
 Tel2: <%= await ctx.telFieldTag('fortyone', {class: 'bar'}) %>
 Tel3: <%= await ctx.telFieldTag('fortytwo', {class: 'bar', value: 'Default'}) %>
+Range1: <%= await ctx.rangeFieldTag('fortythree') %>
+Range2: <%= await ctx.rangeFieldTag('fortyfour', {class: 'bar'}) %>
+Range3: <%= await ctx.rangeFieldTag('fortyfive', {class: 'bar', value: 'Default'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -212,6 +218,9 @@ Number3: <input class="bar" value="Default" type="number" name="thirtynine">
 Tel1: <input type="tel" name="forty">
 Tel2: <input class="bar" type="tel" name="fortyone">
 Tel3: <input class="bar" value="Default" type="tel" name="fortytwo">
+Range1: <input type="range" name="fortythree">
+Range2: <input class="bar" type="range" name="fortyfour">
+Range3: <input class="bar" value="Default" type="range" name="fortyfive">
 `;
 
 const formTagHelpersFilledResult = `
@@ -260,6 +269,9 @@ Number3: <input class="bar" value="Thirtynine" type="number" name="thirtynine">
 Tel1: <input type="tel" name="forty" value="Forty">
 Tel2: <input class="bar" type="tel" name="fortyone" value="Fortyone">
 Tel3: <input class="bar" value="Fortytwo" type="tel" name="fortytwo">
+Range1: <input type="range" name="fortythree" value="Fortythree">
+Range2: <input class="bar" type="range" name="fortyfour" value="Fortyfour">
+Range3: <input class="bar" value="Fortyfive" type="range" name="fortyfive">
 `;
 
 const tagHelperPlugin = `

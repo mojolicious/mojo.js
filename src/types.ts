@@ -49,6 +49,7 @@ export interface MojoContext extends Context {
   numberFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   passwordFieldTag: (name: string, attrs?: TagAttrs) => SafeString;
   radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  rangeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   scriptTag: (target: string, attrs?: TagAttrs) => SafeString;
   searchFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   styleTag: (target: string, attrs?: TagAttrs) => SafeString;

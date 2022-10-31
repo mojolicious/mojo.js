@@ -596,6 +596,15 @@ Generate `<input>` tag of type `password`.
 
 Generate `<input>` tag of type `radio`. Previous input values will automatically get picked up and shown as default.
 
+#### rangeFieldTag
+
+```
+%= await ctx.rangeFieldTag('age')
+%= await ctx.rangeFieldTag('age', {class: 'foo', min: 0, max: 200})
+```
+
+Generate `<input>` tag of type `range`. Previous input values will automatically get picked up and shown as default.
+
 #### scriptTag
 
 ```
