@@ -28,7 +28,22 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
 
   app.addHelper('assetTag', assetTag);
 
-  for (const type of ['color', 'date', 'datetime', 'email', 'number', 'range', 'search', 'tel', 'text', 'url']) {
+  const fields = [
+    'color',
+    'date',
+    'datetime',
+    'email',
+    'month',
+    'number',
+    'range',
+    'search',
+    'tel',
+    'time',
+    'text',
+    'url',
+    'week'
+  ];
+  for (const type of fields) {
     app.addHelper(`${type}FieldTag`, async (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
       return await inputTag(ctx, name, {...attrs, type});
     });

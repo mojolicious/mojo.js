@@ -569,6 +569,15 @@ Generate `<input>` tag. Previous input values will automatically get picked up a
 
 Generate portable `a` tag with `ctx.urlFor()`.
 
+#### monthFieldTag
+
+```
+%= await ctx.monthFieldTag('vacation')
+%= await ctx.monthFieldTag('vacation', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `month`. Previous input values will automatically get picked up and shown as default.
+
 #### numberFieldTag
 
 ```
@@ -680,6 +689,15 @@ Generate `<textarea>` tag. Previous input values will automatically get picked u
 
 Generate `<input>` tag of type `text`. Previous input values will automatically get picked up and shown as default.
 
+#### timeFieldTag
+
+```
+%= await ctx.timeFieldTag('meeting')
+%= await ctx.timeFieldTag('meeting', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `time`. Previous input values will automatically get picked up and shown as default.
+
 #### urlFieldTag
 
 ```
@@ -688,6 +706,15 @@ Generate `<input>` tag of type `text`. Previous input values will automatically 
 ```
 
 Generate `<input>` tag of type `url`. Previous input values will automatically get picked up and shown as default.
+
+#### weekFieldTag
+
+```
+%= await ctx.weekFieldTag('vacation')
+%= await ctx.weekFieldTag('vacation', {class: 'foo'})
+```
+
+Generate `<input>` tag of type `week`. Previous input values will automatically get picked up and shown as default.
 
 ## Hooks
 

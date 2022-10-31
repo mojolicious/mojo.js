@@ -8,7 +8,8 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 ### Features
 
   * Added `examples/chat.js` WebSocket chat example application.
-  * Added `numberFieldTag`, `rangeFieldTag`, `telFieldTag` and `urlFieldTag` helpers.
+  * Added `monthFieldTag`, `numberFieldTag`, `rangeFieldTag`, `telFieldTag`, `timeFieldTag`, `urlFieldTag` and
+    `weekFieldTag` helpers.
 
 ## v1.8.0 (2022-10-22)
 

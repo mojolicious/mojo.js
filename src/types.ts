@@ -45,6 +45,7 @@ export interface MojoContext extends Context {
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
   linkTo: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
+  monthFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   notFound: () => Promise<boolean>;
   numberFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   passwordFieldTag: (name: string, attrs?: TagAttrs) => SafeString;
@@ -58,10 +59,12 @@ export interface MojoContext extends Context {
   telFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   textAreaTag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => Promise<SafeString>;
   textFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  timeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   txtException: (error: Error) => Promise<boolean>;
   txtNotFound: () => Promise<boolean>;
   urlFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   websocketException: (error: any) => Promise<boolean>;
+  weekFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   [key: string]: any;
 }
 

@@ -95,7 +95,16 @@ t.test('Plugin app', async t => {
       fortytwo: 'Fortytwo',
       fortythree: 'Fortythree',
       fortyfour: 'Fortyfour',
-      fortyfive: 'Fortyfive'
+      fortyfive: 'Fortyfive',
+      fortysix: 'Fortysix',
+      fortyseven: 'Fortyseven',
+      fortyeight: 'Fortyeight',
+      fortynine: 'Fortynine',
+      fifty: 'Fifty',
+      fiftyone: 'Fiftyone',
+      fiftytwo: 'Fiftytwo',
+      fiftythree: 'Fiftythree',
+      fiftyfour: 'Fiftyfour'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
   });
@@ -170,6 +179,15 @@ Tel3: <%= await ctx.telFieldTag('fortytwo', {class: 'bar', value: 'Default'}) %>
 Range1: <%= await ctx.rangeFieldTag('fortythree') %>
 Range2: <%= await ctx.rangeFieldTag('fortyfour', {class: 'bar'}) %>
 Range3: <%= await ctx.rangeFieldTag('fortyfive', {class: 'bar', value: 'Default'}) %>
+Time1: <%= await ctx.timeFieldTag('fortysix') %>
+Time2: <%= await ctx.timeFieldTag('fortyseven', {class: 'bar'}) %>
+Time3: <%= await ctx.timeFieldTag('fortyeight', {class: 'bar', value: 'Default'}) %>
+Week1: <%= await ctx.weekFieldTag('fortynine') %>
+Week2: <%= await ctx.weekFieldTag('fifty', {class: 'bar'}) %>
+Week3: <%= await ctx.weekFieldTag('fiftyone', {class: 'bar', value: 'Default'}) %>
+Month1: <%= await ctx.monthFieldTag('fiftytwo') %>
+Month2: <%= await ctx.monthFieldTag('fiftythree', {class: 'bar'}) %>
+Month3: <%= await ctx.monthFieldTag('fiftyfour', {class: 'bar', value: 'Default'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -221,6 +239,15 @@ Tel3: <input class="bar" value="Default" type="tel" name="fortytwo">
 Range1: <input type="range" name="fortythree">
 Range2: <input class="bar" type="range" name="fortyfour">
 Range3: <input class="bar" value="Default" type="range" name="fortyfive">
+Time1: <input type="time" name="fortysix">
+Time2: <input class="bar" type="time" name="fortyseven">
+Time3: <input class="bar" value="Default" type="time" name="fortyeight">
+Week1: <input type="week" name="fortynine">
+Week2: <input class="bar" type="week" name="fifty">
+Week3: <input class="bar" value="Default" type="week" name="fiftyone">
+Month1: <input type="month" name="fiftytwo">
+Month2: <input class="bar" type="month" name="fiftythree">
+Month3: <input class="bar" value="Default" type="month" name="fiftyfour">
 `;
 
 const formTagHelpersFilledResult = `
@@ -272,6 +299,15 @@ Tel3: <input class="bar" value="Fortytwo" type="tel" name="fortytwo">
 Range1: <input type="range" name="fortythree" value="Fortythree">
 Range2: <input class="bar" type="range" name="fortyfour" value="Fortyfour">
 Range3: <input class="bar" value="Fortyfive" type="range" name="fortyfive">
+Time1: <input type="time" name="fortysix" value="Fortysix">
+Time2: <input class="bar" type="time" name="fortyseven" value="Fortyseven">
+Time3: <input class="bar" value="Fortyeight" type="time" name="fortyeight">
+Week1: <input type="week" name="fortynine" value="Fortynine">
+Week2: <input class="bar" type="week" name="fifty" value="Fifty">
+Week3: <input class="bar" value="Fiftyone" type="week" name="fiftyone">
+Month1: <input type="month" name="fiftytwo" value="Fiftytwo">
+Month2: <input class="bar" type="month" name="fiftythree" value="Fiftythree">
+Month3: <input class="bar" value="Fiftyfour" type="month" name="fiftyfour">
 `;
 
 const tagHelperPlugin = `
