@@ -308,7 +308,7 @@ $ npm install argon2
 The following code is an example of how to encrypt a password and store in your database
 during signup.
 
-```
+```js
 import * as argon2 from 'argon2';
 
 async add_user(ctx: MojoContext): Promise<void> {
@@ -348,7 +348,7 @@ async add_user(ctx: MojoContext): Promise<void> {
 
 The following code is how to validate the password entered by user on signin.
 
-```
+```js
 async validate_user(ctx: MojoContext): Promise<void> {
   // check whether the user's sign in credentials are valid.
   
