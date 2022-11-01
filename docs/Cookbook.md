@@ -294,6 +294,91 @@ This can be combined with TLS for a secure authentication mechanism.
 $ node myapp.js server -l 'https://*:3000?cert=./server.crt&key=./server.key'
 ```
 
+## Salted Password Encryption with argon2
+
+[mojo.js](https://mojojs.org) doesn't have a pre-existing tool for encrypting passwords but the recommended method is to 
+use the [argon2](https://www.npmjs.com/package//argon2) npm module.
+
+You can install this module by running the command:
+
+```
+$ npm install argon2
+```
+
+The following code is an example of how to encrypt a password and store in your database
+during signup.
+
+```
+import * as argon2 from 'argon2';
+
+async add_user(ctx: MojoContext): Promise<void> {
+  // Adds user to userdata table. First check whether the email
+  // already exists, if it does, then return an error response.
+  // If it doesn't exist, then add to postgres database.
+
+  //...
+  //... Connect to the database where you are saving salted hashed passwords.
+  //... In this example, we are using postgres as our database and the data 
+  //... is stored in userdata table. The connection details are not included
+  //... in this example.
+  //...
+  
+  const params = await ctx.params();  // data was passed to method via form post
+  const results = await pg.query`SELECT email FROM userdata WHERE userdata.email == ${params.get('email')}`;
+
+  if (Object.keys(results).length > 0) {
+    // this email already exists in our records. Do not add a
+    // new record, return with an error.
+    await ctx.render({json: {response: 'Error: Email already exists!' }});
+  }
+  else {  // this is a user with a unique email.
+    try {
+      const tx = await pg_db.begin();
+      const hash = await argon2.hash(params.get('password') as string);
+      await pg_db.query`INSERT INTO userdata (username, email, password, paiduser, authuser) VALUES (${params.get('name')}, ${params.get('email')}, ${hash}, 'no', 'no');`;
+      await tx.commit();
+      await ctx.render({ json: { response: 'Success' }});
+    }
+    catch(e) {
+      await ctx.render({json: { response: 'Error: '+ e +'!' }});
+    }
+  }
+}
+```
+
+The following code is how to validate the password entered by user on signin.
+
+```
+async validate_user(ctx: MojoContext): Promise<void> {
+  // check whether the user's sign in credentials are valid.
+  
+  //...
+  //... Connect to the database where you are saving salted hashed passwords.
+  //... In this example, we are using postgres as our database and the data 
+  //... is stored in userdata table. The connection details are not included
+  //... in this example.
+  //...
+
+  const params = await ctx.params();  // email and password
+  const results = await pg.query`SELECT email, password FROM userdata WHERE userdata.email == ${params.get('email')}`;
+
+  if (Object.keys(results).length == 0) {
+    // email does not exist in our records, so return with error
+    await ctx.render({json: {response: 'Error: No such email!'}});
+  }
+  else if (Object.keys(results).length == 1) {
+    if (await argon2.verify(results.password, params.get('password') as string)) {
+      // password match
+      await ctx.render({json: {response: 'Success'}});
+    } else {
+      // password did not match
+      await ctx.render({json: {response: 'Error: Password not valid!'}});
+    }
+  }
+}
+
+```
+
 ### Adding a Configuration File
 
 Adding a configuration file to your application is as easy as adding a file to its home directory and loading the
