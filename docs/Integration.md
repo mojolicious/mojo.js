@@ -137,7 +137,7 @@ $ npm run build:test
 
 In ```src/index.ts```, add a route. For example:
 
-```
+```js
 app.post('/backend/validateUser', async (ctx) => {
   await ctx.render({json: {response: 1}}); // there should serious code here, but this is simple.
 });
