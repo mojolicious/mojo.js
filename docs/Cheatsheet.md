@@ -868,6 +868,11 @@ app.addContextHook('send:before', async (ctx, body) => {
 Useful for post-processing dynamically generated content. Passed the context object and the dynamically generated
 content. Can return an arbitrary value to replace the dynamic content.
 
+## More
+
+A lot more documentation and examples by many different authors can be found in the
+[mojo.js wiki](https://github.com/mojolicious/mojo.js/wiki).
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the

@@ -145,6 +145,11 @@ If you believe someone is violating the code of conduct, we ask that you report 
   doesn’t mean that they’re wrong. Don’t forget that it is human to err and blaming each other doesn’t get us anywhere.
   Instead, focus on helping to resolve issues and learning from mistakes.
 
+## More
+
+A lot more documentation and examples by many different authors can be found in the
+[mojo.js wiki](https://github.com/mojolicious/mojo.js/wiki).
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the

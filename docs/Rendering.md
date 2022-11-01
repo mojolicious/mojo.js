@@ -1099,6 +1099,11 @@ app.start();
 
 See [mojo-plugin-ejs](https://github.com/mojolicious/mojo-plugin-ejs) for a full example plugin you can fork.
 
+## More
+
+A lot more documentation and examples by many different authors can be found in the
+[mojo.js wiki](https://github.com/mojolicious/mojo.js/wiki).
+
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
