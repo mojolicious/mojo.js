@@ -1,37 +1,85 @@
 import type {App} from '../app.js';
 import {version} from '../core.js';
 import * as util from '../util.js';
+import nopt from 'nopt';
 
 /**
  * Plugin generator command.
  */
 export default async function createPluginCommand(app: App, args: string[]): Promise<void> {
+  const parsed = nopt({ts: Boolean}, {}, args, 1);
+  const ts = parsed.ts === true;
+
   const stdout = process.stdout;
   stdout.write('Generating plugin:\n');
 
-  const name = args[1] ?? 'mojo-plugin-myplugin';
+  const name = parsed.argv.remain[0] ?? 'mojo-plugin-myplugin';
   const file = `lib/${name}.js`;
-
-  await util.cliCreateDir('lib');
-  await util.cliCreateFile(file, plugin);
 
   await util.cliCreateDir('test');
   await util.cliCreateFile('test/basic.js', test, {file});
 
   await util.cliCreateFile('README.md', readme, {name});
 
-  await util.cliFixPackage({
+  const commonSettings = {
     author: 'A Good Programmer <nospam@example.com>',
     description: 'A mojo.js plugin',
     dependencies: {'@mojojs/core': `^${version}`},
-    devDependencies: {tap: '^16.0.0'},
     exports: './lib/plugin.js',
     files: ['lib/'],
-    license: 'MIT',
     name,
-    scripts: {test: 'tap --no-coverage test/*.js'},
+    license: 'MIT',
     version: '0.0.1'
-  });
+  };
+
+  // TypeScript
+  if (ts === true) {
+    const tsFile = `src/${name}.ts`;
+    await util.cliCreateDir('src');
+    await util.cliCreateFile(tsFile, tsPlugin);
+
+    const tsConfig = {
+      compilerOptions: {
+        lib: ['ESNext', 'DOM'],
+        target: 'ES2020',
+        module: 'ES2020',
+        sourceMap: true,
+        declaration: true,
+        incremental: true,
+        moduleResolution: 'node',
+        esModuleInterop: true,
+        noErrorTruncation: true,
+        strict: true,
+        outDir: 'lib',
+        rootDir: 'src',
+        composite: true
+      },
+      include: ['src/**/*']
+    };
+    await util.cliCreateFile('tsconfig.json', JSON.stringify(tsConfig, null, 2));
+    await util.cliFixPackage({
+      ...commonSettings,
+      devDependencies: await util.devDependencies(/^(@types\/.+|tap|typescript)$/),
+      scripts: {
+        build: 'npx tsc --build ./',
+        'build:test': 'npm run build && npm test',
+        'build:watch': 'npm run build -- --watch',
+        test: 'tap --no-coverage test/*.js'
+      }
+    });
+  }
+
+  // JavaScript
+  else {
+    await util.cliCreateDir('lib');
+    await util.cliCreateFile(file, jsPlugin);
+
+    await util.cliFixPackage({
+      ...commonSettings,
+      devDependencies: await util.devDependencies(/^tap$/),
+      scripts: {test: 'tap --no-coverage test/*.js'}
+    });
+  }
 }
 
 createPluginCommand.hidden = true;
@@ -43,9 +91,17 @@ createPluginCommand.usage = `Usage: APPLICATION create-plugin [OPTIONS] [NAME]
 
 Options:
   -h, --help   Show this summary of available options
+      --ts     Generate TypeScript code instead of JavaScript
 `;
 
-const plugin = `export default function myPlugin(app, options) {
+const jsPlugin = `export default function myPlugin(app, options) {
+  // Add plugin code here
+}
+`;
+
+const tsPlugin = `import type {MojoApp} from '@mojojs/core';
+
+export default function myPlugin(app: MojoApp, options: Record<string, any>) {
   // Add plugin code here
 }
 `;

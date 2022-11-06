@@ -164,6 +164,20 @@ export async function cliFixPackage(options: FixOptions = {}): Promise<void> {
 }
 
 /**
+ * Get mojo.js devDependencies.
+ */
+export async function devDependencies(regex: RegExp): Promise<Record<string, string>> {
+  const pkg = JSON.parse((await Path.currentFile().dirname().sibling('package.json').readFile('utf8')).toString());
+
+  const deps: Record<string, string> = {};
+  for (const [name, version] of Object.entries(pkg.devDependencies)) {
+    if (regex.test(name) === true) deps[name] = version as string;
+  }
+
+  return deps;
+}
+
+/**
  * Generate exception context.
  */
 export async function exceptionContext(

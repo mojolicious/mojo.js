@@ -2,7 +2,6 @@ import type {App} from '../app.js';
 import crypto from 'node:crypto';
 import {version} from '../core.js';
 import * as util from '../util.js';
-import Path from '@mojojs/path';
 import nopt from 'nopt';
 
 /**
@@ -57,7 +56,7 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
     await util.cliCreateFile('tsconfig.json', JSON.stringify(tsConfig, null, 2));
     await util.cliFixPackage({
       dependencies: {'@mojojs/core': `^${version}`},
-      devDependencies: await devDependencies(/^(@types\/.+|nodemon|tap|typescript)$/),
+      devDependencies: await util.devDependencies(/^(@types\/.+|nodemon|tap|typescript)$/),
       scripts: {
         build: 'npx tsc --build ./',
         'build:test': 'npm run build && npm test',
@@ -83,7 +82,7 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
 
     await util.cliFixPackage({
       dependencies: {'@mojojs/core': `^${version}`},
-      devDependencies: await devDependencies(/^(nodemon|tap)$/),
+      devDependencies: await util.devDependencies(/^(nodemon|tap)$/),
       scripts: {
         dev: 'npx nodemon index.js server',
         start: 'NODE_ENV=production node index.js server -l http://*:8080',
@@ -104,19 +103,6 @@ Options:
   -h, --help   Show this summary of available options
       --ts     Generate TypeScript code instead of JavaScript
 `;
-
-async function devDependencies(regex: RegExp): Promise<Record<string, string>> {
-  const pkg = JSON.parse(
-    (await Path.currentFile().dirname().dirname().sibling('package.json').readFile('utf8')).toString()
-  );
-
-  const deps: Record<string, string> = {};
-  for (const [name, version] of Object.entries(pkg.devDependencies)) {
-    if (regex.test(name) === true) deps[name] = version as string;
-  }
-
-  return deps;
-}
 
 const yamlConfig = `---
 secrets:

@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.10.0 (NOT YET RELEASED)
+
+### Features
+
+  * Added `--ts` options to `create-plugin` command for TypeScript support.
+
 ## v1.9.0 (2022-11-01)
 
 ### Features
