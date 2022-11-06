@@ -977,6 +977,12 @@ $ npm create @mojojs/plugin -- mojo-plugin-caching-helpers
 $ npm install
 ```
 
+You can also use the `--ts` flag to generate TypeScript instead of JavaScript code.
+
+```
+$ npm create @mojojs/plugin -- --ts mojo-plugin-caching-helpers
+```
+
 The generated test file `test/basic.js` uses [tap](https://www.npmjs.com/package/tap) by default and contains enough
 integration tests to get you started in no time.
 
