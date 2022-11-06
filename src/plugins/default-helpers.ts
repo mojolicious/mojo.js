@@ -68,6 +68,9 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
     return tag(ctx, 'input', {...attrs, type: 'hidden', name, value});
   });
   app.addHelper('imageTag', imageTag);
+  app.addHelper('labelFor', (ctx: MojoContext, name: string, value: string | SafeString, attrs: TagAttrs = {}) => {
+    return tag(ctx, 'label', {...attrs, type: 'hidden', for: name}, value);
+  });
   app.addHelper('linkTo', linkTo);
   app.addHelper('passwordFieldTag', (ctx: MojoContext, name: string, attrs: TagAttrs = {}) => {
     return tag(ctx, 'input', {...attrs, type: 'password', name});

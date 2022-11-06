@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.11.0 (NOT YET RELEASED)
+
+### Features
+
+  * Added `labelFor` helper.
+
 ## v1.10.0 (2022-11-07)
 
 ### Features

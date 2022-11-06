@@ -188,6 +188,8 @@ Week3: <%= await ctx.weekFieldTag('fiftyone', {class: 'bar', value: 'Default'}) 
 Month1: <%= await ctx.monthFieldTag('fiftytwo') %>
 Month2: <%= await ctx.monthFieldTag('fiftythree', {class: 'bar'}) %>
 Month3: <%= await ctx.monthFieldTag('fiftyfour', {class: 'bar', value: 'Default'}) %>
+Label1: <%= ctx.labelFor('fiftyfour', 'Fifty four') %>
+Label2: <%= ctx.labelFor('fiftyfour', 'Fifty four', {class: 'bar'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -248,6 +250,8 @@ Week3: <input class="bar" value="Default" type="week" name="fiftyone">
 Month1: <input type="month" name="fiftytwo">
 Month2: <input class="bar" type="month" name="fiftythree">
 Month3: <input class="bar" value="Default" type="month" name="fiftyfour">
+Label1: <label type="hidden" for="fiftyfour">Fifty four</label>
+Label2: <label class="bar" type="hidden" for="fiftyfour">Fifty four</label>
 `;
 
 const formTagHelpersFilledResult = `
@@ -308,6 +312,8 @@ Week3: <input class="bar" value="Fiftyone" type="week" name="fiftyone">
 Month1: <input type="month" name="fiftytwo" value="Fiftytwo">
 Month2: <input class="bar" type="month" name="fiftythree" value="Fiftythree">
 Month3: <input class="bar" value="Fiftyfour" type="month" name="fiftyfour">
+Label1: <label type="hidden" for="fiftyfour">Fifty four</label>
+Label2: <label class="bar" type="hidden" for="fiftyfour">Fifty four</label>
 `;
 
 const tagHelperPlugin = `

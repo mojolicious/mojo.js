@@ -560,6 +560,14 @@ Include a partial template.
 
 Generate `<input>` tag. Previous input values will automatically get picked up and shown as default.
 
+#### labelFor
+
+```
+%= ctx.labelFor('first_name', {class: 'foo'}, 'First name')
+```
+
+Generate `<label>` tag.
+
 #### linkTo
 
 ```
