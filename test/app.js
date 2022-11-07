@@ -954,9 +954,6 @@ t.test('App', async t => {
     const ctx = app.newMockContext();
     ctx.req.set('Host', 'example.com');
 
-    t.same(ctx.urlFor('current'), null);
-    t.same(ctx.urlWith('current'), null);
-
     t.equal(ctx.urlFor('/what/ever'), '/what/ever');
     t.equal(ctx.urlWith('/what/ever'), '/what/ever');
     ctx.req.query.set('foo', 'bar');
@@ -983,6 +980,44 @@ t.test('App', async t => {
       ctx.urlWith('/what/ever', {absolute: true, query: {foo: 'works'}}),
       'http://example.com/what/ever?foo=works&baz=yada'
     );
+
+    t.end();
+  });
+
+  await t.test('URL generation (missing routes)', t => {
+    const ctx = app.newMockContext();
+
+    let result;
+    try {
+      ctx.urlFor('current');
+    } catch (error) {
+      result = error;
+    }
+    t.match(result.message, 'No current route to generate URL for');
+
+    result = undefined;
+    try {
+      ctx.urlWith('current');
+    } catch (error) {
+      result = error;
+    }
+    t.match(result.message, 'No current route to generate URL for');
+
+    result = undefined;
+    try {
+      ctx.urlFor('missing_route');
+    } catch (error) {
+      result = error;
+    }
+    t.match(result.message, 'No route to generate URL for');
+
+    result = undefined;
+    try {
+      ctx.urlWith('missing_route');
+    } catch (error) {
+      result = error;
+    }
+    t.match(result.message, 'No route to generate URL for');
 
     t.end();
   });

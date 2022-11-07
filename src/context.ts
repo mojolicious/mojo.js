@@ -342,9 +342,9 @@ class Context extends EventEmitter {
    * // Absolute URL for path
    * const url = ctx.urlFor('/some/path', {absolute: true});
    */
-  urlFor(target?: string, options: URLOptions = {}): string | null {
+  urlFor(target?: string, options: URLOptions = {}): string {
     if (target === undefined || target === 'current') {
-      if (this.plan === null) return null;
+      if (this.plan === null) throw new Error('No current route to generate URL for');
       const result = this.plan.render(options.values);
       return this._urlForPath(result.path, result.websocket, options);
     }
@@ -353,7 +353,7 @@ class Context extends EventEmitter {
     if (ABSOLUTE.test(target)) return target;
 
     const route = this.app.router.lookup(target);
-    if (route === null) return null;
+    if (route === null) throw new Error('No route to generate URL for');
     return this._urlForPath(route.render(options.values), route.hasWebSocket(), options);
   }
 
@@ -377,7 +377,7 @@ class Context extends EventEmitter {
    * // Remove a specific query parameter
    * const url = ctx.urlWith('current', {query: {foo: null}});
    */
-  urlWith(target?: string, options: URLOptions = {}): string | null {
+  urlWith(target?: string, options: URLOptions = {}): string {
     options.query = Object.fromEntries(
       Object.entries({...this.req.query.toObject(), ...(options.query ?? {})}).filter(([, v]) => v !== null)
     );

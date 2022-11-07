@@ -8,6 +8,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 ### Features
 
   * Added `labelFor` helper.
+  * Improved `ctx.urlFor()` and `ctx.urlWith()` to throw an exception for missing routes.
 
 ## v1.10.0 (2022-11-07)
 
