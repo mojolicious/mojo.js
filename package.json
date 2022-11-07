@@ -22,7 +22,7 @@
   },
   "homepage": "https://mojojs.org",
   "scripts": {
-    "bench": "npx concurrently -k -s first \"NODE_ENV=production node benchmarks/hello/hello-mojo.js server\" \"npx autocannon -c 100 -d 5 -p 10 localhost:3000\"",
+    "bench": "npx concurrently -k -s first \"NODE_ENV=production node benchmarks/hello/hello-mojo.js server\" \"npx autocannon -W -c 100 -d 10 -p 15 localhost:3000\"",
     "build": "npx tsc --build ./ ./test/support/ts/full-app",
     "build:bench": "npm run build && npm run bench",
     "build:clean": "npm run clean && npm run build",
