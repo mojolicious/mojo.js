@@ -995,29 +995,29 @@ t.test('App', async t => {
     }
     t.match(result.message, 'No current route to generate URL for');
 
-    result = undefined;
+    let result2;
     try {
       ctx.urlWith('current');
     } catch (error) {
-      result = error;
+      result2 = error;
     }
-    t.match(result.message, 'No current route to generate URL for');
+    t.match(result2.message, 'No current route to generate URL for');
 
-    result = undefined;
+    let result3;
     try {
       ctx.urlFor('missing_route');
     } catch (error) {
-      result = error;
+      result3 = error;
     }
-    t.match(result.message, 'No route to generate URL for');
+    t.match(result3.message, 'No route to generate URL for');
 
-    result = undefined;
+    let result4;
     try {
       ctx.urlWith('missing_route');
     } catch (error) {
-      result = error;
+      result4 = error;
     }
-    t.match(result.message, 'No route to generate URL for');
+    t.match(result4.message, 'No route to generate URL for');
 
     t.end();
   });
