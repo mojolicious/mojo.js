@@ -999,8 +999,9 @@ $ npm version major
 $ npm publish
 ```
 
-See [mojo-plugin-ejs](https://github.com/mojolicious/mojo-plugin-ejs) for a full example plugin you can fork. And if
-you're writing your plugin in TypeScript, make sure to use
+See [mojo-plugin-ejs](https://github.com/mojolicious/mojo-plugin-ejs) and
+[mojo-plugin-nunjucks](https://github.com/mojolicious/mojo-plugin-nunjucks) for full example plugins you can fork. And
+if you're writing your plugin in TypeScript, make sure to use
 [declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html) to add your helpers to the
 `MojoContext` interface.
 
@@ -1103,7 +1104,8 @@ app.get('/template', async ctx => {
 app.start();
 ```
 
-See [mojo-plugin-ejs](https://github.com/mojolicious/mojo-plugin-ejs) for a full example plugin you can fork.
+See [mojo-plugin-ejs](https://github.com/mojolicious/mojo-plugin-ejs) and
+[mojo-plugin-nunjucks](https://github.com/mojolicious/mojo-plugin-nunjucks) for full example plugins you can fork.
 
 ## More
 
