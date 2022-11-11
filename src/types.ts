@@ -39,7 +39,7 @@ export interface MojoContext extends Context {
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;
   imageTag: (target: string, attrs?: TagAttrs) => SafeString;
-  include: (options: RenderOptions, stash: Record<string, any>) => Promise<SafeString | null>;
+  include: (options: MojoRenderOptions, stash: Record<string, any>) => Promise<SafeString | null>;
   inspect: (object: Record<string, any>, options: InspectOptions) => string;
   inputTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   jsonException: (error: Error) => Promise<boolean>;
@@ -112,7 +112,9 @@ export interface CookieOptions {
   secure?: boolean;
 }
 
-export interface RenderOptions {
+export type MojoURLOptions = {absolute?: boolean; query?: Record<string, string>; values?: Record<string, string>};
+
+export interface MojoRenderOptions {
   engine?: string;
   format?: string;
   inline?: string;
@@ -184,9 +186,7 @@ export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions
   protocols?: string[];
 }
 
-export type URLOptions = {absolute?: boolean; query?: Record<string, string>; values?: Record<string, string>};
-
-export type URLTarget = string | [string, URLOptions];
+export type URLTarget = string | [string, MojoURLOptions];
 
 export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Test};
 

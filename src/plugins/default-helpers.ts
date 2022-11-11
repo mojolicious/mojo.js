@@ -1,4 +1,4 @@
-import type {MojoApp, MojoContext, RenderOptions, TagAttrs, URLOptions, URLTarget} from '../types.js';
+import type {MojoApp, MojoContext, MojoRenderOptions, MojoURLOptions, TagAttrs, URLTarget} from '../types.js';
 import type {InspectOptions} from 'node:util';
 import {inspect} from 'node:util';
 import {Logger} from '../logger.js';
@@ -189,7 +189,7 @@ async function inputTag(ctx: MojoContext, name: string, attrs: TagAttrs = {}): P
 
 async function include(
   ctx: MojoContext,
-  options: RenderOptions,
+  options: MojoRenderOptions,
   stash: Record<string, any>
 ): Promise<SafeString | null> {
   const str = await ctx.renderToString(options, stash);
@@ -281,7 +281,7 @@ async function websocketException(ctx: MojoContext, error: any): Promise<boolean
   return true;
 }
 
-function urlTarget(target: URLTarget): [string, URLOptions] {
+function urlTarget(target: URLTarget): [string, MojoURLOptions] {
   return typeof target === 'string' ? [target, {}] : target;
 }
 

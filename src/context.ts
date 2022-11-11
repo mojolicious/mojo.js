@@ -4,7 +4,14 @@ import type {Plan} from './router/plan.js';
 import type {ServerRequest} from './server/request.js';
 import type {ServerResponse} from './server/response.js';
 import type {SessionData} from './types.js';
-import type {MojoAction, MojoContext, MojoModels, RenderOptions, URLOptions, ValidatorFunction} from './types.js';
+import type {
+  MojoAction,
+  MojoContext,
+  MojoModels,
+  MojoRenderOptions,
+  MojoURLOptions,
+  ValidatorFunction
+} from './types.js';
 import type {UserAgent} from './user-agent.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
@@ -234,7 +241,7 @@ class Context extends EventEmitter {
   /**
    * Send `302` redirect response.
    */
-  async redirectTo(target: string, options: URLOptions & {status?: number} = {}): Promise<void> {
+  async redirectTo(target: string, options: MojoURLOptions & {status?: number} = {}): Promise<void> {
     await this.res
       .status(options.status ?? 302)
       .set('Location', this.urlFor(target, {absolute: true, ...options}) ?? '')
@@ -253,7 +260,7 @@ class Context extends EventEmitter {
    * // Render view "users/list.*.*" and pass it a stash value
    * await ctx.render({view: 'users/list'}, {foo: 'bar'});
    */
-  async render(options: RenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
+  async render(options: MojoRenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
     if (stash !== undefined) Object.assign(this.stash, stash);
 
     const app = this.app;
@@ -269,7 +276,7 @@ class Context extends EventEmitter {
   /**
    * Try to render dynamic content to string.
    */
-  async renderToString(options: RenderOptions, stash?: Record<string, any>): Promise<string | null> {
+  async renderToString(options: MojoRenderOptions, stash?: Record<string, any>): Promise<string | null> {
     if (typeof options === 'string') options = {view: options};
     Object.assign(this.stash, stash);
     const result = await this.app.renderer.render(this as unknown as MojoContext, options);
@@ -279,10 +286,10 @@ class Context extends EventEmitter {
   /**
    * Automatically select best possible representation for resource.
    */
-  async respondTo(spec: Record<string, MojoAction | RenderOptions>): Promise<void> {
+  async respondTo(spec: Record<string, MojoAction | MojoRenderOptions>): Promise<void> {
     const formats = this.accepts() ?? [];
 
-    let handler: MojoAction | RenderOptions | undefined;
+    let handler: MojoAction | MojoRenderOptions | undefined;
     for (const format of formats) {
       if (spec[format] === undefined) continue;
       handler = spec[format];
@@ -342,7 +349,7 @@ class Context extends EventEmitter {
    * // Absolute URL for path
    * const url = ctx.urlFor('/some/path', {absolute: true});
    */
-  urlFor(target?: string, options: URLOptions = {}): string {
+  urlFor(target?: string, options: MojoURLOptions = {}): string {
     if (target === undefined || target === 'current') {
       if (this.plan === null) throw new Error('No current route to generate URL for');
       const result = this.plan.render(options.values);
@@ -360,14 +367,14 @@ class Context extends EventEmitter {
   /**
    * Generate URL for static asset.
    */
-  urlForAsset(path: string, options: URLOptions = {}): string {
+  urlForAsset(path: string, options: MojoURLOptions = {}): string {
     return ABSOLUTE.test(path) === true ? path : this._urlForPath(this.app.static.assetPath(path), false, options);
   }
 
   /**
    * Generate URL for static file.
    */
-  urlForFile(path: string, options: URLOptions = {}): string {
+  urlForFile(path: string, options: MojoURLOptions = {}): string {
     return ABSOLUTE.test(path) === true ? path : this._urlForPath(this.app.static.filePath(path), false, options);
   }
 
@@ -377,7 +384,7 @@ class Context extends EventEmitter {
    * // Remove a specific query parameter
    * const url = ctx.urlWith('current', {query: {foo: null}});
    */
-  urlWith(target?: string, options: URLOptions = {}): string {
+  urlWith(target?: string, options: MojoURLOptions = {}): string {
     options.query = Object.fromEntries(
       Object.entries({...this.req.query.toObject(), ...(options.query ?? {})}).filter(([, v]) => v !== null)
     );
@@ -392,7 +399,7 @@ class Context extends EventEmitter {
     return this._ws?.deref() ?? null;
   }
 
-  _urlForPath(path: string, isWebSocket: boolean, options: URLOptions): string {
+  _urlForPath(path: string, isWebSocket: boolean, options: MojoURLOptions): string {
     path = this.req.basePath + path;
 
     let query = '';

@@ -1,5 +1,5 @@
 import type {App} from '../app.js';
-import type {MojoContext, RenderOptions} from '../types.js';
+import type {MojoContext, MojoRenderOptions} from '../types.js';
 import {createHash} from 'node:crypto';
 import {Cache} from '../cache.js';
 import Path from '@mojojs/path';
@@ -15,7 +15,7 @@ export default function tmplEnginePlugin(app: App): void {
 class TmplEngine {
   cache: Cache<(data?: Record<string, any>) => Promise<string>> = new Cache();
 
-  async render(ctx: MojoContext, options: RenderOptions): Promise<Buffer> {
+  async render(ctx: MojoContext, options: MojoRenderOptions): Promise<Buffer> {
     let template;
 
     if (options.inline !== undefined) {

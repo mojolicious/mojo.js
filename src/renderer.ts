@@ -1,4 +1,4 @@
-import type {MojoContext, RenderOptions} from './types.js';
+import type {MojoContext, MojoRenderOptions} from './types.js';
 import {promisify} from 'node:util';
 import {gzip} from 'node:zlib';
 import Path from '@mojojs/path';
@@ -16,7 +16,7 @@ interface ViewSuggestion {
 }
 type ViewIndex = Record<string, ViewSuggestion[]>;
 interface ViewEngine {
-  render: (ctx: MojoContext, options: RenderOptions) => Promise<Buffer>;
+  render: (ctx: MojoContext, options: MojoRenderOptions) => Promise<Buffer>;
 }
 
 const gzipPromise = promisify(gzip);
@@ -65,7 +65,7 @@ export class Renderer {
   /**
    * Find a view for render parameters.
    */
-  findView(options: RenderOptions): ViewSuggestion | null {
+  findView(options: MojoRenderOptions): ViewSuggestion | null {
     const view = options.view;
     const index = this._viewIndex;
     if (view === undefined || index === undefined || index[view] === undefined) return null;
@@ -87,7 +87,7 @@ export class Renderer {
   /**
    * Render output through one of the template engines.
    */
-  async render(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
+  async render(ctx: MojoContext, options: MojoRenderOptions): Promise<EngineResult | null> {
     const log = ctx.log;
     if (options.text !== undefined) {
       log.trace('Rendering text response');
@@ -198,13 +198,13 @@ export class Renderer {
     }
   }
 
-  async _renderInline(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
+  async _renderInline(ctx: MojoContext, options: MojoRenderOptions): Promise<EngineResult | null> {
     const engine = this.engines[options.engine ?? this.defaultEngine];
     if (engine === undefined) return null;
     return {output: await engine.render(ctx, options), format: options.format ?? this.defaultFormat};
   }
 
-  async _renderView(ctx: MojoContext, options: RenderOptions): Promise<EngineResult | null> {
+  async _renderView(ctx: MojoContext, options: MojoRenderOptions): Promise<EngineResult | null> {
     const view = this.findView(options);
     if (view === null) return null;
 
