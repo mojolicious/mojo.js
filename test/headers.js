@@ -22,6 +22,9 @@ t.test('Headers', t => {
     headers2.append('Foo', 'baz');
     t.same(headers2.toArray(), ['Accept', 'text/plain', 'Foo', 'yada, baz']);
     t.equal(headers2.toString(), 'Accept: text/plain\r\nFoo: yada, baz\r\n\r\n');
+    headers2.remove('Foo');
+    t.same(headers2.toArray(), ['Accept', 'text/plain']);
+    t.same(headers2.get('Foo'), null);
 
     t.end();
   });

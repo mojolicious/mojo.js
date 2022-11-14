@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.12.0 (NOT YET RELEASED)
+
+### Features
+
+  * Added `remove` method to `Headers` class.
+
 ## v1.11.0 (2022-11-11)
 
 ### Features

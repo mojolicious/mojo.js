@@ -44,6 +44,13 @@ export class Headers {
   }
 
   /**
+   * Remove header.
+   */
+  remove(name: string): void {
+    delete this._getHeaders()[name.toLowerCase()];
+  }
+
+  /**
    * Set header value.
    */
   set(name: string, value: string): void {
