@@ -45,5 +45,25 @@ t.test('Headers', t => {
     t.end();
   });
 
+  t.test('Dehop', t => {
+    const fail = {
+      Connection: 'fail',
+      'Keep-Alive': 'fail',
+      'Proxy-Authenticate': 'fail',
+      'Proxy-Authorization': 'fail',
+      Server: 'pass',
+      TE: 'fail',
+      Trailer: 'fail',
+      'Transfer-Encoding': 'fail',
+      Upgrade: 'fail'
+    };
+    const headers = new Headers(Object.entries(fail).flat());
+    t.same(headers.toObject(), fail);
+    headers.dehop();
+    t.same(headers.toObject(), {Server: 'pass'});
+
+    t.end();
+  });
+
   t.end();
 });

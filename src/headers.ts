@@ -1,5 +1,16 @@
 type HeaderBuffer = Record<string, {normalCase: string; values: string[]}>;
 
+const HOP_BY_HOP = [
+  'connection',
+  'keep-alive',
+  'proxy-authenticate',
+  'proxy-authorization',
+  'te',
+  'trailer',
+  'transfer-encoding',
+  'upgrade'
+];
+
 /**
  * HTTP header class.
  */
@@ -24,6 +35,14 @@ export class Headers {
     } else {
       headers[lowerCase].values = [[...headers[lowerCase].values, value].join(', ')];
     }
+  }
+
+  /**
+   * Remove hop-by-hop headers that should not be retransmitted.
+   */
+  dehop(): void {
+    const headers = this._getHeaders();
+    HOP_BY_HOP.forEach(name => delete headers[name]);
   }
 
   /**
