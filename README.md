@@ -34,7 +34,8 @@ If you want to stay up to date on the
   * HTML/XML parser with CSS selector support.
 * No frontend framework, mojo.js is for the **backend**.
 * Written in [TypeScript](https://www.typescriptlang.org), with very clean `class` and `async`/`await` based APIs.
-* Very few dependencies, to avoid supply chain attacks and allow for "Perl-grade" **long term support**.
+* Very few dependencies, to avoid supply chain attacks and allow for "Perl-grade" long term support and
+  **backwards compatibility**.
 * Fresh code based upon decades of experience developing [Mojolicious](https://mojolicious.org) and
   [Catalyst](http://catalyst.perl.org), free and open source.
 
