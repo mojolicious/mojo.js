@@ -20,7 +20,7 @@ If you want to stay up to date on the
 
 ## Features
 
-* 3x faster than Express.js.
+* 3x faster than Express.js and 15x faster than Mojolicious.
 * A **real-time web framework**, allowing you to easily grow single file prototypes into well-structured MVC web
   applications.
   * Powerful out of the box with RESTful routes, WebSockets, plugins, commands, logging, templates, content negotiation,
