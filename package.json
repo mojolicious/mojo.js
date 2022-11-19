@@ -83,7 +83,7 @@
     "@mojojs/dom": "^2.0.0",
     "@mojojs/path": "^1.5.0",
     "@mojojs/template": "^2.1.0",
-    "@mojojs/util": "^1.4.1",
+    "@mojojs/util": "^1.5.0",
     "ajv": "^8.5.0",
     "busboy": "^1.0.0",
     "chalk": "^5.0.0",
