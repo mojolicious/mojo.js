@@ -45,6 +45,35 @@ t.test('Headers', t => {
     t.end();
   });
 
+  t.test('Clone', t => {
+    const headers = new Headers();
+    headers.append('Connection', 'close');
+    headers.append('Connection', 'keep-alive');
+    t.equal(headers.get('Connection'), 'close, keep-alive');
+    const clone = headers.clone();
+    headers.set('Connection', 'nothing');
+    t.equal(headers.get('Connection'), 'nothing');
+    t.equal(clone.get('Connection'), 'close, keep-alive');
+
+    const headers2 = new Headers();
+    headers2.set('Expect', '100-continue');
+    const clone2 = headers2.clone();
+    t.equal(headers2.get('Expect'), '100-continue');
+    t.equal(clone2.get('Expect'), '100-continue');
+    clone2.set('Expect', 'nothing');
+    t.equal(headers2.get('Expect'), '100-continue');
+    t.equal(clone2.get('Expect'), 'nothing');
+    clone2.set('Foo', 'bar');
+    t.same(headers2.toObject(), {Expect: '100-continue'});
+    t.same(clone2.toObject(), {Expect: 'nothing', Foo: 'bar'});
+    const clone3 = clone2.clone();
+    clone2.remove('Foo');
+    t.same(clone2.toObject(), {Expect: 'nothing'});
+    t.same(clone3.toObject(), {Expect: 'nothing', Foo: 'bar'});
+
+    t.end();
+  });
+
   t.test('Dehop', t => {
     const fail = {
       Connection: 'fail',

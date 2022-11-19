@@ -38,6 +38,13 @@ export class Headers {
   }
 
   /**
+   * Clone headers.
+   */
+  clone(): Headers {
+    return new Headers(this.toArray());
+  }
+
+  /**
    * Remove hop-by-hop headers that should not be retransmitted.
    */
   dehop(): void {

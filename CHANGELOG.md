@@ -7,7 +7,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 
 ### Features
 
-  * Added `dehop` and `remove` methods to `Headers` class.
+  * Added `clone`, `dehop` and `remove` methods to `Headers` class.
 
 ## v1.11.0 (2022-11-11)
 
