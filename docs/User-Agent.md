@@ -56,10 +56,10 @@ const res = await ua.request({
   // Request body as a string, `Buffer` or `stream.Readable` object
   body: 'Some content to send with request',
 
-  // Data structure to be send in JSON format, or for WebSockets a `true` value to enable JSON mode
+  // Data structure to be sent in JSON format, or for WebSockets a `true` value to enable JSON mode
   json: {hello: ['world']},
 
-  // Data structure to be send in YAML format
+  // Data structure to be sent in YAML format
   yaml: {hello: ['world']},
 
   // Object with key/value pairs to be sent in `application/x-www-form-urlencoded` format
@@ -84,6 +84,7 @@ const res = await ua.request({
   socketPath: '/var/lib/run/myapp.sock',
 
   // Alternative `http.Agent` object to use, for keep-alive or SOCKS proxy support with `proxy-agent`
+  // (this API is likely to change in mojo.js 2.0)
   agent: new http.Agent({keepAlive: true})
 });
 ```
@@ -225,25 +226,25 @@ const ws = await ua.websocket('wss://mojolicious.org', {
 You can choose between multiple API styles.
 
 ```js
-// Events
-const ws = await ua.websocket('/ws');
-await ws.send('something');
-ws.on('message', message => {
-  console.log(message);
-});
-
 // Async iterator
 const ws = await ua.websocket('/ws');
 await ws.send('something');
 for await (const message of ws) {
   console.log(message);
 }
+
+// Events (this API is likely to change in mojo.js 2.0)
+const ws = await ua.websocket('/ws');
+await ws.send('something');
+ws.on('message', message => {
+  console.log(message);
+});
 ```
 
 With support for `ping` and `pong` frames.
 
 ```js
-// Handshake with authentication headers
+// Handshake with authentication headers (this API is likely to change in mojo.js 2.0)
 const ws = await ua.websocket('/ws', {headers: {Authorization: 'token 123456789abcdef'}});
 ws.on('ping', data => {
   ws.pong(data);
@@ -388,6 +389,8 @@ Connection: close\x0d
 \x0d
 Hello World!
 ```
+
+Be aware that the exact output format is likely to change over time.
 
 ## More
 
