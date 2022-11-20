@@ -91,7 +91,8 @@ const res = await ua.request({
 
 The `request` method returns a `Promise` that resolves with a response object, right after the response
 status line and headers have been received. But before any data from the response body has been read, which can be
-handled in a separate step later on.
+handled in a separate step later on. **Be aware:** The agent API is likely to change in mojo.js 2.0 to improve
+compatibility with [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) based backends.
 
 ### Request Shortcuts
 
@@ -241,7 +242,8 @@ ws.on('message', message => {
 });
 ```
 
-With support for `ping` and `pong` frames.
+With support for `ping` and `pong` frames. **Be aware:** The event based API is likely to change in mojo.js 2.0 to
+imporve browser compatibility.
 
 ```js
 // Handshake with authentication headers (this API is likely to change in mojo.js 2.0)
@@ -390,7 +392,7 @@ Connection: close\x0d
 Hello World!
 ```
 
-Be aware that the exact output format is likely to change over time.
+**Be aware:** The exact output format is likely to change over time as more protocols are supported.
 
 ## More
 
