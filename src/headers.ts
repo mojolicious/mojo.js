@@ -1,3 +1,5 @@
+import {headerParams} from '@mojojs/util';
+
 type HeaderBuffer = Record<string, {normalCase: string; values: string[]}>;
 
 const HOP_BY_HOP = [
@@ -70,6 +72,32 @@ export class Headers {
   }
 
   /**
+   * Get web links from `Link` header according to RFC5988.
+   *
+   * @link http://tools.ietf.org/html/rfc5988
+   * @example
+   *
+   * // Extract information about next page
+   * console.log(headers.getLinks().next.link);
+   * console.log(headers.getLinks().next.title);
+   */
+  getLinks(): Record<string, Record<string, string>> {
+    const data: Record<string, Record<string, string>> = {};
+
+    let value = this.get('Link') ?? '';
+    while (value.length > 0) {
+      const linkMatch = value.match(/^[,\s]*<(.+?)>(.+)$/);
+      if (linkMatch === null) break;
+      const link = linkMatch[1];
+      const {params, remainder} = headerParams(linkMatch[2]);
+      value = remainder;
+      if (params.rel !== undefined) data[params.rel] ??= {...params, link};
+    }
+
+    return data;
+  }
+
+  /**
    * Remove header.
    */
   remove(name: string): void {
@@ -82,6 +110,22 @@ export class Headers {
   set(name: string, value: string): void {
     const lowerCase = name.toLowerCase();
     this._getHeaders()[lowerCase] = {normalCase: name, values: [value]};
+  }
+
+  /**
+   * Set web links to `Link` header according to RFC5988.
+   *
+   * @link http://tools.ietf.org/html/rfc5988
+   * @example
+   *
+   * // Link to next and previous page
+   * headers.setLinks({next: 'http://example.com/foo', prev: 'http://example.com/bar'});
+   */
+  setLinks(links: Record<string, string>): void {
+    const value = Object.entries(links)
+      .map(([rel, link]: [string, string]) => `<${link}>; rel="${rel}"`)
+      .join(', ');
+    this.set('Link', value);
   }
 
   /**

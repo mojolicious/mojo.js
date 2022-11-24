@@ -3,6 +3,13 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.13.0 (2022-11-25)
+
+### Features
+
+  * Added support for parsing and generating `Link` headers.
+  * Added `getLinks` and `setLinks` methods to `Headers` class.
+
 ## v1.12.0 (2022-11-20)
 
 ### Features

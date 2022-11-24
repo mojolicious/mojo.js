@@ -94,5 +94,43 @@ t.test('Headers', t => {
     t.end();
   });
 
+  t.test('Links', t => {
+    const headers = new Headers();
+
+    t.same(headers.getLinks(), {});
+
+    headers.set('Link', '</foo>; rel=foo, </bar>; rel=foo');
+    t.same(headers.getLinks(), {foo: {link: '/foo', rel: 'foo'}});
+
+    headers.set('Link', '</foo>; rel=foo; title=bar');
+    t.same(headers.getLinks(), {foo: {link: '/foo', rel: 'foo', title: 'bar'}});
+
+    headers.set('Link', '<http://example.com?foo=b;,ar>; rel=next, </>; rel=root; title="foo bar"');
+    t.same(headers.getLinks(), {
+      next: {link: 'http://example.com?foo=b;,ar', rel: 'next'},
+      root: {link: '/', rel: 'root', title: 'foo bar'}
+    });
+
+    headers.set('Link', '</foo>');
+    t.same(headers.getLinks(), {});
+    headers.set('Link', '</foo>;');
+    t.same(headers.getLinks(), {});
+    headers.set('Link', '</foo>; test=failed');
+    t.same(headers.getLinks(), {});
+    headers.set('Link', 'test=failed');
+    t.same(headers.getLinks(), {});
+
+    headers.setLinks({next: '/foo', prev: '/bar'});
+    t.same(headers.toObject(), {Link: '</foo>; rel="next", </bar>; rel="prev"'});
+
+    headers.setLinks({next: '/foo?bar'});
+    t.same(headers.toObject(), {Link: '</foo?bar>; rel="next"'});
+
+    headers.setLinks({next: '/foo?ba;,r'});
+    t.same(headers.toObject(), {Link: '</foo?ba;,r>; rel="next"'});
+
+    t.end();
+  });
+
   t.end();
 });
