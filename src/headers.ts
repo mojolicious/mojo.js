@@ -78,8 +78,7 @@ export class Headers {
    * @example
    *
    * // Extract information about next page
-   * console.log(headers.getLinks().next.link);
-   * console.log(headers.getLinks().next.title);
+   * const {link, title} = headers.getLinks().next;
    */
   getLinks(): Record<string, Record<string, string>> {
     const data: Record<string, Record<string, string>> = {};
