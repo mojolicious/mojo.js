@@ -73,10 +73,8 @@ export class Headers {
 
   /**
    * Get web links from `Link` header according to RFC5988.
-   *
    * @link http://tools.ietf.org/html/rfc5988
    * @example
-   *
    * // Extract information about next page
    * const {link, title} = headers.getLinks().next;
    */
@@ -113,10 +111,8 @@ export class Headers {
 
   /**
    * Set web links to `Link` header according to RFC5988.
-   *
    * @link http://tools.ietf.org/html/rfc5988
    * @example
-   *
    * // Link to next and previous page
    * headers.setLinks({next: 'http://example.com/foo', prev: 'http://example.com/bar'});
    */

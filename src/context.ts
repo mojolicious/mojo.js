@@ -63,6 +63,10 @@ class Context extends EventEmitter {
   jsonMode = false;
   /**
    * Logger with request id.
+   * @example
+   * // Pass logger with context to model
+   * const log = ctx.log;
+   * ctx.model.users.create({name: 'kraih'}, log);
    */
   log: ChildLogger;
   /**
@@ -71,10 +75,32 @@ class Context extends EventEmitter {
   plan: Plan | null = null;
   /**
    * HTTP request information.
+   * @example
+   * // Extract request information
+   * const id      = ctx.req.requestId;
+   * const method  = ctx.req.method;
+   * const baseURL = ctx.req.baseURL;
+   * const url     = ctx.req.url;
+   * const query   = ctx.req.query;
+   * const info    = ctx.req.userinfo;
+   * const agent   = ctx.req.get('User-Agent');
+   * const buffer  = await ctx.req.buffer();
+   * const text    = await ctx.req.text();
+   * const form    = await ctx.req.form();
+   * const value   = await ctx.req.json();
+   * const html    = await ctx.req.html();
+   * const xml     = await ctx.req.xml();
    */
   req: ServerRequest;
   /**
    * HTTP response information.
+   * @example
+   * // Force file download by setting a response header
+   * ctx.res.set('Content-Disposition', 'attachment; filename=foo.png;');
+   *
+   * // Make sure response is cached correctly
+   * ctx.res.set('Cache-Control', 'public, max-age=300');
+   * ctx.res.headers.append('Vary', 'Accept-Encoding');
    */
   res: ServerResponse;
   /**
@@ -164,6 +190,9 @@ class Context extends EventEmitter {
 
   /**
    * Home directory shortcut.
+   * @example
+   * // Generate path
+   * const path = ctx.home.child('views', 'foo', 'bar.html.tmpl');
    */
   get home(): Path {
     return this.app.home;
