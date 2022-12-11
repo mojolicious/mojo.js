@@ -267,7 +267,7 @@ ua.addHook('request', async (ua, config) => {
 });
 
 // Add a query parameter to every WebSocket handshake
-ua.addHook('request', async (ua, config) => {
+ua.addHook('websocket', async (ua, config) => {
   config.url.searchParams.append('hello', 'mojo');
 });
 ```
