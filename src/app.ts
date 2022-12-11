@@ -107,7 +107,7 @@ export class App {
    */
   static: Static = new Static();
   /**
-   * HTTP/WebSocket user agent.
+   * HTTP/WebSocket user-agent.
    */
   ua: UserAgent = new UserAgent();
   /**
@@ -242,14 +242,14 @@ export class App {
   }
 
   /**
-   * Create a new mock user agent for application.
+   * Create a new mock user-agent for application.
    */
   async newMockUserAgent(options?: UserAgentOptions, serverOptions?: ServerOptions): Promise<MockUserAgent> {
     return await MockUserAgent.newMockUserAgent(this, options, serverOptions);
   }
 
   /**
-   * Create a new test user agent for application.
+   * Create a new test user-agent for application.
    */
   async newTestUserAgent(options?: TestUserAgentOptions, serverOptions?: ServerOptions): Promise<TestUserAgent> {
     return await TestUserAgent.newTestUserAgent(this, options, serverOptions);

@@ -1,12 +1,12 @@
 import type {UserAgentOptions, UserAgentRequestOptions, UserAgentWebSocketOptions} from './types.js';
 import type {UserAgentResponse} from './user-agent/response.js';
 import type {WebSocket} from './websocket.js';
-import EventEmitter from 'node:events';
 import {URL} from 'node:url';
 import {CookieJar} from './user-agent/cookie-jar.js';
 import {HTTPTransport} from './user-agent/transport/http.js';
 import {HTTPSTransport} from './user-agent/transport/https.js';
 import {WSTransport} from './user-agent/transport/ws.js';
+import {AsyncHooks} from '@mojojs/util';
 import FormData from 'form-data';
 import yaml from 'js-yaml';
 
@@ -16,20 +16,12 @@ interface Upload {
   type: string;
 }
 
-interface UserAgentEvents {
-  request: (config: UserAgentRequestOptions) => void;
-  websocket: (config: UserAgentWebSocketOptions) => void;
-}
-
-declare interface UserAgent {
-  on: <T extends keyof UserAgentEvents>(event: T, listener: UserAgentEvents[T]) => this;
-  emit: <T extends keyof UserAgentEvents>(event: T, ...args: Parameters<UserAgentEvents[T]>) => boolean;
-}
+type UserAgentHook = (ua: UserAgent, ...args: any[]) => any;
 
 /**
- * HTTP and WebSocket user agent.
+ * HTTP and WebSocket user-agent.
  */
-class UserAgent extends EventEmitter {
+class UserAgent {
   /**
    * Base URL to be used to resolve all relative request URLs with.
    */
@@ -38,6 +30,10 @@ class UserAgent extends EventEmitter {
    * Cookie jar to use.
    */
   cookieJar: CookieJar | null = new CookieJar();
+  /**
+   * User-agent hooks.
+   */
+  hooks = new AsyncHooks();
   /**
    * Transport backend to perform HTTP requests with.
    */
@@ -51,7 +47,7 @@ class UserAgent extends EventEmitter {
    */
   maxRedirects: number;
   /**
-   * Name of user agent to send with `User-Agent` header.
+   * Name of user-agent to send with `User-Agent` header.
    */
   name: string | undefined;
   /**
@@ -60,11 +56,17 @@ class UserAgent extends EventEmitter {
   wsTransport = new WSTransport();
 
   constructor(options: UserAgentOptions = {}) {
-    super();
-
     this.baseURL = options.baseURL;
     this.maxRedirects = options.maxRedirects ?? 0;
     this.name = options.name;
+  }
+
+  /**
+   * Add a hook to extend the user-agent.
+   */
+  addHook(name: string, fn: UserAgentHook): this {
+    this.hooks.addHook(name, fn);
+    return this;
   }
 
   /**
@@ -130,7 +132,7 @@ class UserAgent extends EventEmitter {
   async request(config: UserAgentRequestOptions): Promise<UserAgentResponse> {
     const filtered = await this._filterConfig(config);
 
-    this.emit('request', filtered);
+    await this.hooks.runHook('request', this, filtered);
 
     if (typeof filtered.body === 'string') filtered.body = Buffer.from(filtered.body);
     if (filtered.body instanceof Buffer) filtered.headers['Content-Length'] = Buffer.byteLength(filtered.body);
@@ -150,7 +152,7 @@ class UserAgent extends EventEmitter {
     options.url = url;
     const filtered = await this._filterSharedConfig(options);
 
-    this.emit('websocket', filtered);
+    await this.hooks.runHook('websocket', this, filtered);
 
     filtered.url.protocol = filtered.url.protocol === 'https:' ? 'wss:' : 'ws:';
     return await this.wsTransport.connect(filtered);

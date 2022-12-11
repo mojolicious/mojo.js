@@ -47,7 +47,7 @@ convenience for the reader. Almost all features are exactly the same for full we
 
 * [User-Agent](User-Agent.md)
 
-  How to use the full featured HTTP and WebSocket user agent that ships with the [mojo.js](https://mojojs.org)
+  How to use the full featured HTTP and WebSocket user-agent that ships with the [mojo.js](https://mojojs.org)
   framework.
 
 * [Cookbook](Cookbook.md)

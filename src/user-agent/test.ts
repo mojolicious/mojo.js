@@ -20,7 +20,7 @@ import StackUtils from 'stack-utils';
 type SkipFunction = (...args: any[]) => any;
 
 /**
- * Test user agent class.
+ * Test user-agent class.
  */
 export class TestUserAgent extends MockUserAgent {
   /**
@@ -208,7 +208,7 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   /**
-   * Create a new test user agent.
+   * Create a new test user-agent.
    */
   static async newTestUserAgent(
     app: App,

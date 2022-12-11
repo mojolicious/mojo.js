@@ -360,7 +360,7 @@ class Context extends EventEmitter {
   }
 
   /**
-   * HTTP/WebSocket user agent shortcut.
+   * HTTP/WebSocket user-agent shortcut.
    */
   get ua(): UserAgent {
     return this.app.ua;

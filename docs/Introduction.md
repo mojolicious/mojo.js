@@ -952,7 +952,7 @@ Just be aware that if you are also using `ctx.params()` or `ctx.req.form()`, the
 
 ### User-Agent
 
-While its primary purpose is testing, there is also a full featured HTTP and WebSocket user agent available via
+While its primary purpose is testing, there is also a full featured HTTP and WebSocket user-agent available via
 `ctx.ua`.
 
 ```js
@@ -1055,7 +1055,7 @@ you switch modes from `development` to `production`, no sensitive information wi
 
 Testing you [mojo.js](https://mojojs.org) application is as easy as creating a `test` directory and filling it with
 normal JavaScript tests like `test/basic.js`. Especially if you use [tap](https://www.npmjs.com/package/tap) and the
-built-in test user agent.
+built-in test user-agent.
 
 ```js
 import mojo from '@mojojs/core';

@@ -10,7 +10,7 @@ interface UserAgentResponseOptions {
 }
 
 /**
- * User agent response class.
+ * User-agent response class.
  */
 export class UserAgentResponse extends Body {
   /**

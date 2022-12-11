@@ -4,7 +4,7 @@ import {Server} from '../server.js';
 import {UserAgent} from '../user-agent.js';
 
 /**
- * Mock user agent class.
+ * Mock user-agent class.
  */
 export class MockUserAgent extends UserAgent {
   /**
@@ -19,7 +19,7 @@ export class MockUserAgent extends UserAgent {
   }
 
   /**
-   * Create a new mock user agent.
+   * Create a new mock user-agent.
    */
   static async newMockUserAgent(
     app: App,

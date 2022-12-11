@@ -1,4 +1,5 @@
 import mojo from '../lib/core.js';
+import {sleep} from '../lib/util.js';
 import t from 'tap';
 
 t.test('WebSocket', async t => {
@@ -39,6 +40,13 @@ t.test('WebSocket', async t => {
       ws.on('ping', data => {
         ctx.config.ping = data.toString();
       });
+    });
+  });
+
+  app.websocket('/status').to(ctx => {
+    const status = ctx.req.query.get('status') ?? '404';
+    ctx.on('connection', ws => {
+      ws.send(status);
     });
   });
 
@@ -108,6 +116,20 @@ t.test('WebSocket', async t => {
     });
     t.equal(data.toString(), 'Hello Mojo!');
     t.same(app.config.ping, 'Hello Mojo!');
+  });
+
+  await t.test('Hooks', async t => {
+    ua.addHook('websocket', async (ua, config) => {
+      await sleep(10);
+      config.url.searchParams.append('status', 201);
+    });
+    const ws = await ua.websocket('/status');
+    let result;
+    for await (const message of ws) {
+      result = message;
+      ws.close();
+    }
+    t.equal(result, '201');
   });
 
   await ua.stop();

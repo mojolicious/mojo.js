@@ -367,7 +367,7 @@ $ mkdir tests
 $ touch tests/login.js
 ```
 
-`TestUserAgent` is a scriptable HTTP user agent designed specifically for testing, with many fun and state-of-the-art
+`TestUserAgent` is a scriptable HTTP user-agent designed specifically for testing, with many fun and state-of-the-art
 features such as CSS selectors based on [@mojojs/dom](https://www.npmjs.com/package/@mojojs/dom).
 
 ```js

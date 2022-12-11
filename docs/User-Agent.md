@@ -1,7 +1,7 @@
 
 # User-Agent
 
-The [mojo.js](https://mojojs.org) toolkit contains a full featured HTTP and WebSocket user agent. And while its primary
+The [mojo.js](https://mojojs.org) toolkit contains a full featured HTTP and WebSocket user-agent. And while its primary
 purpose is integration testing of web applications, it can also be used for many other things.
 
 ```js
@@ -17,7 +17,7 @@ used `fetch` before.
 
 ### User-Agent Options
 
-The user agent can be initialized with a few options, but none of them are required.
+The user-agent can be initialized with a few options, but none of them are required.
 
 ```js
 const ua = new UserAgent({
@@ -28,7 +28,7 @@ const ua = new UserAgent({
   // Maximum number of redirects to follow, default to none
   maxRedirects: 5,
 
-  // Name of user agent to send with `User-Agent` header
+  // Name of user-agent to send with `User-Agent` header
   name: 'mojoUA/1.0'
 });
 ```
@@ -256,6 +256,22 @@ ws.on('ping', data => {
 Cookies from the cookie jar will of course also be available for the handshake, so you can rely on them for things like
 authentication.
 
+### Hooks
+
+Hooks can be used to extend the user-agent and run code for every HTTP request or WebSocket handshake.
+
+```js
+// Add a header to every HTTP request
+ua.addHook('request', async (ua, config) => {
+  config.headers['X-Bender'] = 'Bite my shiny metal ass!';
+});
+
+// Add a query parameter to every WebSocket handshake
+ua.addHook('request', async (ua, config) => {
+  config.url.searchParams.append('hello', 'mojo');
+});
+```
+
 ### Testing
 
 For web application testing there is also a more specialised subclass available that adds various test methods using
@@ -284,7 +300,7 @@ t.test('Mojolicious', async t => {
 });
 ```
 
-And to test [mojo.js](https://mojojs.org) web applications there is no need to mock anything. The test user agent can
+And to test [mojo.js](https://mojojs.org) web applications there is no need to mock anything. The test user-agent can
 automatically start and manage a web server listening to a random port for you.
 
 ```js
@@ -316,8 +332,8 @@ await ua.putOk('/foo', {json: {hello: 'world'}});
 await ua.websocketOk('/ws', {protocols: ['test/1', 'test/2']});
 ```
 
-All test methods return the user agent object again to allow for easy method chaining and all state is stored inside the
-user agent object.
+All test methods return the user-agent object again to allow for easy method chaining and all state is stored inside the
+user-agent object.
 
 ```js
 // Status tests
@@ -366,7 +382,7 @@ await ua.closeOk(4000);
 await ua.closedOk(4000);
 ```
 
-And while the test user agent is very efficient for testing backend services, for frontend testing we recommend
+And while the test user-agent is very efficient for testing backend services, for frontend testing we recommend
 combining it with [playwright](https://www.npmjs.com/package/playwright).
 
 ### Introspection

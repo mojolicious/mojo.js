@@ -1,5 +1,6 @@
 import http from 'node:http';
 import mojo, {Server, UserAgent} from '../lib/core.js';
+import {sleep} from '../lib/util.js';
 import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';
@@ -327,11 +328,19 @@ t.test('UserAgent', async t => {
     t.equal(await res4.text(), 'basic: foo@example.com:bar, body: nothing');
   });
 
-  await t.test('Events', async t => {
-    ua.once('request', config => config.url.searchParams.append('status', 201));
+  await t.test('Hooks', async t => {
+    ua.addHook('request', async (ua, config) => {
+      await sleep(10);
+      config.url.searchParams.append('status', 201);
+    });
+
     const res = await ua.get('/status');
     t.equal(res.statusCode, 201);
     t.equal(await res.text(), '');
+
+    const res2 = await ua.get('/status');
+    t.equal(res2.statusCode, 201);
+    t.equal(await res2.text(), '');
   });
 
   await t.test('Custom agent', async t => {
