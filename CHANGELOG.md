@@ -7,7 +7,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 
 ### Features
 
-  * Added support for extensing the user-agent with async hooks.
+  * Added support for extending the user-agent with async hooks.
   * Added `hooks` property and `addHook` method to `UserAgent` class.
 
 ## v1.13.0 (2022-11-25)
