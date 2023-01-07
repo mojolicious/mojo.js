@@ -262,6 +262,47 @@ applications as a "service mesh" providing advanced filtering, load balancing, a
 in [Istio](https://istio.io/latest/docs/ops/deployment/architecture/). For more examples, visit the
 [Envoy documentation](https://www.envoyproxy.io/docs/envoy/latest/start/start).
 
+## Real-Time Web
+
+The real-time web is a collection of technologies that include Comet (long polling), EventSource and WebSockets, which
+allow content to be pushed to consumers with long-lived connections as soon as it is generated, instead of relying on
+the more traditional pull model. The built-in web server uses non-blocking I/O and is based on an event loop, which
+provides many very powerful features that allow real-time web applications to scale up to thousands of concurrent
+client connections.
+
+### Backend Web Services
+
+Since the built-in HTTP user-agent is also based on the event loop, it won't block the built-in web server, even for
+high latency backend web services.
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/', async ctx => {
+  const res = await ctx.ua.get('http://fastapi.metacpan.org/v1/module/_search', {query: {q: 'mojolicious'}});
+  const data = await res.json();
+  await ctx.render({inline: metacpanTemplate}, {hits: data.hits.hits});
+});
+
+const metacpanTemplate = `
+<!DOCTYPE html>
+<html>
+  <head><title>MetaCPAN results for "mojolicious"</title></head>
+  <body>
+    % for (const hit of hits) {
+      <p><%= hit._source.release %></p>
+    % }
+  </body>
+</html>
+`;
+
+app.start();
+```
+
+Thanks to `async`/`await` there is no need to use any callbacks.
+
 ## Application
 
 Fun [mojo.js](https://mojojs.org) application hacks for all occasions.
