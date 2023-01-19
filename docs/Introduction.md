@@ -38,7 +38,7 @@ on in another guide. For now it is just important for you to know that this is c
 `-- blog.js
 ```
 
-For tasks like prototyping and documentantion examples, clean abstraction with many different files can be a little
+For tasks like prototyping and documentation examples, clean abstraction with many different files can be a little
 distracting. So [mojo.js](https://mojojs.org) can also be used for single file applications. And these single file apps
 can later on smoothly transition to proper MVC abstraction as they grow. This is one of the fundamental
 [mojo.js](https://mojojs.org) design philosophies.
