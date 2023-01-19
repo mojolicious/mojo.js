@@ -1,6 +1,6 @@
-import mojo, {yamlConfigPlugin} from '../../../../../lib/core.js';
 import {Bar} from './models/bar.js';
 import helpersPlugin from './plugins/helpers.js';
+import mojo, {yamlConfigPlugin} from '../../../../../lib/core.js';
 
 export const app = mojo();
 

@@ -1,6 +1,6 @@
+import {app} from './support/js/jsonconfig-app/app.js';
 import mojo from '../lib/core.js';
 import jsonConfigPlugin from '../lib/plugins/json-config.js';
-import {app} from './support/js/jsonconfig-app/app.js';
 import Path from '@mojojs/path';
 import t from 'tap';
 

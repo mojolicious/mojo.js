@@ -1,3 +1,4 @@
+import type {UserAgentResponse} from './response.js';
 import type {App} from '../app.js';
 import type {
   JSONValue,
@@ -7,7 +8,6 @@ import type {
   UserAgentWebSocketOptions
 } from '../types.js';
 import type {WebSocket} from '../websocket.js';
-import type {UserAgentResponse} from './response.js';
 import type {URL} from 'node:url';
 import assert from 'node:assert/strict';
 import {on} from 'node:events';

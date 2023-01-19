@@ -25,9 +25,9 @@ import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
 import {Session} from './session.js';
 import {Static} from './static.js';
-import {UserAgent} from './user-agent.js';
 import {MockUserAgent} from './user-agent/mock.js';
 import {TestUserAgent} from './user-agent/test.js';
+import {UserAgent} from './user-agent.js';
 import {Validator} from './validator.js';
 import Path from '@mojojs/path';
 

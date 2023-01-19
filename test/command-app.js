@@ -1,5 +1,5 @@
-import mojo, {TestUserAgent} from '../lib/core.js';
 import {app} from './support/js/command-app/index.js';
+import mojo, {TestUserAgent} from '../lib/core.js';
 import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';

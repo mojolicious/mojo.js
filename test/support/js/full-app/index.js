@@ -1,5 +1,5 @@
-import mojo from '../../../../lib/core.js';
 import Users from './models/users.js';
+import mojo from '../../../../lib/core.js';
 
 export const app = mojo();
 

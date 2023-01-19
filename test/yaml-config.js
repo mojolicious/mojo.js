@@ -1,6 +1,6 @@
+import {app} from './support/js/yamlconfig-app/app.js';
 import mojo from '../lib/core.js';
 import yamlConfigPlugin from '../lib/plugins/yaml-config.js';
-import {app} from './support/js/yamlconfig-app/app.js';
 import Path from '@mojojs/path';
 import t from 'tap';
 
