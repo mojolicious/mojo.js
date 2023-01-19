@@ -319,7 +319,7 @@ const inlineTemplate = `
 ### Layouts
 
 Layouts are special views that wrap around the result of another view, which is made available as `ctx.content.main` in
-the layout. Here we use the inline variant again for out single file app, but layouts are usually kept as separate
+the layout. Here we use the inline variant again for our single file app, but layouts are usually kept as separate
 files in a `views/layouts` directory.
 
 ```js
@@ -866,7 +866,7 @@ app.get('/bar').requires('host', /mojolicious\.org/).to(async ctx => {
 app.start();
 ```
 
-Adding your own router exptensions will be covered later in another guide.
+Adding your own router extensions will be covered later in another guide.
 
 ### Sessions
 
