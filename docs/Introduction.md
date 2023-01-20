@@ -818,7 +818,7 @@ const validate = ctx.schema('testForm');
 
 ### Home
 
-The directory in which the main application script, usually called `index.js`, resides, is considered the application
+The directory in which the main application script resides, usually called `index.js`, is considered the application
 home directory. For convenience it is available as `app.home`.
 
 ```
