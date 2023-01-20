@@ -38,7 +38,7 @@ on in another guide. For now it is just important for you to know that this is c
 `-- blog.js
 ```
 
-For tasks like prototyping and documentantion examples, clean abstraction with many different files can be a little
+For tasks like prototyping and documentation examples, clean abstraction with many different files can be a little
 distracting. So [mojo.js](https://mojojs.org) can also be used for single file applications. And these single file apps
 can later on smoothly transition to proper MVC abstraction as they grow. This is one of the fundamental
 [mojo.js](https://mojojs.org) design philosophies.
@@ -319,7 +319,7 @@ const inlineTemplate = `
 ### Layouts
 
 Layouts are special views that wrap around the result of another view, which is made available as `ctx.content.main` in
-the layout. Here we use the inline variant again for out single file app, but layouts are usually kept as separate
+the layout. Here we use the inline variant again for our single file app, but layouts are usually kept as separate
 files in a `views/layouts` directory.
 
 ```js
@@ -818,7 +818,7 @@ const validate = ctx.schema('testForm');
 
 ### Home
 
-The directory in which the main application script resides, usually called `index.js` is considered the application
+The directory in which the main application script resides, usually called `index.js`, is considered the application
 home directory. For convenience it is available as `app.home`.
 
 ```
@@ -866,7 +866,7 @@ app.get('/bar').requires('host', /mojolicious\.org/).to(async ctx => {
 app.start();
 ```
 
-Adding your own router exptensions will be covered later in another guide.
+Adding your own router extensions will be covered later in another guide.
 
 ### Sessions
 
