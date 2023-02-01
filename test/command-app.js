@@ -75,7 +75,7 @@ t.test('Command app', async t => {
     delete process.env.MOJO_COMMAND_TEST;
   });
 
-  await t.test('Custom command', async t => {
+  await t.test('Custom commands', async t => {
     let result;
     const output = await captureOutput(async () => {
       result = await app.cli.start('test', 'works');
@@ -84,6 +84,14 @@ t.test('Command app', async t => {
     t.same(result, null);
     t.equal(app.cli.commands.test.description, 'Test description');
     t.equal(app.cli.commands.test.usage, 'Test usage');
+
+    const output2 = await captureOutput(async () => {
+      result = await app.cli.start('another', 'works');
+    });
+    t.match(output2, /Test works!/s);
+    t.same(result, null);
+    t.equal(app.cli.commands.another.description, 'Another test description');
+    t.equal(app.cli.commands.another.usage, 'Another test usage');
   });
 
   await t.test('Exception in command', async t => {

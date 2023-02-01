@@ -1,4 +1,5 @@
 import mojo from '../../../../lib/core.js';
+import Path from '@mojojs/path';
 
 export const app = mojo();
 
@@ -20,6 +21,7 @@ app.addAppHook('command:before', async () => {
 });
 
 app.addAppHook('app:start', app => {
+  app.cli.commandPaths.push(Path.currentFile().sibling('cli-more').toString());
   const mode = app.mode;
   process.stdout.write(Buffer.from(`app:start: ${mode}`));
 });

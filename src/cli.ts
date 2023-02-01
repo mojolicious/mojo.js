@@ -55,8 +55,6 @@ export class CLI {
    * Start command line interface.
    */
   async start(command?: string, ...args: string[]): Promise<void> {
-    if (this._loaded === undefined) await this._loadCommands();
-
     const detected = this.detectCommand();
     const commandArgs =
       detected !== null ? ['', '', detected] : command === undefined ? process.argv : ['', '', command, ...args];
@@ -64,6 +62,8 @@ export class CLI {
     const app = this._app.deref();
     if (app === undefined) return;
     if ((await app.hooks.commandBefore(app, commandArgs)) === true) return;
+
+    if (this._loaded === undefined) await this._loadCommands();
 
     const parsed = nopt({help: Boolean, 'show-all': Boolean}, {h: '--help'}, commandArgs);
     const argv = parsed.argv;

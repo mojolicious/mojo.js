@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.14.6 (2023-02-01)
+
+### Bug Fixes
+
+  * Fixed a bug where the `app:start` hook could not add new command paths.
+
 ## v1.14.0 (2022-12-11)
 
 ### Features
