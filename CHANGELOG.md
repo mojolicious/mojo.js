@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.17.0 (2022-02-03)
+
+### Features
+
+  * Added `textUnlike` method to `TestUserAgent` class.
+
 ## v1.16.0 (2022-02-03)
 
 ### Features

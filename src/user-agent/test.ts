@@ -286,6 +286,19 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   /**
+   * Checks text content of the CSS selectors first matching HTML/XML element for no match.
+   */
+  textUnlike(selector: string, regex: RegExp): this {
+    this.assert(
+      'notMatch',
+      [this._html.at(selector)?.text() ?? '', regex],
+      `no similar match for selector "${selector}"`,
+      this.textLike
+    );
+    return this;
+  }
+
+  /**
    * Check response `Content-Type` header for exact match.
    */
   typeIs(value: string): this {

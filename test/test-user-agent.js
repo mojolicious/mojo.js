@@ -123,7 +123,9 @@ t.test('TestUserAgent', async t => {
       .elementExistsNot('h1')
       .elementExistsNot('div')
       .textLike('div', /test/)
-      .textLike('nothing', /123/);
+      .textLike('nothing', /123/)
+      .textUnlike('div', /test/)
+      .textUnlike('nothing', /123/);
 
     t.same(results, [
       ['ok', [true], 'GET request for /first.html'],
@@ -132,7 +134,9 @@ t.test('TestUserAgent', async t => {
       ['ok', [true], 'no element for selector "h1"'],
       ['ok', [false], 'no element for selector "div"'],
       ['match', ['Two', /test/], 'similar match for selector "div"'],
-      ['match', ['', /123/], 'similar match for selector "nothing"']
+      ['match', ['', /123/], 'similar match for selector "nothing"'],
+      ['notMatch', ['Two', /test/], 'no similar match for selector "div"'],
+      ['notMatch', ['', /123/], 'no similar match for selector "nothing"']
     ]);
 
     results = [];
