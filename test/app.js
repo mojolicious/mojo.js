@@ -966,6 +966,7 @@ t.test('App', async t => {
     t.equal(ctx.urlFor('methods', {absolute: true, query: {_method: 'PUT'}}), 'http://example.com/methods?_method=PUT');
     t.equal(ctx.urlFor('/what/ever', {query: {_method: 'PUT'}}), '/what/ever?_method=PUT');
     t.equal(ctx.urlFor('methods', {query: {b: 'B', a: 'A', c: 'C'}}), '/methods?b=B&a=A&c=C');
+    t.equal(ctx.urlFor('methods', {query: {b: 'B', a: ['A', 'C']}}), '/methods?b=B&a=A&a=C');
     t.equal(
       ctx.urlFor('exception', {query: {_method: 'QUERY'}, values: {msg: 'test'}}),
       '/exception/test?_method=QUERY'

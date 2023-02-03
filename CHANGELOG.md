@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.15.0 (2022-02-03)
+
+### Features
+
+  * Added support for multiple query parameters sharing the same name to `urlFor` method in `Context` class.
+
 ## v1.14.6 (2023-02-01)
 
 ### Bug Fixes

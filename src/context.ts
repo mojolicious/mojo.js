@@ -17,6 +17,7 @@ import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
 import type {BusboyConfig} from 'busboy';
 import EventEmitter from 'node:events';
+import querystring from 'node:querystring';
 import {Params} from './body/params.js';
 import {SafeString} from './util.js';
 
@@ -433,7 +434,7 @@ class Context extends EventEmitter {
 
     let query = '';
     if (options.query !== undefined && Object.keys(options.query).length > 0) {
-      query = '?' + new Params(options.query).toString();
+      query = '?' + querystring.stringify(options.query);
     }
 
     if (options.absolute !== true && isWebSocket === false) return path + query;
