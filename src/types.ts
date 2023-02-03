@@ -112,7 +112,11 @@ export interface CookieOptions {
   secure?: boolean;
 }
 
-export type MojoURLOptions = {absolute?: boolean; query?: Record<string, string>; values?: Record<string, string>};
+export type MojoURLOptions = {
+  absolute?: boolean;
+  query?: Record<string, string | string[]>;
+  values?: Record<string, string>;
+};
 
 export interface MojoRenderOptions {
   engine?: string;
