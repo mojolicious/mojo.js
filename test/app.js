@@ -191,7 +191,7 @@ t.test('App', async t => {
 
   // POST /form/mixed
   app.post('/form/mixed', async ctx => {
-    const params = await ctx.params();
+    const params = await ctx.params({notEmpty: true});
 
     const data = {
       one: params.get('one') ?? 'missing',
@@ -792,6 +792,14 @@ t.test('App', async t => {
     (await ua.postOk('/form/mixed?two=works', {formData: {three: 'works'}}))
       .statusIs(200)
       .jsonIs({one: 'missing', two: 'works', three: 'works'});
+
+    (await ua.postOk('/form/mixed?one=&two=&three=works'))
+      .statusIs(200)
+      .jsonIs({one: 'missing', two: 'missing', three: 'works'});
+
+    (await ua.postOk('/form/mixed?two=', {formData: {one: '', three: 'works'}}))
+      .statusIs(200)
+      .jsonIs({one: 'missing', two: 'missing', three: 'works'});
   });
 
   await t.test('Uploads', async t => {

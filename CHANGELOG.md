@@ -3,6 +3,13 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.16.0 (2022-02-03)
+
+### Features
+
+  * Added `removeEmpty` method to `Params` class.
+  * Added `notEmpty` option to `params` method in `Context` class.
+
 ## v1.15.0 (2022-02-03)
 
 ### Features

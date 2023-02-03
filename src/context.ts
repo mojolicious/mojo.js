@@ -248,8 +248,11 @@ class Context extends EventEmitter {
    * // Get a specific parameter
    * const params = await ctx.params();
    * const foo = params.get('foo');
+   *
+   * // Ignore all empty parameters
+   * const params = await ctx.params({notEmpty: true});
    */
-  async params(options?: BusboyConfig): Promise<Params> {
+  async params(options: BusboyConfig & {notEmpty?: boolean} = {}): Promise<Params> {
     if (this._params === undefined) {
       const req = this.req;
       const params = (this._params = new Params(req.query));
@@ -258,7 +261,7 @@ class Context extends EventEmitter {
       }
     }
 
-    return this._params;
+    return options.notEmpty === true ? this._params.removeEmpty() : this._params;
   }
 
   /**
