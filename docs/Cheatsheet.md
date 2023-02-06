@@ -730,11 +730,25 @@ These are all application hooks that are currently available, in the same order 
 
 ### command:before
 
-Runs after `app.start()` has been called, and before the application reaches a command or prints the command list.
+Runs after `app.start()` has been called, and before the application loads all available commands.
 
 ```js
 app.addAppHook('command:before', async (app, args) => {
   if (args[2] === 'legacy-server') args[2] = 'server';
+});
+```
+
+Useful for reconfiguring the application before running a command. Passed the application object and command arguments.
+Can return `true` to intercept the command line interface.
+
+### command:start
+
+Runs after the application has loaded all commands and right before it reaches a specific command or prints the
+command list.
+
+```js
+app.addAppHook('command:start', async (app, args) => {
+  app.cli.commands['legacy-server'] = app.cli.commands.server;
 });
 ```
 

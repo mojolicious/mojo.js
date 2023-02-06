@@ -20,6 +20,18 @@ app.addAppHook('command:before', async () => {
   }
 });
 
+app.addAppHook('command:start', async (app, args) => {
+  const mode = app.mode;
+  process.stdout.write(Buffer.from(`command:start: ${mode} ${args[2]}`));
+});
+
+app.addAppHook('command:start', async () => {
+  if (process.env.MOJO_COMMAND_TEST2 !== undefined) {
+    process.stdout.write(Buffer.from(`command:start: skip cli`));
+    return true;
+  }
+});
+
 app.addAppHook('app:start', app => {
   app.cli.commandPaths.push(Path.currentFile().sibling('cli-more').toString());
   const mode = app.mode;

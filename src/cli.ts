@@ -64,6 +64,7 @@ export class CLI {
     if ((await app.hooks.commandBefore(app, commandArgs)) === true) return;
 
     if (this._loaded === undefined) await this._loadCommands();
+    if ((await app.hooks.runHook('command:start', app, commandArgs)) === true) return;
 
     const parsed = nopt({help: Boolean, 'show-all': Boolean}, {h: '--help'}, commandArgs);
     const argv = parsed.argv;

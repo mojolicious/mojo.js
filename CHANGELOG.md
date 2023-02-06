@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.18.0 (2022-02-06)
+
+### Features
+
+  * Added `command:start` hook.
+
 ## v1.17.0 (2022-02-03)
 
 ### Features
