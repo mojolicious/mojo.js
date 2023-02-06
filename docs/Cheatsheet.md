@@ -741,13 +741,13 @@ app.addAppHook('command:before', async (app, args) => {
 Useful for reconfiguring the application before running a command. Passed the application object and command arguments.
 Can return `true` to intercept the command line interface.
 
-### command:start
+### command:init
 
 Runs after the application has loaded all commands and right before it reaches a specific command or prints the
 command list.
 
 ```js
-app.addAppHook('command:start', async (app, args) => {
+app.addAppHook('command:init', async (app, args) => {
   app.cli.commands['legacy-server'] = app.cli.commands.server;
 });
 ```

@@ -62,7 +62,7 @@ t.test('Command app', async t => {
     });
     t.match(
       output.toString(),
-      'command:before: developmentapp:start: developmentcommand:start: development getserver:start: development' +
+      'command:before: developmentapp:start: developmentcommand:init: development getserver:start: development' +
         'Hello Mojo!' +
         'server:stop: developmentcommand:after: developmentapp:stop: development'
     );
@@ -78,7 +78,7 @@ t.test('Command app', async t => {
     const output3 = await captureOutput(async () => {
       await app.cli.start();
     });
-    t.match(output3.toString(), 'command:start: skip cli');
+    t.match(output3.toString(), 'command:init: skip cli');
     delete process.env.MOJO_COMMAND_TEST2;
   });
 
@@ -132,7 +132,7 @@ t.test('Command app', async t => {
     const output2 = await captureOutput(async () => {
       await app.cli.start('eval', 'await 100 + 924');
     });
-    t.equal(output2.toString(), 'command:start: development eval');
+    t.equal(output2.toString(), 'command:init: development eval');
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('eval', '-v', 'await 100 + 924');

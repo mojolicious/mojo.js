@@ -20,14 +20,14 @@ app.addAppHook('command:before', async () => {
   }
 });
 
-app.addAppHook('command:start', async (app, args) => {
+app.addAppHook('command:init', async (app, args) => {
   const mode = app.mode;
-  process.stdout.write(Buffer.from(`command:start: ${mode} ${args[2]}`));
+  process.stdout.write(Buffer.from(`command:init: ${mode} ${args[2]}`));
 });
 
-app.addAppHook('command:start', async () => {
+app.addAppHook('command:init', async () => {
   if (process.env.MOJO_COMMAND_TEST2 !== undefined) {
-    process.stdout.write(Buffer.from(`command:start: skip cli`));
+    process.stdout.write(Buffer.from(`command:init: skip cli`));
     return true;
   }
 });

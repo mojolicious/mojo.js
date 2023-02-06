@@ -7,7 +7,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 
 ### Features
 
-  * Added `command:start` hook.
+  * Added `command:init` hook.
 
 ## v1.17.0 (2022-02-03)
 

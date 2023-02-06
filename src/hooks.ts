@@ -8,7 +8,7 @@ export class Hooks extends AsyncHooks {
   _lifecycleHookScore = 0;
 
   /**
-   * Run `command:start` hook with dependencies. Note that this method is EXPERIMENTAL and might change without
+   * Run `command:before` hook with dependencies. Note that this method is EXPERIMENTAL and might change without
    * warning!
    */
   async commandBefore(app: MojoApp, commandArgs: string[]): Promise<any> {
@@ -18,7 +18,7 @@ export class Hooks extends AsyncHooks {
   }
 
   /**
-   * Run `command:stop` hook with dependencies. Note that this method is EXPERIMENTAL and might change without
+   * Run `command:after` hook with dependencies. Note that this method is EXPERIMENTAL and might change without
    * warning!
    */
   async commandAfter(app: MojoApp, commandArgs: string[]): Promise<void> {
