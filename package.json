@@ -82,7 +82,7 @@
   "dependencies": {
     "@mojojs/dom": "^2.1.0",
     "@mojojs/path": "^1.5.3",
-    "@mojojs/template": "^2.1.1",
+    "@mojojs/template": "^2.2.0",
     "@mojojs/util": "^1.6.0",
     "ajv": "^8.5.0",
     "busboy": "^1.0.0",
