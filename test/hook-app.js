@@ -27,6 +27,15 @@ t.test('Hook app', async t => {
     serverHooks.push(`server:stop: ${app.config.serverHooks}`);
   });
 
+  app.addContextHook('server:request', async (ctx, req, res) => {
+    const middleware = ctx.req.query.get('middleware');
+    if (middleware !== '1') return;
+    const url = req.url;
+    res.writeHead(200, ['X-URL', url]);
+    res.end('Hello Middleware!');
+    return 1;
+  });
+
   app.addAppHook('app:start', async app => {
     await util.sleep(1);
     serverHooks.push(`app:start: ${app.config.serverHooks}`);
@@ -157,6 +166,11 @@ t.test('Hook app', async t => {
     (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
     (await ua.getOk('/?fourth=1')).statusIs(200).bodyIs('Fourth hook');
     (await ua.getOk('/static/mojo/favicon.ico?fourth=1')).statusIs(200).bodyIsnt('Fourth hook');
+  });
+
+  await t.test('Server request hook', async () => {
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
+    (await ua.getOk('/?middleware=1')).statusIs(200).headerIs('X-URL', '/?middleware=1').bodyIs('Hello Middleware!');
   });
 
   await t.test('Send hooks', async () => {

@@ -215,7 +215,13 @@ export class Server {
       })
     );
     raw.on('finish', () => ctx.emit('finish'));
-    app.handleRequest(ctx).catch(error => ctx.exception(error));
+    //app.handleRequest(ctx);
+    app.hooks
+      .runHook('server:request', ctx, req, raw)
+      .then(result => {
+        if (result !== true) return app.handleRequest(ctx);
+      })
+      .catch(error => ctx.exception(error));
   }
 
   _handleUpgrade(wss: WebSocketServer, req: http.IncomingMessage, socket: Socket, head: Buffer): void {

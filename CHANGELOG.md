@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.19.0 (2022-02-10)
+
+### Features
+
+  * Added EXPERIMENAL `server:request` hook to support Node.js specific middleware frameworks.
+
 ## v1.18.0 (2022-02-08)
 
 ### Features

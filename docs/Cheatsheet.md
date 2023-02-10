@@ -835,6 +835,25 @@ Useful for cleanup tasks like releasing idle database connections. Passed the ap
 
 These are all context hooks that are currently available, in the same order they usually run:
 
+### server:request
+
+This hook is specific to the built-in Node.js web server and will not run for backends like CGI. Runs as soon as the
+HTTP server has received a new request. **Note that this hook is EXPERIMENTAL and might change without warning!**
+
+```js
+app.addContextHook('server:request', async (ctx, req, res) => {
+    const middleware = ctx.req.query.get('middleware');
+    if (middleware !== '1') return;
+    res.writeHead(200);
+    res.end('Hello Middleware!');
+    return 1;
+});
+```
+
+Useful for low level extensions to support middleware frameworks that rely on Node.js specific APIs. Passed the context
+object as well as the Node.js `http.IncomingMessage` and `http.ServerResponse` objects. Can return `true` to intercept
+mojo.js processing of the request.
+
 ### dispatch:before
 
 Runs after a new request has been received and before the static file server and router start their work.
