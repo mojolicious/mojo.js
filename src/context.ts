@@ -5,12 +5,12 @@ import type {ServerRequest} from './server/request.js';
 import type {ServerResponse} from './server/response.js';
 import type {SessionData} from './types.js';
 import type {
+  BackendInfo,
   MojoAction,
   MojoContext,
   MojoModels,
   MojoRenderOptions,
   MojoURLOptions,
-  BackendInfo,
   ValidatorFunction
 } from './types.js';
 import type {UserAgent} from './user-agent.js';
