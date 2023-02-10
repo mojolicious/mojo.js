@@ -20,14 +20,14 @@ export default function mountPlugin(app: MojoApp, options: MountOptions): MojoRo
   const path = options.path ?? '/';
   const route = app
     .any(`${path}/*mountPath`, async ctx => {
-      const {req, res, stash} = ctx;
+      const {backend, req, res, stash} = ctx;
 
       const originalBasePath = req.basePath;
       const originalPath = req.path;
       const path = (req.path = '/' + stash.mountPath);
       req.basePath = originalPath.substring(0, originalPath.length - path.length);
 
-      const mountContext = mountApp.newContext(req, res);
+      const mountContext = mountApp.newContext(req, res, backend);
       mountContext.exceptionFormat = ctx.exceptionFormat;
       Object.assign(mountContext.stash, stash);
 

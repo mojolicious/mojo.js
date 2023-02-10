@@ -67,7 +67,8 @@ export class CGI {
       CGI.envToRequest(process.env, process.stdin),
       new ServerResponse(async (res: ServerResponse, body: ServerResponseBody) => {
         this._sendResponse(res, body);
-      })
+      }),
+      {name: 'cgi'}
     );
     await app.handleRequest(ctx).catch(error => ctx.exception(error));
 

@@ -7,6 +7,7 @@ import type {
   MojoContext,
   MojoModels,
   RouteArguments,
+  BackendInfo,
   ServerOptions,
   TestUserAgentOptions
 } from './types.js';
@@ -213,8 +214,8 @@ export class App {
   /**
    * Create a context for application.
    */
-  newContext(req: ServerRequest, res: ServerResponse): MojoContext {
-    const ctx = new this._contextClass(this, req, res);
+  newContext(req: ServerRequest, res: ServerResponse, backend: BackendInfo): MojoContext {
+    const ctx = new this._contextClass(this, req, res, backend);
     Object.assign(ctx.stash, this.defaults);
     return ctx;
   }
@@ -235,7 +236,8 @@ export class App {
         reverseProxy: false,
         url: options.url ?? '/'
       }),
-      new ServerResponse(() => ctx.log.trace('Mock response has been sent'))
+      new ServerResponse(() => ctx.log.trace('Mock response has been sent')),
+      {name: 'mock'}
     );
     Object.assign(ctx.stash, this.defaults);
     return ctx;

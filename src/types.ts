@@ -81,6 +81,11 @@ export type PlaceholderType = RegExp | string | string[];
 
 export type TagAttrs = Record<string, string | boolean | Record<string, string>>;
 
+export interface BackendInfo {
+  name: string;
+  [key: string]: any;
+}
+
 export interface SessionData {
   expiration?: number;
   expires?: number;

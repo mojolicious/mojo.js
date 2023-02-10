@@ -3,6 +3,13 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.19.0 (2022-02-10)
+
+### Features
+
+  * Added support for backend specific extensions, such as common Node.js middleware frameworks.
+  * Added `backend` property to `Context` class.
+
 ## v1.18.0 (2022-02-08)
 
 ### Features

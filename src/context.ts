@@ -10,6 +10,7 @@ import type {
   MojoModels,
   MojoRenderOptions,
   MojoURLOptions,
+  BackendInfo,
   ValidatorFunction
 } from './types.js';
 import type {UserAgent} from './user-agent.js';
@@ -43,6 +44,18 @@ class Context extends EventEmitter {
    * Application this context belongs to.
    */
   app: App;
+  /**
+   * Backend information for server that received the request.
+   * @example
+   * // Backend name (usually "server", "cgi", or "mock")
+   * const {name} = ctx.backend;
+   *
+   * // Use low level Node.js APIs with "server" backend
+   * const {res} = ctx.backend;
+   * res.writeHead(200);
+   * res.end('Hello World!');
+   */
+  backend: BackendInfo;
   /**
    * Partial content.
    */
@@ -114,7 +127,7 @@ class Context extends EventEmitter {
   _session: Record<string, any> | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;
 
-  constructor(app: App, req: ServerRequest, res: ServerResponse) {
+  constructor(app: App, req: ServerRequest, res: ServerResponse, backend: BackendInfo) {
     super({captureRejections: true});
 
     this.app = app;
@@ -122,6 +135,7 @@ class Context extends EventEmitter {
     this.req = req;
     this.res = res;
     this.res.bindContext(this);
+    this.backend = backend;
     this.log = app.log.child({requestId: this.req.requestId});
   }
 

@@ -19,6 +19,10 @@ t.test('CGI', async t => {
     serverHooks.push(`stop: ${app.config.serverHooks}`);
   });
 
+  app.addContextHook('dispatch:before', async ctx => {
+    ctx.res.set('X-Name', ctx.backend.name);
+  });
+
   app.get('/', ctx => ctx.render({text: 'Hello World!'}));
 
   app.get('/stream', async ctx => {
@@ -41,6 +45,7 @@ t.test('CGI', async t => {
     t.same(serverHooks, ['start: works', 'stop: works']);
     t.match(output, /Content-Length: 12/);
     t.match(output, /Content-Type: text\/plain; charset=utf-8/);
+    t.match(output, /X-Name: cgi/);
     t.match(output, /Status: 200 OK/);
     t.match(output, /Hello World!/);
   });

@@ -212,7 +212,8 @@ export class Server {
       this._prepareRequest(req, socket, false),
       new ServerResponse((res: ServerResponse, body: ServerResponseBody) => {
         sendResponse(res, body, raw);
-      })
+      }),
+      {name: 'server', req, res: raw}
     );
     raw.on('finish', () => ctx.emit('finish'));
     app.handleRequest(ctx).catch(error => ctx.exception(error));
@@ -224,7 +225,8 @@ export class Server {
       this._prepareRequest(req, socket, true),
       new ServerResponse((res: ServerResponse, body: ServerResponseBody) => {
         sendResponse(res, body, new http.ServerResponse(req));
-      })
+      }),
+      {name: 'server'}
     );
 
     app

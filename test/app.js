@@ -930,6 +930,7 @@ t.test('App', async t => {
   await t.test('Mock context', async () => {
     app.defaults.test = 'works';
     const ctx = app.newMockContext();
+    t.equal(ctx.backend.name, 'mock');
     t.equal(ctx.req.method, 'GET');
     t.equal(ctx.req.path, '/');
     t.same(ctx.currentRoute(), null);
