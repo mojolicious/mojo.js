@@ -188,8 +188,8 @@ Week3: <%= await ctx.weekFieldTag('fiftyone', {class: 'bar', value: 'Default'}) 
 Month1: <%= await ctx.monthFieldTag('fiftytwo') %>
 Month2: <%= await ctx.monthFieldTag('fiftythree', {class: 'bar'}) %>
 Month3: <%= await ctx.monthFieldTag('fiftyfour', {class: 'bar', value: 'Default'}) %>
-Label1: <%= ctx.labelFor('fiftyfour', 'Fifty four') %>
-Label2: <%= ctx.labelFor('fiftyfour', 'Fifty four', {class: 'bar'}) %>
+Label1: <%= await ctx.labelFor('fiftyfour', 'Fifty four') %>
+Label2: <%= await ctx.labelFor('fiftyfour', 'Fifty four', {class: 'bar'}) %>
 `;
 
 const formTagHelpersResult = `
@@ -321,34 +321,34 @@ const tagHelperPlugin = `
   Form
 <{/formBlock}>
 Route: <%= ctx.currentRoute() %>
-Favicon: <%= ctx.faviconTag() %>
-Favicon2: <%= ctx.faviconTag('/favicon.ico') %>
-Relative image1: <%= ctx.imageTag('/foo/bar.png') %>
-Relative image2: <%= ctx.imageTag('/foo/bar.png', {alt: 'Bar'}) %>
-Relative script: <%= ctx.scriptTag('/foo/bar.js') %>
-Relative style: <%= ctx.styleTag('/foo/bar.css', {media: 'foo'}) %>
-Absolute image: <%= ctx.imageTag('https://mojojs.org/static/foo/bar.png') %>
-Absolute script: <%= ctx.scriptTag('https://mojojs.org/static/foo/bar.js', {async: 'async'}) %>
-Absolute style: <%= ctx.styleTag('https://mojojs.org/static/foo/bar.css') %>
-Asset script1: <%= ctx.assetTag('/foo.js') %>
-Asset script2: <%= ctx.assetTag('/foo.js', {async: 'async'}) %>
-Asset style1: <%= ctx.assetTag('/foo.css') %>
-Asset style2: <%= ctx.assetTag('/foo.css', {media: 'foo'}) %>
-Asset image1: <%= ctx.assetTag('/foo.png') %>
-Asset image2: <%= ctx.assetTag('/foo.png', {alt: 'test'}) %>
-Link1: <%= ctx.linkTo('getter_setter', {class: 'foo'}, 'Getter & Setter') %>
-Link2: <%= ctx.linkTo('mix', {}, 'WebSocket link') %>
-Link3: <%= ctx.linkTo(['form', {values: {name: 'yada'}}], {id: 'baz'}, 'Placeholder') %>
-Tag1: <%= ctx.tag('div', 'Hello Mojo!') %>
-Tag2: <%== ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
-Form1: <%= ctx.formFor('tag_helpers', {}, await formBlock()) %>
-Form2: <%= ctx.formFor(['form', {values: {name: 'foo'}}], {class: 'test'}, 'Form') %>
-Form3: <%= ctx.formFor('special', {}, 'Form') %>
-Submit1: <%= ctx.submitButtonTag() %>
-Submit2: <%= ctx.submitButtonTag('Search') %>
-Submit3: <%= ctx.submitButtonTag('Search', {class: 'foo'}) %>
-Button1: <%= ctx.buttonTo('special', {class: 'foo'}, 'Test') %>
-Button2: <%= ctx.buttonTo(['form', {values: {name: 'bar'}}], {}, 'Test2') %>
+Favicon: <%= await ctx.faviconTag() %>
+Favicon2: <%= await ctx.faviconTag('/favicon.ico') %>
+Relative image1: <%= await ctx.imageTag('/foo/bar.png') %>
+Relative image2: <%= await ctx.imageTag('/foo/bar.png', {alt: 'Bar'}) %>
+Relative script: <%= await ctx.scriptTag('/foo/bar.js') %>
+Relative style: <%= await ctx.styleTag('/foo/bar.css', {media: 'foo'}) %>
+Absolute image: <%= await ctx.imageTag('https://mojojs.org/static/foo/bar.png') %>
+Absolute script: <%= await ctx.scriptTag('https://mojojs.org/static/foo/bar.js', {async: 'async'}) %>
+Absolute style: <%= await ctx.styleTag('https://mojojs.org/static/foo/bar.css') %>
+Asset script1: <%= await ctx.assetTag('/foo.js') %>
+Asset script2: <%= await ctx.assetTag('/foo.js', {async: 'async'}) %>
+Asset style1: <%= await ctx.assetTag('/foo.css') %>
+Asset style2: <%= await ctx.assetTag('/foo.css', {media: 'foo'}) %>
+Asset image1: <%= await ctx.assetTag('/foo.png') %>
+Asset image2: <%= await ctx.assetTag('/foo.png', {alt: 'test'}) %>
+Link1: <%= await ctx.linkTo('getter_setter', {class: 'foo'}, 'Getter & Setter') %>
+Link2: <%= await ctx.linkTo('mix', {}, 'WebSocket link') %>
+Link3: <%= await ctx.linkTo(['form', {values: {name: 'yada'}}], {id: 'baz'}, 'Placeholder') %>
+Tag1: <%= await ctx.tag('div', 'Hello Mojo!') %>
+Tag2: <%== await ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
+Form1: <%= await ctx.formFor('tag_helpers', {}, await formBlock()) %>
+Form2: <%= await ctx.formFor(['form', {values: {name: 'foo'}}], {class: 'test'}, 'Form') %>
+Form3: <%= await ctx.formFor('special', {}, 'Form') %>
+Submit1: <%= await ctx.submitButtonTag() %>
+Submit2: <%= await ctx.submitButtonTag('Search') %>
+Submit3: <%= await ctx.submitButtonTag('Search', {class: 'foo'}) %>
+Button1: <%= await ctx.buttonTo('special', {class: 'foo'}, 'Test') %>
+Button2: <%= await ctx.buttonTo(['form', {values: {name: 'bar'}}], {}, 'Test2') %>
 `;
 
 function tagHelperPluginResult(baseURL, publicPath) {

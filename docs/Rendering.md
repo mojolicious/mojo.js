@@ -877,9 +877,9 @@ app.start();
       <br>
       <label for="pass">Password (required, 1-20 characters)</label>
       <br>
-      %= ctx.passwordFieldTag('pass')
+      %= await ctx.passwordFieldTag('pass')
       <br>
-      %= ctx.submitButtonTag('Login')
+      %= await ctx.submitButtonTag('Login')
     </form>
   </body>
 </html>

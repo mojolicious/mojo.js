@@ -436,8 +436,8 @@ These view helpers are currently available by default:
 #### assetTag
 
 ```
-%= ctx.assetTag('app.js')
-%= ctx.assetTag('app.js', {async: 'async'})
+%= await ctx.assetTag('app.js')
+%= await ctx.assetTag('app.js', {async: 'async'})
 ```
 
 Generate `<script>`, `<link>` or `<img>` tag for static asset.
@@ -445,8 +445,8 @@ Generate `<script>`, `<link>` or `<img>` tag for static asset.
 #### buttonTo
 
 ```
-%= ctx.buttonTo('some_route', {class: 'foo'}, 'Go there');
-%= ctx.buttonTo(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Go there');
+%= await ctx.buttonTo('some_route', {class: 'foo'}, 'Go there');
+%= await ctx.buttonTo(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Go there');
 ```
 
 Generate portable `<form>` tag with `ctx.formFor()`, containing a single button.
@@ -499,8 +499,8 @@ Generate `<input>` tag of type `email`. Previous input values will automatically
 #### faviconTag
 
 ```
-%= ctx.faviconTag()
-%= ctx.faviconTag('favicon.ico')
+%= await ctx.faviconTag()
+%= await ctx.faviconTag('favicon.ico')
 ```
 
 Generate `<link>` tag for a favison, defaults to the [mojo.js](https://mojojs.org) favicon.
@@ -517,8 +517,8 @@ Generate `<input>` tag of type `file`.
 #### formFor
 
 ```
-%= ctx.formFor('some_route', {class: 'foo'}, 'Form content')
-%= ctx.formFor(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Form content')
+%= await ctx.formFor('some_route', {class: 'foo'}, 'Form content')
+%= await ctx.formFor(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Form content')
 ```
 
 Generate portable `<form>` tag with `ctx.urlFor()`. For routes that do not allow `GET`, a `method` attribute with the
@@ -537,8 +537,8 @@ Generate `<input>` tag of type `hidden`.
 #### imageTag
 
 ```
-%= ctx.imageTag('myapp/logo.png')
-%= ctx.imageTag('myapp/logo.png', {alt: 'just a logo'})
+%= await ctx.imageTag('myapp/logo.png')
+%= await ctx.imageTag('myapp/logo.png', {alt: 'just a logo'})
 ```
 
 Generate `<img>` tag for image file.
@@ -563,7 +563,7 @@ Generate `<input>` tag. Previous input values will automatically get picked up a
 #### labelFor
 
 ```
-%= ctx.labelFor('first_name', {class: 'foo'}, 'First name')
+%= await ctx.labelFor('first_name', {class: 'foo'}, 'First name')
 ```
 
 Generate `<label>` tag.
@@ -571,8 +571,8 @@ Generate `<label>` tag.
 #### linkTo
 
 ```
-%= ctx.linkTo('some_route', {class: 'foo'}, 'Link to some route');
-%= ctx.linkTo(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Link to some route');
+%= await ctx.linkTo('some_route', {class: 'foo'}, 'Link to some route');
+%= await ctx.linkTo(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Link to some route');
 ```
 
 Generate portable `a` tag with `ctx.urlFor()`.
@@ -625,8 +625,8 @@ Generate `<input>` tag of type `range`. Previous input values will automatically
 #### scriptTag
 
 ```
-%= ctx.scriptTag('bootstrap/bootstrap.bundle.min.js')
-%= ctx.scriptTag('bootstrap/bootstrap.bundle.min.js', {async: 'async'})
+%= await ctx.scriptTag('bootstrap/bootstrap.bundle.min.js')
+%= await ctx.scriptTag('bootstrap/bootstrap.bundle.min.js', {async: 'async'})
 ```
 
 Generate `<script>` tag for JavaScript file.
@@ -643,8 +643,8 @@ Generate `<input>` tag of type `search`. Previous input values will automaticall
 #### styleTag
 
 ```
-%= ctx.styleTag('bootstrap/bootstrap.min.css')
-%= ctx.styleTag('bootstrap/bootstrap.min.css', {media: 'foo'})
+%= await ctx.styleTag('bootstrap/bootstrap.min.css')
+%= await ctx.styleTag('bootstrap/bootstrap.min.css', {media: 'foo'})
 ```
 
 Generate `<link>` tag for CSS file.
@@ -652,9 +652,9 @@ Generate `<link>` tag for CSS file.
 #### submitButtonTag
 
 ```
-%= ctx.submitButtonTag()
-%= ctx.submitButtonTag('Search')
-%= ctx.submitButtonTag('Search', {class: 'foo'})
+%= await ctx.submitButtonTag()
+%= await ctx.submitButtonTag('Search')
+%= await ctx.submitButtonTag('Search', {class: 'foo'})
 ```
 
 Generate `input` tag of type `submit`.
@@ -662,9 +662,9 @@ Generate `input` tag of type `submit`.
 #### tag
 
 ```
-%= ctx.tag('div')
-%= ctx.tag('div', {class: 'wrapper'})
-%= ctx.tag('div', {class: 'wrapper'}, 'Hello World!')
+%= await ctx.tag('div')
+%= await ctx.tag('div', {class: 'wrapper'})
+%= await ctx.tag('div', {class: 'wrapper'}, 'Hello World!')
 ```
 
 Generate HTML tag.
