@@ -258,6 +258,32 @@ export class App {
   }
 
   /**
+   * Your main hook into the application, it is a shortcut for the `app:start` hook and runs during application
+   * startup. You can use it to perform tasks like preparing database connections.
+   * @example
+   * // Perform async operations on application startup
+   * app.onStart(async app => {
+   *   if (app.models.db === undefined) app.models.db = new SomeDatabase();
+   *   await app.models.db.connect();
+   * });
+   */
+  onStart(fn: AppHook): this {
+    return this.addAppHook('app:start', fn);
+  }
+
+  /**
+   * The opposite of `onStart`, it is a shortcut for the `app:stop` hook and runs during application shutdown. You can
+   * use it to perform tasks like closing database connections gracefully.
+   * @example
+   * app.onStop(async app => {
+   *   await app.models.db.disconnect();
+   * });
+   */
+  onStop(fn: AppHook): this {
+    return this.addAppHook('app:stop', fn);
+  }
+
+  /**
    * Generate route matching only `OPTIONS` requests.
    */
   options(...args: RouteArguments): Route {

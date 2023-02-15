@@ -782,6 +782,14 @@ app.addAppHook('app:start', async app => {
 Useful for reconfiguring the application, warming up caches or preparing database connections. Passed the application
 object.
 
+```js
+app.onStart(async app => {
+  await app.models.foo.prepareConnections();
+});
+```
+
+Since this is one of the most commonly used hooks, there is also an `app.onStart()` shortcut method available.
+
 ### app:warmup
 
 Runs whenever the application warms up caches, usually that is less often than `app:start`.
@@ -830,6 +838,14 @@ app.addAppHook('app:stop', async app => {
 ```
 
 Useful for cleanup tasks like releasing idle database connections. Passed the application object.
+
+```js
+app.onStop(async app => {
+  wait app.models.foo.releaseConnections();
+});
+```
+
+Since this is one of the most commonly used hooks, there is also an `app.onStop()` shortcut method available.
 
 ## Context Hooks
 

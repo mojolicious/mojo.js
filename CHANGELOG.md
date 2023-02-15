@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.20.0 (2022-02-16)
+
+### Features
+
+  * Added `onStart` and `onStop` methods to `App` class.
+
 ## v1.19.0 (2022-02-13)
 
 ### Features

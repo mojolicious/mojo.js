@@ -27,11 +27,11 @@ t.test('Hook app', async t => {
     serverHooks.push(`server:stop: ${app.config.serverHooks}`);
   });
 
-  app.addAppHook('app:start', async app => {
+  app.onStart(async app => {
     await util.sleep(1);
     serverHooks.push(`app:start: ${app.config.serverHooks}`);
   });
-  app.addAppHook('app:stop', async app => {
+  app.onStop(async app => {
     await util.sleep(1);
     serverHooks.push(`app:stop: ${app.config.serverHooks}`);
   });
