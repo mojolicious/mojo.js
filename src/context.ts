@@ -159,6 +159,9 @@ class Context extends EventEmitter {
 
   /**
    * Application config shortcut.
+   * @example
+   * // Longer version
+   * const config = ctx.app.config;
    */
   get config(): Record<string, any> {
     return this.app.config;

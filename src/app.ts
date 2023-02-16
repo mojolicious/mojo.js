@@ -49,10 +49,22 @@ export class App {
   cli: CLI = new CLI(this);
   /**
    * Application config.
+   * @example
+   * // Remove value
+   * delete app.config.foo;
+   *
+   * // Assign multiple values at once
+   * Object.assign(app.config, {foo: 'test', bar: 23});
    */
   config: Record<string, any>;
   /**
    * Default stash values.
+   * @example
+   * // Remove value
+   * delete app.defaults.foo;
+   *
+   * // Assign multiple values at once
+   * Object.assign(app.defaults, {foo: 'test', bar: 23});
    */
   defaults: Record<string, any> = {};
   /**
@@ -73,6 +85,9 @@ export class App {
   home: Path = new Path();
   /**
    * Application logger.
+   * @example
+   * // Log debug message
+   * app.log.debug('It works');
    */
   log: Logger;
   /**
