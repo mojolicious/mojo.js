@@ -45,6 +45,9 @@ const ContextWrapper = class extends Context {};
 export class App {
   /**
    * Command line interface.
+   * @example
+   * // Add another path to load commands from
+   * app.cli.commandPaths.push(app.home.child('cli').toString());
    */
   cli: CLI = new CLI(this);
   /**
@@ -73,6 +76,9 @@ export class App {
   detectImport: boolean;
   /**
    * Format for HTTP exceptions ("html", "json", or "txt").
+   * @example
+   * // Change default exception format for whole application
+   * app.exceptionFormat = 'json';
    */
   exceptionFormat: string;
   /**
@@ -81,6 +87,9 @@ export class App {
   hooks: Hooks = new Hooks();
   /**
    * Application home directory.
+   * @example
+   * // Portably generate path relative to home directory
+   * const path = app.home.child('data', 'important.txt');
    */
   home: Path = new Path();
   /**
@@ -92,6 +101,9 @@ export class App {
   log: Logger;
   /**
    * MIME types.
+   * @example
+   * // Get MIME type for extension
+   * const type = app.mime.extType('txt');
    */
   mime: Mime = new Mime();
   /**
@@ -100,10 +112,19 @@ export class App {
   mode: string;
   /**
    * Storage for user defined models.
+   * @example
+   * // Store database connection
+   * app.models.pg = new Pg('postgres://127.0.0.1:5432/db');
    */
   models: MojoModels = {};
   /**
    * Application renderer.
+   * @example
+   * // Disable compression
+   * app.renderer.autoCompress = false;
+   *
+   * // Add another "views" directory
+   * app.renderer.viewPaths.push(app.home.child('views').toString());
    */
   renderer: Renderer = new Renderer();
   /**
