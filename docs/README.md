@@ -68,6 +68,10 @@ convenience for the reader. Almost all features are exactly the same for full we
 
   An overview of the most commonly encountered [mojo.js](https://mojojs.org) classes, helpers and hooks.
 
+* [API](https://mojojs.org/api)
+
+  This is the class hierarchy of [mojo.js](https://mojojs.org), listing all available methods and properties.
+
 ### Spin-offs
 
 These modules are not part of [@mojojs/core](https://www.npmjs.com/package/@mojojs/core) itself, but have been designed
