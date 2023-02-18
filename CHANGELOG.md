@@ -7,7 +7,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 
 ### Features
 
-  * Added support for `async` functions to be passed to `ctx.contentFor()`.
+  * Added support for `async` functions to be passed to `ctx.contentFor()` and tag helpers.
 
 ### Bug Fixes
 

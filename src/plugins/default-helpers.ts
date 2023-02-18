@@ -251,8 +251,9 @@ function submitButtonTag(ctx: MojoContext, text = 'Ok', attrs: TagAttrs = {}): P
 }
 
 function tag(ctx: MojoContext, name: string, attrs: TagAttrs = {}, content: TagContent = ''): Promise<SafeString> {
-  // Temporary workaround for backwards compatibility, to be removed in 2.0
+  if (content instanceof Function) content = content();
   if (content instanceof Promise) return content.then(text => new SafeString(DOM.newTag(name, attrs, text).toString()));
+  // Temporary workaround for backwards compatibility, to be removed in 2.0
   return new SafeString(DOM.newTag(name, attrs, content).toString()) as any as Promise<SafeString>;
 }
 

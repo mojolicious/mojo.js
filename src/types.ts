@@ -80,7 +80,7 @@ export type RouteArguments = Array<string | MojoAction | Record<string, string[]
 export type PlaceholderType = RegExp | string | string[];
 
 export type TagAttrs = Record<string, string | boolean | Record<string, string>>;
-export type TagContent = string | SafeString | Promise<string | SafeString>;
+export type TagContent = string | SafeString | Promise<string | SafeString> | (() => Promise<string | SafeString>);
 
 export interface BackendInfo {
   name: string;

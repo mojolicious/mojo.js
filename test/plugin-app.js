@@ -344,6 +344,7 @@ Tag2: <%== await ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
 Form1: <%= await ctx.formFor('tag_helpers', {}, formBlock()) %>
 Form2: <%= await ctx.formFor(['form', {values: {name: 'foo'}}], {class: 'test'}, 'Form') %>
 Form3: <%= await ctx.formFor('special', {}, Promise.resolve('Form')) %>
+Form4: <%= await ctx.formFor('special', {}, async () => 'Form') %>
 Submit1: <%= await ctx.submitButtonTag() %>
 Submit2: <%= await ctx.submitButtonTag('Search') %>
 Submit3: <%= await ctx.submitButtonTag('Search', {class: 'foo'}) %>
@@ -379,6 +380,7 @@ Form1: <form action="/tag_helpers">  Form
 </form>
 Form2: <form class="test" method="POST" action="/form/foo">Form</form>
 Form3: <form method="POST" action="/special/form?_method=PATCH">Form</form>
+Form4: <form method="POST" action="/special/form?_method=PATCH">Form</form>
 Submit1: <input value="Ok" type="submit">
 Submit2: <input value="Search" type="submit">
 Submit3: <input value="Search" class="foo" type="submit">
