@@ -429,7 +429,7 @@ The best possible representation will be automatically selected from the `ext` s
 await ctx.respondTo({
   json: {json: {hello: 'world'}},
   html: async ctx => {
-    ctx.contentFor('header', '<meta name="author" content="sri">');
+    await ctx.contentFor('header', '<meta name="author" content="sri">');
     await ctx.render({view: 'hello'}, {message: 'world'});
   }
 });
@@ -758,12 +758,12 @@ app.start();
 <{typeBlock}>
   <meta http-equiv="Content-Type" content="text/html">
 <{/typeBlock}>
-% ctx.contentFor('header', await typeBlock());
+% await ctx.contentFor('header', await typeBlock());
 <div>Hello World!</div>
 <{pragmaBlock}>
   <meta http-equiv="Pragma" content="no-cache">
 <{/pragmaBlock}>
-% ctx.contentFor('header', await pragmaBlock());
+% await ctx.contentFor('header', await pragmaBlock());
 ```
 ```
 %# views/layouts/mylayout.html.tmpl

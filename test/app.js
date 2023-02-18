@@ -1032,7 +1032,7 @@ t.test('App', async t => {
     t.end();
   });
 
-  await t.test('Partial content', t => {
+  await t.test('Partial content', async t => {
     const ctx = app.newMockContext();
     t.equal(ctx.content.foo.toString(), '');
     ctx.content.foo = 'Works!';
@@ -1040,15 +1040,13 @@ t.test('App', async t => {
     delete ctx.content.foo;
     t.equal(ctx.content.foo.toString(), '');
 
-    ctx.contentFor('bar', '<p>Test</p>');
+    await ctx.contentFor('bar', '<p>Test</p>');
     t.equal(ctx.content.bar.toString(), '<p>Test</p>');
     ctx.content.header = 'Hello ';
     ctx.content.header += 'Mojo!';
     t.equal(ctx.content.header.toString(), 'Hello Mojo!');
-    ctx.contentFor('header', '!!');
+    await ctx.contentFor('header', '!!');
     t.equal(ctx.content.header.toString(), 'Hello Mojo!!!');
-
-    t.end();
   });
 
   await t.test('Request body consumed twice', async () => {
