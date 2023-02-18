@@ -341,9 +341,9 @@ Link2: <%= await ctx.linkTo('mix', {}, 'WebSocket link') %>
 Link3: <%= await ctx.linkTo(['form', {values: {name: 'yada'}}], {id: 'baz'}, 'Placeholder') %>
 Tag1: <%= await ctx.tag('div', 'Hello Mojo!') %>
 Tag2: <%== await ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
-Form1: <%= await ctx.formFor('tag_helpers', {}, await formBlock()) %>
+Form1: <%= await ctx.formFor('tag_helpers', {}, formBlock()) %>
 Form2: <%= await ctx.formFor(['form', {values: {name: 'foo'}}], {class: 'test'}, 'Form') %>
-Form3: <%= await ctx.formFor('special', {}, 'Form') %>
+Form3: <%= await ctx.formFor('special', {}, Promise.resolve('Form')) %>
 Submit1: <%= await ctx.submitButtonTag() %>
 Submit2: <%= await ctx.submitButtonTag('Search') %>
 Submit3: <%= await ctx.submitButtonTag('Search', {class: 'foo'}) %>
