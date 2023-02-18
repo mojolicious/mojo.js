@@ -3,7 +3,11 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
-## v1.20.1 (2022-02-18)
+## v1.21.0 (2022-02-18)
+
+### Features
+
+  * Added support for `async` functions to be passed to `ctx.contentFor()`.
 
 ### Bug Fixes
 
