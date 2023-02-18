@@ -665,6 +665,8 @@ Generate `input` tag of type `submit`.
 %= await ctx.tag('div')
 %= await ctx.tag('div', {class: 'wrapper'})
 %= await ctx.tag('div', {class: 'wrapper'}, 'Hello World!')
+%= await ctx.tag('div', {class: 'wrapper'}, Promise.resolve('Hello World!'))
+%= await ctx.tag('div', {class: 'wrapper'}, async () => 'Hello World!')
 ```
 
 Generate HTML tag.
