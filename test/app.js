@@ -1,5 +1,6 @@
 import {Stream} from 'node:stream';
 import mojo, {Session} from '../lib/core.js';
+import {SafeString} from '@mojojs/util';
 import t from 'tap';
 
 t.test('App', async t => {
@@ -1050,6 +1051,10 @@ t.test('App', async t => {
 
     await ctx.contentFor('baz', Promise.resolve('<p>Test</p>'));
     t.equal(ctx.content.baz.toString(), '<p>Test</p>');
+    await ctx.contentFor('yada', async () => new SafeString('<p>Works too</p>'));
+    t.equal(ctx.content.yada.toString(), '<p>Works too</p>');
+    await ctx.contentFor('yadayada', async () => '<p>Works also</p>');
+    t.equal(ctx.content.yadayada.toString(), '<p>Works also</p>');
   });
 
   await t.test('Request body consumed twice', async () => {

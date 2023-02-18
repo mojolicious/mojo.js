@@ -170,8 +170,11 @@ class Context extends EventEmitter {
   /**
    * Append partial content to `ctx.content` buffers.
    */
-  async contentFor(name: string, content: string | SafeString | Promise<string | SafeString>): Promise<void> {
-    this.content[name] += await content;
+  async contentFor(
+    name: string,
+    content: string | SafeString | Promise<string | SafeString> | (() => Promise<string | SafeString>)
+  ): Promise<void> {
+    this.content[name] += await (content instanceof Function ? content() : content);
   }
 
   /**
