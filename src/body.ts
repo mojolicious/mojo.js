@@ -103,6 +103,9 @@ export class Body {
 
   /**
    * Get HTTP header from message.
+   * @example
+   * // Get User-Agent header
+   * const agent = body.get('User-Agent');
    */
   get(name: string): string | null {
     return this.headers.get(name);
@@ -133,6 +136,8 @@ export class Body {
 
   /**
    * Set HTTP header for message.
+   * // Set Server header
+   * body.set('Server', 'mojo.js');
    */
   set(name: string, value: string): this {
     this.headers.set(name, value);
