@@ -1047,6 +1047,9 @@ t.test('App', async t => {
     t.equal(ctx.content.header.toString(), 'Hello Mojo!');
     await ctx.contentFor('header', '!!');
     t.equal(ctx.content.header.toString(), 'Hello Mojo!!!');
+
+    await ctx.contentFor('baz', Promise.resolve('<p>Test</p>'));
+    t.equal(ctx.content.baz.toString(), '<p>Test</p>');
   });
 
   await t.test('Request body consumed twice', async () => {
