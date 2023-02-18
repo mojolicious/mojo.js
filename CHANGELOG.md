@@ -8,6 +8,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 ### Bug Fixes
 
   * Fixed bug where `ctx.contentFor()` would not `await` promises.
+  * Fixed various promise related inconsistencies in tag helpers.
 
 ## v1.20.0 (2022-02-16)
 
