@@ -22,8 +22,8 @@ export type MojoRoute = Route;
 
 // With default helpers from plugins
 export interface MojoContext extends Context {
-  assetTag: (path: string, attrs?: TagAttrs) => SafeString;
-  buttonTo: (target: URLTarget, attrs: TagAttrs, text: string) => SafeString;
+  assetTag: (path: string, attrs?: TagAttrs) => Promise<SafeString>;
+  buttonTo: (target: URLTarget, attrs: TagAttrs, text: string) => Promise<SafeString>;
   checkBoxTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   colorFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   currentRoute: () => string | null;
@@ -31,34 +31,34 @@ export interface MojoContext extends Context {
   datetimeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   emailFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   exception: (error: Error) => Promise<boolean>;
-  faviconTag: (file?: string) => SafeString;
-  fileFieldTag: (name: string, attrs?: TagAttrs) => SafeString;
-  formFor: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
-  hiddenFieldTag: (name: string, value: string, attrs?: TagAttrs) => SafeString;
+  faviconTag: (file?: string) => Promise<SafeString>;
+  fileFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  formFor: (target: URLTarget, attrs: TagAttrs, content: TagContent) => Promise<SafeString>;
+  hiddenFieldTag: (name: string, value: string, attrs?: TagAttrs) => Promise<SafeString>;
   htmlException: (error: Error) => Promise<boolean>;
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;
-  imageTag: (target: string, attrs?: TagAttrs) => SafeString;
+  imageTag: (target: string, attrs?: TagAttrs) => Promise<SafeString>;
   include: (options: MojoRenderOptions, stash: Record<string, any>) => Promise<SafeString | null>;
   inspect: (object: Record<string, any>, options: InspectOptions) => string;
   inputTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
-  labelFor: (ctx: MojoContext, name: string, value: string | SafeString, attrs?: TagAttrs) => SafeString;
-  linkTo: (target: URLTarget, attrs: TagAttrs, content: string | SafeString) => SafeString;
+  labelFor: (ctx: MojoContext, name: string, value: TagContent, attrs?: TagAttrs) => Promise<SafeString>;
+  linkTo: (target: URLTarget, attrs: TagAttrs, content: TagContent) => Promise<SafeString>;
   monthFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   notFound: () => Promise<boolean>;
   numberFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  passwordFieldTag: (name: string, attrs?: TagAttrs) => SafeString;
+  passwordFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   rangeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  scriptTag: (target: string, attrs?: TagAttrs) => SafeString;
+  scriptTag: (target: string, attrs?: TagAttrs) => Promise<SafeString>;
   searchFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  styleTag: (target: string, attrs?: TagAttrs) => SafeString;
-  submitButtonTag: (text?: string, attrs?: TagAttrs) => SafeString;
-  tag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => SafeString;
+  styleTag: (target: string, attrs?: TagAttrs) => Promise<SafeString>;
+  submitButtonTag: (text?: string, attrs?: TagAttrs) => Promise<SafeString>;
+  tag: (name: string, attrs?: TagAttrs, content?: TagContent) => Promise<SafeString>;
   telFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  textAreaTag: (name: string, attrs?: TagAttrs, content?: string | SafeString) => Promise<SafeString>;
+  textAreaTag: (name: string, attrs?: TagAttrs, content?: TagContent) => Promise<SafeString>;
   textFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   timeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   txtException: (error: Error) => Promise<boolean>;
@@ -80,6 +80,7 @@ export type RouteArguments = Array<string | MojoAction | Record<string, string[]
 export type PlaceholderType = RegExp | string | string[];
 
 export type TagAttrs = Record<string, string | boolean | Record<string, string>>;
+export type TagContent = string | SafeString | Promise<string | SafeString>;
 
 export interface BackendInfo {
   name: string;

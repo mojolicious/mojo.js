@@ -1,4 +1,12 @@
-import type {MojoApp, MojoContext, MojoRenderOptions, MojoURLOptions, TagAttrs, URLTarget} from '../types.js';
+import type {
+  MojoApp,
+  MojoContext,
+  MojoRenderOptions,
+  MojoURLOptions,
+  TagAttrs,
+  TagContent,
+  URLTarget
+} from '../types.js';
 import type {InspectOptions} from 'node:util';
 import {inspect} from 'node:util';
 import {Logger} from '../logger.js';
@@ -68,7 +76,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
     return tag(ctx, 'input', {...attrs, type: 'hidden', name, value});
   });
   app.addHelper('imageTag', imageTag);
-  app.addHelper('labelFor', (ctx: MojoContext, name: string, value: string | SafeString, attrs: TagAttrs = {}) => {
+  app.addHelper('labelFor', (ctx: MojoContext, name: string, value: TagContent, attrs: TagAttrs = {}) => {
     return tag(ctx, 'label', {...attrs, type: 'hidden', for: name}, value);
   });
   app.addHelper('linkTo', linkTo);
@@ -83,14 +91,14 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.decorateContext('inspect', (object: Record<string, any>, options: InspectOptions) => inspect(object, options));
 }
 
-function assetTag(ctx: MojoContext, path: string, attrs?: TagAttrs): SafeString {
+function assetTag(ctx: MojoContext, path: string, attrs?: TagAttrs): Promise<SafeString> {
   const url = ctx.urlForAsset(path);
   if (/\.js$/.test(url)) return ctx.tag('script', {src: url, ...attrs});
   if (/\.css$/.test(url)) return ctx.tag('link', {rel: 'stylesheet', href: url, ...attrs});
   return ctx.tag('img', {src: url, ...attrs});
 }
 
-function buttonTo(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, text: string): SafeString {
+function buttonTo(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, text: string): Promise<SafeString> {
   return ctx.formFor(target, attrs, ctx.submitButtonTag(text));
 }
 
@@ -107,11 +115,11 @@ async function exception(ctx: MojoContext, error: Error): Promise<boolean> {
   return ctx.httpException(error);
 }
 
-function faviconTag(ctx: MojoContext, file?: string): SafeString {
+function faviconTag(ctx: MojoContext, file?: string): Promise<SafeString> {
   return ctx.tag('link', {rel: 'icon', href: ctx.urlForFile(file ?? '/mojo/favicon.ico')});
 }
 
-function formFor(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, content: string | SafeString): SafeString {
+function formFor(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, content: TagContent): Promise<SafeString> {
   target = urlTarget(target);
   const route = ctx.app.router.lookup(target[0]);
   const method = route === null ? 'GET' : route.suggestedMethod();
@@ -160,7 +168,7 @@ async function httpException(ctx: MojoContext, error: any): Promise<boolean> {
   return ctx.htmlException(error);
 }
 
-function imageTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): SafeString {
+function imageTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): Promise<SafeString> {
   return ctx.tag('img', {src: ctx.urlForFile(target), ...attrs});
 }
 
@@ -218,7 +226,7 @@ async function jsonNotFound(ctx: MojoContext): Promise<boolean> {
   return await ctx.render({json: {error: {message: 'Not Found'}}, pretty: true, status: 404});
 }
 
-function linkTo(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, content: string | SafeString): SafeString {
+function linkTo(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, content: TagContent): Promise<SafeString> {
   const href = ctx.urlFor(...urlTarget(target)) ?? '';
   return ctx.tag('a', {href, ...attrs}, content);
 }
@@ -230,27 +238,29 @@ async function notFound(ctx: MojoContext): Promise<boolean> {
   return ctx.htmlNotFound();
 }
 
-function scriptTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): SafeString {
+function scriptTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): Promise<SafeString> {
   return ctx.tag('script', {src: ctx.urlForFile(target), ...attrs});
 }
 
-function styleTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): SafeString {
+function styleTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): Promise<SafeString> {
   return ctx.tag('link', {rel: 'stylesheet', href: ctx.urlForFile(target), ...attrs});
 }
 
-function submitButtonTag(ctx: MojoContext, text = 'Ok', attrs: TagAttrs = {}): SafeString {
+function submitButtonTag(ctx: MojoContext, text = 'Ok', attrs: TagAttrs = {}): Promise<SafeString> {
   return ctx.tag('input', {value: text, ...attrs, type: 'submit'});
 }
 
-function tag(ctx: MojoContext, name: string, attrs: TagAttrs = {}, content: string | SafeString = ''): SafeString {
-  return new SafeString(DOM.newTag(name, attrs, content).toString());
+function tag(ctx: MojoContext, name: string, attrs: TagAttrs = {}, content: TagContent = ''): Promise<SafeString> {
+  // Temporary workaround for backwards compatibility, to be removed in 2.0
+  if (content instanceof Promise) return content.then(text => new SafeString(DOM.newTag(name, attrs, text).toString()));
+  return new SafeString(DOM.newTag(name, attrs, content).toString()) as any as Promise<SafeString>;
 }
 
 async function textAreaTag(
   ctx: MojoContext,
   name: string,
   attrs: TagAttrs = {},
-  content?: string | SafeString
+  content?: TagContent
 ): Promise<SafeString> {
   attrs.name = name;
 
