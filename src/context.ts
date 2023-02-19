@@ -320,9 +320,10 @@ class Context extends EventEmitter {
    * await ctx.render({view: 'users/list'}, {foo: 'bar'});
    */
   async render(options: MojoRenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
-    if (stash !== undefined) Object.assign(this.stash, stash);
-
     const app = this.app;
+    if (stash !== undefined) Object.assign(this.stash, stash);
+    await app.hooks.runHook('render:before', this, options);
+
     const result = await app.renderer.render(this as unknown as MojoContext, options);
     if (result === null) {
       if (options.maybe !== true) throw new Error('Nothing could be rendered');

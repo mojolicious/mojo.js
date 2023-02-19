@@ -89,6 +89,12 @@ t.test('Hook app', async t => {
     return true;
   });
 
+  app.addContextHook('render:before', async (ctx, options) => {
+    const render = ctx.req.query.get('render');
+    if (render !== '1') return;
+    options.text += ' Works!';
+  });
+
   app.addContextHook('send:before', async ctx => {
     const params = await ctx.params();
     if (params.get('powered') === '1') ctx.res.set('X-Powered-By', 'mojo.js');
@@ -166,6 +172,11 @@ t.test('Hook app', async t => {
     (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
     (await ua.getOk('/?fourth=1')).statusIs(200).bodyIs('Fourth hook');
     (await ua.getOk('/static/mojo/favicon.ico?fourth=1')).statusIs(200).bodyIsnt('Fourth hook');
+  });
+
+  await t.test('Render hooks', async () => {
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello Mojo!');
+    (await ua.getOk('/?render=1')).statusIs(200).bodyIs('Hello Mojo! Works!');
   });
 
   await t.test('Server request hook', async () => {

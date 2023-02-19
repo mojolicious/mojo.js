@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.22.0 (2022-02-19)
+
+### Features
+
+  * Added `render:before` hook.
+
 ## v1.21.0 (2022-02-18)
 
 ### Features
