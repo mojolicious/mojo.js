@@ -83,6 +83,9 @@ export class App {
   exceptionFormat: string;
   /**
    * Application hooks.
+   * @example
+   * // Run a custom hook
+   * await app.hooks.runHook('my:hook', foo, bar);
    */
   hooks: Hooks = new Hooks();
   /**
@@ -129,6 +132,14 @@ export class App {
   renderer: Renderer = new Renderer();
   /**
    * Application router.
+   * @example
+   * // Add routes
+   * const r = app.router;
+   * r.get('/foo/bar').to('test#foo', {title: 'Hello Mojo!'});
+   * r.post('/baz').to('test#baz');
+   *
+   * // Add another path to load controllers from
+   * app.router.controllerPaths.push(app.home.child('more-controllers').toString());
    */
   router: Router = new Router();
   /**
