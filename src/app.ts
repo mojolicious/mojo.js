@@ -144,22 +144,42 @@ export class App {
   router: Router = new Router();
   /**
    * Rotating secret passphrases used for signed cookies and the like.
+   * @example
+   * // Rotate passphrases
+   * app.secrets = ['new_passw0rd', 'old_passw0rd', 'very_old_passw0rd'];
    */
   secrets: string[];
   /**
    * Encrypted cookie based session manager.
+   * // Change name of cookie used for all sessions
+   * app.sessions.cookieName = 'mysession';
+   *
+   * // Disable SameSite feature
+   * app.sessions.sameSite = 'none';
    */
   session: Session = new Session(this);
   /**
    * Static file server.
+   * @example
+   * // Add another "public" directory
+   * app.static.publicPaths.push('/home/sri/public');
+   *
+   * // Add another "public" directory with higher precedence
+   * app.static.publicPaths.unshift('/home/sri/themes/blue/public');
    */
   static: Static = new Static();
   /**
    * HTTP/WebSocket user-agent.
+   * @example
+   * # Perform HTTP request
+   * const res = await app.ua.get('http://example.com');
    */
   ua: UserAgent = new UserAgent();
   /**
    * JSON schema validator.
+   * @example
+   * // Add a named schema for later use
+   * app.validator.addSchema({type: 'object', properties: {test: {type: 'number'}}}, 'testForm');
    */
   validator = new Validator();
 
