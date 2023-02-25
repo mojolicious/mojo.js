@@ -203,6 +203,11 @@ export class App {
 
   /**
    * Add an application hook to extend the framework.
+   * @example
+   * // Run code whenever a server has been started
+   * app.addAppHook('server:start', async app => {
+   *   ...
+   * });
    */
   addAppHook(name: string, fn: AppHook): this {
     this.hooks.addHook(name, fn);
@@ -211,6 +216,11 @@ export class App {
 
   /**
    * Add a context hook to extend the framework.
+   * @example
+   * // Run code after a new request has been received
+   * app.addContextHook('dispatch:before', async ctx => {
+   *   ...
+   * });
    */
   addContextHook(name: string, fn: ContextHook): this {
     this.hooks.addHook(name, fn);
