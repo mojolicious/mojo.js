@@ -342,6 +342,43 @@ const serialized = ctx.inpsect({hello: 'world'});
 
 Serialize data structure for debugging.
 
+#### proxyGet
+
+```js
+await ctx.proxyGet('http://mojolicious.org', {headers: {Accept: 'application/json'}});
+```
+
+Perform GET request and forward response as efficiently as possible.
+
+#### proxyPost
+
+```js
+await ctx.proxyPost('http://mojolicious.org', {headers: {Accept: 'application/json'}});
+```
+
+Perform POST request and forward response as efficiently as possible.
+
+#### proxyRequest
+
+```js
+await ctx.proxyRequest({method: 'PATCH', url: 'http://mojolicious.org'});
+```
+
+Perform a custom HTTP request and forward response as efficiently as possible.
+
+```js
+// Forward with exception handling
+ctx.proxyRequest({method: 'GET', url: 'http://mojolicious.org'}).catch(async error => {
+  ctx.log.debug(`Proxy error: ${error}`);
+  await ctx.render({text: 'Something went wrong!', status: 400});
+});
+
+// Forward with custom request and response headers
+const headers = ctx.req.headers.clone().dehop().set('X-Proxy', 'Mojo').toObject();
+await ctx.proxyRequest({method: 'GET', url: 'http://example.com', headers});
+ctx.res.set('X-Proxy', 'Mojo');
+```
+
 ## Exception Helpers
 
 These exception helpers are currently available by default, they can be overloaded to change framework behavior:

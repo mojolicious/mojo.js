@@ -50,6 +50,9 @@ export interface MojoContext extends Context {
   notFound: () => Promise<boolean>;
   numberFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   passwordFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  proxyGet: (url: string | URL, config: UserAgentRequestOptions) => Promise<void>;
+  proxyPost: (url: string | URL, config: UserAgentRequestOptions) => Promise<void>;
+  proxyRequest: (config: UserAgentRequestOptions) => Promise<void>;
   radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   rangeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   scriptTag: (target: string, attrs?: TagAttrs) => Promise<SafeString>;

@@ -5,7 +5,8 @@ import type {
   MojoURLOptions,
   TagAttrs,
   TagContent,
-  URLTarget
+  URLTarget,
+  UserAgentRequestOptions
 } from '../types.js';
 import type {InspectOptions} from 'node:util';
 import {inspect} from 'node:util';
@@ -29,6 +30,10 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('txtNotFound', txtNotFound);
   app.addHelper('notFound', notFound);
   app.addHelper('websocketException', websocketException);
+
+  app.addHelper('proxyGet', proxyGet);
+  app.addHelper('proxyPost', proxyPost);
+  app.addHelper('proxyRequest', proxyRequest);
 
   app.addHelper('currentRoute', currentRoute);
 
@@ -236,6 +241,25 @@ async function notFound(ctx: MojoContext): Promise<boolean> {
   if (exceptionFormat === 'txt') return ctx.txtNotFound();
   if (exceptionFormat === 'json') return ctx.jsonNotFound();
   return ctx.htmlNotFound();
+}
+
+async function proxyGet(ctx: MojoContext, url: string | URL, config: UserAgentRequestOptions): Promise<void> {
+  await ctx.proxyRequest({method: 'GET', url, ...config});
+}
+
+async function proxyPost(ctx: MojoContext, url: string | URL, config: UserAgentRequestOptions): Promise<void> {
+  await ctx.proxyRequest({method: 'POST', url, ...config});
+}
+
+async function proxyRequest(ctx: MojoContext, config: UserAgentRequestOptions): Promise<void> {
+  const proxyRes = await ctx.ua.request(config);
+  const {statusCode, headers} = proxyRes;
+  const stream = proxyRes.createReadStream();
+
+  const res = ctx.res;
+  res.statusCode = statusCode;
+  res.headers = headers.clone().dehop();
+  process.nextTick(() => res.send(stream));
 }
 
 function scriptTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): Promise<SafeString> {

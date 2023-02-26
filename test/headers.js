@@ -47,8 +47,7 @@ t.test('Headers', t => {
 
   t.test('Clone', t => {
     const headers = new Headers();
-    headers.append('Connection', 'close');
-    headers.append('Connection', 'keep-alive');
+    headers.append('Connection', 'close').append('Connection', 'keep-alive');
     t.equal(headers.get('Connection'), 'close, keep-alive');
     const clone = headers.clone();
     headers.set('Connection', 'nothing');
@@ -120,14 +119,9 @@ t.test('Headers', t => {
     headers.set('Link', 'test=failed');
     t.same(headers.getLinks(), {});
 
-    headers.setLinks({next: '/foo', prev: '/bar'});
-    t.same(headers.toObject(), {Link: '</foo>; rel="next", </bar>; rel="prev"'});
-
-    headers.setLinks({next: '/foo?bar'});
-    t.same(headers.toObject(), {Link: '</foo?bar>; rel="next"'});
-
-    headers.setLinks({next: '/foo?ba;,r'});
-    t.same(headers.toObject(), {Link: '</foo?ba;,r>; rel="next"'});
+    t.same(headers.setLinks({next: '/foo', prev: '/bar'}).toObject(), {Link: '</foo>; rel="next", </bar>; rel="prev"'});
+    t.same(headers.setLinks({next: '/foo?bar'}).toObject(), {Link: '</foo?bar>; rel="next"'});
+    t.same(headers.setLinks({next: '/foo?ba;,r'}).toObject(), {Link: '</foo?ba;,r>; rel="next"'});
 
     t.end();
   });

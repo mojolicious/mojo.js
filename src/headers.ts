@@ -27,7 +27,7 @@ export class Headers {
   /**
    * Append header value.
    */
-  append(name: string, value: string): void {
+  append(name: string, value: string): this {
     const lowerCase = name.toLowerCase();
     const headers = this._getHeaders();
     if (headers[lowerCase] === undefined) return this.set(name, value);
@@ -37,6 +37,8 @@ export class Headers {
     } else {
       headers[lowerCase].values = [[...headers[lowerCase].values, value].join(', ')];
     }
+
+    return this;
   }
 
   /**
@@ -49,9 +51,10 @@ export class Headers {
   /**
    * Remove hop-by-hop headers that should not be retransmitted.
    */
-  dehop(): void {
+  dehop(): this {
     const headers = this._getHeaders();
     HOP_BY_HOP.forEach(name => delete headers[name]);
+    return this;
   }
 
   /**
@@ -97,16 +100,18 @@ export class Headers {
   /**
    * Remove header.
    */
-  remove(name: string): void {
+  remove(name: string): this {
     delete this._getHeaders()[name.toLowerCase()];
+    return this;
   }
 
   /**
    * Set header value.
    */
-  set(name: string, value: string): void {
+  set(name: string, value: string): this {
     const lowerCase = name.toLowerCase();
     this._getHeaders()[lowerCase] = {normalCase: name, values: [value]};
+    return this;
   }
 
   /**
@@ -116,11 +121,11 @@ export class Headers {
    * // Link to next and previous page
    * headers.setLinks({next: 'http://example.com/foo', prev: 'http://example.com/bar'});
    */
-  setLinks(links: Record<string, string>): void {
+  setLinks(links: Record<string, string>): this {
     const value = Object.entries(links)
       .map(([rel, link]: [string, string]) => `<${link}>; rel="${rel}"`)
       .join(', ');
-    this.set('Link', value);
+    return this.set('Link', value);
   }
 
   /**

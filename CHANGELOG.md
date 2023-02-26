@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.23.0 (2022-02-6)
+
+### Features
+
+  * Added `proxyGet`, `proxyPost` and `proxyRequest` proxy helpers.
+
 ## v1.22.0 (2022-02-23)
 
 ### Features
