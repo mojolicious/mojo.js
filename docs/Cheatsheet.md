@@ -348,7 +348,7 @@ Serialize data structure for debugging.
 await ctx.proxyGet('http://mojolicious.org', {headers: {Accept: 'application/json'}});
 ```
 
-Perform GET request and forward response as efficiently as possible.
+Perform `GET` request and forward response as efficiently as possible.
 
 #### proxyPost
 
@@ -356,7 +356,7 @@ Perform GET request and forward response as efficiently as possible.
 await ctx.proxyPost('http://mojolicious.org', {headers: {Accept: 'application/json'}});
 ```
 
-Perform POST request and forward response as efficiently as possible.
+Perform `POST` request and forward response as efficiently as possible.
 
 #### proxyRequest
 
