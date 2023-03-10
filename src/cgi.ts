@@ -59,7 +59,7 @@ export class CGI {
    * Run CGI application.
    */
   async run(): Promise<void> {
-    const app = this.app;
+    const {app} = this;
     await app.hooks.serverStart(app);
     await app.warmup();
 

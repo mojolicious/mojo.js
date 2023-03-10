@@ -21,7 +21,7 @@ export class Cache<T> {
    * Add value to the cache.
    */
   set(key: string, value: T): void {
-    const max = this.max;
+    const {max} = this;
     if (max <= 0) return;
 
     const cache = this._cache;

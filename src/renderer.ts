@@ -95,7 +95,7 @@ export class Renderer {
    * Render output through one of the template engines.
    */
   async render(ctx: MojoContext, options: MojoRenderOptions): Promise<EngineResult | null> {
-    const log = ctx.log;
+    const {log} = ctx;
     if (options.text !== undefined) {
       log.trace('Rendering text response');
       return {output: options.text, format: options.format ?? 'txt'};
@@ -136,7 +136,7 @@ export class Renderer {
       return {output: await engine.render(ctx, options), format: options.format ?? this.defaultFormat};
     }
 
-    const stash = ctx.stash;
+    const {stash} = ctx;
     const controller: string = stash.controller;
     const action: string = stash.action;
     if (options.view === undefined && controller !== undefined && action !== undefined) {
@@ -164,10 +164,10 @@ export class Renderer {
    * Finalize dynamically generated response content and compress it if possible.
    */
   async respond(ctx: MojoContext, result: EngineResult, options: {status?: number}): Promise<boolean> {
-    const res = ctx.res;
+    const {res} = ctx;
     if (res.isSent) return false;
 
-    let output = result.output;
+    let {output} = result;
     if (this.autoCompress === true && Buffer.byteLength(output) >= this.minCompressSize) {
       res.append('Vary', 'Accept-Encoding');
       const accept = ctx.req.get('accept-encoding');

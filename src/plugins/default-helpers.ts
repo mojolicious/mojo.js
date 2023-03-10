@@ -108,9 +108,9 @@ function buttonTo(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, text: st
 }
 
 function currentRoute(ctx: MojoContext): string | null {
-  const plan = ctx.plan;
+  const {plan} = ctx;
   if (plan === null) return null;
-  const endpoint = plan.endpoint;
+  const {endpoint} = plan;
   if (endpoint === undefined) return null;
   return endpoint.customName ?? endpoint.defaultName ?? null;
 }
@@ -155,7 +155,7 @@ async function htmlException(ctx: MojoContext, error: Error): Promise<boolean> {
 async function htmlNotFound(ctx: MojoContext): Promise<boolean> {
   ctx.stash.exception = null;
 
-  const mode: string = ctx.app.mode;
+  const {mode} = ctx.app;
   if (await ctx.render({view: `not-found.${mode}`, maybe: true, status: 404})) return true;
   if (await ctx.render({view: 'not-found', maybe: true, status: 404})) return true;
 
@@ -237,7 +237,7 @@ function linkTo(ctx: MojoContext, target: URLTarget, attrs: TagAttrs, content: T
 }
 
 async function notFound(ctx: MojoContext): Promise<boolean> {
-  const exceptionFormat = ctx.exceptionFormat;
+  const {exceptionFormat} = ctx;
   if (exceptionFormat === 'txt') return ctx.txtNotFound();
   if (exceptionFormat === 'json') return ctx.jsonNotFound();
   return ctx.htmlNotFound();
@@ -256,7 +256,7 @@ async function proxyRequest(ctx: MojoContext, config: UserAgentRequestOptions): 
   const {statusCode, headers} = proxyRes;
   const stream = proxyRes.createReadStream();
 
-  const res = ctx.res;
+  const {res} = ctx;
   res.statusCode = statusCode;
   res.headers = headers.clone().dehop();
   process.nextTick(() => res.send(stream));

@@ -96,7 +96,7 @@ export class Session {
     if (decrypted === null) return null;
 
     const data = JSON.parse(decrypted);
-    const expires = data.expires;
+    const {expires} = data;
     delete data.expires;
     if (expires <= Math.round(Date.now() / 1000)) return null;
 
@@ -123,7 +123,7 @@ export class Session {
     delete data.flash;
     const encrypted = await Session.encrypt(app.secrets[0], JSON.stringify(data));
 
-    const expires = data.expires;
+    const {expires} = data;
     ctx.res.setCookie(this.cookieName, encrypted, {
       expires: expires === undefined ? undefined : new Date(expires * 1000),
       httpOnly: this.httpOnly,

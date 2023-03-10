@@ -5,7 +5,7 @@ import type {MojoContext} from '../types.js';
  * Default condition plugin.
  */
 export default function defaultConditionsPlugin(app: App): void {
-  const router = app.router;
+  const {router} = app;
   router.addCondition('headers', headerCondition);
   router.addCondition('host', hostCondition);
 }

@@ -37,7 +37,7 @@ export class UserAgentResponse extends Body {
    * Check if response has a `4xx` response status code.
    */
   get isClientError(): boolean {
-    const statusCode = this.statusCode;
+    const {statusCode} = this;
     return statusCode >= 400 && statusCode <= 499;
   }
 
@@ -52,7 +52,7 @@ export class UserAgentResponse extends Body {
    * Check if response has a `3xx` response status code.
    */
   get isRedirect(): boolean {
-    const statusCode = this.statusCode;
+    const {statusCode} = this;
     return statusCode >= 300 && statusCode <= 399;
   }
 
@@ -60,7 +60,7 @@ export class UserAgentResponse extends Body {
    * Check if response has a `5xx` response status code.
    */
   get isServerError(): boolean {
-    const statusCode = this.statusCode;
+    const {statusCode} = this;
     return statusCode >= 500 && statusCode <= 599;
   }
 
@@ -68,7 +68,7 @@ export class UserAgentResponse extends Body {
    * Check if response has a `2xx` response status code.
    */
   get isSuccess(): boolean {
-    const statusCode = this.statusCode;
+    const {statusCode} = this;
     return statusCode >= 200 && statusCode <= 299;
   }
 

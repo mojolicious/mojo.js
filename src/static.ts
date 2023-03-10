@@ -37,11 +37,11 @@ export class Static {
    * Serve static files.
    */
   async dispatch(ctx: MojoContext): Promise<boolean> {
-    const req = ctx.req;
+    const {req} = ctx;
     const unsafePath = req.path;
     if (unsafePath.startsWith(this.prefix) === false) return false;
 
-    const method = req.method;
+    const {method} = req;
     if (method !== 'GET' && method !== 'HEAD') return false;
 
     const relative = new Path(...unsafePath.replace(this.prefix, '').split('/'));
@@ -79,12 +79,11 @@ export class Static {
   isFresh(ctx: MojoContext, options: {etag?: string; lastModified?: Date} = {}): boolean {
     const {etag, lastModified} = options;
 
-    const res = ctx.res;
+    const {req, res} = ctx;
     if (etag !== undefined) res.set('Etag', `"${etag}"`);
     if (lastModified !== undefined) res.set('Last-Modified', lastModified.toUTCString());
 
     // If-None-Match
-    const req = ctx.req;
     const ifNoneMatch = req.get('If-None-Match');
     if (etag !== undefined && ifNoneMatch !== null) {
       const etags = ifNoneMatch.split(/,\s+/).map(value => value.replaceAll('"', ''));
@@ -108,7 +107,7 @@ export class Static {
    * Serve a specific file.
    */
   async serveFile(ctx: MojoContext, file: Path): Promise<void> {
-    const app = ctx.app;
+    const {app} = ctx;
     if ((await app.hooks.runHook('static:before', ctx, file)) === true) return;
 
     const stat = await file.stat();
@@ -118,7 +117,7 @@ export class Static {
     const range = ctx.req.get('Range');
 
     // Last-Modified and Etag
-    const res = ctx.res;
+    const {res} = ctx;
     res.set('Accept-Ranges', 'bytes');
     const lastModified = stat.mtime;
     const etag = crypto.createHash('md5').update(lastModified.getTime().toString()).digest('hex');
@@ -160,7 +159,7 @@ export class Static {
   async warmup(): Promise<void> {
     const assets: AssetIndex = (this._assets = {});
 
-    const assetDir = this.assetDir;
+    const {assetDir} = this;
     for (const publicPath of this.publicPaths) {
       const assetPath = new Path(publicPath, assetDir);
       if ((await assetPath.exists()) === false) continue;

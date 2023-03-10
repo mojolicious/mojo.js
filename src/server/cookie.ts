@@ -31,7 +31,7 @@ export function stringifyCookie(name: string, value: string, options: CookieOpti
   if (options.maxAge !== undefined) cookie.push(`Max-Age=${options.maxAge}`);
   if (options.path !== undefined) cookie.push(`Path=${options.path}`);
 
-  const sameSite = options.sameSite;
+  const {sameSite} = options;
   if (sameSite !== undefined) {
     if (sameSite === 'lax') {
       cookie.push('SameSite=Lax');

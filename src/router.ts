@@ -73,10 +73,8 @@ export class Router extends Route {
     if (plan === null) return false;
     ctx.plan = plan;
 
-    const stash: Record<string, any> = ctx.stash;
-    const log = ctx.log;
-    const steps = plan.steps;
-    const stops = plan.stops;
+    const {log, stash} = ctx;
+    const {steps, stops} = plan;
     for (let i = 0; i < steps.length; i++) {
       const step = steps[i];
       Object.assign(stash, step, {fn: undefined});
@@ -125,8 +123,7 @@ export class Router extends Route {
    */
   async plot(spec: RouteSpec): Promise<Plan | null> {
     const plan = new Plan();
-    const steps = plan.steps;
-    const stops = plan.stops;
+    const {steps, stops} = plan;
 
     for (const child of this.children) {
       if (await this._walk(plan, child, spec)) break;
@@ -145,7 +142,7 @@ export class Router extends Route {
   }
 
   async _getPlan(ctx: MojoContext): Promise<Plan | null> {
-    const req = ctx.req;
+    const {req} = ctx;
     const realMethod = req.method;
     if (realMethod === null) return null;
     let method = realMethod;
@@ -157,8 +154,8 @@ export class Router extends Route {
     }
     if (method === 'HEAD') method = 'GET';
 
-    const path = req.path;
-    const isWebSocket = ctx.isWebSocket;
+    const {path} = req;
+    const {isWebSocket} = ctx;
     ctx.log.trace(`${realMethod} "${path}"`);
 
     // Cache deactivated
@@ -166,7 +163,7 @@ export class Router extends Route {
 
     // Cached
     const cacheKey = `${method}:${path}:${isWebSocket.toString()}`;
-    const cache = this.cache;
+    const {cache} = this;
     const cachedPlan = cache.get(cacheKey);
     if (cachedPlan !== undefined) return cachedPlan;
 
@@ -199,9 +196,8 @@ export class Router extends Route {
     // Path
     const isEndpoint = route.isEndpoint();
     const result = route.pattern.matchPartial(spec.path, {isEndpoint});
-    const stops = plan.stops;
+    const {steps, stops} = plan;
     stops.push(isEndpoint || route.underRoute);
-    const steps = plan.steps;
     if (result === null) {
       steps.push(PLACEHOLDER);
       return false;
@@ -210,7 +206,7 @@ export class Router extends Route {
     if (isEndpoint && result.remainder.length > 0 && result.remainder !== '/') return false;
 
     // Methods
-    const methods = route.methods;
+    const {methods} = route;
     if (methods.length > 0 && !methods.includes(spec.method)) return false;
 
     // WebSocket
@@ -218,7 +214,7 @@ export class Router extends Route {
 
     // Conditions
     if (route.requirements !== undefined) {
-      const root = route.root;
+      const {root} = route;
       if (root === undefined) return false;
       const conditions = root.conditions;
       for (const value of route.requirements) {

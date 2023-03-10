@@ -86,18 +86,15 @@ export class Server {
   static listenArgsForURL(url: URL): ListenArgs {
     const listen = [];
 
-    const protocol = url.protocol;
-    const hostname = url.hostname;
-    const port = url.port;
-    const params = url.searchParams;
+    const {hostname, port, protocol, searchParams} = url;
 
     if (protocol === 'http+unix:') {
       listen.push({path: urlToSocketPath(url)});
     } else if (port !== '' && hostname !== '') {
       listen.push(parseInt(port));
       listen.push(hostname === '*' ? '0.0.0.0' : hostname.replace(/^\[/, '').replace(/]$/, ''));
-    } else if (params.has('fd') === true) {
-      listen.push({fd: parseInt(params.get('fd') ?? '')});
+    } else if (searchParams.has('fd') === true) {
+      listen.push({fd: parseInt(searchParams.get('fd') ?? '')});
     } else {
       listen.push(undefined, '0.0.0.0');
     }
@@ -109,7 +106,7 @@ export class Server {
    * Start server.
    */
   async start(): Promise<void> {
-    const app = this.app;
+    const {app} = this;
     await app.hooks.serverStart(app);
     if (this._cluster === true && cluster.isPrimary === true) {
       for (let i = 0; i < this._workers; i++) cluster.fork();
@@ -131,7 +128,7 @@ export class Server {
       if (url.protocol === 'http+unix') await new Path(urlToSocketPath(url)).rm();
     }
 
-    const app = this.app;
+    const {app} = this;
     await app.hooks.serverStop(app);
   }
 
@@ -141,9 +138,9 @@ export class Server {
     let isHttps = false;
     const options: https.ServerOptions = {};
     if (url.protocol === 'https:') {
-      const params = url.searchParams;
-      options.cert = await new Path(params.get('cert') ?? devCert).readFile();
-      options.key = await new Path(params.get('key') ?? devKey).readFile();
+      const {searchParams} = url;
+      options.cert = await new Path(searchParams.get('cert') ?? devCert).readFile();
+      options.key = await new Path(searchParams.get('key') ?? devKey).readFile();
       isHttps = true;
     }
 
@@ -206,8 +203,8 @@ export class Server {
   }
 
   _handleRequest(req: http.IncomingMessage, raw: http.ServerResponse): void {
-    const app = this.app;
-    const socket = req.socket;
+    const {app} = this;
+    const {socket} = req;
     const ctx = app.newContext(
       this._prepareRequest(req, socket, false),
       new ServerResponse((res: ServerResponse, body: ServerResponseBody) => {
@@ -220,7 +217,7 @@ export class Server {
   }
 
   _handleUpgrade(wss: WebSocketServer, req: http.IncomingMessage, socket: Socket, head: Buffer): void {
-    const app = this.app;
+    const {app} = this;
     const ctx = app.newContext(
       this._prepareRequest(req, socket, true),
       new ServerResponse((res: ServerResponse, body: ServerResponseBody) => {

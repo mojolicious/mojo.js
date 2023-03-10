@@ -90,7 +90,7 @@ export const httpStatusMessages: Record<number, string> = {
  */
 export async function cliCreateDir(path: string): Promise<void> {
   const dir = new Path(process.cwd(), ...path.split('/'));
-  const stdout = process.stdout;
+  const {stdout} = process;
   if ((await dir.exists()) === true) {
     stdout.write(chalk.green(' [exists]') + ` ${dir.toString()}\n`);
     return;
@@ -110,7 +110,7 @@ export async function cliCreateFile(
   options: {chmod?: Mode} = {}
 ): Promise<void> {
   const file = new Path(process.cwd(), ...path.split('/'));
-  const stdout = process.stdout;
+  const {stdout} = process;
   if ((await file.exists()) === true) {
     stdout.write(chalk.red(' [exists]') + ` ${file.toString()}\n`);
     return;
@@ -130,7 +130,7 @@ export async function cliCreateFile(
 export async function cliFixPackage(options: FixOptions = {}): Promise<void> {
   const file = new Path(process.cwd(), 'package.json');
 
-  const stdout = process.stdout;
+  const {stdout} = process;
   let pkg: Record<string, any>;
   if ((await file.exists()) === false) {
     pkg = {};

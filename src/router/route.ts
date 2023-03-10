@@ -191,7 +191,7 @@ export class Route {
    * Remove route from parent.
    */
   remove(): this {
-    const parent = this.parent;
+    const {parent} = this;
     if (parent === undefined) return this;
     this.parent = undefined;
     parent.children = parent.children.filter(route => route !== this);
@@ -216,7 +216,7 @@ export class Route {
    * too complex for caching.
    */
   requires(condition: string, requirement: Record<string, any>): this {
-    const root = this.root;
+    const {root} = this;
     if (root === undefined) return this;
 
     this.requirements.push({condition, requirement});
@@ -242,7 +242,7 @@ export class Route {
   suggestedMethod(): string {
     const suggestions: string[] = [];
     for (const route of this._branch()) {
-      const methods = route.methods;
+      const {methods} = route;
       if (methods.length <= 0) continue;
       suggestions.push(...(suggestions.length > 0 ? suggestions.filter(method => methods.includes(method)) : methods));
     }
@@ -256,7 +256,7 @@ export class Route {
    * Set default parameters for this route.
    */
   to(...targets: Array<string | MojoAction | Record<string, any>>): this {
-    const defaults = this.pattern.defaults;
+    const {defaults} = this.pattern;
 
     for (const target of targets) {
       if (typeof target === 'string') {

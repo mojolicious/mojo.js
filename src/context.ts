@@ -152,7 +152,7 @@ class Context extends EventEmitter {
    */
   accepts(allowed?: string[]): string[] | null {
     const formats = this.app.mime.detect(this.req.get('Accept') ?? '');
-    const stash = this.stash;
+    const {stash} = this;
     if (typeof stash.ext === 'string') formats.unshift(stash.ext);
 
     if (allowed === undefined) return formats.length > 0 ? formats : null;
@@ -321,7 +321,7 @@ class Context extends EventEmitter {
    * await ctx.render({view: 'users/list'}, {foo: 'bar'});
    */
   async render(options: MojoRenderOptions = {}, stash?: Record<string, any>): Promise<boolean> {
-    const app = this.app;
+    const {app} = this;
     if (stash !== undefined) Object.assign(this.stash, stash);
     await app.hooks.runHook('render:before', this, options);
 
