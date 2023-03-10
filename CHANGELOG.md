@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.23.1 (2022-03-10)
+
+### Bug Fixes
+
+  * Fixed support for multiple views in different formats sharing the same name.
+
 ## v1.23.0 (2022-02-26)
 
 ### Features

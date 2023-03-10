@@ -278,7 +278,7 @@ set, you can just use `ctx.stash`.
 ```
 % const spinoffs = ctx.stash.spinoffs;
 % if (spinoffs !== undefined) {
-  Minion is a <%= $spinoffs.minion %>.
+  Minion is a <%= spinoffs.minion %>.
 % }
 ```
 

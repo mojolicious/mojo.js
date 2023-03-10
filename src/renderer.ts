@@ -64,16 +64,23 @@ export class Renderer {
 
   /**
    * Find a view for render parameters.
+   * @example
+   * // Find path to JSON view
+   * const suggestion = renderer.findView({view: 'foo', 'format': 'json'});
+   * const {path} = suggestion;
    */
   findView(options: MojoRenderOptions): ViewSuggestion | null {
-    const view = options.view;
+    const {engine, format, variant, view} = options;
     const index = this._viewIndex;
     if (view === undefined || index === undefined || index[view] === undefined) return null;
 
+    // Format and engine
+    let views = index[view];
+    if (format !== undefined) views = views.filter(view => view.format === format);
+    if (engine !== undefined) views = views.filter(view => view.engine === engine);
+
     // Variants
     let fallback;
-    const variant = options.variant;
-    const views = index[view];
     if (views.length > 1) {
       for (const suggestion of views) {
         if (suggestion.variant === variant) return suggestion;

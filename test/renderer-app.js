@@ -1,4 +1,5 @@
 import mojo from '../lib/core.js';
+import Path from '@mojojs/path';
 import t from 'tap';
 
 t.test('Renderer app', async t => {
@@ -6,6 +7,8 @@ t.test('Renderer app', async t => {
 
   t.equal(app.log.level, 'trace');
   app.log.level = 'fatal';
+
+  app.renderer.viewPaths.push(Path.currentFile().sibling('support', 'js', 'renderer-app', 'views').toString());
 
   app.renderer.addEngine('test', {
     render() {
@@ -28,6 +31,8 @@ t.test('Renderer app', async t => {
   app.get('/custom', ctx => ctx.render({inline: 'test', engine: 'custom'}));
 
   app.get('/broken', ctx => ctx.render({engine: 'broken'}));
+
+  app.get('/formats', {ext: ['html', 'json', 'xml']}, ctx => ctx.render({view: 'foo', format: ctx.stash.ext}));
 
   app.get('/missing', ctx => ctx.render({view: 'does_not_exist'}));
 
@@ -59,6 +64,37 @@ t.test('Renderer app', async t => {
     t.same(await ctx.renderToString({view: 'does-not-exist', engine: 'test'}), null);
     t.same(await ctx.renderToString({engine: 'does-not-exist'}), null);
     t.same(await ctx.renderToString({inline: 'failed', engine: 'does-not-exist'}), null);
+  });
+
+  await t.test('Find views', async t => {
+    t.match(app.renderer.findView({view: 'foo'}), {path: /foo\.html\.tmpl/, format: 'html', engine: 'tmpl'});
+    t.match(app.renderer.findView({view: 'foo', format: 'json'}), {
+      path: /foo\.json\.tmpl/,
+      format: 'json',
+      engine: 'tmpl'
+    });
+    t.match(app.renderer.findView({view: 'foo', format: 'xml'}), {
+      path: /foo\.xml\.tmpl/,
+      format: 'xml',
+      engine: 'tmpl'
+    });
+    t.match(app.renderer.findView({view: 'foo', format: 'xml', engine: 'tmpl'}), {
+      path: /foo\.xml\.tmpl/,
+      format: 'xml',
+      engine: 'tmpl'
+    });
+
+    t.match(app.renderer.findView({view: 'bar'}), {path: /bar\.xml\.yada/, format: 'xml', engine: 'yada'});
+
+    t.same(app.renderer.findView({view: 'foo', format: 'xml', engine: 'yada'}), null);
+    t.same(app.renderer.findView({view: 'bar', format: 'json'}), null);
+    t.same(app.renderer.findView({view: 'baz'}), null);
+  });
+
+  await t.test('Multiple formats', async () => {
+    (await ua.getOk('/formats.html')).statusIs(200).typeIs('text/html; charset=utf-8').bodyLike(/HTML/);
+    (await ua.getOk('/formats.json')).statusIs(200).typeIs('application/json; charset=utf-8').bodyLike(/JSON/);
+    (await ua.getOk('/formats.xml')).statusIs(200).typeIs('application/xml').bodyLike(/XML/);
   });
 
   await t.test('Missing view', async t => {
