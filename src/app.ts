@@ -250,10 +250,9 @@ export class App {
    *
    * // Route with pattern, condition and destination
    * app.any('/').requires({agent: /Firefox/}).to('Foo#bar');
-   * 
+   *
    * // Route with pattern and a closure as destination
    * app.any('/:foo', async ctx => ctx.render({text: 'Hello World!'}));
-});
    */
   any(...args: AnyArguments): Route {
     return this.router.any(...args);
