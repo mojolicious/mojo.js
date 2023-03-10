@@ -238,6 +238,22 @@ export class App {
 
   /**
    * Generate route matching any of the listed HTTP request methods or all.
+   * @example
+   * // Route with pattern and destination
+   * app.any('/user').to('User#whatever');
+   *
+   * // Route with HTTP methods, pattern, restrictive placeholders and destination
+   * app.any(['DELETE', 'PUT'], '/:foo', {foo: /\w+/}).to('Foo#bar');
+   *
+   * // Route with pattern, name and destination
+   * app.any('/:foo').name('foo_route').to('Foo#bar');
+   *
+   * // Route with pattern, condition and destination
+   * app.any('/').requires({agent: /Firefox/}).to('Foo#bar');
+   * 
+   * // Route with pattern and a closure as destination
+   * app.any('/:foo', async ctx => ctx.render({text: 'Hello World!'}));
+});
    */
   any(...args: AnyArguments): Route {
     return this.router.any(...args);
@@ -263,6 +279,9 @@ export class App {
 
   /**
    * Generate route matching only `DELETE` requests.
+   * @example
+   * // Route with destination
+   * app.delete('/user').to('User#remove');
    */
   delete(...args: RouteArguments): Route {
     return this.router.delete(...args);
@@ -270,6 +289,9 @@ export class App {
 
   /**
    * Generate route matching only `GET` requests.
+   * @example
+   * // Route with destination
+   * app.get('/user').to('User#show');
    */
   get(...args: RouteArguments): Route {
     return this.router.get(...args);
@@ -362,6 +384,9 @@ export class App {
 
   /**
    * Generate route matching only `OPTIONS` requests.
+   * @example
+   * // Route with destination
+   * app.options('/user').to('User#overview');
    */
   options(...args: RouteArguments): Route {
     return this.router.options(...args);
@@ -369,6 +394,9 @@ export class App {
 
   /**
    * Generate route matching only `PATCH` requests.
+   * @example
+   * // Route with destination
+   * app.patch('/user').to('User#update');
    */
   patch(...args: RouteArguments): Route {
     return this.router.patch(...args);
@@ -383,6 +411,9 @@ export class App {
 
   /**
    * Generate route matching only `POST` requests.
+   * @example
+   * // Route with destination
+   * app.post('/user').to('User#create');
    */
   post(...args: RouteArguments): Route {
     return this.router.post(...args);
@@ -390,6 +421,9 @@ export class App {
 
   /**
    * Generate route matching only `PUT` requests.
+   * @example
+   * // Route with destination
+   * app.put('/user').to('User#replace');
    */
   put(...args: RouteArguments): Route {
     return this.router.put(...args);

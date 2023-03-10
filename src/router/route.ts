@@ -54,6 +54,21 @@ export class Route {
 
   /**
    * Generate route matching any of the listed HTTP request methods or all.
+   * @example
+   * // Route with pattern and destination
+   * route.any('/user').to('User#whatever');
+   *
+   * // Route with HTTP methods, pattern, restrictive placeholders and destination
+   * route.any(['DELETE', 'PUT'], '/:foo', {foo: /\w+/}).to('Foo#bar');
+   *
+   * // Route with pattern, name and destination
+   * route.any('/:foo').name('foo_route').to('Foo#bar');
+   *
+   * // Route with pattern, condition and destination
+   * route.any('/').requires({agent: /Firefox/}).to('Foo#bar');
+   *
+   * // Route with pattern and a closure as destination
+   * route.any('/:foo', async ctx => ctx.render({text: 'Hello World!'}));
    */
   any(...args: AnyArguments): Route {
     const child = new Route();
@@ -78,6 +93,9 @@ export class Route {
 
   /**
    * Generate route matching only `DELETE` requests.
+   * @example
+   * // Route with destination
+   * route.delete('/user').to('User#remove');
    */
   delete(...args: RouteArguments): Route {
     return this.any(['DELETE'], ...args);
@@ -85,6 +103,9 @@ export class Route {
 
   /**
    * Generate route matching only `GET` requests.
+   * @example
+   * // Route with destination
+   * route.get('/user').to('User#show');
    */
   get(...args: RouteArguments): Route {
     return this.any(['GET'], ...args);
@@ -117,6 +138,9 @@ export class Route {
 
   /**
    * Generate route matching only `OPTIONS` requests.
+   * @example
+   * // Route with destination
+   * route.options('/user').to('User#overview');
    */
   options(...args: RouteArguments): Route {
     return this.any(['OPTIONS'], ...args);
@@ -135,6 +159,9 @@ export class Route {
 
   /**
    * Generate route matching only `PATCH` requests.
+   * @example
+   * // Route with destination
+   * route.patch('/user').to('User#update');
    */
   patch(...args: RouteArguments): Route {
     return this.any(['PATCH'], ...args);
@@ -142,6 +169,9 @@ export class Route {
 
   /**
    * Generate route matching only `POST` requests.
+   * @example
+   * // Route with destination
+   * route.post('/user').to('User#create');
    */
   post(...args: RouteArguments): Route {
     return this.any(['POST'], ...args);
@@ -149,6 +179,9 @@ export class Route {
 
   /**
    * Generate route matching only `PUT` requests.
+   * @example
+   * // Route with destination
+   * route.put('/user').to('User#replace');
    */
   put(...args: RouteArguments): Route {
     return this.any(['PUT'], ...args);
