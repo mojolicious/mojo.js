@@ -57,9 +57,10 @@ class Context extends EventEmitter {
    */
   backend: BackendInfo;
   /**
-   * Partial content.
+   * Partial content. Always returns at least an empty string, even for sections that have not been defined with
+   * `ctx.contentFor()`.
    * @example
-   * // Get content for `head` section
+   * // Get content for "head" section
    * const head = ctx.content.head;
    */
   content: Record<string, string> = new Proxy(
