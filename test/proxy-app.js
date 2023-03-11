@@ -58,6 +58,10 @@ t.test('Proxy app', async t => {
     await ctx.backend.req.socket.end('');
   });
 
+  targetApp.get('/res6', async ctx => {
+    await ctx.render({text: 'x'.repeat(2048)});
+  });
+
   const ua = await proxyApp.newTestUserAgent({tap: t});
 
   await t.test('Various response variants', async () => {
@@ -72,6 +76,7 @@ t.test('Proxy app', async t => {
       .bodyIs('Three!');
     (await ua.getOk('/proxy1/res4')).statusIs(204).headerIs('X-Mojo-App', 'Four').bodyIs('');
     (await ua.getOk('/proxy1/res5')).statusIs(200).bodyLike(/Error: .+/);
+    (await ua.getOk('/proxy1/res6')).statusIs(200).bodyIs('x'.repeat(2048));
   });
 
   await t.test('Custom request', async () => {

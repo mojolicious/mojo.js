@@ -253,6 +253,7 @@ async function proxyPost(ctx: MojoContext, url: string | URL, config: UserAgentR
 
 async function proxyRequest(ctx: MojoContext, config: UserAgentRequestOptions): Promise<void> {
   const proxyRes = await ctx.ua.request(config);
+  proxyRes.autoDecompress = false;
   const {statusCode, headers} = proxyRes;
   const stream = proxyRes.createReadStream();
 

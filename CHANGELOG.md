@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.23.2 (2022-03-11)
+
+### Bug Fixes
+
+  * Fixed compression bug in proxy helpers.
+
 ## v1.23.1 (2022-03-10)
 
 ### Bug Fixes
