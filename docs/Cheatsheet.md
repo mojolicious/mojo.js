@@ -146,6 +146,9 @@ const url = ctx.urlFor('index');
 // urlForFile: generate URL for static file
 const url = ctx.urlForFile('foo/app.css');
 
+// urlForAsset: generate URL for asset
+const url = ctx.urlForAsset('app.js');
+
 // urlWith: generate URL for route or path and preserve the current query parameters
 const url = ctx.urlWith('index');
 
@@ -181,6 +184,9 @@ await ctx.respondTo({
 
 // sendFile: send static file
 await ctx.sendFile(ctx.home.child('index.js'));
+
+// proxyRequest: perform HTTP request and forward the response as efficient as possible
+await ctx.proxyRequest({method: 'GET', url: 'http://mojolicious.org', headers: {Accept: 'application/json'}});
 
 // exceptionFormat: format for HTTP exceptions ("html", "json", or "txt")
 ctx.exceptionFormat = 'html';
