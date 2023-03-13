@@ -407,8 +407,8 @@ class Context extends EventEmitter {
    * // URL for route with placeholder values
    * const url = ctx.urlFor('users', {values: {id: 23}});
    *
-   * // Absolute URL for path
-   * const url = ctx.urlFor('/some/path', {absolute: true});
+   * // Absolute URL for path with fragment
+   * const url = ctx.urlFor('/some/path', {absolute: true, fragment: 'whatever'});
    */
   urlFor(target?: string, options: MojoURLOptions = {}): string {
     if (target === undefined || target === 'current') {
@@ -463,14 +463,16 @@ class Context extends EventEmitter {
   _urlForPath(path: string, isWebSocket: boolean, options: MojoURLOptions): string {
     path = this.req.basePath + path;
 
-    let query = '';
+    let queryFragment = '';
     if (options.query !== undefined && Object.keys(options.query).length > 0) {
-      query = '?' + querystring.stringify(options.query);
+      queryFragment = '?' + querystring.stringify(options.query);
     }
 
-    if (options.absolute !== true && isWebSocket === false) return path + query;
+    if (options.fragment !== undefined) queryFragment += '#' + querystring.escape(options.fragment);
 
-    const url = this.req.baseURL + path + query;
+    if (options.absolute !== true && isWebSocket === false) return path + queryFragment;
+
+    const url = this.req.baseURL + path + queryFragment;
     return isWebSocket ? url.replace(/^http/, 'ws') : url;
   }
 }

@@ -973,10 +973,12 @@ t.test('App', async t => {
 
     t.equal(ctx.urlFor('websocket_route'), 'ws://example.com/websocket/route/works');
     t.equal(ctx.urlFor('methods', {query: {_method: 'PUT'}}), '/methods?_method=PUT');
+    t.equal(ctx.urlFor('methods', {query: {_method: 'PUT'}, fragment: 'foo'}), '/methods?_method=PUT#foo');
     t.equal(ctx.urlFor('methods', {absolute: true, query: {_method: 'PUT'}}), 'http://example.com/methods?_method=PUT');
     t.equal(ctx.urlFor('/what/ever', {query: {_method: 'PUT'}}), '/what/ever?_method=PUT');
     t.equal(ctx.urlFor('methods', {query: {b: 'B', a: 'A', c: 'C'}}), '/methods?b=B&a=A&c=C');
     t.equal(ctx.urlFor('methods', {query: {b: 'B', a: ['A', 'C']}}), '/methods?b=B&a=A&a=C');
+    t.equal(ctx.urlFor('/whatever', {fragment: 'test-123#test'}), '/whatever#test-123%23test');
     t.equal(
       ctx.urlFor('exception', {query: {_method: 'QUERY'}, values: {msg: 'test'}}),
       '/exception/test?_method=QUERY'

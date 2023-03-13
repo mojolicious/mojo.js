@@ -123,6 +123,7 @@ export interface CookieOptions {
 
 export type MojoURLOptions = {
   absolute?: boolean;
+  fragment?: string;
   query?: Record<string, string | string[]>;
   values?: Record<string, string>;
 };
