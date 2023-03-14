@@ -990,8 +990,8 @@ t.test('App', async t => {
     t.equal(ctx.urlWith('/what/ever', {query: {baz: null, foo: null}}), '/what/ever');
     t.equal(ctx.urlWith('exception', {query: {baz: 'too'}, values: {msg: 'tset'}}), '/exception/tset?foo=bar&baz=too');
     t.equal(
-      ctx.urlWith('/what/ever', {absolute: true, query: {foo: 'works'}}),
-      'http://example.com/what/ever?foo=works&baz=yada'
+      ctx.urlWith('/what/ever', {absolute: true, fragment: 'works', query: {foo: 'works'}}),
+      'http://example.com/what/ever?foo=works&baz=yada#works'
     );
 
     t.end();
