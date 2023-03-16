@@ -93,6 +93,10 @@ t.test('UserAgent', async t => {
 
   app.get('/gzip', ctx => ctx.render({text: 'a'.repeat(2048)}));
 
+  app.get('/abort', async () => {
+    // Do nothing
+  });
+
   const server = new Server(app, {listen: ['http://*'], quiet: true});
   await server.start();
   const ua = new UserAgent({baseURL: server.urls[0], name: 'mojo 1.0'});
@@ -546,6 +550,22 @@ t.test('UserAgent', async t => {
       parts.push(chunk);
     }
     t.equal(Buffer.concat(parts).toString(), 'a'.repeat(2048));
+  });
+
+  const skip = parseInt(process.versions.node.split('.')[0]) > 16 ? {} : {skip: 'Timeouts require Node.js 18'};
+  await t.test('Abort', skip, async t => {
+    const ac = new AbortController();
+    const {signal} = ac;
+    setTimeout(() => ac.abort(), 100);
+
+    let result;
+    try {
+      await ua.get('/abort', {signal});
+    } catch (error) {
+      result = error;
+    }
+
+    t.match(result, /aborted/);
   });
 
   await t.test('MOJO_CLIENT_DEBUG', async t => {

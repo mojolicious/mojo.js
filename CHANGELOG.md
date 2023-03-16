@@ -3,10 +3,11 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
-## v1.24.0 (2022-03-13)
+## v1.24.0 (2022-03-16)
 
 ### Features
 
+  * Added timeout support for `UserAgent` requests.
   * Added `fragment` option to `ctx.urlFor()` and related methods.
 
 ## v1.23.2 (2022-03-11)

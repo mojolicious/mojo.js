@@ -193,6 +193,7 @@ export interface UserAgentRequestOptions extends SharedUserAgentRequestOptions {
   json?: any;
   method?: string;
   servername?: string;
+  signal?: AbortSignal;
   yaml?: any;
 }
 export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions {

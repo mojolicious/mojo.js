@@ -83,6 +83,9 @@ const res = await ua.request({
   // Path to UNIX domain socket (UNIX only)
   socketPath: '/var/lib/run/myapp.sock',
 
+  // An `AbortSignal` to abort the request
+  signal: controller.signal,
+
   // Alternative `http.Agent` object to use, for keep-alive or SOCKS proxy support with `proxy-agent`
   // (this API is likely to change in mojo.js 2.0)
   agent: new http.Agent({keepAlive: true})
@@ -195,6 +198,18 @@ Of course you can also just disable cookies completely.
 
 ```js
 const ua = new UserAgent({cookieJar: null});
+```
+
+### Timeouts
+
+You can use an `AbortController` to make sure a request does not take longer than a certain amount of time. Once
+aborted the promise returned by `ua.get()` will reject.
+
+```js
+const controller = new AbortController();
+const signal = controller.signal;
+setTimeout(() => controller.abort(), 3000);
+const res = await ua.get('https://mojojs.org', {signal});
 ```
 
 ### WebSockets

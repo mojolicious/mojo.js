@@ -70,6 +70,7 @@ export class HTTPTransport {
     if (config.agent !== undefined) options.agent = config.agent;
     if (options.agent === undefined) options.agent = this.agent;
     if (config.auth !== undefined) options.auth = config.auth;
+    if (config.signal !== undefined) options.signal = config.signal;
     if (config.socketPath !== undefined) options.socketPath = config.socketPath;
     return options;
   }
