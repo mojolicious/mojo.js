@@ -260,6 +260,9 @@ export class App {
 
   /**
    * Decorate context class with a method or getter/setter.
+   * @example
+   * // Decorate context with getter
+   * app.decorateContext('helloWorld', {get: () => 'Hello World!'});
    */
   decorateContext(name: string, fn: Decoration): this {
     const proto: MojoContext = Context.prototype as MojoContext;
