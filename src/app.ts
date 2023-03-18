@@ -353,6 +353,10 @@ export class App {
 
   /**
    * Create a new test user-agent for application.
+   * @example
+   * // Test plain text endpoint
+   * const ua = await app.newTestUserAgent();
+   * (await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
    */
   async newTestUserAgent(options?: TestUserAgentOptions, serverOptions?: ServerOptions): Promise<TestUserAgent> {
     return await TestUserAgent.newTestUserAgent(this, options, serverOptions);
