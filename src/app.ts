@@ -457,6 +457,11 @@ export class App {
 
   /**
    * Generate route for a nested route with its own intermediate destination.
+   * @example
+   * // Intermediate destination and prefix shared between two routes
+   * const auth = app.under('/user').to('User#auth');
+   * auth.get('/show').to('User#show');
+   * auth.post('/create').to('User#create');
    */
   under(...args: AnyArguments): Route {
     return this.router.under(...args);
@@ -472,6 +477,9 @@ export class App {
 
   /**
    * Generate route matching only WebSocket handshake requests.
+   * @example
+   * // Route with destination
+   * app.websocket('/echo').to('Example#echo');
    */
   websocket(...args: RouteArguments): Route {
     return this.router.websocket(...args);
