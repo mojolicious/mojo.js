@@ -110,7 +110,7 @@ export class App {
    */
   mime: Mime = new Mime();
   /**
-   * Operating mode for application. Defaults to the value of the `NODE_ENV` environment variable.
+   * Operating mode for application. Defaults to the value of the `NODE_ENV` environment variable or `development`.
    */
   mode: string;
   /**
@@ -151,6 +151,7 @@ export class App {
   secrets: string[];
   /**
    * Encrypted cookie based session manager.
+   * @example
    * // Change name of cookie used for all sessions
    * app.sessions.cookieName = 'mysession';
    *
