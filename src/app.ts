@@ -410,6 +410,12 @@ export class App {
 
   /**
    * Register plugin.
+   * @example
+   * // Mount application under "/prefix"
+   * app.plugin(mountPlugin, {app: myOtherApp, path: '/prefix'});
+   *
+   * // Load configuarion from file
+   * app.plugin(jsonConfigPlugin, {file: 'myapp.conf'});
    */
   plugin<T>(plugin: (app: App, options: Record<string, any>) => T, options: Record<string, any> = {}): T {
     return plugin(this, options);
@@ -437,6 +443,12 @@ export class App {
 
   /**
    * Start the command line interface.
+   * @example
+   * // Get arguments from "process.argv"
+   * app.start();
+   *
+   * // Always start server (rarely used)
+   * app.start('server', '-l', 'http://*:8080');
    */
   async start(command?: string, ...args: string[]): Promise<void> {
     if (this.detectImport === true && process.argv[1] !== Path.callerFile().toString()) return;
