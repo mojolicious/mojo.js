@@ -343,7 +343,7 @@ Get the current route name.
 #### inspect
 
 ```js
-const serialized = ctx.inpsect({hello: 'world'});
+const serialized = ctx.inspect({hello: 'world'});
 ```
 
 Serialize data structure for debugging.
