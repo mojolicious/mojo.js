@@ -186,6 +186,10 @@ class Context extends EventEmitter {
 
   /**
    * Data storage persistent only for the next request.
+   * // Show message after redirect
+   * const flash = await ctx.flash();
+   * flash.message = 'User created successfully!';
+   * await ctx.redirectTo('show_user', {values: {id: 23}});
    */
   async flash(): Promise<Record<string, any>> {
     if (this._flash === undefined) {
@@ -300,6 +304,8 @@ class Context extends EventEmitter {
 
   /**
    * Send `302` redirect response.
+   * // Moved Permanently
+   * await ctx.redirect_to('some_route', {status: 301});
    */
   async redirectTo(target: string, options: MojoURLOptions & {status?: number} = {}): Promise<void> {
     await this.res
