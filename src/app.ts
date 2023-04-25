@@ -324,6 +324,10 @@ export class App {
 
   /**
    * Create a mock context for application. Very useful for testing helpers.
+   * @example
+   * // Use a mock context to call a helper
+   * const ctx = app.newMockContext();
+   * const html = ctx.assetTag('/app.js');
    */
   newMockContext(options: {headers?: string[]; method?: string; url?: string} = {}): MojoContext {
     const ctx: MojoContext = new this._contextClass(
