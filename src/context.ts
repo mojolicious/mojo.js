@@ -186,6 +186,7 @@ class Context extends EventEmitter {
 
   /**
    * Data storage persistent only for the next request.
+   * @example
    * // Show message after redirect
    * const flash = await ctx.flash();
    * flash.message = 'User created successfully!';
@@ -304,6 +305,7 @@ class Context extends EventEmitter {
 
   /**
    * Send `302` redirect response.
+   * @example
    * // Moved Permanently
    * await ctx.redirect_to('some_route', {status: 301});
    */
