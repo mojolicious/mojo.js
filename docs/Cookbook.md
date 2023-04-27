@@ -456,7 +456,7 @@ $ node index.js eval 'console.log(app.static.publicPaths)'
 ["/home/sri/myapp/public"]
 ```
 
-The verbose option will automatically print the return value or returned data structure to STDOUT.
+The verbose option will automatically print the return value or returned data structure to `stdout`.
 
 ```
 $ node index.js eval -v 'app.renderer.viewPaths'

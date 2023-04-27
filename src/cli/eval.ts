@@ -19,5 +19,5 @@ evalCommand.usage = `Usage: APPLICATION eval [OPTIONS] CODE
 
 Options:
   -h, --help      Show this summary of available options
-  -v, --verbose   Print return value to STDOUT
+  -v, --verbose   Print return value to stdout
 `;

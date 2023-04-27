@@ -93,7 +93,7 @@ t.test('Logger', async t => {
     t.same(logger.history[5], undefined);
   });
 
-  t.test('Logging to STDERR', t => {
+  t.test('Logging to stderr', t => {
     const logger = new Logger();
     t.same(logger.destination, process.stderr);
     t.end();

@@ -77,7 +77,7 @@ Options:
   -P, --socket-path <path>    UNIX domain socket path
   -r, --redirect              Follow up to 10 redirects
   -X, --method <method>       HTTP method to use, defaults to "GET"
-  -v, --verbose               Print response headers to STDERR
+  -v, --verbose               Print response headers to stderr
 `;
 
 function parseHeaders(list: string[] = []): Record<string, string> {

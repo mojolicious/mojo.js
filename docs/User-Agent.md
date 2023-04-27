@@ -404,7 +404,7 @@ combining it with [playwright](https://www.npmjs.com/package/playwright).
 ### Introspection
 
 You can set the `MOJO_CLIENT_DEBUG` environment variable to get some advanced diagnostics information printed to
-`STDERR`.
+`stderr`.
 
 ```
 $ MOJO_CLIENT_DEBUG=1 node myapp.js
