@@ -297,6 +297,12 @@ async bye(ctx) {
 }
 ```
 
+You can use `app.defaults` to set default stash values that will be available everywhere in the application.
+
+```js
+app.defaults.mymessage = 'Howdy';
+```
+
 ### Nested Routes
 
 It is also possible to build tree structures from routes to remove repetitive code. A route with children can't match on
