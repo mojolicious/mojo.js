@@ -758,12 +758,12 @@ app.start();
 <{typeBlock}>
   <meta http-equiv="Content-Type" content="text/html">
 <{/typeBlock}>
-% await ctx.contentFor('header', await typeBlock());
+% await ctx.contentFor('header', typeBlock);
 <div>Hello World!</div>
 <{pragmaBlock}>
   <meta http-equiv="Pragma" content="no-cache">
 <{/pragmaBlock}>
-% await ctx.contentFor('header', await pragmaBlock());
+% await ctx.contentFor('header', pragmaBlock);
 ```
 ```
 %# views/layouts/mylayout.html.tmpl

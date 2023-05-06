@@ -174,8 +174,8 @@ class Context extends EventEmitter {
   /**
    * Append partial content to `ctx.content` buffers.
    * @example
-   * // Add content for `head` section
-   * ctx.contentFor('head', '<link rel="icon" href="/static/favicon.ico">');
+   * // Add content for "head" section
+   * await ctx.contentFor('head', '<link rel="icon" href="/static/favicon.ico">');
    */
   async contentFor(
     name: string,
