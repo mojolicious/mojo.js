@@ -11,7 +11,7 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
   const parsed = nopt({ts: Boolean}, {}, args, 1);
   const ts = parsed.ts === true;
 
-  process.stdout.write('Generating application directory struture:\n');
+  process.stdout.write('Generating application directory structure:\n');
   await util.cliCreateFile('config.yml', yamlConfig, {secret: crypto.randomBytes(16).toString('hex')});
 
   await util.cliCreateDir('views/layouts');

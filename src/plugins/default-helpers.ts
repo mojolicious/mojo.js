@@ -183,7 +183,7 @@ async function inputTag(ctx: MojoContext, name: string, attrs: TagAttrs = {}): P
   const params = await ctx.params();
   const values = params.getAll(name);
   if (values.length > 0) {
-    // Checkbox and radiobutton
+    // Checkbox and radio-button
     const type = attrs.type;
     if (type === 'checkbox' || type === 'radio') {
       const value = attrs.value ?? 'on';
