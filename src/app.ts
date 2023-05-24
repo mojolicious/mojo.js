@@ -419,7 +419,7 @@ export class App {
    * // Mount application under "/prefix"
    * app.plugin(mountPlugin, {app: myOtherApp, path: '/prefix'});
    *
-   * // Load configuarion from file
+   * // Load configuration from file
    * app.plugin(jsonConfigPlugin, {file: 'myapp.conf'});
    */
   plugin<T>(plugin: (app: App, options: Record<string, any>) => T, options: Record<string, any> = {}): T {
