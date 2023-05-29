@@ -230,6 +230,12 @@ export class App {
 
   /**
    * Add a helper.
+   * @example
+   * // Render response with header
+   * app.addHelper('renderWithHeader', async (ctx, ...args) => {
+   *   ctx.res.set('X-Mojo', 'I <3 mojo.js!');
+   *   await ctx.render(...args);
+   * });
    */
   addHelper(name: string, fn: MojoAction): this {
     return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
