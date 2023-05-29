@@ -261,6 +261,17 @@ class Context extends EventEmitter {
 
   /**
    * Accept WebSocket connection and activate JSON mode.
+   * @example
+   * // Echo WebSocket messages
+   * ctx.json(async ws => {
+   *   for await (const data of ws) {
+   *     // Add a Futurama quote to JSON objects
+   *     if (typeof data === 'object') {
+   *       data.quote = 'Shut up and take my money!';
+   *       await ws.send(data);
+   *     }
+   *   }
+   * });
    */
   json(fn: WebSocketHandler): this {
     this.jsonMode = true;
@@ -269,6 +280,9 @@ class Context extends EventEmitter {
 
   /**
    * Model shortcut.
+   * @example
+   * // Access arbitrary model objects
+   * const db = await ctx.models.pg.db();
    */
   get models(): MojoModels {
     return this.app.models;
@@ -298,6 +312,13 @@ class Context extends EventEmitter {
 
   /**
    * Accept WebSocket connection.
+   * @example
+   * // Echo incoming WebSocket messages
+   * ctx.plain(async ws => {
+   *   for await (const message of ws) {
+   *     await ws.send(`echo: ${message}`);
+   *   }
+   * });
    */
   plain(fn: WebSocketHandler): this {
     return this.on('connection', fn as () => void);
