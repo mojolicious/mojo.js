@@ -35,7 +35,7 @@ import Path from '@mojojs/path';
 type AppHook = (app: App, ...args: any[]) => any;
 type ContextHook = (app: MojoContext, ...args: any[]) => any;
 
-type Decoration = ((...args: any[]) => any) | {get?: () => any; set?: (value: any) => any};
+type Decoration = ((...args: any[]) => any) | {get?: () => any; set?: (value: any) => any; configurable?: boolean};
 
 const ContextWrapper = class extends Context {};
 
@@ -185,6 +185,7 @@ export class App {
   validator = new Validator();
 
   _contextClass: any = class extends ContextWrapper {};
+  _nestedHelpers: Record<string, Record<string, MojoAction>> = {};
 
   constructor(options: AppOptions = {}) {
     this.config = options.config ?? {};
@@ -236,11 +237,40 @@ export class App {
    *   ctx.res.set('X-Mojo', 'I <3 mojo.js!');
    *   await ctx.render(...args);
    * });
+   *
+   * // Render response with header using nested helper
+   * app.addHelper('renderWith.header', async (ctx, ...args) => {
+   *   ctx.res.set('X-Mojo', 'I <3 mojo.js!');
+   *   await ctx.render(...args);
+   * });
    */
   addHelper(name: string, fn: MojoAction): this {
-    return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
-      return fn(this, ...args);
-    });
+    const nestedNames = name.split('.');
+    if (nestedNames.length === 1) {
+      return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
+        return fn(this, ...args);
+      });
+    } else if (nestedNames.length === 2) {
+      const [getterName, methodName] = nestedNames;
+      this._nestedHelpers[getterName] ??= {};
+      this._nestedHelpers[getterName][methodName] = fn;
+      const fnEntries = Object.entries<MojoAction>(this._nestedHelpers[getterName]);
+      return this.decorateContext(getterName, {
+        get: function (this: MojoContext) {
+          if (this._nestedHelpersCache[getterName] === undefined) {
+            const ctxScopedFunctions: Record<string, MojoAction> = {};
+            for (const [key, fn] of fnEntries) {
+              ctxScopedFunctions[key] = (...args: any[]) => fn(this, ...args);
+            }
+            this._nestedHelpersCache[getterName] = ctxScopedFunctions;
+          }
+          return this._nestedHelpersCache[getterName];
+        },
+        configurable: true
+      });
+    } else {
+      throw new Error(`The name "${name}" exceeds maximum depth (2) for nested helpers`);
+    }
   }
 
   /**

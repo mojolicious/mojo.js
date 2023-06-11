@@ -127,6 +127,7 @@ class Context extends EventEmitter {
   stash: Record<string, any> = {};
 
   _flash: SessionData | undefined = undefined;
+  _nestedHelpersCache: Record<string, Record<string, MojoAction>> = {};
   _params: Params | undefined = undefined;
   _session: Record<string, any> | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;

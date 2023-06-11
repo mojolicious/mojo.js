@@ -1092,5 +1092,19 @@ t.test('App', async t => {
     t.end();
   });
 
+  t.test('Nested helper depth limit', t => {
+    let result;
+    try {
+      app.addHelper('too.many.indents', function () {
+        throw new Error('Fail!');
+      });
+    } catch (error) {
+      result = error;
+    }
+    t.match(result, /The name "too\.many\.indents" exceeds maximum depth \(2\) for nested helpers/);
+
+    t.end();
+  });
+
   await ua.stop();
 });
