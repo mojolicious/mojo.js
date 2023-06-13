@@ -75,6 +75,16 @@ export class Body {
 
   /**
    * Get async iterator for uploaded files from message body.
+   * @example
+   * // Iterate over uploaded files
+   * for await (const {fieldname, file, filename} of body.files()) {
+   *   const parts = [];
+   *   for await (const chunk of file) {
+   *     parts.push(chunk);
+   *   }
+   *   const content = Buffer.concat(parts).toString();
+   *   console.write(`${fieldname}: ${content}`);
+   * }
    */
   async *files(options?: UploadOptions): AsyncIterableIterator<FileUpload> {
     if (this._isForm() === false) return;
@@ -91,6 +101,10 @@ export class Body {
 
   /**
    * Get form parameters from message body.
+   * @example
+   * // Get a specific parameter
+   * const params = await body.form();
+   * const foo = params.get('foo');
    */
   async form(options?: UploadOptions): Promise<Params> {
     if (this._form === undefined) {
