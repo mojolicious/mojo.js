@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.24.6 (2022-06-19)
+
+## Bug Fixes
+
+  * Fixed built-in templates to not require an internet connection. ([@hernan604](https://github.com/hernan604))
+
 ## v1.24.0 (2022-03-17)
 
 ### Features
