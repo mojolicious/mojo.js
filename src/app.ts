@@ -245,16 +245,21 @@ export class App {
    * });
    */
   addHelper(name: string, fn: MojoAction): this {
+    // Simple helper
     const nestedNames = name.split('.');
     if (nestedNames.length === 1) {
       return this.decorateContext(name, function (this: MojoContext, ...args: any[]) {
         return fn(this, ...args);
       });
-    } else if (nestedNames.length === 2) {
+    }
+
+    // Nested helper
+    if (nestedNames.length === 2) {
       const [getterName, methodName] = nestedNames;
       this._nestedHelpers[getterName] ??= {};
       this._nestedHelpers[getterName][methodName] = fn;
       const fnEntries = Object.entries<MojoAction>(this._nestedHelpers[getterName]);
+
       return this.decorateContext(getterName, {
         get: function (this: MojoContext) {
           if (this._nestedHelpersCache[getterName] === undefined) {
@@ -264,13 +269,15 @@ export class App {
             }
             this._nestedHelpersCache[getterName] = ctxScopedFunctions;
           }
+
           return this._nestedHelpersCache[getterName];
         },
         configurable: true
       });
-    } else {
-      throw new Error(`The name "${name}" exceeds maximum depth (2) for nested helpers`);
     }
+
+    // Invalid helper name
+    throw new Error(`The name "${name}" exceeds maximum depth (2) for nested helpers`);
   }
 
   /**
