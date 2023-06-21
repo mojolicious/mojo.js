@@ -257,21 +257,21 @@ export class App {
     // Nested helper
     if (nestedNames.length === 2) {
       const [getterName, methodName] = nestedNames;
-      this._nestedHelpers[getterName] ??= {};
-      this._nestedHelpers[getterName][methodName] = fn;
-      const fnEntries = Object.entries<MojoAction>(this._nestedHelpers[getterName]);
+      const nested = (this._nestedHelpers[getterName] ??= {});
+      nested[methodName] = fn;
+      const fnEntries = Object.entries<MojoAction>(nested);
 
       return this.decorateContext(getterName, {
         get: function (this: MojoContext) {
-          if (this._nestedHelpersCache[getterName] === undefined) {
-            const ctxScopedFunctions: Record<string, MojoAction> = {};
+          const cache = this._nestedHelpersCache;
+          if (cache[getterName] === undefined) {
+            const nestedHelpers = (cache[getterName] ??= {});
             for (const [key, fn] of fnEntries) {
-              ctxScopedFunctions[key] = (...args: any[]) => fn(this, ...args);
+              nestedHelpers[key] = (...args: any[]) => fn(this, ...args);
             }
-            this._nestedHelpersCache[getterName] = ctxScopedFunctions;
           }
 
-          return this._nestedHelpersCache[getterName];
+          return cache[getterName];
         },
         configurable: true
       });
