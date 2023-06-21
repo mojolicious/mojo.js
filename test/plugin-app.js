@@ -386,8 +386,8 @@ Asset image2: <%= await tags.asset('/foo.png', {alt: 'test'}) %>
 Link1: <%= await ctx.tags.linkTo('getter_setter', {class: 'foo'}, 'Getter & Setter') %>
 Link2: <%= await tags.linkTo('mix', {}, 'WebSocket link') %>
 Link3: <%= await tags.linkTo(['form', {values: {name: 'yada'}}], {id: 'baz'}, 'Placeholder') %>
-Tag1: <%= await ctx.tags.tag('div', 'Hello Mojo!') %>
-Tag2: <%== await tags.tag('div', {class: 'test'}, 'Hello Mojo!') %>
+Tag1: <%= await ctx.tag('div', 'Hello Mojo!') %>
+Tag2: <%== await ctx.tag('div', {class: 'test'}, 'Hello Mojo!') %>
 Form1: <%= await ctx.tags.formFor('tag_helpers', {}, formBlock()) %>
 Form2: <%= await tags.formFor(['form', {values: {name: 'foo'}}], {class: 'test'}, 'Form') %>
 Form3: <%= await tags.formFor('special', {}, Promise.resolve('Form')) %>

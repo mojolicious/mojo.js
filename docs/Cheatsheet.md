@@ -705,11 +705,11 @@ Generate `input` tag of type `submit`.
 #### tag
 
 ```
-%= await tags.tag('div')
-%= await tags.tag('div', {class: 'wrapper'})
-%= await tags.tag('div', {class: 'wrapper'}, 'Hello World!')
-%= await tags.tag('div', {class: 'wrapper'}, Promise.resolve('Hello World!'))
-%= await tags.tag('div', {class: 'wrapper'}, async () => 'Hello World!')
+%= await ctx.tag('div')
+%= await ctx.tag('div', {class: 'wrapper'})
+%= await ctx.tag('div', {class: 'wrapper'}, 'Hello World!')
+%= await ctx.tag('div', {class: 'wrapper'}, Promise.resolve('Hello World!'))
+%= await ctx.tag('div', {class: 'wrapper'}, async () => 'Hello World!')
 ```
 
 Generate HTML tag.
