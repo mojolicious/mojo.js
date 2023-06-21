@@ -15,6 +15,10 @@ t.test('Plugin app', async t => {
   app.get('/form_helpers', ctx => ctx.render({inline: formTagHelpers}));
 
   app.get('/helper', ctx => ctx.render({text: ctx.testHelper('test')}));
+  app.get('/nested/helper', ctx => ctx.render({text: ctx.nested.testHelper('test')}));
+  app.get('/nested/helper_with_stash/:test', ctx => ctx.render({text: ctx.nested.testStashHelper('test')}));
+  app.get('/nested/other_helper_with_stash/:test', ctx => ctx.render({text: ctx.other.otherStashHelper('test')}));
+  app.get('/nested/inexistent_helper_with_stash/:test', ctx => ctx.render({text: ctx.other.testStashHelper('test')}));
 
   app.get('/getter/setter', ctx => {
     const before = ctx.testProp;
@@ -111,6 +115,49 @@ t.test('Plugin app', async t => {
 
   await t.test('Helper', async () => {
     (await ua.getOk('/helper')).statusIs(200).bodyIs('works');
+  });
+
+  await t.test('Nested helper', async () => {
+    (await ua.getOk('/nested/helper')).statusIs(200).bodyIs('works (nested)');
+  });
+
+  await t.test('Nested helper using stash', async () => {
+    (await ua.getOk('/nested/helper_with_stash/works')).statusIs(200).bodyIs('works (nested)');
+  });
+
+  await t.test('Nested helper with different root using stash', async () => {
+    (await ua.getOk('/nested/other_helper_with_stash/works')).statusIs(200).bodyIs('works (nested other)');
+  });
+
+  await t.test('Nested helper with wrong root name', async () => {
+    const logLevel = app.log.level;
+    app.log.level = 'fatal';
+    (await ua.getOk('/nested/inexistent_helper_with_stash/works'))
+      .statusIs(500)
+      .bodyLike(/TypeError: ctx\.other\.testStashHelper is not a function/);
+    app.log.level = logLevel;
+  });
+
+  await t.test('Cached getter object return', t => {
+    const ctx = app.newMockContext();
+    ctx.stash.test = 'something';
+    t.equal(ctx.nested.testStashHelper('test'), 'something (nested)');
+    const nested1 = ctx.nested;
+    t.equal(ctx.nested.testStashHelper('test'), 'something (nested)');
+    t.equal(ctx.nested, nested1);
+    t.end();
+  });
+
+  await t.test('Nested helpers concurrency', t => {
+    const ctx1 = app.newMockContext();
+    const ctx2 = app.newMockContext();
+    ctx1.stash.test = 'One';
+    ctx2.stash.test = 'Two';
+    t.equal(ctx1.nested.testStashHelper('test'), 'One (nested)');
+    const nested1 = ctx1.nested;
+    t.equal(ctx2.nested.testStashHelper('test'), 'Two (nested)');
+    t.equal(nested1.testStashHelper('test'), 'One (nested)');
+    t.end();
   });
 
   await t.test('Decorate with getter and setter', async () => {
@@ -393,7 +440,9 @@ function mixedPlugin(app) {
   app.config.test = 'works';
 
   app.addHelper('testHelper', (ctx, name) => ctx.config[name]);
-
+  app.addHelper('nested.testHelper', (ctx, name) => `${ctx.config[name]} (nested)`);
+  app.addHelper('nested.testStashHelper', (ctx, name) => `${ctx.stash[name]} (nested)`);
+  app.addHelper('other.otherStashHelper', (ctx, name) => `${ctx.stash[name]} (nested other)`);
   app.decorateContext('testMethod', function (name) {
     return this.config[name];
   });
