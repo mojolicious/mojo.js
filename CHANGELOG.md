@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.25.0 (NOT YET RELEASED)
+
+### Features
+
+  * Added support for nested helpers. ([@dmanto](https://github.com/dmanto))
+
 ## v1.24.6 (2022-06-19)
 
 ## Bug Fixes
