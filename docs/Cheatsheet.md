@@ -474,6 +474,7 @@ Log the exception and close the WebSocket connection with an `1011` error code.
 
 ## View Helpers
 
+View helpers available in templates as `tags.*` are also available as `ctx.tags.*` everywhere else in the application.
 These view helpers are currently available by default, all of them return promises:
 
 #### asset
