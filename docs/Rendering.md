@@ -710,27 +710,30 @@ app.start();
 <{/someBlock}>
 %= await trimNewline(someBlock)
 ```
-Of course helpers can also be specific to a single use case, such as adding headers in actions.
+
+You can use a prefix like `cacheControl.*` to organize helpers into namespaces as your application grows. Every prefix
+automatically becomes a getter with a proxy object containing the current context object and on which you can call the
+nested helpers.
 
 ```js
 import mojo from '@mojojs/core';
 
 const app = mojo();
 
-app.addHelper('cacheControlNoCaching', ctx => {
+app.addHelper('cacheControl.noCaching', ctx => {
   ctx.res.set('Cache-Control', 'private, max-age=0, no-cache');
 });
-app.addHelper('cacheControlFiveMinutes', ctx => {
+app.addHelper('cacheControl.fiveMinutes', ctx => {
   ctx.res.set('Cache-Control', 'public, max-age=300');
 });
 
 app.get('/news', async ctx => {
-  ctx.cacheControlNoCaching();
+  ctx.cacheControl.noCaching();
   await ctx.render({text: 'Always up to date.'});
 });
 
 app.get('/some_older_story', async ctx => {
-  ctx.cacheControlFiveMinutes();
+  ctx.cacheControl.fiveMinutes();
   await ctx.render({text: 'This one can be cached for a bit.'});
 });
 
