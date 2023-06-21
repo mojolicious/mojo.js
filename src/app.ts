@@ -6,6 +6,7 @@ import type {
   MojoAction,
   MojoContext,
   MojoModels,
+  NestedHelpers,
   RouteArguments,
   BackendInfo,
   ServerOptions,
@@ -185,7 +186,7 @@ export class App {
   validator = new Validator();
 
   _contextClass: any = class extends ContextWrapper {};
-  _nestedHelpers: Record<string, Record<string, MojoAction>> = {};
+  _nestedHelpers: NestedHelpers = {};
 
   constructor(options: AppOptions = {}) {
     this.config = options.config ?? {};
