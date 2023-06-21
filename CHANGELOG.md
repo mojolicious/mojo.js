@@ -3,7 +3,7 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
-## v1.25.0 (NOT YET RELEASED)
+## v1.25.0 (2023-06-21)
 
 ### Features
 
@@ -11,44 +11,44 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Added a `tags` namespace for all tag helpers. That means `ctx.styleTag()` becomes `ctx.tags.style()` (everywhere)
     or `tags.style()` (in templates only).
 
-## v1.24.6 (2022-06-19)
+## v1.24.6 (2023-06-19)
 
 ## Bug Fixes
 
   * Fixed built-in templates to not require an internet connection. ([@hernan604](https://github.com/hernan604))
 
-## v1.24.0 (2022-03-17)
+## v1.24.0 (2023-03-17)
 
 ### Features
 
   * Added timeout support for `UserAgent` requests.
   * Added `fragment` option to `ctx.urlFor()` and related methods.
 
-## v1.23.2 (2022-03-11)
+## v1.23.2 (2023-03-11)
 
 ### Bug Fixes
 
   * Fixed compression bug in proxy helpers.
 
-## v1.23.1 (2022-03-10)
+## v1.23.1 (2023-03-10)
 
 ### Bug Fixes
 
   * Fixed support for multiple views in different formats sharing the same name.
 
-## v1.23.0 (2022-02-26)
+## v1.23.0 (2023-02-26)
 
 ### Features
 
   * Added `proxyGet`, `proxyPost` and `proxyRequest` proxy helpers.
 
-## v1.22.0 (2022-02-23)
+## v1.22.0 (2023-02-23)
 
 ### Features
 
   * Added `render:before` hook.
 
-## v1.21.0 (2022-02-18)
+## v1.21.0 (2023-02-18)
 
 ### Features
 
@@ -59,39 +59,39 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Fixed bug where `ctx.contentFor()` would not `await` promises.
   * Fixed various promise related inconsistencies in tag helpers.
 
-## v1.20.0 (2022-02-16)
+## v1.20.0 (2023-02-16)
 
 ### Features
 
   * Added `onStart` and `onStop` methods to `App` class.
 
-## v1.19.0 (2022-02-13)
+## v1.19.0 (2023-02-13)
 
 ### Features
 
   * Added support for backend specific extensions, such as common Node.js middleware frameworks.
   * Added `backend` property to `Context` class.
 
-## v1.18.0 (2022-02-08)
+## v1.18.0 (2023-02-08)
 
 ### Features
 
   * Added `command:init` hook.
 
-## v1.17.0 (2022-02-03)
+## v1.17.0 (2023-02-03)
 
 ### Features
 
   * Added `textUnlike` method to `TestUserAgent` class.
 
-## v1.16.0 (2022-02-03)
+## v1.16.0 (2023-02-03)
 
 ### Features
 
   * Added `removeEmpty` method to `Params` class.
   * Added `notEmpty` option to `params` method in `Context` class.
 
-## v1.15.0 (2022-02-03)
+## v1.15.0 (2023-02-03)
 
 ### Features
 
