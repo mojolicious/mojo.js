@@ -377,7 +377,7 @@ They work just like normal plugins.
 
 ```js
 export default function myHelpersPlugin (app) {
-  app.addHelper('renderWithHeader', async (ctx, ...args) => {
+  app.addHelper('renderWith.header', async (ctx, ...args) => {
     ctx.res.set('X-Mojo', 'I <3 mojo.js!');
     await ctx.render(...args);
   });
@@ -395,7 +395,7 @@ const app = mojo();
 app.plugin(myHelpersPlugin);
 
 app.get('/', async ctx => {
-  await ctx.renderWithHeader({text: 'I ♥ mojo.js!'});
+  await ctx.renderWith.header({text: 'I ♥ mojo.js!'});
 });
 
 app.start();
