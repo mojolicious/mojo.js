@@ -346,14 +346,14 @@ While mojo.js does not have any special support for frontend frameworks like [Vu
 [React](https://reactjs.org), the `public/assets` directory is reserved for static assets created by bundlers like
 [Webpack](https://webpack.js.org) and [Rollup.js](https://rollupjs.org) ahead of time. Asset files can be of any type,
 they just have to follow the `[name].[checksum].[extensions]` naming scheme, like `myapp.ab1234cd5678ef.js`. You can
-then use `ctx.urlForAsset()` or `ctx.assetTag()` to generate URLs without having to know the checksum.
+then use `ctx.urlForAsset()` or `ctx.tags.asset()` to generate URLs without having to know the checksum.
 
 ```js
 // "/static/assets/myapp.ab1234cd5678ef.js"
 ctx.urlForAsset('myapp.js');
 
 // "<script src="/static/assets/myapp.ab1234cd5678ef.js"></script>"
-ctx.assetTag('myapp.js');
+ctx.tags.asset('myapp.js');
 ```
 
 If your application runs in `development` mode, all assets will be served with a `Cache-Control: no-cache` header, to
@@ -876,13 +876,13 @@ app.start();
     <form action="<%= ctx.urlFor('index') %>">
       <label for="user">Username (required, 1-20 characters)</label>
       <br>
-      %= await ctx.textFieldTag('user')
+      %= await tags.textField('user')
       <br>
       <label for="pass">Password (required, 1-20 characters)</label>
       <br>
-      %= await ctx.passwordFieldTag('pass')
+      %= await tags.passwordField('pass')
       <br>
-      %= await ctx.submitButtonTag('Login')
+      %= await tags.submitButton('Login')
     </form>
   </body>
 </html>

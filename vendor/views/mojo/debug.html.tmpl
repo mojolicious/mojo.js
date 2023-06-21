@@ -3,12 +3,12 @@
 <html>
   <head>
     <title>Debug</title>
-    %= await ctx.faviconTag()
-    %= await ctx.scriptTag('mojo/bootstrap/bootstrap.bundle.min.js')
-    %= await ctx.scriptTag('mojo/highlight.js/highlight.pack.js')
-    %= await ctx.styleTag('mojo/bootstrap/bootstrap.min.css')
-    %= await ctx.styleTag('mojo/highlight.js/highlight-mojo-dark.css')
-    %= await ctx.styleTag('mojo/mojo.css')
+    %= await tags.favicon()
+    %= await tags.script('mojo/bootstrap/bootstrap.bundle.min.js')
+    %= await tags.script('mojo/highlight.js/highlight.pack.js')
+    %= await tags.style('mojo/bootstrap/bootstrap.min.css')
+    %= await tags.style('mojo/highlight.js/highlight-mojo-dark.css')
+    %= await tags.style('mojo/mojo.css')
     <script>
       hljs.initHighlightingOnLoad();
       window.onload = function() {

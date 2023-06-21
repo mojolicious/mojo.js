@@ -8,6 +8,8 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 ### Features
 
   * Added support for nested helpers. ([@dmanto](https://github.com/dmanto))
+  * Added a `tags` namespace for all tag helpers. That means `ctx.styleTag()` becomes `ctx.tags.style()` (everywhere)
+    or `tags.style()` (in templates only).
 
 ## v1.24.6 (2022-06-19)
 

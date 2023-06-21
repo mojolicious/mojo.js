@@ -37,6 +37,6 @@ class TmplEngine {
       }
     }
 
-    return Buffer.from(await template({...ctx.stash, stash: ctx.stash, ctx, view: options}));
+    return Buffer.from(await template({...ctx.stash, stash: ctx.stash, ctx, view: options, tags: ctx.tags}));
   }
 }

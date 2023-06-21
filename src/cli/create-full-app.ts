@@ -144,7 +144,7 @@ export default class Controller {
 const tmplLayout = `<!DOCTYPE html>
 <html>
   <head>
-    %%= await ctx.faviconTag()
+    %%= await tags.favicon()
     <title>Welcome</title>
   </head>
   <body><%%= ctx.content.main %></body>

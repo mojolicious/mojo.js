@@ -56,5 +56,6 @@ export {
   MojoModels,
   MojoRenderOptions,
   MojoRoute,
+  MojoTags,
   MojoURLOptions
 } from './types.js';

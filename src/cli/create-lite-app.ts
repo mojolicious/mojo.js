@@ -58,7 +58,7 @@ const defaultLayout = \`
 <!DOCTYPE html>
 <html>
   <head>
-    <%%= await ctx.faviconTag() %>
+    <%%= await tags.favicon() %>
     <title><%%= title %></title>
   </head>
   <body><%%= ctx.content.main %></body>

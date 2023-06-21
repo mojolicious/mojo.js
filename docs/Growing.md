@@ -564,7 +564,7 @@ const protectedTemplate = `
 % }
 % const session = await ctx.session();
 Welcome <%= session.user %>.<br>
-%= await ctx.linkTo('logout', {}, 'Logout')
+%= await tags.linkTo('logout', {}, 'Logout')
 `;
 
 const defaultLayout = `

@@ -476,11 +476,11 @@ Log the exception and close the WebSocket connection with an `1011` error code.
 
 These view helpers are currently available by default, all of them return promises:
 
-#### assetTag
+#### asset
 
 ```
-%= await ctx.assetTag('app.js')
-%= await ctx.assetTag('app.js', {async: 'async'})
+%= await tags.asset('app.js')
+%= await tags.asset('app.js', {async: 'async'})
 ```
 
 Generate `<script>`, `<link>` or `<img>` tag for static asset.
@@ -488,71 +488,71 @@ Generate `<script>`, `<link>` or `<img>` tag for static asset.
 #### buttonTo
 
 ```
-%= await ctx.buttonTo('some_route', {class: 'foo'}, 'Go there');
-%= await ctx.buttonTo(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Go there');
+%= await tags.buttonTo('some_route', {class: 'foo'}, 'Go there');
+%= await tags.buttonTo(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Go there');
 ```
 
 Generate portable `<form>` tag with `ctx.formFor()`, containing a single button.
 
-#### checkBoxTag
+#### checkBox
 
 ```
-%= await ctx.checkBoxTag('test')
-%= await ctx.checkBoxTag('test', {class: 'user', value: 'passed'})
+%= await tags.checkBox('test')
+%= await tags.checkBox('test', {class: 'user', value: 'passed'})
 ```
 
 Generate `<input>` tag of type `checkbox`. Previous input values will automatically get picked up and shown as default.
 
-#### colorFieldTag
+#### colorField
 
 ```
-%= await ctx.colorFieldTag('background')
-%= await ctx.colorFieldTag('background', {class: 'foo'})
+%= await tags.colorField('background')
+%= await tags.colorField('background', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `color`. Previous input values will automatically get picked up and shown as default.
 
-#### dateFieldTag
+#### dateField
 
 ```
-%= await ctx.dateFieldTag('end')
-%= await ctx.dateFieldTag('end', {class: 'foo'})
+%= await tags.dateField('end')
+%= await tags.dateField('end', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `date`. Previous input values will automatically get picked up and shown as default.
 
-#### datetimeFieldTag
+#### datetimeField
 
 ```
-%= await ctx.datetimeFieldTag('end')
-%= await ctx.datetimeFieldTag('end', {class: 'foo'})
+%= await tags.datetimeField('end')
+%= await tags.datetimeField('end', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `datetime`. Previous input values will automatically get picked up and shown as default.
 
-#### emailFieldTag
+#### emailField
 
 ```
-%= await ctx.emailFieldTag('notify')
-%= await ctx.emailFieldTag('notify', {class: 'foo'})
+%= await tags.emailField('notify')
+%= await tags.emailField('notify', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `email`. Previous input values will automatically get picked up and shown as default.
 
-#### faviconTag
+#### favicon
 
 ```
-%= await ctx.faviconTag()
-%= await ctx.faviconTag('favicon.ico')
+%= await tags.favicon()
+%= await tags.favicon('favicon.ico')
 ```
 
 Generate `<link>` tag for a favison, defaults to the [mojo.js](https://mojojs.org) favicon.
 
-#### fileFieldTag
+#### fileField
 
 ```
-%= await ctx.fileFieldTag('pass')
-%= await ctx.fileFieldTag('pass', {class: 'password'})
+%= await tags.fileField('pass')
+%= await tags.fileField('pass', {class: 'password'})
 ```
 
 Generate `<input>` tag of type `file`.
@@ -560,28 +560,28 @@ Generate `<input>` tag of type `file`.
 #### formFor
 
 ```
-%= await ctx.formFor('some_route', {class: 'foo'}, 'Form content')
-%= await ctx.formFor(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Form content')
+%= await tags.formFor('some_route', {class: 'foo'}, 'Form content')
+%= await tags.formFor(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Form content')
 ```
 
 Generate portable `<form>` tag with `ctx.urlFor()`. For routes that do not allow `GET`, a `method` attribute with the
 value `POST` will be automatically added. And for methods other than `GET` or `POST`, an `_method` query parameter will
 be added as well.
 
-#### hiddenFieldTag
+#### hiddenField
 
 ```
-%= await ctx.hiddenFieldTag('foo', 'bar')
-%= await ctx.hiddenFieldTag('foo', 'bar', {class: 'yada'})
+%= await tags.hiddenField('foo', 'bar')
+%= await tags.hiddenField('foo', 'bar', {class: 'yada'})
 ```
 
 Generate `<input>` tag of type `hidden`.
 
-#### imageTag
+#### image
 
 ```
-%= await ctx.imageTag('myapp/logo.png')
-%= await ctx.imageTag('myapp/logo.png', {alt: 'just a logo'})
+%= await tags.image('myapp/logo.png')
+%= await tags.image('myapp/logo.png', {alt: 'just a logo'})
 ```
 
 Generate `<img>` tag for image file.
@@ -594,11 +594,11 @@ Generate `<img>` tag for image file.
 
 Include a partial template.
 
-#### inputTag
+#### input
 
 ```
-%= await ctx.inputTag('first_name')
-%= await ctx.inputTag('employed', {type: 'checkbox'})
+%= await tags.input('first_name')
+%= await tags.input('employed', {type: 'checkbox'})
 ```
 
 Generate `<input>` tag. Previous input values will automatically get picked up and shown as default.
@@ -606,7 +606,7 @@ Generate `<input>` tag. Previous input values will automatically get picked up a
 #### labelFor
 
 ```
-%= await ctx.labelFor('first_name', {class: 'foo'}, 'First name')
+%= await tags.labelFor('first_name', {class: 'foo'}, 'First name')
 ```
 
 Generate `<label>` tag.
@@ -614,90 +614,90 @@ Generate `<label>` tag.
 #### linkTo
 
 ```
-%= await ctx.linkTo('some_route', {class: 'foo'}, 'Link to some route');
-%= await ctx.linkTo(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Link to some route');
+%= await tags.linkTo('some_route', {class: 'foo'}, 'Link to some route');
+%= await tags.linkTo(['some_route', {values: {placeholder: 'foo'}}], {class: 'foo'}, 'Link to some route');
 ```
 
 Generate portable `a` tag with `ctx.urlFor()`.
 
-#### monthFieldTag
+#### monthField
 
 ```
-%= await ctx.monthFieldTag('vacation')
-%= await ctx.monthFieldTag('vacation', {class: 'foo'})
+%= await tags.monthField('vacation')
+%= await tags.monthField('vacation', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `month`. Previous input values will automatically get picked up and shown as default.
 
-#### numberFieldTag
+#### numberField
 
 ```
-%= await ctx.numberFieldTag('age')
-%= await ctx.numberFieldTag('age', {class: 'foo'})
+%= await tags.numberField('age')
+%= await tags.numberField('age', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `number`. Previous input values will automatically get picked up and shown as default.
 
-#### passwordFieldTag
+#### passwordField
 
 ```
-%= await ctx.passwordFieldTag('pass')
-%= await ctx.passwordFieldTag('pass', {class: 'password'})
+%= await tags.passwordField('pass')
+%= await tags.passwordField('pass', {class: 'password'})
 ```
 
 Generate `<input>` tag of type `password`.
 
-#### radioButtonTag
+#### radioButton
 
 ```
-%= await ctx.radioButtonTag('test')
-%= await ctx.radioButtonTag('test', {class: 'user', value: 'passed'})
+%= await tags.radioButton('test')
+%= await tags.radioButton('test', {class: 'user', value: 'passed'})
 ```
 
 Generate `<input>` tag of type `radio`. Previous input values will automatically get picked up and shown as default.
 
-#### rangeFieldTag
+#### rangeField
 
 ```
-%= await ctx.rangeFieldTag('age')
-%= await ctx.rangeFieldTag('age', {class: 'foo', min: 0, max: 200})
+%= await tags.rangeField('age')
+%= await tags.rangeField('age', {class: 'foo', min: 0, max: 200})
 ```
 
 Generate `<input>` tag of type `range`. Previous input values will automatically get picked up and shown as default.
 
-#### scriptTag
+#### script
 
 ```
-%= await ctx.scriptTag('bootstrap/bootstrap.bundle.min.js')
-%= await ctx.scriptTag('bootstrap/bootstrap.bundle.min.js', {async: 'async'})
+%= await tags.script('bootstrap/bootstrap.bundle.min.js')
+%= await tags.script('bootstrap/bootstrap.bundle.min.js', {async: 'async'})
 ```
 
 Generate `<script>` tag for JavaScript file.
 
-#### searchFieldTag
+#### searchField
 
 ```
-%= await ctx.searchFieldTag('first_name')
-%= await ctx.searchFieldTag('first_name', {class: 'user'})
+%= await tags.searchField('first_name')
+%= await tags.searchField('first_name', {class: 'user'})
 ```
 
 Generate `<input>` tag of type `search`. Previous input values will automatically get picked up and shown as default.
 
-#### styleTag
+#### style
 
 ```
-%= await ctx.styleTag('bootstrap/bootstrap.min.css')
-%= await ctx.styleTag('bootstrap/bootstrap.min.css', {media: 'foo'})
+%= await tags.style('bootstrap/bootstrap.min.css')
+%= await tags.style('bootstrap/bootstrap.min.css', {media: 'foo'})
 ```
 
 Generate `<link>` tag for CSS file.
 
-#### submitButtonTag
+#### submitButton
 
 ```
-%= await ctx.submitButtonTag()
-%= await ctx.submitButtonTag('Search')
-%= await ctx.submitButtonTag('Search', {class: 'foo'})
+%= await tags.submitButton()
+%= await tags.submitButton('Search')
+%= await tags.submitButton('Search', {class: 'foo'})
 ```
 
 Generate `input` tag of type `submit`.
@@ -705,66 +705,66 @@ Generate `input` tag of type `submit`.
 #### tag
 
 ```
-%= await ctx.tag('div')
-%= await ctx.tag('div', {class: 'wrapper'})
-%= await ctx.tag('div', {class: 'wrapper'}, 'Hello World!')
-%= await ctx.tag('div', {class: 'wrapper'}, Promise.resolve('Hello World!'))
-%= await ctx.tag('div', {class: 'wrapper'}, async () => 'Hello World!')
+%= await tags.tag('div')
+%= await tags.tag('div', {class: 'wrapper'})
+%= await tags.tag('div', {class: 'wrapper'}, 'Hello World!')
+%= await tags.tag('div', {class: 'wrapper'}, Promise.resolve('Hello World!'))
+%= await tags.tag('div', {class: 'wrapper'}, async () => 'Hello World!')
 ```
 
 Generate HTML tag.
 
-#### telFieldTag
+#### telField
 
 ```
-%= await ctx.telFieldTag('work')
-%= await ctx.telFieldTag('work', {class: 'foo'})
+%= await tags.telField('work')
+%= await tags.telField('work', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `tel`. Previous input values will automatically get picked up and shown as default.
 
-#### textAreaTag
+#### textArea
 
 ```
-%= await ctx.textAreaTag('story')
-%= await ctx.textAreaTag('story', {cold: '40'})
-%= await ctx.textAreaTag('story', {cold: '40'}, 'Default value')
+%= await tags.textArea('story')
+%= await tags.textArea('story', {cold: '40'})
+%= await tags.textArea('story', {cold: '40'}, 'Default value')
 ```
 
 Generate `<textarea>` tag. Previous input values will automatically get picked up and shown as default.
 
-#### textFieldTag
+#### textField
 
 ```
-%= await ctx.textFieldTag('first_name')
-%= await ctx.textFieldTag('first_name', {class: 'user'})
+%= await tags.textField('first_name')
+%= await tags.textField('first_name', {class: 'user'})
 ```
 
 Generate `<input>` tag of type `text`. Previous input values will automatically get picked up and shown as default.
 
-#### timeFieldTag
+#### timeField
 
 ```
-%= await ctx.timeFieldTag('meeting')
-%= await ctx.timeFieldTag('meeting', {class: 'foo'})
+%= await tags.timeField('meeting')
+%= await tags.timeField('meeting', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `time`. Previous input values will automatically get picked up and shown as default.
 
-#### urlFieldTag
+#### urlField
 
 ```
-%= await ctx.urkFieldTag('address')
-%= await ctx.urlFieldTag('address', {class: 'foo'})
+%= await tags.urkField('address')
+%= await tags.urlField('address', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `url`. Previous input values will automatically get picked up and shown as default.
 
-#### weekFieldTag
+#### weekField
 
 ```
-%= await ctx.weekFieldTag('vacation')
-%= await ctx.weekFieldTag('vacation', {class: 'foo'})
+%= await tags.weekField('vacation')
+%= await tags.weekField('vacation', {class: 'foo'})
 ```
 
 Generate `<input>` tag of type `week`. Previous input values will automatically get picked up and shown as default.

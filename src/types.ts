@@ -22,59 +22,64 @@ export type MojoRoute = Route;
 
 // With default helpers from plugins
 export interface MojoContext extends Context {
-  assetTag: (path: string, attrs?: TagAttrs) => Promise<SafeString>;
-  buttonTo: (target: URLTarget, attrs: TagAttrs, text: string) => Promise<SafeString>;
-  checkBoxTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  colorFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  tags: MojoTags;
   currentRoute: () => string | null;
-  dateFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  datetimeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  emailFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   exception: (error: Error) => Promise<boolean>;
-  faviconTag: (file?: string) => Promise<SafeString>;
-  fileFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  formFor: (target: URLTarget, attrs: TagAttrs, content: TagContent) => Promise<SafeString>;
-  hiddenFieldTag: (name: string, value: string, attrs?: TagAttrs) => Promise<SafeString>;
   htmlException: (error: Error) => Promise<boolean>;
   htmlNotFound: () => Promise<boolean>;
   httpException: (error: any) => Promise<boolean>;
-  imageTag: (target: string, attrs?: TagAttrs) => Promise<SafeString>;
   include: (options: MojoRenderOptions, stash: Record<string, any>) => Promise<SafeString | null>;
   inspect: (object: Record<string, any>, options: InspectOptions) => string;
-  inputTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   jsonException: (error: Error) => Promise<boolean>;
   jsonNotFound: () => Promise<boolean>;
-  labelFor: (ctx: MojoContext, name: string, value: TagContent, attrs?: TagAttrs) => Promise<SafeString>;
-  linkTo: (target: URLTarget, attrs: TagAttrs, content: TagContent) => Promise<SafeString>;
-  monthFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   notFound: () => Promise<boolean>;
-  numberFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  passwordFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   proxyGet: (url: string | URL, config: UserAgentRequestOptions) => Promise<void>;
   proxyPost: (url: string | URL, config: UserAgentRequestOptions) => Promise<void>;
   proxyRequest: (config: UserAgentRequestOptions) => Promise<void>;
-  radioButtonTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  rangeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  scriptTag: (target: string, attrs?: TagAttrs) => Promise<SafeString>;
-  searchFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  styleTag: (target: string, attrs?: TagAttrs) => Promise<SafeString>;
-  submitButtonTag: (text?: string, attrs?: TagAttrs) => Promise<SafeString>;
-  tag: (name: string, attrs?: TagAttrs, content?: TagContent) => Promise<SafeString>;
-  telFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  textAreaTag: (name: string, attrs?: TagAttrs, content?: TagContent) => Promise<SafeString>;
-  textFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
-  timeFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   txtException: (error: Error) => Promise<boolean>;
   txtNotFound: () => Promise<boolean>;
-  urlFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   websocketException: (error: any) => Promise<boolean>;
-  weekFieldTag: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   [key: string]: any;
 }
 
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
 export interface MojoModels {
+  [key: string]: any;
+}
+
+export interface MojoTags {
+  asset: (path: string, attrs?: TagAttrs) => Promise<SafeString>;
+  buttonTo: (target: URLTarget, attrs: TagAttrs, text: string) => Promise<SafeString>;
+  checkBox: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  colorField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  dateField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  datetimeField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  emailField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  favicon: (file?: string) => Promise<SafeString>;
+  fileField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  formFor: (target: URLTarget, attrs: TagAttrs, content: TagContent) => Promise<SafeString>;
+  hiddenField: (name: string, value: string, attrs?: TagAttrs) => Promise<SafeString>;
+  image: (target: string, attrs?: TagAttrs) => Promise<SafeString>;
+  input: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  labelFor: (ctx: MojoContext, name: string, value: TagContent, attrs?: TagAttrs) => Promise<SafeString>;
+  linkTo: (target: URLTarget, attrs: TagAttrs, content: TagContent) => Promise<SafeString>;
+  monthField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  numberField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  passwordField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  radioButton: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  rangeField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  script: (target: string, attrs?: TagAttrs) => Promise<SafeString>;
+  searchField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  styleTag: (target: string, attrs?: TagAttrs) => Promise<SafeString>;
+  submitButton: (text?: string, attrs?: TagAttrs) => Promise<SafeString>;
+  tag: (name: string, attrs?: TagAttrs, content?: TagContent) => Promise<SafeString>;
+  telField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  textArea: (name: string, attrs?: TagAttrs, content?: TagContent) => Promise<SafeString>;
+  textField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  timeField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  urlField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
+  weekField: (name: string, attrs?: TagAttrs) => Promise<SafeString>;
   [key: string]: any;
 }
 
