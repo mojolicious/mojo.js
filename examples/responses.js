@@ -6,8 +6,16 @@ import mojo from '../lib/core.js';
 
 const app = mojo();
 
+app.addHelper('nested.benchmark', (ctx, num) => {
+  return num + 1;
+});
+
 app.get('/res1', ctx => {
-  return ctx.render({text: 'Hello World!'});
+  let num = 0;
+  for (let i = 0; i < 10000000; i++) {
+    num = ctx.nested.benchmark(num);
+  }
+  return ctx.render({text: `Hello World ${num}!`});
 });
 
 app.get('/res2', async ctx => {

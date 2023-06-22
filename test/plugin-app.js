@@ -144,7 +144,7 @@ t.test('Plugin app', async t => {
     t.equal(ctx.nested.testStashHelper('test'), 'something (nested)');
     const nested1 = ctx.nested;
     t.equal(ctx.nested.testStashHelper('test'), 'something (nested)');
-    t.equal(ctx.nested, nested1);
+    t.equal(nested1.testStashHelper('test'), 'something (nested)');
     t.end();
   });
 

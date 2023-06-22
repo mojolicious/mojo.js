@@ -259,6 +259,29 @@ export class App {
       const [getterName, methodName] = nestedNames;
       const nested = (this._nestedHelpers[getterName] ??= {});
       nested[methodName] = fn;
+
+      return this.decorateContext(getterName, {
+        get: function (this: MojoContext) {
+          return new Proxy(
+            {ctx: this, helpers: nested},
+            {
+              get: function (target: any, prop: any) {
+                const {ctx, helpers} = target;
+                const fn = helpers[prop];
+                return fn === undefined ? undefined : (...args: any[]) => fn(ctx, ...args);
+              }
+            }
+          );
+        },
+        configurable: true
+      });
+    }
+    /*
+    // Nested helper
+    if (nestedNames.length === 2) {
+      const [getterName, methodName] = nestedNames;
+      const nested = (this._nestedHelpers[getterName] ??= {});
+      nested[methodName] = fn;
       const fnEntries = Object.entries<MojoAction>(nested);
 
       return this.decorateContext(getterName, {
@@ -276,6 +299,7 @@ export class App {
         configurable: true
       });
     }
+    */
 
     // Invalid helper name
     throw new Error(`The name "${name}" exceeds maximum depth (2) for nested helpers`);
