@@ -259,14 +259,13 @@ export class App {
       const [getterName, methodName] = nestedNames;
       const nested = (this._nestedHelpers[getterName] ??= {});
       nested[methodName] = fn;
-      const fnEntries = Object.entries<MojoAction>(nested);
 
       return this.decorateContext(getterName, {
         get: function (this: MojoContext) {
           const cache = this._nestedHelpersCache;
           if (cache[getterName] === undefined) {
             const nestedHelpers = (cache[getterName] ??= {});
-            for (const [key, fn] of fnEntries) {
+            for (const [key, fn] of Object.entries(nested)) {
               nestedHelpers[key] = (...args: any[]) => fn(this, ...args);
             }
           }
