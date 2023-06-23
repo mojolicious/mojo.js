@@ -103,8 +103,6 @@ export interface SessionData {
   [key: string]: any;
 }
 
-export type NestedHelpers = Record<string, Record<string, MojoAction>>;
-
 export interface AppOptions {
   config?: Record<string, any>;
   exceptionFormat?: string;

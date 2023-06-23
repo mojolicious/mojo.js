@@ -11,7 +11,6 @@ import type {
   MojoModels,
   MojoRenderOptions,
   MojoURLOptions,
-  NestedHelpers,
   ValidatorFunction
 } from './types.js';
 import type {UserAgent} from './user-agent.js';
@@ -128,7 +127,6 @@ class Context extends EventEmitter {
   stash: Record<string, any> = {};
 
   _flash: SessionData | undefined = undefined;
-  _nestedHelpersCache: NestedHelpers = {};
   _params: Params | undefined = undefined;
   _session: Record<string, any> | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;

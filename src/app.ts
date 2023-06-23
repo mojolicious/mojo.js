@@ -6,7 +6,6 @@ import type {
   MojoAction,
   MojoContext,
   MojoModels,
-  NestedHelpers,
   RouteArguments,
   BackendInfo,
   ServerOptions,
@@ -186,7 +185,8 @@ export class App {
   validator = new Validator();
 
   _contextClass: any = class extends ContextWrapper {};
-  _nestedHelpers: NestedHelpers = {};
+  _nestedHelpers: Record<string, Record<string, MojoAction>> = {};
+  _nestedHelpersCache = new WeakMap();
 
   constructor(options: AppOptions = {}) {
     this.config = options.config ?? {};
@@ -260,17 +260,20 @@ export class App {
       const nested = (this._nestedHelpers[getterName] ??= {});
       nested[methodName] = fn;
 
+      const cache = this._nestedHelpersCache;
       return this.decorateContext(getterName, {
         get: function (this: MojoContext) {
-          const cache = this._nestedHelpersCache;
-          if (cache[getterName] === undefined) {
-            const nestedHelpers = (cache[getterName] ??= {});
+          let helpers = cache.get(this);
+
+          if (helpers === undefined) {
+            helpers = {};
             for (const [key, fn] of Object.entries(nested)) {
-              nestedHelpers[key] = (...args: any[]) => fn(this, ...args);
+              helpers[key] = (...args: any[]) => fn(this, ...args);
             }
+            cache.set(this, helpers);
           }
 
-          return cache[getterName];
+          return helpers;
         },
         configurable: true
       });
