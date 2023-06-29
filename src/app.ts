@@ -2,12 +2,14 @@ import type {Route} from './router/route.js';
 import type {
   AnyArguments,
   AppOptions,
+  BackendInfo,
   UserAgentOptions,
   MojoAction,
   MojoContext,
   MojoModels,
+  NestedHelpers,
   RouteArguments,
-  BackendInfo,
+  ScopedNestedHelpers,
   ServerOptions,
   TestUserAgentOptions
 } from './types.js';
@@ -185,8 +187,7 @@ export class App {
   validator = new Validator();
 
   _contextClass: any = class extends ContextWrapper {};
-  _nestedHelpers: Record<string, Record<string, MojoAction>> = {};
-  _nestedHelpersCache = new WeakMap();
+  _nestedHelpers: Record<string, NestedHelpers> = {};
 
   constructor(options: AppOptions = {}) {
     this.config = options.config ?? {};
@@ -257,26 +258,23 @@ export class App {
     // Nested helper
     if (nestedNames.length === 2) {
       const [getterName, methodName] = nestedNames;
-      const nested = (this._nestedHelpers[getterName] ??= {});
-      nested[methodName] = fn;
 
-      const cache = this._nestedHelpersCache;
-      return this.decorateContext(getterName, {
-        get: function (this: MojoContext) {
-          let helpers = cache.get(this);
-
-          if (helpers === undefined) {
-            helpers = {};
-            for (const [key, fn] of Object.entries(nested)) {
-              helpers[key] = (...args: any[]) => fn(this, ...args);
-            }
-            cache.set(this, helpers);
+      if (this._nestedHelpers[getterName] === undefined) {
+        this._nestedHelpers[getterName] = {};
+        this.decorateContext(getterName, {
+          get: function (this: MojoContext) {
+            return (this._nestedHelpersCache[getterName] ??= Object.create(this.app._nestedHelpers[getterName], {
+              _ctx: {value: this}
+            }));
           }
+        });
+      }
 
-          return helpers;
-        },
-        configurable: true
-      });
+      this._nestedHelpers[getterName][methodName] = function (this: ScopedNestedHelpers, ...args: any[]) {
+        return fn(this._ctx, ...args);
+      };
+
+      return this;
     }
 
     // Invalid helper name

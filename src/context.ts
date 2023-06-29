@@ -3,7 +3,6 @@ import type {ChildLogger} from './logger.js';
 import type {Plan} from './router/plan.js';
 import type {ServerRequest} from './server/request.js';
 import type {ServerResponse} from './server/response.js';
-import type {SessionData} from './types.js';
 import type {
   BackendInfo,
   MojoAction,
@@ -11,6 +10,8 @@ import type {
   MojoModels,
   MojoRenderOptions,
   MojoURLOptions,
+  ScopedNestedHelpers,
+  SessionData,
   ValidatorFunction
 } from './types.js';
 import type {UserAgent} from './user-agent.js';
@@ -127,6 +128,7 @@ class Context extends EventEmitter {
   stash: Record<string, any> = {};
 
   _flash: SessionData | undefined = undefined;
+  _nestedHelpersCache: Record<string, ScopedNestedHelpers> = {};
   _params: Params | undefined = undefined;
   _session: Record<string, any> | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;
