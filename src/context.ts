@@ -30,7 +30,7 @@ interface ContextEvents {
   finish: () => void;
 }
 
-declare interface Context {
+declare interface ContextEventEmitter {
   on: <T extends keyof ContextEvents>(event: T, listener: ContextEvents[T]) => this;
   emit: <T extends keyof ContextEvents>(event: T, ...args: Parameters<ContextEvents[T]>) => boolean;
 }
@@ -40,7 +40,7 @@ const ABSOLUTE = /^[a-zA-Z][a-zA-Z0-9]*:\/\//;
 /**
  * Context class.
  */
-class Context extends EventEmitter {
+class Context extends EventEmitter implements ContextEventEmitter {
   /**
    * Application this context belongs to.
    */

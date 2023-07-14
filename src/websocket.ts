@@ -13,7 +13,7 @@ interface WebSocketEvents extends WebSocketControlEvents {
   message: (this: WebSocket, message: JSONValue | Buffer) => void;
 }
 
-declare interface WebSocket {
+declare interface WebSocketEventEmitter {
   on: <T extends keyof WebSocketEvents>(event: T, listener: WebSocketEvents[T]) => this;
   emit: <T extends keyof WebSocketEvents>(event: T, ...args: Parameters<WebSocketEvents[T]>) => boolean;
 }
@@ -21,7 +21,7 @@ declare interface WebSocket {
 /**
  * WebSocket connection class.
  */
-class WebSocket extends EventEmitter {
+class WebSocket extends EventEmitter implements WebSocketEventEmitter {
   /**
    * WebSocket handshake.
    */
