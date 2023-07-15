@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.25.3 (2023-07-15)
+
+### Bug Fixes
+
+  * Fixed s bug where `ctx.urlFor()` would not work properly for `/` routes. ([@dmanto](https://github.com/dmanto))
+
 ## v1.25.0 (2023-06-21)
 
 ### Features
