@@ -26,7 +26,7 @@ t.test('App', async t => {
   );
 
   // GET /
-  app.get('/', ctx => ctx.render({text: 'Hello Mojo!'}));
+  app.get('/', ctx => ctx.render({text: 'Hello Mojo!'})).name('root-route');
 
   // GET /☃
   app.get('/☃', ctx => ctx.render({text: 'Hello Snowman!'}));
@@ -478,6 +478,7 @@ t.test('App', async t => {
     const baseURL = ua.server.urls[0];
     (await ua.postOk('/url_for', {form: {target: '/foo'}})).statusIs(200).bodyIs('/foo');
     (await ua.postOk('/url_for', {form: {target: '/foo/bar.txt'}})).statusIs(200).bodyIs('/foo/bar.txt');
+    (await ua.postOk('/url_for', {form: {target: 'root-route'}})).statusIs(200).bodyIs('/');
     (await ua.postOk('/url_for', {form: {target: 'current'}})).statusIs(200).bodyIs('/url_for');
     (await ua.postOk('/url_for', {form: {target: 'current', msg: 'test'}})).statusIs(200).bodyIs('/url_for/test');
     (await ua.postOk('/url_for', {form: {target: 'https://mojolicious.org'}}))

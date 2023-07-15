@@ -492,7 +492,7 @@ class Context extends EventEmitter implements ContextEventEmitter {
   }
 
   _urlForPath(path: string, isWebSocket: boolean, options: MojoURLOptions): string {
-    path = this.req.basePath + path;
+    path = this.req.basePath + (path === '' ? '/' : path);
 
     let queryFragment = '';
     if (options.query !== undefined && Object.keys(options.query).length > 0) {
