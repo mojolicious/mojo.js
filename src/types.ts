@@ -178,6 +178,18 @@ export interface ServerRequestOptions {
 
 export type ServerResponseBody = string | Buffer | Stream | undefined;
 
+export interface UploadOptions {
+  limits?: {
+    fieldNameSize?: number;
+    fieldSize?: number;
+    fields?: number;
+    fileSize?: number;
+    files?: number;
+    parts?: number;
+    headerPairs?: number;
+  };
+}
+
 export interface UserAgentOptions {
   baseURL?: string | URL;
   cookieJar?: CookieJar;

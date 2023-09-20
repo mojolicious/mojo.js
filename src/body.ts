@@ -1,4 +1,4 @@
-import type {JSONValue} from './types.js';
+import type {JSONValue, UploadOptions} from './types.js';
 import type {Readable, Writable} from 'node:stream';
 import {on} from 'node:events';
 import zlib from 'node:zlib';
@@ -7,18 +7,6 @@ import {Headers} from './headers.js';
 import DOM from '@mojojs/dom';
 import busboy from 'busboy';
 import yaml from 'js-yaml';
-
-interface UploadOptions {
-  limits?: {
-    fieldNameSize?: number;
-    fieldSize?: number;
-    fields?: number;
-    fileSize?: number;
-    files?: number;
-    parts?: number;
-    headerPairs?: number;
-  };
-}
 
 interface FileUpload {
   fieldname: string;

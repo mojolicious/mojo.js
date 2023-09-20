@@ -12,12 +12,12 @@ import type {
   MojoURLOptions,
   ScopedNestedHelpers,
   SessionData,
+  UploadOptions,
   ValidatorFunction
 } from './types.js';
 import type {UserAgent} from './user-agent.js';
 import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
-import type {BusboyConfig} from 'busboy';
 import EventEmitter from 'node:events';
 import querystring from 'node:querystring';
 import {Params} from './body/params.js';
@@ -300,7 +300,7 @@ class Context extends EventEmitter implements ContextEventEmitter {
    * // Ignore all empty parameters
    * const params = await ctx.params({notEmpty: true});
    */
-  async params(options: BusboyConfig & {notEmpty?: boolean} = {}): Promise<Params> {
+  async params(options: UploadOptions & {notEmpty?: boolean} = {}): Promise<Params> {
     if (this._params === undefined) {
       const req = this.req;
       const params = (this._params = new Params(req.query));
