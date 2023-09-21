@@ -64,7 +64,7 @@ export default async function createPluginCommand(app: App, args: string[]): Pro
         build: 'npx tsc --build ./',
         'build:test': 'npm run build && npm test',
         'build:watch': 'npm run build -- --watch',
-        test: 'tap --no-coverage test/*.js'
+        test: 'node --test test/*.js'
       }
     });
   }
@@ -77,7 +77,7 @@ export default async function createPluginCommand(app: App, args: string[]): Pro
     await util.cliFixPackage({
       ...commonSettings,
       devDependencies: await util.devDependencies(/^tap$/),
-      scripts: {test: 'tap --no-coverage test/*.js'}
+      scripts: {test: 'node --test test/*.js'}
     });
   }
 }

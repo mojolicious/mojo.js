@@ -405,7 +405,7 @@ t.test('Command app', async t => {
     t.equal(typeof pkg.scripts.start, 'string');
     t.match(pkg.scripts.start, /node index\.js/);
     t.equal(typeof pkg.scripts.test, 'string');
-    t.match(pkg.scripts.test, /tap/);
+    t.match(pkg.scripts.test, /node --test/);
     t.equal(typeof pkg.devDependencies['nodemon'], 'string');
     t.equal(typeof pkg.devDependencies['tap'], 'string');
 
@@ -460,7 +460,7 @@ t.test('Command app', async t => {
     t.equal(typeof pkg2.scripts.start, 'string');
     t.match(pkg2.scripts.start, /node lib\/index\.js/);
     t.equal(typeof pkg2.scripts.test, 'string');
-    t.match(pkg2.scripts.test, /tap/);
+    t.match(pkg2.scripts.test, /node --test/);
     t.equal(typeof pkg2.devDependencies['@types/node'], 'string');
     t.equal(typeof pkg2.devDependencies['nodemon'], 'string');
     t.equal(typeof pkg2.devDependencies['tap'], 'string');

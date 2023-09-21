@@ -1090,7 +1090,7 @@ And run your tests as scripts or with `tap`.
 
 ```
 $ node test/basic.js
-$ tap --no-coverage test/*.js
+$ node --test test/*.js
 ```
 
 For more information take a look at the [User-Agent](User-Agent.md) guide.

@@ -32,14 +32,14 @@
     "build:test": "npm run build && npm test",
     "build:watch": "npm run build -- --watch",
     "clean": "rm -rf tsconfig.tsbuildinfo test/support/ts/full-app/tsconfig.tsbuildinfo lib test/support/ts/full-app/lib",
-    "coverage": "c8 tap --no-coverage test/*.js",
-    "coverage:ci": "c8 --reporter lcovonly tap --no-coverage test/*.js",
+    "coverage": "c8 node --test test/*.js",
+    "coverage:ci": "c8 --reporter lcovonly node --test test/*.js",
     "lint": "eslint \"test/*.js\" \"test/support/js/**/*.js\" \"test/support/ts/**/src/**/*.ts\" \"src/**/*.ts\" \"src/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "publish:minor": "npm version minor && npm publish",
     "publish:patch": "npm version patch && npm publish",
-    "test": "tap --no-coverage test/*.js"
+    "test": "node --test test/*.js"
   },
   "exports": "./lib/core.js",
   "types": "./lib/core.d.ts",
