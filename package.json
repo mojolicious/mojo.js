@@ -81,7 +81,7 @@
   },
   "dependencies": {
     "@mojojs/dom": "^2.1.0",
-    "@mojojs/path": "^1.5.3",
+    "@mojojs/path": "^1.5.7",
     "@mojojs/template": "^2.2.0",
     "@mojojs/util": "^1.6.0",
     "ajv": "^8.5.0",
