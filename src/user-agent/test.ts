@@ -46,11 +46,7 @@ export class TestUserAgent extends MockUserAgent {
    */
   assert(name: string, args: any[], msg: string, skip: SkipFunction): void {
     const test: any = this._assert ?? assert;
-
-    // Workaround for problem with relative file URLs with node-tap 18
-    const stack = this._stack.captureString(10, skip).replaceAll(/file:\/\/(?!\/)/g, 'file:///');
-
-    test[name](...args, msg, {stack});
+    test[name](...args, msg, {stack: this._stack.captureString(10, skip)});
   }
 
   /**
