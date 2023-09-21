@@ -20,7 +20,7 @@ jobs:
       - name: npm run build
         run: npm run build
       - name: npm test
-        run: npm run test
+        run: npm run test (unix)
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
       - name: npm test (windows)
         run: npm run test:windows
