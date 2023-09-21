@@ -12,6 +12,11 @@ undocumented, you can always count on backwards compatibility, everything else w
 completely avoid any risk of accidental breakage, we do recommend following current best practices for version pinning
 with `package-lock.json` files.
 
+### Which versions of Node.js are supported by mojo.js?
+
+We fully support the latest releases of Node.js that are active/maintenance and have not rached their
+[end of life](https://nodejs.dev/en/about/releases/) date yet.
+
 ### How do i get my IDE to autocomplete helpers?
 
 Of course you want your IDE to autocomplete helpers when you start typing `ctx.`. Helpers are very dynamic code
