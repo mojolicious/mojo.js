@@ -63,7 +63,7 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
         'build:watch': 'npm run build -- --watch',
         dev: 'npx nodemon lib/index.js server',
         start: 'NODE_ENV=production node lib/index.js server -l http://*:8080',
-        test: 'node --test test/*.js'
+        test: 'node --test'
       }
     });
   }
@@ -86,7 +86,7 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
       scripts: {
         dev: 'npx nodemon index.js server',
         start: 'NODE_ENV=production node index.js server -l http://*:8080',
-        test: 'node --test test/*.js'
+        test: 'node --test'
       }
     });
   }

@@ -46,7 +46,7 @@ export class TestUserAgent extends MockUserAgent {
    */
   assert(name: string, args: any[], msg: string, skip: SkipFunction): void {
     const test: any = this._assert ?? assert;
-    test[name](...args, msg, {stack: this._stack.captureString(10, skip)});
+    test[name](...args, msg, {stack: this._stack.captureString(10, skip).replaceAll(/file:\/\/(?!\/)/g, 'file:///')});
   }
 
   /**
