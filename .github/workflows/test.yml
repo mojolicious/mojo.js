@@ -19,9 +19,5 @@ jobs:
         run: npm i
       - name: npm run build
         run: npm run build
-      - name: npm test (unix)
+      - name: npm test
         run: npm run test
-        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
-      - name: npm test (windows)
-        run: npm run test:windows
-        if: matrix.os == 'windows-latest'
