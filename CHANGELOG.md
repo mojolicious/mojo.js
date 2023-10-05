@@ -3,11 +3,18 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.25.5 (2023-10-05)
+
+### Bug Fixes
+
+  * Fixed a bug where the static file server would use the response code 200 instead of 206 for partial responses.
+    ([@dmanto](https://github.com/dmanto))
+
 ## v1.25.3 (2023-07-15)
 
 ### Bug Fixes
 
-  * Fixed s bug where `ctx.urlFor()` would not work properly for `/` routes. ([@dmanto](https://github.com/dmanto))
+  * Fixed a bug where `ctx.urlFor()` would not work properly for `/` routes. ([@dmanto](https://github.com/dmanto))
 
 ## v1.25.0 (2023-06-21)
 
