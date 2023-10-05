@@ -3,7 +3,7 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
-## v1.25.5 (2023-10-05)
+## v1.25.6 (2023-10-05)
 
 ### Bug Fixes
 
