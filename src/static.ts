@@ -146,7 +146,7 @@ export class Static {
 
     // Range
     await res
-      .status(200)
+      .status(206)
       .length(end - start + 1)
       .type(type)
       .set('Content-Range', `bytes ${start}-${end}/${length}`)
