@@ -61,6 +61,10 @@ class UserAgent {
     this.name = options.name;
   }
 
+  [Symbol.dispose]() {
+    this.destroy();
+  }
+
   /**
    * Add a hook to extend the user-agent.
    */
