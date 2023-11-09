@@ -367,7 +367,7 @@ export class TestUserAgent extends MockUserAgent {
     const subtests = [tap];
     const assert = this._assert;
 
-    assert.beforeEach(async (t: Test) => {
+    assert.beforeEach(async t => {
       subtests.push(t);
       this._assert = t;
     });
