@@ -388,7 +388,7 @@ user-agent object.
   .textUnlike('head > title', /Bye/);
 ```
 
-Testing WebSockets is almost as easy, but all operations are async and  have to return a `Promise`.
+Testing WebSockets is almost as easy, but all operations are async and have to return a `Promise`.
 
 ```js
 await ua.websocketOk('/echo');
@@ -396,6 +396,22 @@ await ua.sendOk('hello');
 assert.equal(await ua.messageOk(), 'echo: hello');
 await ua.closeOk(4000);
 await ua.closedOk(4000);
+```
+
+If you're using TypeScript we also support explicit resource management with `await using` for a little less
+boilerplate.
+
+```ts
+import {app} from '../index.js';
+import t from 'tap';
+
+t.test('Example application', async t => {
+  await using ua = await app.newTestUserAgent({tap: t});
+
+  await t.test('Index', async t => {
+    (await ua.getOk('/')).statusIs(200).bodyLike(/mojo.js/);
+  });
+});
 ```
 
 And while the test user-agent is very efficient for testing backend services, for frontend testing we recommend
