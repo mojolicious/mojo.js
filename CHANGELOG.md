@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.26.0 (2023-11-09)
+
+### Features
+
+  * Added support for `await using` with TypeScript to `UserAgent`, `MockUserAgent` and `TestUserAgent` classes.
+
 ## v1.25.6 (2023-10-05)
 
 ### Bug Fixes
