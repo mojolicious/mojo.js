@@ -389,7 +389,7 @@ t.test('UserAgent', async t => {
     t.equal(res2.get('Connection'), 'close');
     t.equal(await res2.text(), 'Hello World!');
 
-    await keepAlive.destroy();
+    keepAlive.destroy();
     await ua.stop();
   });
 
