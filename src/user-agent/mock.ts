@@ -18,6 +18,10 @@ export class MockUserAgent extends UserAgent {
     this.server = undefined;
   }
 
+  async [Symbol.asyncDispose]() {
+    await this.stop();
+  }
+
   /**
    * Create a new mock user-agent.
    */
@@ -44,7 +48,7 @@ export class MockUserAgent extends UserAgent {
    * Stop mock server.
    */
   async stop(): Promise<void> {
-    this.destroy();
+    await this.destroy();
     if (this.server !== undefined) return await this.server.stop();
   }
 }

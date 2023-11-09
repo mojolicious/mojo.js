@@ -9,6 +9,7 @@ import type {
 } from '../types.js';
 import type {WebSocket} from '../websocket.js';
 import type {URL} from 'node:url';
+import type {Test} from 'tap';
 import assert from 'node:assert/strict';
 import {on} from 'node:events';
 import {MockUserAgent} from './mock.js';
@@ -28,7 +29,7 @@ export class TestUserAgent extends MockUserAgent {
    */
   body: Buffer = Buffer.from('');
 
-  _assert: typeof assert | Tap.Test | undefined = undefined;
+  _assert: typeof assert | Test | undefined = undefined;
   _dom: DOM | undefined = undefined;
   _finished: [number, string] | null | undefined = undefined;
   _messages: AsyncIterableIterator<JSONValue> | undefined = undefined;
@@ -361,11 +362,12 @@ export class TestUserAgent extends MockUserAgent {
     return this._dom;
   }
 
-  _prepareTap(tap: Tap.Test): void {
-    const subtests = [(this._assert = tap)];
+  _prepareTap(tap: Test): void {
+    this._assert = tap;
+    const subtests = [tap];
     const assert = this._assert;
 
-    assert.beforeEach(async t => {
+    assert.beforeEach(async (t: Test) => {
       subtests.push(t);
       this._assert = t;
     });

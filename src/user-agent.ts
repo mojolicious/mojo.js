@@ -61,6 +61,10 @@ class UserAgent {
     this.name = options.name;
   }
 
+  async [Symbol.asyncDispose]() {
+    await this.destroy();
+  }
+
   /**
    * Add a hook to extend the user-agent.
    */
@@ -72,9 +76,9 @@ class UserAgent {
   /**
    * Destroy all active keep-alive connections.
    */
-  destroy(): void {
-    this.httpTransport.destroy();
-    this.httpsTransport.destroy();
+  async destroy(): Promise<void> {
+    await this.httpTransport.destroy();
+    await this.httpsTransport.destroy();
   }
 
   /**

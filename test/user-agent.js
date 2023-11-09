@@ -367,7 +367,7 @@ t.test('UserAgent', async t => {
     t.equal(res3.statusCode, 200);
     t.equal(res3.get('Connection'), 'keep-alive');
     t.equal(await res3.text(), 'Hello World!');
-    ua.destroy();
+    await ua.destroy();
 
     ua.httpTransport.agent = noKeepAlive;
     const res4 = await ua.get('/hello');
@@ -389,7 +389,7 @@ t.test('UserAgent', async t => {
     t.equal(res2.get('Connection'), 'close');
     t.equal(await res2.text(), 'Hello World!');
 
-    keepAlive.destroy();
+    await keepAlive.destroy();
     await ua.stop();
   });
 

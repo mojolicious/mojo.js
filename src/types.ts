@@ -8,6 +8,7 @@ import type {Readable} from 'node:stream';
 import type {Stream} from 'node:stream';
 import type {URL} from 'node:url';
 import type {InspectOptions} from 'node:util';
+import type {Test} from 'tap';
 import type {CookieJar} from 'tough-cookie';
 
 export type {JSONValue} from '@mojojs/util';
@@ -223,7 +224,7 @@ export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions
 
 export type URLTarget = string | [string, MojoURLOptions];
 
-export type TestUserAgentOptions = UserAgentOptions & {tap?: Tap.Test};
+export type TestUserAgentOptions = UserAgentOptions & {tap?: Test};
 
 export interface ValidationError {
   instancePath: string;

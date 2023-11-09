@@ -18,7 +18,7 @@ export class HTTPTransport {
   /**
    * Destroy active keep-alive connections.
    */
-  destroy(): void {
+  async destroy(): Promise<void> {
     this.agent.destroy();
   }
 
