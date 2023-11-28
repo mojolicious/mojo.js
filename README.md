@@ -16,7 +16,7 @@ TypeScript. Meticulously designed for hypermedia-driven backend web services usi
 
 If you want to stay up to date on the
 [latest developments](https://github.com/mojolicious/mojo.js/blob/main/CHANGELOG.md) join us on
-[Matrix](https://matrix.to/#/#mojo:matrix.org) or [IRC](https://web.libera.chat/#mojo).
+[IRC](https://web.libera.chat/#mojo) or [Matrix](https://matrix.to/#/#mojo:matrix.org).
 
 ## Features
 
