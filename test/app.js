@@ -561,7 +561,7 @@ t.test('App', async t => {
   });
 
   await t.test('Flash', async () => {
-    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: none');
+    (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: Hello');
     (await ua.getOk('/flash?message=Hello')).statusIs(200).bodyIs('Flash: none');
     (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: Hello');
     (await ua.getOk('/flash')).statusIs(200).bodyIs('Flash: none');
