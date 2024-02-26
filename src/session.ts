@@ -59,7 +59,7 @@ export class Session {
       try {
         const key = await scrypt(secret, 'salt', 32);
 
-        const decipher = crypto.createDecipheriv('aes-256-gcm', key as crypto.CipherKey, iv);
+        const decipher = crypto.createDecipheriv('aes-256-gcm', key as crypto.CipherKey, iv, {authTagLength: 16});
         decipher.setAuthTag(authTag);
         const decrypted = decipher.update(value, 'base64', 'utf8');
         return decrypted + decipher.final('utf8');

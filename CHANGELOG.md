@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.26.4 (2024-02-26)
+
+### Bug Fixes
+
+  * Fixed security issue that might allow for session data to be forged.
+
 ## v1.26.0 (2023-11-09)
 
 ### Features
