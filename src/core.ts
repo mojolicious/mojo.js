@@ -1,6 +1,6 @@
 /*!
  * mojo.js
- * Copyright (C) 2021-2023 Sebastian Riedel
+ * Copyright (C) 2021-2024 Sebastian Riedel
  * MIT Licensed
  */
 import type {AppOptions} from './types.js';
