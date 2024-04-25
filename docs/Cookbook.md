@@ -110,7 +110,8 @@ After=network.target
 [Service]
 Type=simple
 User=sri
-ExecStart=NODE_ENV=production node /home/sri/myapp/myapp.js server -l http://*:8080
+Environment="NODE_ENV=production"
+ExecStart=node /home/sri/myapp/myapp.js server -l http://*:8080
 
 [Install]
 WantedBy=multi-user.target
@@ -136,7 +137,7 @@ You can even use systemd for
 your server as file descriptor `3`, so all you have to do is to use a slightly different listen option.
 
 ```
-ExecStart=NODE_ENV=production node /home/sri/myapp/myapp.js server -l http://*?fd=3
+ExecStart=node /home/sri/myapp/myapp.js server -l http://*?fd=3
 ```
 
 ### Reloading
