@@ -249,7 +249,7 @@ export class Route {
 
     const hasGet = suggestions.includes('GET');
     if (suggestions.includes('POST') === true && hasGet === false) return 'POST';
-    return hasGet === true ? 'GET' : suggestions[0] ?? 'GET';
+    return hasGet === true ? 'GET' : (suggestions[0] ?? 'GET');
   }
 
   /**

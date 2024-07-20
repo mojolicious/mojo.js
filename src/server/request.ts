@@ -63,7 +63,7 @@ export class ServerRequest extends Body {
     const url = (this.url = options.url ?? null);
 
     const pathMatch = (url ?? '').match(URL_RE);
-    this.path = pathMatch === null ? '' : decodeURIComponentSafe(pathMatch[5]) ?? '';
+    this.path = pathMatch === null ? '' : (decodeURIComponentSafe(pathMatch[5]) ?? '');
 
     this.isWebSocket = options.isWebSocket;
     this.isSecure = options.isSecure;
