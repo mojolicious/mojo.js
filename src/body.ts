@@ -16,6 +16,8 @@ interface FileUpload {
   mimetype: string;
 }
 
+type FormIterator = AsyncIterableIterator<[string, Readable, string, string, string]>;
+
 /**
  * HTTP message body base class.
  */
@@ -177,7 +179,7 @@ export class Body {
     });
   }
 
-  _formIterator(options?: UploadOptions): AsyncIterableIterator<[string, Readable, string, string, string]> {
+  _formIterator(options?: UploadOptions): FormIterator {
     const ac = new AbortController();
 
     const type = this.get('Content-Type') ?? '';
@@ -186,7 +188,7 @@ export class Body {
     const bb = busboy({headers: {'content-type': type, ...this.headers.toObject()}, ...options});
     bb.on('field', (fieldname, val) => params.append(fieldname, val));
     bb.on('end', () => ac.abort()).on('close', () => ac.abort());
-    const files = on(bb, 'file', {signal: ac.signal});
+    const files = on(bb, 'file', {signal: ac.signal}) as FormIterator;
     this._stream.pipe(bb);
 
     return files;
