@@ -63,7 +63,7 @@ relevant documentation.
 While the [mojo.js](https://mojojs.org) distribution covers a wide range of features, we are rather conservative when
 it comes to adding new ones. So if your contribution is not a simple bug fix, it is **strongly recommended** that you
 discuss it in advance in the [Forum](https://forum.mojolicious.org), or the official
-[Matrix](https://matrix.to/#/#mojo:matrix.org) channel, to avoid unnecessary work and to increase its chances of
+[IRC](https://web.libera.chat/#mojo) channel, to avoid unnecessary work and to increase its chances of
 getting accepted.
 
 The following mission statement and rules are the foundation of all [mojo.js](https://mojojs.org) development. Please
@@ -82,10 +82,10 @@ seeking help and guidance.
 This isn't an exhaustive list of things that you can't do. Rather, take it in the spirit in which it’s intended - a
 guide to make it easier to enrich all of us and the technical communities in which we participate.
 
-This code of conduct applies to all spaces managed by the [mojo.js](https://mojojs.org) project. This includes Matrix,
-IRC, GitHub discussions, the issue tracker, and any other forums created by the project team which the community uses
-for communication. In addition, violations of this code outside these spaces may affect a person's ability to
-participate within them.
+This code of conduct applies to all spaces managed by the [mojo.js](https://mojojs.org) project. This includes IRC,
+GitHub discussions, the issue tracker, and any other forums created by the project team which the community uses for
+communication. In addition, violations of this code outside these spaces may affect a person's ability to participate
+within them.
 
 If you believe someone is violating the code of conduct, we ask that you report it by emailing Joel Berger
 (`jberger@mojolicious.org`) or Sebastian Riedel (`kraih@mojolicious.org`).
@@ -153,5 +153,4 @@ A lot more documentation and examples by many different authors can be found in 
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
-[Forum](https://github.com/mojolicious/mojo.js/discussions), on [IRC](https://web.libera.chat/#mojo), or
-[Matrix](https://matrix.to/#/#mojo:matrix.org).
+[Forum](https://github.com/mojolicious/mojo.js/discussions), or on [IRC](https://web.libera.chat/#mojo).

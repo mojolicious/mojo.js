@@ -105,5 +105,4 @@ A lot more documentation and examples by many different authors can be found in 
 ## Support
 
 If you have any questions the documentation might not yet answer, don't hesitate to ask in the
-[Forum](https://github.com/mojolicious/mojo.js/discussions), on [IRC](https://web.libera.chat/#mojo), or
-[Matrix](https://matrix.to/#/#mojo:matrix.org).
+[Forum](https://github.com/mojolicious/mojo.js/discussions), or on [IRC](https://web.libera.chat/#mojo).
