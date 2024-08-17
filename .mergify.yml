@@ -1,0 +1,50 @@
+pull_request_rules:
+  - name: automatic merge
+    conditions:
+      - and: &base_checks
+        - base=main
+        - -label~=^acceptance-tests-needed|not-ready
+        - "#check-failure=0"
+        - "#check-pending=0"
+        - linear-history
+      - and:
+        - "#approved-reviews-by>=2"
+        - "#changes-requested-reviews-by=0"
+        - "#review-requested=0"
+    actions: &merge
+      merge:
+        method: merge
+  - name: automatic merge on special label
+    conditions:
+      - and: *base_checks
+      - and:
+        - base=main
+        - "label=merge-fast"
+    actions: *merge
+  - name: automatic merge for dependabot updates
+    conditions:
+      - and: *base_checks
+      - and:
+        - base=main
+        - author=dependabot[bot]
+        - "label=waited"
+    actions:
+      merge:
+        method: squash
+  - name: ask to resolve conflict
+    conditions:
+      - conflict
+    actions:
+      comment:
+        message: This pull request is now in conflicts. Could you fix it? 🙏
+  - name: Wait for 2 days before validating merge
+    actions:
+      label:
+        add:
+          - waited
+        remove:
+          - waiting
+    conditions:
+      - and:
+          - updated-at<2 days ago
+          - author=dependabot[bot]
