@@ -37,7 +37,7 @@ pull_request_rules:
     actions:
       comment:
         message: This pull request is now in conflicts. Could you fix it? 🙏
-  - name: Wait for 2 days before validating merge
+  - name: Wait for 1 day before validating merge
     actions:
       label:
         add:
@@ -46,5 +46,5 @@ pull_request_rules:
           - waiting
     conditions:
       - and:
-          - updated-at<2 days ago
+          - updated-at<1 days ago
           - author=dependabot[bot]
