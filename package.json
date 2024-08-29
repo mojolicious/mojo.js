@@ -34,6 +34,8 @@
     "clean": "rm -rf tsconfig.tsbuildinfo test/support/ts/full-app/tsconfig.tsbuildinfo lib test/support/ts/full-app/lib",
     "coverage": "c8 tap --disable-coverage --allow-empty-coverage test/*.js test/*.ts",
     "coverage:ci": "c8 --reporter lcovonly tap --disable-coverage --allow-empty-coverage test/*.js test/*.ts",
+    "prelint": "prettier --check \"{src,test}/**/*.{js,ts}\"",
+    "prelint:fix": "prettier --write \"{src,test}/**/*.{js,ts}\"",
     "lint": "eslint \"test/*.js\" \"test/support/js/**/*.js\" \"test/support/ts/**/src/**/*.ts\" \"src/**/*.ts\" \"src/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
@@ -53,6 +55,7 @@
     "mojo": "./bin/mojo.js"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9.1",
     "@types/busboy": "^1.5.0",
     "@types/js-yaml": "^4.0.3",
     "@types/mime-types": "^2.1.0",
@@ -62,24 +65,26 @@
     "@types/stack-utils": "^2.0.1",
     "@types/tough-cookie": "^4.0.2",
     "@types/ws": "^8.5.3",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
     "autocannon": "^7.3.0",
     "c8": "^10.1.0",
     "concurrently": "^8.0.0",
-    "eslint": "^8.1.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "^2.23.4",
+    "eslint": "^9.9.1",
+    "eslint-plugin-import-x": "^4.1.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^5.0.0",
+    "globals": "^15.9.0",
     "nodemon": "^3.0.0",
-    "prettier": "^3.0.0",
+    "prettier": "^3.3.3",
     "tap": "^21.0.0",
-    "typescript": "^5.2.0"
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.3.0"
   },
   "engines": {
     "node": ">= 16"
   },
   "dependencies": {
+    "@eslint/compat": "^1.1.1",
     "@mojojs/dom": "^2.1.0",
     "@mojojs/path": "^1.6.0",
     "@mojojs/template": "^2.2.0",
