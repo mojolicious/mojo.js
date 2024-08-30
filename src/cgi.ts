@@ -1,6 +1,5 @@
 import type {MojoApp, ServerResponseBody} from './types.js';
-import type {Readable} from 'node:stream';
-import {Stream} from 'node:stream';
+import {Stream, type Readable} from 'node:stream';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
 import {httpStatusMessages} from './util.js';

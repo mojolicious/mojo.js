@@ -1,7 +1,6 @@
 import type {JSONSchema, ValidatorFunction} from './types.js';
-import type {ValidateFunction} from 'ajv';
 import {ValidatorResult} from './validator/result.js';
-import Ajv from 'ajv';
+import Ajv, {type ValidateFunction} from 'ajv';
 
 /**
  * JSON schema validator class.

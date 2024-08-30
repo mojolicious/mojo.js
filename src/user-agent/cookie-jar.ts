@@ -1,5 +1,4 @@
-import type {URL} from 'node:url';
-import {format} from 'node:url';
+import {format, type URL} from 'node:url';
 import tough from 'tough-cookie';
 
 /**

@@ -4,9 +4,7 @@ import {escapeRegExp} from '@mojojs/util';
 interface MatchOptions {
   isEndpoint: boolean;
 }
-interface PlaceholderTypes {
-  [name: string]: PlaceholderType;
-}
+type PlaceholderTypes = Record<string, PlaceholderType>;
 
 type ASTNode = [symbol, ...string[]];
 

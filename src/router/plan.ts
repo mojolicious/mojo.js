@@ -11,7 +11,7 @@ export class Plan {
   /**
    * Steps in route.
    */
-  steps: Array<Record<string, any>> = [];
+  steps: Record<string, any>[] = [];
   /**
    * Dispatch stops in route.
    */

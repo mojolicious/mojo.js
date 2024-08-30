@@ -61,7 +61,7 @@ export class Server {
 
   _cluster: boolean;
   _listen: string[];
-  _servers: Array<http.Server | https.Server> = [];
+  _servers: (http.Server | https.Server)[] = [];
   _quiet: boolean;
   _workers: number;
 

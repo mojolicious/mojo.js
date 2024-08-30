@@ -82,7 +82,7 @@ class WebSocket extends EventEmitter implements WebSocketEventEmitter {
     return new Promise(resolve => this._ws.send(JSON.stringify(message), () => resolve()));
   }
 
-  _messageIterator(): AsyncIterableIterator<Array<JSONValue | Buffer>> {
+  _messageIterator(): AsyncIterableIterator<(JSONValue | Buffer)[]> {
     const ac = new AbortController();
 
     this._ws.on('close', () => ac.abort());

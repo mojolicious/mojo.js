@@ -13,7 +13,7 @@ export default function tmplEnginePlugin(app: App): void {
 }
 
 class TmplEngine {
-  cache: Cache<(data?: Record<string, any>) => Promise<string>> = new Cache();
+  cache = new Cache<(data?: Record<string, any>) => Promise<string>>();
 
   async render(ctx: MojoContext, options: MojoRenderOptions): Promise<Buffer> {
     let template;

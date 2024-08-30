@@ -179,6 +179,7 @@ export class Router extends Route {
     const customNames: RouteIndex = {};
 
     const children = [...this.children];
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < children.length; i++) {
       const child = children[i];
       if (child.customName !== undefined && customNames[child.customName] === undefined) {
