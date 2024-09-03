@@ -8,11 +8,9 @@ import type {
   URLTarget,
   UserAgentRequestOptions
 } from '../types.js';
-import type {InspectOptions} from 'node:util';
-import {inspect} from 'node:util';
+import {inspect, type InspectOptions} from 'node:util';
 import {Logger} from '../logger.js';
-import {SafeString} from '../util.js';
-import {exceptionContext} from '../util.js';
+import {exceptionContext, SafeString} from '../util.js';
 import DOM from '@mojojs/dom';
 
 /**

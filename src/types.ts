@@ -4,8 +4,7 @@ import type {Route} from './router/route.js';
 import type {SafeString} from './util.js';
 import type {ValidatorResult} from './validator/result.js';
 import type {Agent} from 'node:http';
-import type {Readable} from 'node:stream';
-import type {Stream} from 'node:stream';
+import type {Readable, Stream} from 'node:stream';
 import type {URL} from 'node:url';
 import type {InspectOptions} from 'node:util';
 import type {Test} from 'tap';
@@ -45,9 +44,7 @@ export interface MojoContext extends Context {
 
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
-export interface MojoModels {
-  [key: string]: any;
-}
+export type MojoModels = Record<string, any>;
 
 export interface MojoTags {
   asset: (path: string, attrs?: TagAttrs) => Promise<SafeString>;
@@ -84,8 +81,8 @@ export interface MojoTags {
   [key: string]: any;
 }
 
-export type AnyArguments = Array<string | string[] | MojoAction | Record<string, string[] | RegExp>>;
-export type RouteArguments = Array<string | MojoAction | Record<string, string[] | RegExp>>;
+export type AnyArguments = (string | string[] | MojoAction | Record<string, string[] | RegExp>)[];
+export type RouteArguments = (string | MojoAction | Record<string, string[] | RegExp>)[];
 export type PlaceholderType = RegExp | string | string[];
 
 export type TagAttrs = Record<string, string | boolean | Record<string, string>>;
@@ -102,8 +99,8 @@ export interface BackendInfo {
 export interface SessionData {
   expiration?: number;
   expires?: number;
-  flash?: {[key: string]: any};
-  nextFlash?: {[key: string]: any};
+  flash?: Record<string, any>;
+  nextFlash?: Record<string, any>;
   [key: string]: any;
 }
 
@@ -130,12 +127,12 @@ export interface CookieOptions {
   secure?: boolean;
 }
 
-export type MojoURLOptions = {
+export interface MojoURLOptions {
   absolute?: boolean;
   fragment?: string;
   query?: Record<string, string | string[]>;
   values?: Record<string, string>;
-};
+}
 
 export interface MojoRenderOptions {
   engine?: string;

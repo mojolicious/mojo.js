@@ -33,7 +33,7 @@ export class Route {
   /**
    * Activate conditions for this route.
    */
-  requirements: Array<Record<string, any>> = [];
+  requirements: Record<string, any>[] = [];
   /**
    * Activate `websocket` semantics for this route.
    */
@@ -255,7 +255,7 @@ export class Route {
   /**
    * Set default parameters for this route.
    */
-  to(...targets: Array<string | MojoAction | Record<string, any>>): this {
+  to(...targets: (string | MojoAction | Record<string, any>)[]): this {
     const {defaults} = this.pattern;
 
     for (const target of targets) {
@@ -299,8 +299,8 @@ export class Route {
     return child;
   }
 
-  _branch(): Array<Router | Route> {
-    const branch: Array<Router | Route> = [this];
+  _branch(): (Router | Route)[] {
+    const branch: (Router | Route)[] = [this];
     let current: Router | Route | undefined = branch[0];
     while ((current = current.parent) !== undefined) {
       branch.push(current);

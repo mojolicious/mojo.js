@@ -5,7 +5,7 @@ import Template from '@mojojs/template';
 import chalk from 'chalk';
 export * from '@mojojs/util';
 
-type FixOptions = {
+interface FixOptions {
   author?: string;
   dependencies?: Record<string, string>;
   description?: string;
@@ -16,7 +16,7 @@ type FixOptions = {
   name?: string;
   scripts?: Record<string, string>;
   version?: string;
-};
+}
 
 // Unmarked codes are from RFC 7231
 export const httpStatusMessages: Record<number, string> = {
@@ -183,7 +183,7 @@ export async function devDependencies(regex: RegExp): Promise<Record<string, str
 export async function exceptionContext(
   error: Error,
   options: {lines?: number} = {}
-): Promise<{file: string; line: number; column: number; source: Array<{num: number; code: string}>} | null> {
+): Promise<{file: string; line: number; column: number; source: {num: number; code: string}[]} | null> {
   const stack = error.stack ?? '';
   const match = stack.split('\n')[1].match(/^\s*at .+ \(([^)]+):(\d+):(\d+)\)\s*$/);
   if (match === null || match[1].startsWith('file://') === false) return null;
@@ -196,7 +196,7 @@ export async function exceptionContext(
   const startLine = lineNumber - lines <= 0 ? 1 : lineNumber - lines;
   const endLine = lineNumber + lines;
 
-  const source: Array<{num: number; code: string}> = [];
+  const source: {num: number; code: string}[] = [];
   const context = {file: file.toString(), line: lineNumber, column, source};
   let currentLine = 0;
   for await (const line of file.lines({encoding: 'utf8'})) {

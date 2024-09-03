@@ -276,7 +276,7 @@ t.test('Exception app', async t => {
 
     app.websocket('/ws/exception/iterator').to(ctx => {
       ctx.plain(async ws => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line no-unused-vars
         for await (const message of ws) {
           throw new Error('WebSocket iterator test exception');
         }

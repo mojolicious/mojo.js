@@ -63,7 +63,7 @@ export class Session {
         decipher.setAuthTag(authTag);
         const decrypted = decipher.update(value, 'base64', 'utf8');
         return decrypted + decipher.final('utf8');
-      } catch (error) {
+      } catch {
         continue;
       }
     }
