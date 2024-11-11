@@ -46,7 +46,15 @@ export class TestUserAgent extends MockUserAgent {
    * Delegate assertion to test framework currently in use.
    */
   assert(name: string, args: any[], msg: string, skip: SkipFunction): void {
-    const test: any = this._assert ?? assert;
+    const test: any = this._assert ?? {
+      equal: assert.strictEqual,
+      not: assert.notStrictEqual,
+      match: assert.match,
+      notMatch: assert.doesNotMatch,
+      ok: assert.ok,
+      notOk: (value: any, message: string) => assert.ok(!value, message),
+      same: assert.deepStrictEqual
+    };
     test[name](...args, msg, {stack: this._stack.captureString(10, skip).replaceAll('file://', '')});
   }
 
