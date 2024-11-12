@@ -28,7 +28,7 @@ t.test('TestUserAgent', async t => {
 
   app.get('/target', ctx => ctx.render({text: 'Hi'}));
 
-  for (const useTap of [true, false]) {
+  for (const useTap of [false, true]) {
     const ua = useTap ? await app.newTestUserAgent({tap: t}) : await app.newTestUserAgent();
 
     await t.test('Status Assertion test', async () => {
@@ -96,7 +96,7 @@ t.test('TestUserAgent', async t => {
 
       t.same(results, [
         ['ok', [true], 'GET request for /'],
-        ['equal', [200, 200], 'response status is 200']
+        ['strictEqual', [200, 200], 'response status is 200']
       ]);
     });
 
@@ -115,12 +115,12 @@ t.test('TestUserAgent', async t => {
 
       t.same(results, [
         ['ok', [true], 'GET request for /'],
-        ['equal', ['text/plain; charset=utf-8', 'text/plain'], 'Content-Type: text/plain'],
+        ['strictEqual', ['text/plain; charset=utf-8', 'text/plain'], 'Content-Type: text/plain'],
         ['match', ['text/plain; charset=utf-8', /plain/], 'Content-Type is similar'],
         ['ok', [true], 'header "Content-Type" exists'],
-        ['notOk', [false], 'no "Content-Disposition" header'],
-        ['equal', ['text/plain; charset=utf-8', 'text/plain'], 'Content-Type: text/plain'],
-        ['not', ['text/plain; charset=utf-8', 'text/plain'], 'not Content-Type: text/plain'],
+        ['ok', [true], 'no "Content-Disposition" header'],
+        ['strictEqual', ['text/plain; charset=utf-8', 'text/plain'], 'Content-Type: text/plain'],
+        ['notStrictEqual', ['text/plain; charset=utf-8', 'text/plain'], 'not Content-Type: text/plain'],
         ['match', ['text/plain; charset=utf-8', /plain/], 'Content-Type is similar']
       ]);
     });
@@ -137,10 +137,10 @@ t.test('TestUserAgent', async t => {
 
       t.same(results, [
         ['ok', [true], 'GET request for /'],
-        ['equal', ['Hello Mojo!', 'test'], 'body is equal'],
-        ['not', ['Hello Mojo!', 'test'], 'body is not equal'],
+        ['strictEqual', ['Hello Mojo!', 'test'], 'body is equal'],
+        ['notStrictEqual', ['Hello Mojo!', 'test'], 'body is not equal'],
         ['match', ['Hello Mojo!', /that/], 'body is similar'],
-        ['notMatch', ['Hello Mojo!', /whatever/], 'body is not similar']
+        ['doesNotMatch', ['Hello Mojo!', /whatever/], 'body is not similar']
       ]);
     });
 
@@ -166,8 +166,8 @@ t.test('TestUserAgent', async t => {
         ['ok', [false], 'no element for selector "div"'],
         ['match', ['Two', /test/], 'similar match for selector "div"'],
         ['match', ['', /123/], 'similar match for selector "nothing"'],
-        ['notMatch', ['Two', /test/], 'no similar match for selector "div"'],
-        ['notMatch', ['', /123/], 'no similar match for selector "nothing"']
+        ['doesNotMatch', ['Two', /test/], 'no similar match for selector "div"'],
+        ['doesNotMatch', ['', /123/], 'no similar match for selector "nothing"']
       ]);
 
       results = [];
@@ -196,15 +196,15 @@ t.test('TestUserAgent', async t => {
         ['ok', [true], 'has value for JSON Pointer "/a" (JSON)'],
         ['ok', [false], 'has value for JSON Pointer "/d" (JSON)'],
         [
-          'same',
+          'deepStrictEqual',
           [
             ['b', 'c'],
             ['b', 'c']
           ],
           'exact match for JSON Pointer "/a" (JSON)'
         ],
-        ['same', [undefined, 'e'], 'exact match for JSON Pointer "/d" (JSON)'],
-        ['same', [{a: ['b', 'c']}, {a: ['b', 'c']}], 'exact match for JSON Pointer "" (JSON)']
+        ['deepStrictEqual', [undefined, 'e'], 'exact match for JSON Pointer "/d" (JSON)'],
+        ['deepStrictEqual', [{a: ['b', 'c']}, {a: ['b', 'c']}], 'exact match for JSON Pointer "" (JSON)']
       ]);
     });
 
@@ -224,15 +224,15 @@ t.test('TestUserAgent', async t => {
         ['ok', [true], 'has value for JSON Pointer "/a" (YAML)'],
         ['ok', [false], 'has value for JSON Pointer "/d" (YAML)'],
         [
-          'same',
+          'deepStrictEqual',
           [
             ['b', 'c'],
             ['b', 'c']
           ],
           'exact match for JSON Pointer "/a" (YAML)'
         ],
-        ['same', [undefined, 'e'], 'exact match for JSON Pointer "/d" (YAML)'],
-        ['same', [{a: ['b', 'c']}, {a: ['b', 'c']}], 'exact match for JSON Pointer "" (YAML)']
+        ['deepStrictEqual', [undefined, 'e'], 'exact match for JSON Pointer "/d" (YAML)'],
+        ['deepStrictEqual', [{a: ['b', 'c']}, {a: ['b', 'c']}], 'exact match for JSON Pointer "" (YAML)']
       ]);
     });
 
@@ -261,7 +261,7 @@ t.test('TestUserAgent', async t => {
         ['ok', [true], 'send message'],
         ['ok', [true], 'message received'],
         ['ok', [true], 'closed WebSocket'],
-        ['equal', [1000, 1000], 'WebSocket closed with status 1000']
+        ['strictEqual', [1000, 1000], 'WebSocket closed with status 1000']
       ]);
     });
 
