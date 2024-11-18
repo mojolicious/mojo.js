@@ -20,6 +20,16 @@ import StackUtils from 'stack-utils';
 
 type SkipFunction = (...args: any[]) => any;
 
+// Helper function to add required `TestUserAgent` assert methods
+// that are missing in a `TAP` instance. This is as an intended side effect
+// to ensure compatibility with `TestUserAgent` class below
+function addNodeAssertMethods(tapInstance: Test): void {
+  (tapInstance as any).strictEqual = tapInstance.equal.bind(tapInstance);
+  (tapInstance as any).notStrictEqual = tapInstance.not.bind(tapInstance);
+  (tapInstance as any).doesNotMatch = tapInstance.notMatch.bind(tapInstance);
+  (tapInstance as any).deepStrictEqual = tapInstance.same.bind(tapInstance);
+}
+
 /**
  * Test user-agent class.
  */
@@ -54,7 +64,7 @@ export class TestUserAgent extends MockUserAgent {
    * Check response content for exact match.
    */
   bodyIs(body: string): this {
-    this.assert('equal', [this.body.toString(), body], 'body is equal', this.bodyIs);
+    this.assert('strictEqual', [this.body.toString(), body], 'body is equal', this.bodyIs);
     return this;
   }
 
@@ -62,7 +72,7 @@ export class TestUserAgent extends MockUserAgent {
    * Opposite of `bodyIs`.
    */
   bodyIsnt(body: string): this {
-    this.assert('not', [this.body.toString(), body], 'body is not equal', this.bodyIsnt);
+    this.assert('notStrictEqual', [this.body.toString(), body], 'body is not equal', this.bodyIsnt);
     return this;
   }
 
@@ -78,7 +88,7 @@ export class TestUserAgent extends MockUserAgent {
    * Opposite of `bodyLike`.
    */
   bodyUnlike(regex: RegExp): this {
-    this.assert('notMatch', [this.body.toString(), regex], 'body is not similar', this.bodyUnlike);
+    this.assert('doesNotMatch', [this.body.toString(), regex], 'body is not similar', this.bodyUnlike);
     return this;
   }
 
@@ -97,7 +107,7 @@ export class TestUserAgent extends MockUserAgent {
   async closedOk(code: number): Promise<void> {
     await this._waitFinished();
     const finished = this._finished == null ? null : this._finished[0];
-    this.assert('equal', [finished, code], `WebSocket closed with status ${code}`, this.closedOk);
+    this.assert('strictEqual', [finished, code], `WebSocket closed with status ${code}`, this.closedOk);
   }
 
   /**
@@ -151,7 +161,7 @@ export class TestUserAgent extends MockUserAgent {
    * Opposite of `headerExists`.
    */
   headerExistsNot(name: string): this {
-    this.assert('notOk', [this.res.get(name) !== null], `no "${name}" header`, this.headerExistsNot);
+    this.assert('ok', [this.res.get(name) === null], `no "${name}" header`, this.headerExistsNot);
     return this;
   }
 
@@ -159,7 +169,7 @@ export class TestUserAgent extends MockUserAgent {
    * Check response header for exact match.
    */
   headerIs(name: string, value: string): this {
-    this.assert('equal', [this.res.get(name), value], `${name}: ${value}`, this.headerIs);
+    this.assert('strictEqual', [this.res.get(name), value], `${name}: ${value}`, this.headerIs);
     return this;
   }
 
@@ -167,7 +177,7 @@ export class TestUserAgent extends MockUserAgent {
    * Opposite of `headerIs`.
    */
   headerIsnt(name: string, value: string): this {
-    this.assert('not', [this.res.get(name), value], `not ${name}: ${value}`, this.headerIsnt);
+    this.assert('notStrictEqual', [this.res.get(name), value], `not ${name}: ${value}`, this.headerIsnt);
     return this;
   }
 
@@ -194,7 +204,7 @@ export class TestUserAgent extends MockUserAgent {
    */
   jsonIs(value: JSONValue, pointer = ''): this {
     const expected = jsonPointer(JSON.parse(this.body.toString()), pointer);
-    this.assert('same', [expected, value], `exact match for JSON Pointer "${pointer}" (JSON)`, this.jsonIs);
+    this.assert('deepStrictEqual', [expected, value], `exact match for JSON Pointer "${pointer}" (JSON)`, this.jsonIs);
     return this;
   }
 
@@ -269,7 +279,7 @@ export class TestUserAgent extends MockUserAgent {
    * Check response status for exact match.
    */
   statusIs(status: number): this {
-    this.assert('equal', [this.res.statusCode, status], `response status is ${status}`, this.statusIs);
+    this.assert('strictEqual', [this.res.statusCode, status], `response status is ${status}`, this.statusIs);
     return this;
   }
 
@@ -291,7 +301,7 @@ export class TestUserAgent extends MockUserAgent {
    */
   textUnlike(selector: string, regex: RegExp): this {
     this.assert(
-      'notMatch',
+      'doesNotMatch',
       [this._html.at(selector)?.text() ?? '', regex],
       `no similar match for selector "${selector}"`,
       this.textLike
@@ -303,7 +313,7 @@ export class TestUserAgent extends MockUserAgent {
    * Check response `Content-Type` header for exact match.
    */
   typeIs(value: string): this {
-    this.assert('equal', [this.res.type, value], `Content-Type: ${value}`, this.typeIs);
+    this.assert('strictEqual', [this.res.type, value], `Content-Type: ${value}`, this.typeIs);
     return this;
   }
 
@@ -353,7 +363,7 @@ export class TestUserAgent extends MockUserAgent {
    */
   yamlIs(value: JSONValue, pointer = ''): this {
     const expected = jsonPointer(yaml.load(this.body.toString()) as JSONValue, pointer);
-    this.assert('same', [expected, value], `exact match for JSON Pointer "${pointer}" (YAML)`, this.yamlIs);
+    this.assert('deepStrictEqual', [expected, value], `exact match for JSON Pointer "${pointer}" (YAML)`, this.yamlIs);
     return this;
   }
 
@@ -363,11 +373,13 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   _prepareTap(tap: Test): void {
+    addNodeAssertMethods(tap);
     this._assert = tap;
     const subtests = [tap];
     const assert = this._assert;
 
     assert.beforeEach(async t => {
+      addNodeAssertMethods(t);
       subtests.push(t);
       this._assert = t;
     });
