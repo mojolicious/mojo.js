@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.26.7 (2024-11-18)
+
+### Bug Fixes
+
+  * Fixed compatibility with `node:assert/strict`. ([@dmanto](https://github.com/dmanto))
+
 ## v1.26.4 (2024-02-26)
 
 ### Bug Fixes
