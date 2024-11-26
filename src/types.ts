@@ -7,8 +7,23 @@ import type {Agent} from 'node:http';
 import type {Readable, Stream} from 'node:stream';
 import type {URL} from 'node:url';
 import type {InspectOptions} from 'node:util';
-import type {Test} from 'tap';
 import type {CookieJar} from 'tough-cookie';
+
+export interface TestContext {
+  equal(actual: any, expected: any, message?: string): void;
+  not(actual: any, expected: any, message?: string): void;
+  notMatch(actual: any, pattern: RegExp, message?: string): void;
+  match(actual: any, pattern: RegExp, message?: string): void;
+  same(actual: any, expected: any, message?: string): void;
+  plan(count: number): void;
+  skip(message: string): void;
+  todo(message: string): void;
+  ok(value: any, message?: string): void;
+  end(): void;
+
+  beforeEach(callback: (t: TestContext) => Promise<void>): void;
+  afterEach(callback: () => Promise<void>): void;
+}
 
 export type {JSONValue} from '@mojojs/util';
 
@@ -221,7 +236,7 @@ export interface UserAgentWebSocketOptions extends SharedUserAgentRequestOptions
 
 export type URLTarget = string | [string, MojoURLOptions];
 
-export type TestUserAgentOptions = UserAgentOptions & {tap?: Test};
+export type TestUserAgentOptions = UserAgentOptions & {tap?: TestContext};
 
 export interface ValidationError {
   instancePath: string;

@@ -3,13 +3,13 @@ import type {App} from '../app.js';
 import type {
   JSONValue,
   ServerOptions,
+  TestContext,
   TestUserAgentOptions,
   UserAgentRequestOptions,
   UserAgentWebSocketOptions
 } from '../types.js';
 import type {WebSocket} from '../websocket.js';
 import type {URL} from 'node:url';
-import type {Test} from 'tap';
 import assert from 'node:assert/strict';
 import {on} from 'node:events';
 import {MockUserAgent} from './mock.js';
@@ -23,7 +23,7 @@ type SkipFunction = (...args: any[]) => any;
 // Helper function to add required `TestUserAgent` assert methods
 // that are missing in a `TAP` instance. This is as an intended side effect
 // to ensure compatibility with `TestUserAgent` class below
-function addNodeAssertMethods(tapInstance: Test): void {
+function addNodeAssertMethods(tapInstance: TestContext): void {
   (tapInstance as any).strictEqual = tapInstance.equal.bind(tapInstance);
   (tapInstance as any).notStrictEqual = tapInstance.not.bind(tapInstance);
   (tapInstance as any).doesNotMatch = tapInstance.notMatch.bind(tapInstance);
@@ -39,7 +39,7 @@ export class TestUserAgent extends MockUserAgent {
    */
   body: Buffer = Buffer.from('');
 
-  _assert: typeof assert | Test | undefined = undefined;
+  _assert: typeof assert | TestContext | undefined = undefined;
   _dom: DOM | undefined = undefined;
   _finished: [number, string] | null | undefined = undefined;
   _messages: AsyncIterableIterator<JSONValue> | undefined = undefined;
@@ -372,13 +372,13 @@ export class TestUserAgent extends MockUserAgent {
     return this._dom;
   }
 
-  _prepareTap(tap: Test): void {
+  _prepareTap(tap: TestContext): void {
     addNodeAssertMethods(tap);
     this._assert = tap;
     const subtests = [tap];
     const assert = this._assert;
 
-    assert.beforeEach(async t => {
+    assert.beforeEach(async (t: TestContext) => {
       addNodeAssertMethods(t);
       subtests.push(t);
       this._assert = t;
