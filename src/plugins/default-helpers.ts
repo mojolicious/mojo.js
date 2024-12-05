@@ -72,6 +72,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('tags.linkTo', linkTo);
   app.addHelper('tags.passwordField', passwordFieldTag);
   app.addHelper('tags.script', scriptTag);
+  app.addHelper('tags.selectField', selectFieldTag);
   app.addHelper('tags.style', styleTag);
   app.addHelper('tags.submitButton', submitButtonTag);
 
@@ -96,6 +97,7 @@ export default function defaultHelpersPlugin(app: MojoApp): void {
   app.addHelper('linkTo', linkTo);
   app.addHelper('passwordFieldTag', passwordFieldTag);
   app.addHelper('scriptTag', scriptTag);
+  app.addHelper('selectFieldTag', scriptTag);
   app.addHelper('styleTag', styleTag);
   app.addHelper('submitButtonTag', submitButtonTag);
 
@@ -297,6 +299,61 @@ async function radioButtonTag(ctx: MojoContext, name: string, attrs: TagAttrs = 
 
 function scriptTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): Promise<SafeString> {
   return ctx.tag('script', {src: ctx.urlForFile(target), ...attrs});
+}
+
+async function selectFieldTag(ctx: MojoContext, name: string, optionItems: any[], attrs: TagAttrs = {}) {
+  attrs.name ??= name;
+  const params = await ctx.params();
+  const selected: Record<string, boolean> = {};
+  for (const [n, v] of params.entries()) {
+    if (n !== name) continue;
+    selected[v] = true;
+  }
+  const considerSelectedParams = Object.keys(selected).length > 0;
+  const output: string[] = [];
+  let groupOutput: string[] = [];
+  let groupMode = false;
+  let groupAttrs: TagAttrs = {};
+  const stack = optionItems;
+  const optiongrpEnd = Symbol('option end');
+
+  while (stack.length > 0) {
+    const item = stack.shift();
+    const itemAttrs = typeof stack[0] === 'object' && !Array.isArray(stack[0]) ? stack.shift() : {};
+    if (item === optiongrpEnd) {
+      output.push(ctx.tag('optgroup', groupAttrs, new SafeString(groupOutput.join(''))));
+      groupOutput = [];
+      groupAttrs = {};
+      groupMode = false;
+    } else if (typeof item === 'string') {
+      itemAttrs.value ??= item;
+      if (considerSelectedParams) {
+        if (selected[itemAttrs.value]) {
+          itemAttrs.selected = true;
+        } else {
+          delete itemAttrs.selected;
+        }
+      }
+      (groupMode ? groupOutput : output).push(ctx.tag('option', itemAttrs, item));
+    } else if (Array.isArray(item)) {
+      groupAttrs = itemAttrs;
+      const label = item.shift();
+      if (typeof label === 'string' && label.length > 0) {
+        groupAttrs.label = label;
+      }
+      groupMode = true;
+      stack.unshift(optiongrpEnd);
+      for (const option of item.reverse()) {
+        if (Array.isArray(option)) {
+          throw new Error('Nested option groups are not allowed.');
+        }
+        stack.unshift(option);
+      }
+    } else {
+      throw new Error(`Unsupported data type ${ctx.inspect(item, {})}`);
+    }
+  }
+  return ctx.tag('select', attrs, new SafeString(output.join('')));
 }
 
 function styleTag(ctx: MojoContext, target: string, attrs: TagAttrs = {}): Promise<SafeString> {
