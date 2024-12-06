@@ -61,7 +61,7 @@
     "@types/mime-types": "^2.1.0",
     "@types/node": "^22.5.0",
     "@types/nopt": "^3.0.29",
-    "@types/react": "^18.2.37",
+    "@types/react": "^19.0.0",
     "@types/stack-utils": "^2.0.1",
     "@types/tough-cookie": "^4.0.2",
     "@types/ws": "^8.5.3",
