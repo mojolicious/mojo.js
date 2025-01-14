@@ -13,6 +13,7 @@ t.test('Plugin app', async t => {
 
   app.get('/tag_helpers', ctx => ctx.render({inline: tagHelperPlugin}));
   app.get('/form_helpers', ctx => ctx.render({inline: formTagHelpers}));
+  app.put('/selection', ctx => ctx.render({inline: selectTagHelper}));
 
   app.get('/helper', ctx => ctx.render({text: ctx.testHelper('test')}));
   app.get('/nested/helper', ctx => ctx.render({text: ctx.nested.testHelper('test')}));
@@ -111,6 +112,151 @@ t.test('Plugin app', async t => {
       fiftyfour: 'Fiftyfour'
     };
     (await ua.getOk('/form_helpers', {form})).statusIs(200).bodyIs(formTagHelpersFilledResult);
+
+    // Empty selection
+    (await ua.putOk('/selection'))
+      .statusIs(200)
+      .bodyIs(
+        '\n<form method="POST" action="/selection?_method=PUT">\n' +
+          '<select name="a">' +
+          '<option value="b">b</option>' +
+          '<optgroup label="c">' +
+          '<option value="&lt;d">&lt;d</option>' +
+          '<option value="e">E</option>' +
+          '<option value="f">f</option>' +
+          '</optgroup>' +
+          '<option value="g">g</option>' +
+          '</select>\n' +
+          '<select multiple="multiple" name="foo">' +
+          '<option value="bar">bar</option>' +
+          '<option value="baz">baz</option>' +
+          '</select>\n' +
+          '<select name="bar">' +
+          '<option value="d" disabled>D</option>' +
+          '<option value="baz">baz</option>' +
+          '</select>\n' +
+          '<select name="yada">' +
+          '<optgroup class="x" label="test">' +
+          '<option value="a">a</option>' +
+          '<option value="b">b</option>' +
+          '</optgroup>' +
+          '</select>\n' +
+          '<select name="h">' +
+          '<option value="i" selected>I</option>' +
+          '<option value="j">J</option>' +
+          '</select>\n' +
+          '<input value="Ok" type="submit">' +
+          '\n</form>\n'
+      );
+
+    // Selection with values
+    (await ua.putOk('/selection?a=e&foo=bar&bar=baz&yada=b&h=j'))
+      .statusIs(200)
+      .bodyIs(
+        '\n<form method="POST" action="/selection?_method=PUT">\n' +
+          '<select name="a">' +
+          '<option value="b">b</option>' +
+          '<optgroup label="c">' +
+          '<option value="&lt;d">&lt;d</option>' +
+          '<option value="e" selected>E</option>' +
+          '<option value="f">f</option>' +
+          '</optgroup>' +
+          '<option value="g">g</option>' +
+          '</select>\n' +
+          '<select multiple="multiple" name="foo">' +
+          '<option value="bar" selected>bar</option>' +
+          '<option value="baz">baz</option>' +
+          '</select>\n' +
+          '<select name="bar">' +
+          '<option value="d" disabled>D</option>' +
+          '<option value="baz" selected>baz</option>' +
+          '</select>\n' +
+          '<select name="yada">' +
+          '<optgroup class="x" label="test">' +
+          '<option value="a">a</option>' +
+          '<option value="b" selected>b</option>' +
+          '</optgroup>' +
+          '</select>\n' +
+          '<select name="h">' +
+          '<option value="i">I</option>' +
+          '<option value="j" selected>J</option>' +
+          '</select>\n' +
+          '<input value="Ok" type="submit">' +
+          '\n</form>\n'
+      );
+
+    // Selection with multiple values
+    (await ua.putOk('/selection?foo=bar&a=e&foo=baz&bar=d&yada=a&yada=b&h=i&h=j'))
+      .statusIs(200)
+      .bodyIs(
+        '\n<form method="POST" action="/selection?_method=PUT">\n' +
+          '<select name="a">' +
+          '<option value="b">b</option>' +
+          '<optgroup label="c">' +
+          '<option value="&lt;d">&lt;d</option>' +
+          '<option value="e" selected>E</option>' +
+          '<option value="f">f</option>' +
+          '</optgroup>' +
+          '<option value="g">g</option>' +
+          '</select>\n' +
+          '<select multiple="multiple" name="foo">' +
+          '<option value="bar" selected>bar</option>' +
+          '<option value="baz" selected>baz</option>' +
+          '</select>\n' +
+          '<select name="bar">' +
+          '<option value="d" disabled selected>D</option>' +
+          '<option value="baz">baz</option>' +
+          '</select>\n' +
+          '<select name="yada">' +
+          '<optgroup class="x" label="test">' +
+          '<option value="a" selected>a</option>' +
+          '<option value="b" selected>b</option>' +
+          '</optgroup>' +
+          '</select>\n' +
+          '<select name="h">' +
+          '<option value="i" selected>I</option>' +
+          '<option value="j" selected>J</option>' +
+          '</select>\n' +
+          '<input value="Ok" type="submit">' +
+          '\n</form>\n'
+      );
+
+    // Selection with multiple values preselected
+    // (await ua.putOk('/selection?preselect=1&undef=1'))
+    (await ua.putOk('/selection?a=b&a=g'))
+      .statusIs(200)
+      .bodyIs(
+        '\n<form method="POST" action="/selection?_method=PUT">\n' +
+          '<select name="a">' +
+          '<option value="b" selected>b</option>' +
+          '<optgroup label="c">' +
+          '<option value="&lt;d">&lt;d</option>' +
+          '<option value="e">E</option>' +
+          '<option value="f">f</option>' +
+          '</optgroup>' +
+          '<option value="g" selected>g</option>' +
+          '</select>\n' +
+          '<select multiple="multiple" name="foo">' +
+          '<option value="bar">bar</option>' +
+          '<option value="baz">baz</option>' +
+          '</select>\n' +
+          '<select name="bar">' +
+          '<option value="d" disabled>D</option>' +
+          '<option value="baz">baz</option>' +
+          '</select>\n' +
+          '<select name="yada">' +
+          '<optgroup class="x" label="test">' +
+          '<option value="a">a</option>' +
+          '<option value="b">b</option>' +
+          '</optgroup>' +
+          '</select>\n' +
+          '<select name="h">' +
+          '<option value="i" selected>I</option>' +
+          '<option value="j">J</option>' +
+          '</select>\n' +
+          '<input value="Ok" type="submit">' +
+          '\n</form>\n'
+      );
   });
 
   await t.test('Helper', async () => {
@@ -435,6 +581,19 @@ Button1: <form class="foo" method="POST" action="/special/form?_method=PATCH"><i
 Button2: <form method="POST" action="/form/bar"><input value="Test2" type="submit"></form>
 `;
 }
+
+const selectTagHelper = `
+<{formBlock}>
+
+%= await tags.selectField ("a", ["b", ["c", "<d",  "E", {value: "e"}, "f"], "g"])
+%= await tags.selectField ("foo", ["bar", "baz"], {multiple: "multiple"})
+%= await tags.selectField ("bar", ['D', {value:  'd', disabled: true}, 'baz'])
+%= await tags.selectField ("yada", [["test", "a", "b"], {class: 'x'}])
+%= await tags.selectField ("h", ['I', {value: 'i', selected: true}, 'J', {value: 'j'}])
+%= await tags.submitButton()
+<{/formBlock}>
+<%= await ctx.tags.formFor('selection', {}, formBlock()) %>
+`;
 
 function mixedPlugin(app) {
   app.config.test = 'works';
