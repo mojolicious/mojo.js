@@ -59,7 +59,9 @@ export interface MojoContext extends Context {
 
 export type MojoAction = (ctx: MojoContext, ...args: any[]) => any;
 
-export type MojoModels = Record<string, any>;
+export interface MojoModels {
+  [key: string]: any;
+}
 
 export interface MojoTags {
   asset: (path: string, attrs?: TagAttrs) => Promise<SafeString>;
