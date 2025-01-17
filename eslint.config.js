@@ -70,7 +70,8 @@ const customTypescriptConfig = {
       }
     ],
 
-    '@typescript-eslint/no-explicit-any': 'off'
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/consistent-indexed-object-style': 'off'
   }
 };
 
