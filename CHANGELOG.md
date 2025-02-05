@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.26.10 (2025-02-05)
+
+### Bug Fixes
+
+  * Fixed `MojoModels` to be an interface instead of type. ([@dmanto](https://github.com/dmanto))
+
 ## v1.26.8 (2024-11-18)
 
 ### Bug Fixes
