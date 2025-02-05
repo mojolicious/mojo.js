@@ -1,7 +1,11 @@
 import {Bar} from './models/bar.js';
 import helpersPlugin from './plugins/helpers.js';
 import mojo, {yamlConfigPlugin} from '../../../../../lib/core.js';
-
+declare module '../../../../../lib/core.js' {
+  interface MojoModels {
+    bar: Bar;
+  }
+}
 export const app = mojo();
 
 app.log.level = 'info';
