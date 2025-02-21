@@ -73,7 +73,7 @@
     "eslint": "^9.9.1",
     "eslint-plugin-import-x": "^4.1.1",
     "eslint-plugin-node": "^11.1.0",
-    "globals": "^15.9.0",
+    "globals": "^16.0.0",
     "nodemon": "^3.0.0",
     "prettier": "^3.3.3",
     "tap": "^21.0.0",
