@@ -501,7 +501,10 @@ export class App {
    */
   async start(command?: string, ...args: string[]): Promise<void> {
     if (this.detectImport === true && process.argv[1] !== Path.callerFile().toString()) return;
-    return this.cli.start(command, ...args).catch(error => this.log.error(error.message));
+    return this.cli.start(command, ...args).catch(error => {
+      this.log.error(error.message);
+      if (this.detectImport !== false) process.exit(1);
+    });
   }
 
   /**
