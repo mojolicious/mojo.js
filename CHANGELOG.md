@@ -3,6 +3,12 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.26.11 (2025-12-19)
+
+### Bug Fixes
+
+  * Fixed startup exit codes. ([@dmanto](https://github.com/dmanto))
+
 ## v1.26.10 (2025-02-05)
 
 ### Bug Fixes
