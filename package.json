@@ -52,7 +52,7 @@
     "vendor/"
   ],
   "bin": {
-    "mojo": "./bin/mojo.js"
+    "mojo": "bin/mojo.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
