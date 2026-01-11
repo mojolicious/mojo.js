@@ -96,7 +96,7 @@
     "mime-types": "^2.1.30",
     "nopt": "^9.0.0",
     "stack-utils": "^2.0.3",
-    "tough-cookie": "^5.1.0",
+    "tough-cookie": "^6.0.0",
     "ws": "^8.3.0"
   }
 }
