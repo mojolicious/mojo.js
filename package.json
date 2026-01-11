@@ -84,7 +84,6 @@
     "node": ">= 16"
   },
   "dependencies": {
-    "@eslint/compat": "^2.0.0",
     "@mojojs/dom": "^2.1.0",
     "@mojojs/path": "^1.6.0",
     "@mojojs/template": "^2.2.0",
