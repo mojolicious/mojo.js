@@ -1,116 +1,62 @@
-import importPlugin from 'eslint-plugin-import-x';
+import js from '@eslint/js';
+import {flatConfigs as importXConfigs} from 'eslint-plugin-import-x';
+import prettier from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
-import tsParser from '@typescript-eslint/parser';
-import eslintJs from '@eslint/js';
-import eslintTs from 'typescript-eslint';
+import {config, configs as tseslintConfigs} from 'typescript-eslint';
 
-const tsFiles = ['{src,test}/**/*.ts'];
-const jsFiles = ['test/**/*.js'];
-
-const languageOptions = {
-  globals: {
-    ...globals.node
-  },
-  ecmaVersion: 2023,
-  sourceType: 'module'
-};
-
-const customTypescriptConfig = {
-  files: tsFiles,
-  plugins: {
-    import: importPlugin,
-    'import/parsers': tsParser
-  },
-  languageOptions: {
-    ...languageOptions,
-    parser: tsParser,
-    parserOptions: {
-      project: './tsconfig.eslint.json'
-    }
-  },
-  settings: {
-    'import/parsers': {
-      '@typescript-eslint/parser': ['.ts']
-    }
-  },
-  rules: {
-    'import/export': 'error',
-    'import/no-duplicates': 'warn',
-    ...importPlugin.configs.typescript.rules,
-    '@typescript-eslint/no-use-before-define': 'off',
-    'require-await': 'off',
-    'no-duplicate-imports': 'error',
-    'no-unneeded-ternary': 'error',
-    'prefer-object-spread': 'error',
-
-    '@typescript-eslint/no-unused-vars': [
-      'error',
-      {
-        ignoreRestSiblings: true,
-        args: 'none'
-      }
-    ],
-    'import/order': [
-      'error',
-      {
-        groups: ['type', 'builtin', ['sibling', 'parent'], 'index', 'object'],
-        'newlines-between': 'never',
-
-        alphabetize: {
-          order: 'asc',
-          caseInsensitive: true
-        }
-      }
-    ],
-
-    '@typescript-eslint/consistent-type-imports': [
-      'error',
-      {
-        prefer: 'type-imports'
-      }
-    ],
-
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/consistent-indexed-object-style': 'off'
-  }
-};
-
-const customJavascriptConfig = {
-  files: jsFiles,
-  languageOptions: {
-    ...languageOptions,
-    parserOptions: {
-      ecmaVersion: 2023
-    }
-  },
-  rules: {
-    'no-duplicate-imports': 'error',
-    'no-unneeded-ternary': 'error',
-    'prefer-object-spread': 'error',
-    'no-unused-vars': [
-      'error',
-      {
-        ignoreRestSiblings: true,
-        args: 'none'
-      }
+export default config(
+  {
+    ignores: [
+      'lib/**',
+      'node_modules/**',
+      'docs/**',
+      'vendor/**',
+      'benchmarks/**',
+      'bin/**',
+      'examples/**',
+      'test/support/ts/**/lib/**'
     ]
+  },
+  js.configs.recommended,
+  tseslintConfigs.recommended,
+  importXConfigs.recommended,
+  importXConfigs.typescript,
+  prettier,
+  {
+    languageOptions: {
+      globals: globals.node
+    },
+    rules: {
+      'prettier/prettier': 'error',
+      'no-duplicate-imports': 'error',
+      'no-unneeded-ternary': 'error',
+      'prefer-object-spread': 'error',
+      'import-x/order': [
+        'error',
+        {
+          groups: ['type', 'builtin', ['sibling', 'parent'], 'index', 'object'],
+          'newlines-between': 'never',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true
+          }
+        }
+      ],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          prefer: 'type-imports'
+        }
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          ignoreRestSiblings: true,
+          args: 'none'
+        }
+      ],
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-use-before-define': 'off'
+    }
   }
-};
-const recommendedTypeScriptConfigs = [
-  ...eslintTs.configs.recommended.map(config => ({
-    ...config,
-    files: tsFiles
-  })),
-  ...eslintTs.configs.stylistic.map(config => ({
-    ...config,
-    files: tsFiles
-  }))
-];
-
-export default [
-  {ignores: ['docs/*', 'lib/*']},
-  eslintJs.configs.recommended,
-  customJavascriptConfig,
-  ...recommendedTypeScriptConfigs,
-  customTypescriptConfig
-];
+);

@@ -9,6 +9,7 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "noErrorTruncation": true,
-    "strict": true
+    "strict": true,
+    "ignoreDeprecations": "6.0"
   }
 }

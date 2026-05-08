@@ -129,7 +129,7 @@ export class Pattern {
     let optional = true;
 
     for (const token of this._ast) {
-      let part = '';
+      let part: string;
       if (token[0] === OP.slash) {
         parts.unshift(optional ? `(?:/${block})?` : `/${block}`);
         block = '';
