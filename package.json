@@ -83,7 +83,7 @@
     "js-yaml": "^5.2.2",
     "mime-types": "^2.1.30",
     "stack-utils": "^2.0.3",
-    "tough-cookie": "^5.1.0",
+    "tough-cookie": "^6.0.2",
     "ws": "^8.3.0"
   }
 }
