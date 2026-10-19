@@ -212,7 +212,7 @@ export class Server {
       }),
       {name: 'server', req, res: raw}
     );
-    raw.on('finish', () => ctx.emit('finish'));
+    raw.on('close', () => ctx.emit('finish'));
     app.handleRequest(ctx).catch(error => ctx.exception(error));
   }
 

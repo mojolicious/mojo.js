@@ -3,6 +3,28 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v1.27.0 (2026-10-19)
+
+### Features
+
+  * Added support for the `QUERY` HTTP request method from RFC 10008.
+  * Added `query` methods to `App`, `Route` and `UserAgent`.
+  * Added `queryOk` method to `TestUserAgent`.
+  * Added EXPERIMENTAL support for partitioned cookies.
+  * Added EXPERIMENTAL `partitioned` option to `ctx.res.setCookie()` and `partitioned` property to `Session`.
+  * Added EXPERIMENTAL support for Server-Sent Events.
+  * Added EXPERIMENTAL `buildEvent` and `parseEvent` functions.
+  * Added EXPERIMENTAL `ctx.writeSSE()` and `ctx.finishSSE()` methods.
+  * Added EXPERIMENTAL `sse` method to `UserAgentResponse`.
+  * Added EXPERIMENTAL `getSSEOk`, `postSSEOk`, `sseFinishOk`, `sseFinishedOk`, `sseOk`, `sseIdIs`, `sseIdIsnt`,
+    `sseTextIs`, `sseTextIsnt`, `sseTextLike`, `sseTextUnlike`, `sseTypeIs` and `sseTypeIsnt` methods to
+    `TestUserAgent`.
+
+### Bug Fixes
+
+  * Fixed a bug where the `SCRIPT_NAME` prefix was sometimes incorrectly removed from `PATH_INFO` in CGI environments.
+  * Fixed a bug where the `finish` event was not emitted for the context object when a connection was closed early.
+
 ## v1.26.12 (2025-12-19)
 
 ### Bug Fixes

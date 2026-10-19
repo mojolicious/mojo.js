@@ -244,12 +244,17 @@ router.put('/hello').to({controller: 'foo', action: 'hello'});
 // POST /hello -> {controller: 'foo', action: 'hello'}
 router.post('/hello').to({controller: 'foo', action: 'hello'});
 
+// QUERY /search -> {controller: 'foo', action: 'search'}
+router.query('/search').to({controller: 'foo', action: 'search'});
+
 // GET|POST /bye  -> {controller: 'foo', action: 'bye'}
 router.any(['GET', 'POST'], '/bye').to({controller: 'foo', action: 'bye'});
 
 // * /whatever -> {controller: 'foo', action: 'whatever'}
 router.any('/whatever').to({controller: 'foo', action: 'whatever'});
 ```
+
+Note that support for the `QUERY` request method from RFC 10008 depends on the HTTP parser of your Node.js version.
 
 There is one small exception, `HEAD` requests are considered equal to `GET`, but content will not be sent with the
 response even if it is present.

@@ -139,6 +139,7 @@ export interface CookieOptions {
   expires?: Date;
   httpOnly?: boolean;
   maxAge?: number;
+  partitioned?: boolean;
   path?: string;
   sameSite?: 'lax' | 'strict' | 'none';
   secure?: boolean;
@@ -189,6 +190,13 @@ export interface ServerRequestOptions {
   remoteAddress?: string;
   reverseProxy: boolean;
   url?: string;
+}
+
+export interface SSEEvent {
+  comment?: string;
+  id?: string | number | null;
+  text?: string;
+  type?: string;
 }
 
 export type ServerResponseBody = string | Buffer | Stream | undefined;

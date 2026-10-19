@@ -2,6 +2,7 @@ import type {UserAgentResponse} from './response.js';
 import type {App} from '../app.js';
 import type {
   JSONValue,
+  SSEEvent,
   ServerOptions,
   TestContext,
   TestUserAgentOptions,
@@ -44,6 +45,8 @@ export class TestUserAgent extends MockUserAgent {
   _finished: [number, string] | null | undefined = undefined;
   _messages: AsyncIterableIterator<JSONValue> | undefined = undefined;
   _res: UserAgentResponse | undefined = undefined;
+  _sse: SSEEvent | undefined = undefined;
+  _sseEvents: AsyncIterator<SSEEvent> | undefined = undefined;
   _stack: StackUtils = new StackUtils();
   _ws: WebSocket | undefined = undefined;
 
@@ -140,6 +143,14 @@ export class TestUserAgent extends MockUserAgent {
    */
   async getOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
     return await this._requestOk(this.getOk, 'GET', url, options);
+  }
+
+  /**
+   * Perform a `GET` request and check for transport errors, but leave the response body for Server-Sent Events. Note
+   * that this method is EXPERIMENTAL and might change without warning!
+   */
+  async getSSEOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
+    return await this._sseOk(this.getSSEOk, 'GET', url, options);
   }
 
   /**
@@ -252,10 +263,25 @@ export class TestUserAgent extends MockUserAgent {
   }
 
   /**
+   * Perform a `POST` request and check for transport errors, but leave the response body for Server-Sent Events. Note
+   * that this method is EXPERIMENTAL and might change without warning!
+   */
+  async postSSEOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
+    return await this._sseOk(this.postSSEOk, 'POST', url, options);
+  }
+
+  /**
    * Perform a `PUT` request and check for transport errors.
    */
   async putOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
     return await this._requestOk(this.putOk, 'PUT', url, options);
+  }
+
+  /**
+   * Perform a `QUERY` request and check for transport errors.
+   */
+  async queryOk(url: string | URL, options?: UserAgentRequestOptions): Promise<this> {
+    return await this._requestOk(this.queryOk, 'QUERY', url, options);
   }
 
   /**
@@ -273,6 +299,114 @@ export class TestUserAgent extends MockUserAgent {
   async sendOk(message: any): Promise<void> {
     await this.ws.send(message);
     this.assert('ok', [true], 'send message', this.sendOk);
+  }
+
+  /**
+   * Current Server-Sent Event. Note that this property is EXPERIMENTAL and might change without warning!
+   */
+  get sse(): SSEEvent {
+    const sse = this._sse;
+    if (sse === undefined) throw new Error('No Server-Sent Event received');
+    return sse;
+  }
+
+  /**
+   * Close Server-Sent Events connection. Note that this method is EXPERIMENTAL and might change without warning!
+   */
+  async sseFinishOk(): Promise<this> {
+    await this._sseIterator.return?.();
+    this._sseEvents = undefined;
+    this.assert('ok', [true], 'closed SSE connection', this.sseFinishOk);
+    return this;
+  }
+
+  /**
+   * Wait for Server-Sent Events connection to be closed by the server. Note that this method is EXPERIMENTAL and might
+   * change without warning!
+   */
+  async sseFinishedOk(): Promise<this> {
+    const events = this._sseIterator;
+    while ((await events.next()).done !== true);
+    this._sseEvents = undefined;
+    this.assert('ok', [true], 'SSE connection has been closed', this.sseFinishedOk);
+    return this;
+  }
+
+  /**
+   * Check Server-Sent Event id for exact match. Note that this method is EXPERIMENTAL and might change without warning!
+   */
+  sseIdIs(id: string | null): this {
+    this.assert('strictEqual', [this.sse.id, id], 'exact match for SSE event id', this.sseIdIs);
+    return this;
+  }
+
+  /**
+   * Opposite of `sseIdIs`. Note that this method is EXPERIMENTAL and might change without warning!
+   */
+  sseIdIsnt(id: string | null): this {
+    this.assert('notStrictEqual', [this.sse.id, id], 'no match for SSE event id', this.sseIdIsnt);
+    return this;
+  }
+
+  /**
+   * Wait for next Server-Sent Event to arrive. Note that this method is EXPERIMENTAL and might change without warning!
+   */
+  async sseOk(): Promise<this> {
+    const {done, value} = await this._sseIterator.next();
+    if (done !== true) this._sse = value;
+    this.assert('ok', [done !== true], 'event received', this.sseOk);
+    return this;
+  }
+
+  /**
+   * Check Server-Sent Event text for exact match. Note that this method is EXPERIMENTAL and might change without
+   * warning!
+   */
+  sseTextIs(text: string): this {
+    this.assert('strictEqual', [this.sse.text, text], 'exact match for SSE event text', this.sseTextIs);
+    return this;
+  }
+
+  /**
+   * Opposite of `sseTextIs`. Note that this method is EXPERIMENTAL and might change without warning!
+   */
+  sseTextIsnt(text: string): this {
+    this.assert('notStrictEqual', [this.sse.text, text], 'no match for SSE event text', this.sseTextIsnt);
+    return this;
+  }
+
+  /**
+   * Check Server-Sent Event text for similar match. Note that this method is EXPERIMENTAL and might change without
+   * warning!
+   */
+  sseTextLike(regex: RegExp): this {
+    this.assert('match', [this.sse.text, regex], 'similar match for SSE event text', this.sseTextLike);
+    return this;
+  }
+
+  /**
+   * Opposite of `sseTextLike`. Note that this method is EXPERIMENTAL and might change without warning!
+   */
+  sseTextUnlike(regex: RegExp): this {
+    this.assert('doesNotMatch', [this.sse.text, regex], 'no similar match for SSE event text', this.sseTextUnlike);
+    return this;
+  }
+
+  /**
+   * Check Server-Sent Event type for exact match. Note that this method is EXPERIMENTAL and might change without
+   * warning!
+   */
+  sseTypeIs(type: string): this {
+    this.assert('strictEqual', [this.sse.type, type], 'exact match for SSE event type', this.sseTypeIs);
+    return this;
+  }
+
+  /**
+   * Opposite of `sseTypeIs`. Note that this method is EXPERIMENTAL and might change without warning!
+   */
+  sseTypeIsnt(type: string): this {
+    this.assert('notStrictEqual', [this.sse.type, type], 'no match for SSE event type', this.sseTypeIsnt);
+    return this;
   }
 
   /**
@@ -399,6 +533,26 @@ export class TestUserAgent extends MockUserAgent {
     this._res = await this.request({method, url, ...options});
     this._dom = undefined;
     this.body = await this.res.buffer();
+    this.assert('ok', [true], `${method.toUpperCase()} request for ${url.toString()}`, skip);
+    return this;
+  }
+
+  get _sseIterator(): AsyncIterator<SSEEvent> {
+    const events = this._sseEvents;
+    if (events === undefined) throw new Error('No active SSE connection');
+    return events;
+  }
+
+  async _sseOk(
+    skip: SkipFunction,
+    method: string,
+    url: string | URL,
+    options?: UserAgentRequestOptions
+  ): Promise<this> {
+    this._res = await this.request({method, url, ...options});
+    this._dom = undefined;
+    this._sse = undefined;
+    this._sseEvents = this.res.sse();
     this.assert('ok', [true], `${method.toUpperCase()} request for ${url.toString()}`, skip);
     return this;
   }

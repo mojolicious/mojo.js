@@ -131,6 +131,13 @@ class UserAgent {
   }
 
   /**
+   * Perform `QUERY` request.
+   */
+  async query(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+    return await this._requestConfig('QUERY', url, options);
+  }
+
+  /**
    * Perform HTTP request.
    */
   async request(config: UserAgentRequestOptions): Promise<UserAgentResponse> {

@@ -126,6 +126,56 @@ t.test('CGI', async t => {
     t.equal(await res.text(), 'Hello World');
   });
 
+  await t.test('Parse PSGI like environment variables (SCRIPT_NAME prefix already removed)', async t => {
+    const res = CGI.envToRequest(
+      {
+        PATH_INFO: '/app/admin',
+        REQUEST_METHOD: 'GET',
+        REQUEST_URI: '/app/app/admin?foo=bar',
+        QUERY_STRING: 'foo=bar',
+        SCRIPT_NAME: '/app',
+        HTTP_HOST: 'localhost:8080',
+        SERVER_PROTOCOL: 'HTTP/1.1'
+      },
+      Stream.Readable.from([])
+    );
+    t.equal(res.method, 'GET');
+    t.equal(res.url, '/app/admin?foo=bar');
+
+    const res2 = CGI.envToRequest(
+      {
+        PATH_INFO: '/appadmin',
+        REQUEST_METHOD: 'GET',
+        REQUEST_URI: '/app/appadmin',
+        SCRIPT_NAME: '/app',
+        HTTP_HOST: 'localhost:8080',
+        SERVER_PROTOCOL: 'HTTP/1.1'
+      },
+      Stream.Readable.from([])
+    );
+    t.equal(res2.url, '/appadmin');
+  });
+
+  await t.test('Parse CGI environment variables (SCRIPT_NAME prefix without segment boundary)', async t => {
+    const res = CGI.envToRequest(
+      {
+        PATH_INFO: '/appadmin',
+        REQUEST_METHOD: 'GET',
+        SCRIPT_NAME: '/app',
+        HTTP_HOST: 'localhost:8080',
+        SERVER_PROTOCOL: 'HTTP/1.1'
+      },
+      Stream.Readable.from([])
+    );
+    t.equal(res.url, '/appadmin');
+
+    const res2 = CGI.envToRequest(
+      {PATH_INFO: '/app', REQUEST_METHOD: 'GET', SCRIPT_NAME: '/app/', HTTP_HOST: 'localhost:8080'},
+      Stream.Readable.from([])
+    );
+    t.equal(res2.url, '/');
+  });
+
   await t.test('Parse Apache CGI environment variables with basic authentication', async t => {
     const res = CGI.envToRequest(
       {

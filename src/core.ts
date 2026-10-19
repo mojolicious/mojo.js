@@ -44,6 +44,7 @@ export {CGI} from './cgi.js';
 export {Logger} from './logger.js';
 export {Server} from './server.js';
 export {Session} from './session.js';
+export {buildEvent, parseEvent} from './sse.js';
 export {TestUserAgent} from './user-agent/test.js';
 export {UserAgent} from './user-agent.js';
 export * as util from './util.js';
@@ -57,5 +58,6 @@ export {
   MojoRenderOptions,
   MojoRoute,
   MojoTags,
-  MojoURLOptions
+  MojoURLOptions,
+  SSEEvent
 } from './types.js';

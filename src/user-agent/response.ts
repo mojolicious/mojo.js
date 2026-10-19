@@ -1,5 +1,7 @@
+import type {SSEEvent} from '../types.js';
 import type {Readable} from 'node:stream';
 import {Body} from '../body.js';
+import {parseEvent} from '../sse.js';
 
 interface UserAgentResponseOptions {
   body: Readable;
@@ -70,6 +72,29 @@ export class UserAgentResponse extends Body {
   get isSuccess(): boolean {
     const {statusCode} = this;
     return statusCode >= 200 && statusCode <= 299;
+  }
+
+  /**
+   * Get async iterator for Server-Sent Events from response body. Note that this method is EXPERIMENTAL and might
+   * change without warning!
+   * @example
+   * // Iterate over events
+   * for await (const {id, type, text} of res.sse()) {
+   *   console.log(`${type}: ${text}`);
+   * }
+   */
+  async *sse(): AsyncIterableIterator<SSEEvent> {
+    const decoder = new TextDecoder();
+    let buffer = '';
+    for await (const chunk of this.createReadStream()) {
+      buffer += decoder.decode(chunk, {stream: true});
+      let [event, rest] = parseEvent(buffer);
+      while (event !== null) {
+        yield event;
+        [event, rest] = parseEvent(rest);
+      }
+      buffer = rest;
+    }
   }
 
   /**

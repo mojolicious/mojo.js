@@ -110,6 +110,7 @@ const res = await ua.options('https://mojolicious.org');
 const res = await ua.patch('https://mojolicious.org');
 const res = await ua.post('https://mojolicious.org');
 const res = await ua.put('https://mojolicious.org');
+const res = await ua.query('https://mojolicious.org');
 ```
 
 All remaining config values can be passed with a second argument to any one of the shortcut methods.
@@ -271,6 +272,22 @@ ws.on('ping', data => {
 Cookies from the cookie jar will of course also be available for the handshake, so you can rely on them for things like
 authentication.
 
+### Server-Sent Events
+
+Server-Sent Events can be consumed with an async iterator. Note that this feature is EXPERIMENTAL and might change
+without warning!
+
+```js
+const res = await ua.get('https://mojolicious.org/events');
+for await (const event of res.sse()) {
+  const {id, type, text} = event;
+  console.log(`${type}: ${text}`);
+}
+```
+
+Events always have `id`, `type` and `text` values, with `type` defaulting to `message` and `id` to `null`. Comments
+will be skipped automatically.
+
 ### Hooks
 
 Hooks can be used to extend the user-agent and run code for every HTTP request or WebSocket handshake.
@@ -343,6 +360,7 @@ await ua.optionsOk('/foo', {auth: 'kraih:s3cret'});
 await ua.patchOk('/foo', {formData: {role: 'admin'}});
 await ua.postOk('/foo', {body: Buffer.from('Hello Mojo!')});
 await ua.putOk('/foo', {json: {hello: 'world'}});
+await ua.queryOk('/foo', {body: 'q=mojo'});
 
 await ua.websocketOk('/ws', {protocols: ['test/1', 'test/2']});
 ```
@@ -396,6 +414,21 @@ await ua.sendOk('hello');
 assert.equal(await ua.messageOk(), 'echo: hello');
 await ua.closeOk(4000);
 await ua.closedOk(4000);
+```
+
+And for Server-Sent Events there are a few more test methods that can be used to check events as they arrive. Note
+that these methods are EXPERIMENTAL and might change without warning!
+
+```js
+(await ua.getSSEOk('/events')).statusIs(200).typeIs('text/event-stream');
+(await ua.sseOk()).sseIdIs('23').sseTypeIs('greeting').sseTextIs('Hello World!');
+(await ua.sseOk()).sseTypeIsnt('greeting').sseTextLike(/Bye/).sseTextUnlike(/Hello/);
+
+// Wait for the server to close the connection
+await ua.sseFinishedOk();
+
+// Or close the connection yourself
+await ua.sseFinishOk();
 ```
 
 If you're using TypeScript we also support explicit resource management with `await using` for a little less

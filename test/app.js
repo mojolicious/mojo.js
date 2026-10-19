@@ -87,6 +87,9 @@ t.test('App', async t => {
   // OPTIONS /
   app.options('/', ctx => ctx.render({text: 'Options'}));
 
+  // QUERY /
+  app.query('/', async ctx => ctx.render({text: `Query: ${await ctx.req.text()}`}));
+
   // POST /
   app.post('/', async ctx => {
     await ctx.render({text: 'Post'});
@@ -391,11 +394,13 @@ t.test('App', async t => {
     (await ua.patchOk('/methods')).statusIs(200).bodyIs('PATCH');
     (await ua.postOk('/methods')).statusIs(200).bodyIs('POST');
     (await ua.putOk('/methods')).statusIs(200).bodyIs('PUT');
+    (await ua.queryOk('/methods')).statusIs(200).bodyIs('QUERY');
 
     (await ua.deleteOk('/')).statusIs(200).bodyIs('Delete');
     (await ua.patchOk('/')).statusIs(200).bodyIs('Patch');
     (await ua.optionsOk('/')).statusIs(200).bodyIs('Options');
     (await ua.postOk('/')).statusIs(200).bodyIs('Post');
+    (await ua.queryOk('/', {body: 'foo=bar'})).statusIs(200).bodyIs('Query: foo=bar');
   });
 
   await t.test('Method overrides', async () => {
@@ -539,7 +544,14 @@ t.test('App', async t => {
     t.match(ua.res.get('Set-Cookie'), /HttpOnly/);
     t.match(ua.res.get('Set-Cookie'), /SameSite=Lax/);
     t.match(ua.res.get('Set-Cookie'), /mojo=/);
+    t.notMatch(ua.res.get('Set-Cookie'), /Partitioned/);
     (await ua.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
+
+    app.session.partitioned = true;
+    (await ua.getOk('/session/login/kraih')).statusIs(200).bodyIs('Login: kraih');
+    t.match(ua.res.get('Set-Cookie'), /Partitioned/);
+    (await ua.getOk('/session/logout')).statusIs(200).bodyIs('Logout: kraih');
+    app.session.partitioned = false;
 
     (await ua.getOk('/session/members', {headers: {Cookie: 'mojo=something'}}))
       .statusIs(200)

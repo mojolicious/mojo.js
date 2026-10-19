@@ -188,6 +188,16 @@ export class Route {
   }
 
   /**
+   * Generate route matching only `QUERY` requests.
+   * @example
+   * // Route with destination
+   * route.query('/search').to('Search#index');
+   */
+  query(...args: RouteArguments): Route {
+    return this.any(['QUERY'], ...args);
+  }
+
+  /**
    * Remove route from parent.
    */
   remove(): this {

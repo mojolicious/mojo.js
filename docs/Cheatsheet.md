@@ -71,6 +71,7 @@ const title = dom.at('title').text();
 // session: the encrypted cookie based session manager
 app.session.cookieName = 'myapp';
 app.session.sameSite = 'strict';
+app.session.partitioned = true;
 
 // mime: manage MIME types
 app.mime.custom['foo'] = 'text/foo; charset=utf-8';
@@ -184,6 +185,12 @@ await ctx.respondTo({
 
 // sendFile: send static file
 await ctx.sendFile(ctx.home.child('index.js'));
+
+// writeSSE: write Server-Sent Event (EXPERIMENTAL)
+await ctx.writeSSE({id: 23, type: 'greeting', text: 'Hello World!'});
+
+// finishSSE: finish Server-Sent Events response (EXPERIMENTAL)
+ctx.finishSSE();
 
 // proxyRequest: perform HTTP request and forward the response as efficient as possible
 await ctx.proxyRequest({method: 'GET', url: 'http://mojolicious.org', headers: {Accept: 'application/json'}});
@@ -313,6 +320,7 @@ ctx.res.length(12);
 
 // setCookie: set cookie
 ctx.res.setCookie('user', 'Bender', {path: '/', httpOnly: true});
+ctx.res.setCookie('user', 'Bender', {path: '/', partitioned: true, secure: true});
 ```
 
 The `ctx.res.send()` method is used to actually send the response.

@@ -491,6 +491,16 @@ export class App {
   }
 
   /**
+   * Generate route matching only `QUERY` requests.
+   * @example
+   * // Route with destination
+   * app.query('/search').to('Search#index');
+   */
+  query(...args: RouteArguments): Route {
+    return this.router.query(...args);
+  }
+
+  /**
    * Start the command line interface.
    * @example
    * // Get arguments from "process.argv"

@@ -81,6 +81,10 @@ t.test('stringifyCookie', t => {
     'CUSTOMER=WILE_E_COYOTE; SameSite=Strict'
   );
   t.equal(stringifyCookie('CUSTOMER', 'WILE_E_COYOTE', {sameSite: 'none'}), 'CUSTOMER=WILE_E_COYOTE; SameSite=None');
+  t.equal(
+    stringifyCookie('CUSTOMER', 'WILE_E_COYOTE', {partitioned: true, secure: true}),
+    'CUSTOMER=WILE_E_COYOTE; Partitioned; Secure'
+  );
 
   t.equal(stringifyCookie('CUSTOMER', 'WILE_E_COYOTE', {httpOnly: true}), 'CUSTOMER=WILE_E_COYOTE; HttpOnly');
   t.equal(stringifyCookie('CUSTOMER', 'WILE_E_COYOTE', {secure: true}), 'CUSTOMER=WILE_E_COYOTE; Secure');

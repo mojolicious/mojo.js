@@ -1052,6 +1052,43 @@ World!
 0
 ```
 
+### Server-Sent Events
+
+To push events to the browser you can use Server-Sent Events. Note that this feature is EXPERIMENTAL and might change
+without warning!
+
+```js
+import mojo from '@mojojs/core';
+
+const app = mojo();
+
+app.get('/events', async ctx => {
+  // Send response headers right away
+  await ctx.writeSSE();
+
+  // Send event with default "message" type every second
+  const timer = setInterval(() => ctx.writeSSE({text: 'Hello World!'}), 1000);
+
+  // Stop when the connection has been closed
+  ctx.on('finish', () => clearInterval(timer));
+});
+
+app.start();
+```
+
+Each call of `ctx.writeSSE()` returns a `Promise` that resolves once the event has been written, and the first one
+also sets the `Content-Type` header to `text/event-stream`. Events can have optional `id` and `type` values, and you
+can also send comments in regular intervals to keep the connection alive. Use `ctx.finishSSE()` to end the response.
+
+```js
+app.get('/greeting', async ctx => {
+  await ctx.writeSSE({comment: 'Keep connection alive!'});
+  await ctx.writeSSE({id: 23, type: 'greeting', text: 'Hello World!'});
+  await ctx.writeSSE({id: 24, type: 'farewell', text: 'Goodbye World!'});
+  ctx.finishSSE();
+});
+```
+
 ### Adding Your Favorite Template System
 
 Maybe you would prefer a different template system than

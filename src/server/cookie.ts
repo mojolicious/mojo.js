@@ -42,6 +42,7 @@ export function stringifyCookie(name: string, value: string, options: CookieOpti
     }
   }
 
+  if (options.partitioned === true) cookie.push('Partitioned');
   if (options?.secure === true) cookie.push('Secure');
 
   return cookie.join('; ');

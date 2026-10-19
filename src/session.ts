@@ -30,6 +30,11 @@ export class Session {
    */
   httpOnly = true;
   /**
+   * Set the `Partitioned` value on all session cookies, to be used in accordance with the CHIPS amendment to RFC 6265.
+   * Note that this property is EXPERIMENTAL and might change without warning!
+   */
+  partitioned = false;
+  /**
    * Set the `SameSite` value on all session cookies, defaults to `lax`.
    */
   sameSite: 'lax' | 'strict' | 'none' = 'lax';
@@ -127,6 +132,7 @@ export class Session {
     ctx.res.setCookie(this.cookieName, encrypted, {
       expires: expires === undefined ? undefined : new Date(expires * 1000),
       httpOnly: this.httpOnly,
+      partitioned: this.partitioned,
       path: this.cookiePath,
       sameSite: this.sameSite,
       secure: this.secure

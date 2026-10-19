@@ -3,6 +3,7 @@ import {Stream, type Readable} from 'node:stream';
 import {ServerRequest} from './server/request.js';
 import {ServerResponse} from './server/response.js';
 import {httpStatusMessages} from './util.js';
+import {decodeURIComponentSafe} from '@mojojs/util';
 
 /**
  * CGI class. Is this a joke? Yes. Could you use it in production anyway? Probably.
@@ -23,8 +24,14 @@ export class CGI {
 
     // URL
     let url = env.PATH_INFO ?? '/';
-    const name = env.SCRIPT_NAME;
-    if (name !== undefined && url.startsWith(name) === true) url = url.replace(name, '');
+    const name = (env.SCRIPT_NAME ?? '').replace(/^\/|\/$/g, '');
+
+    // Remove SCRIPT_NAME prefix if necessary (unless the server already did it)
+    const uri = decodeURIComponentSafe((env.REQUEST_URI ?? '').replace(/\?.*$/, '')) ?? '';
+    if (name !== '' && uri.startsWith(`/${name}${url}`) === false) {
+      if (url === `/${name}`) url = '/';
+      else if (url.startsWith(`/${name}/`) === true) url = url.slice(name.length + 1);
+    }
     const query = env.QUERY_STRING;
     if (query !== undefined && query !== '') url += `?${query}`;
 

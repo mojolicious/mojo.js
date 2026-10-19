@@ -12,6 +12,7 @@ import type {
   MojoURLOptions,
   ScopedNestedHelpers,
   SessionData,
+  SSEEvent,
   UploadOptions,
   ValidatorFunction
 } from './types.js';
@@ -20,7 +21,9 @@ import type {WebSocket} from './websocket.js';
 import type Path from '@mojojs/path';
 import EventEmitter from 'node:events';
 import querystring from 'node:querystring';
+import {PassThrough} from 'node:stream';
 import {Params} from './body/params.js';
+import {buildEvent} from './sse.js';
 import {SafeString} from './util.js';
 
 type WebSocketHandler = (ws: WebSocket) => void | Promise<void>;
@@ -131,6 +134,7 @@ class Context extends EventEmitter implements ContextEventEmitter {
   _nestedHelpersCache: Record<string, ScopedNestedHelpers> = {};
   _params: Params | undefined = undefined;
   _session: Record<string, any> | undefined = undefined;
+  _sse: PassThrough | undefined = undefined;
   _ws: WeakRef<WebSocket> | null = null;
 
   constructor(app: App, req: ServerRequest, res: ServerResponse, backend: BackendInfo) {
@@ -184,6 +188,13 @@ class Context extends EventEmitter implements ContextEventEmitter {
     content: string | SafeString | Promise<string | SafeString> | (() => Promise<string | SafeString>)
   ): Promise<void> {
     this.content[name] += await (content instanceof Function ? content() : content);
+  }
+
+  /**
+   * Finish Server-Sent Events response. Note that this method is EXPERIMENTAL and might change without warning!
+   */
+  finishSSE(): void {
+    this._sse?.end();
   }
 
   /**
@@ -489,6 +500,43 @@ class Context extends EventEmitter implements ContextEventEmitter {
    */
   get ws(): WebSocket | null {
     return this._ws?.deref() ?? null;
+  }
+
+  /**
+   * Write Server-Sent Event, and wait for it to be written. Calling this method without an event will just send the
+   * response headers and allow for events to be written later. Note that this method is EXPERIMENTAL and might change
+   * without warning!
+   * @example
+   * // Send event with default "message" type
+   * await ctx.writeSSE({text: 'Hello World!'});
+   *
+   * // You can send comments in regular intervals to keep the connection alive
+   * await ctx.writeSSE({comment: 'Keep connection alive!'});
+   *
+   * // Send events with id and type
+   * await ctx.writeSSE({id: 23, type: 'greeting', text: 'Hello World!'});
+   * await ctx.writeSSE({id: 24, type: 'farewell', text: 'Goodbye World!'});
+   * ctx.finishSSE();
+   */
+  async writeSSE(event?: SSEEvent): Promise<void> {
+    let stream = this._sse;
+    if (stream === undefined) {
+      stream = this._sse = new PassThrough();
+      this.on('finish', () => stream?.destroy());
+      await this.res.type('text/event-stream').send(stream);
+    }
+
+    if (event === undefined || stream.destroyed === true) return;
+    if (stream.write(buildEvent(event)) === true) return;
+
+    // Wait for drain, or the connection to be closed
+    await new Promise<void>(resolve => {
+      const done = (): void => {
+        stream.off('drain', done).off('close', done);
+        resolve();
+      };
+      stream.on('drain', done).on('close', done);
+    });
   }
 
   _urlForPath(path: string, isWebSocket: boolean, options: MojoURLOptions): string {
