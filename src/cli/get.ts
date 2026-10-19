@@ -1,54 +1,52 @@
-import type {MojoApp} from '../types.js';
-import chalk from 'chalk';
-import nopt from 'nopt';
+import type {MojoApp} from '../types.ts';
+import {parseArgs, styleText} from 'node:util';
 
 /**
  * Get command.
  */
 export default async function getCommand(app: MojoApp, args: string[]): Promise<void> {
-  const parsed = nopt(
-    {
-      body: String,
-      header: [String, Array],
-      insecure: Boolean,
-      method: String,
-      redirect: Boolean,
-      'socket-path': String,
-      verbose: Boolean
+  const {values, positionals} = parseArgs({
+    args: args.slice(1),
+    options: {
+      body: {type: 'string', short: 'b'},
+      header: {type: 'string', short: 'H', multiple: true},
+      insecure: {type: 'boolean', short: 'k'},
+      method: {type: 'string', short: 'X'},
+      redirect: {type: 'boolean', short: 'r'},
+      'socket-path': {type: 'string', short: 'P'},
+      verbose: {type: 'boolean', short: 'v'}
     },
-    {b: '--body', H: '--header', k: '--insecure', X: '--method', P: '--socket-path', r: '--redirect', v: '--verbose'},
-    args,
-    1
-  );
+    allowPositionals: true,
+    allowNegative: true
+  });
 
-  const argv = parsed.argv;
   const request = {
-    body: parsed.body,
-    headers: parseHeaders(parsed.header),
-    insecure: parsed.insecure,
-    method: parsed.method ?? 'GET',
-    socketPath: parsed['socket-path'],
-    url: argv.remain[0] ?? '/'
+    body: values.body,
+    headers: parseHeaders(values.header),
+    insecure: values.insecure,
+    method: values.method ?? 'GET',
+    socketPath: values['socket-path'],
+    url: positionals[0] ?? '/'
   };
 
-  const ua = await app.newMockUserAgent({maxRedirects: parsed.redirect === true ? 10 : 0});
+  const ua = await app.newMockUserAgent({maxRedirects: values.redirect === true ? 10 : 0});
   const res = await ua.request(request);
 
-  if (parsed.verbose === true) {
+  if (values.verbose === true) {
     const stderr = process.stderr;
 
-    const resVersion = chalk.blue('HTTP') + '/' + chalk.blue(res.httpVersion);
+    const resVersion = styleText('blue', 'HTTP') + '/' + styleText('blue', res.httpVersion);
     const statusCode = res.statusCode;
-    const statusMessage = chalk.blue(res.statusMessage);
+    const statusMessage = styleText('blue', res.statusMessage);
     stderr.write(`${resVersion} ${statusCode} ${statusMessage}\n`);
     writeHeaders(res.headers.toArray());
   }
 
-  if (argv.remain[1] !== undefined) {
+  if (positionals[1] !== undefined) {
     const html = await res.html();
     process.stdout.write(
       html
-        .find(argv.remain[1])
+        .find(positionals[1])
         .map(el => el.toString())
         .join('') ?? ''
     );
@@ -92,7 +90,7 @@ function parseHeaders(list: string[] = []): Record<string, string> {
 function writeHeaders(headers: string[]): void {
   const stderr = process.stderr;
   for (let i = 0; i < headers.length; i += 2) {
-    stderr.write(chalk.cyan(headers[i]) + `: ${headers[i + 1]}\n`);
+    stderr.write(styleText('cyan', headers[i]) + `: ${headers[i + 1]}\n`);
   }
   stderr.write('\n');
 }

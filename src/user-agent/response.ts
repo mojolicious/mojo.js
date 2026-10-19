@@ -1,7 +1,7 @@
-import type {SSEEvent} from '../types.js';
+import type {SSEEvent} from '../types.ts';
 import type {Readable} from 'node:stream';
-import {Body} from '../body.js';
-import {parseEvent} from '../sse.js';
+import {Body} from '../body.ts';
+import {parseEvent} from '../sse.ts';
 
 interface UserAgentResponseOptions {
   body: Readable;

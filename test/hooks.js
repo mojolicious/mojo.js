@@ -1,4 +1,4 @@
-import {Hooks} from '../lib/hooks.js';
+import {Hooks} from '../src/hooks.ts';
 import t from 'tap';
 
 t.test('Hooks', async t => {

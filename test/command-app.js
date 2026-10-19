@@ -1,4 +1,4 @@
-import mojo, {TestUserAgent} from '../lib/core.js';
+import mojo, {TestUserAgent} from '../src/core.ts';
 import {app} from './support/js/command-app/index.js';
 import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';
@@ -446,25 +446,25 @@ t.test('Command app', async t => {
     t.match(output4.toString(), /\[write\].+tsconfig\.json/);
     t.same(await dir2.child('tsconfig.json').exists(), true);
     const tsConfig = JSON.parse(await dir2.child('tsconfig.json').readFile('utf8'));
-    t.equal(tsConfig.compilerOptions.target, 'ES2020');
+    t.equal(tsConfig.compilerOptions.noEmit, true);
     t.same(tsConfig.include, ['src/**/*']);
     t.match(output4.toString(), /\[fixed\].+package\.json/);
     t.same(await dir2.child('package.json').exists(), true);
     const pkg2 = JSON.parse(await dir2.child('package.json').readFile('utf8'));
     t.equal(pkg2.type, 'module');
-    t.equal(typeof pkg2.scripts.build, 'string');
-    t.equal(typeof pkg2.scripts['build:test'], 'string');
-    t.equal(typeof pkg2.scripts['build:watch'], 'string');
+    t.equal(pkg2.scripts.build, undefined);
+    t.equal(pkg2.scripts.check, 'npx tsc');
     t.equal(typeof pkg2.scripts.dev, 'string');
-    t.match(pkg2.scripts.dev, /nodemon lib\/index\.js/);
+    t.match(pkg2.scripts.dev, /nodemon src\/index\.ts/);
     t.equal(typeof pkg2.scripts.start, 'string');
-    t.match(pkg2.scripts.start, /node lib\/index\.js/);
+    t.match(pkg2.scripts.start, /node src\/index\.ts/);
     t.equal(typeof pkg2.scripts.test, 'string');
     t.match(pkg2.scripts.test, /node --test/);
     t.equal(typeof pkg2.devDependencies['@types/node'], 'string');
     t.equal(typeof pkg2.devDependencies['nodemon'], 'string');
     t.equal(typeof pkg2.devDependencies['tap'], 'string');
     t.equal(typeof pkg2.devDependencies['typescript'], 'string');
+    t.equal(pkg2.devDependencies['@types/busboy'], undefined);
 
     process.chdir(cwd);
   });
@@ -499,6 +499,8 @@ t.test('Command app', async t => {
     t.match(output2.toString(), /\[fixed\].+package\.json/);
     t.same(await dir.child('package.json').exists(), true);
     t.match(await dir.child('package.json').readFile('utf8'), /module/);
+    const pluginPkg = JSON.parse(await dir.child('package.json').readFile('utf8'));
+    t.equal(pluginPkg.exports, './lib/mojo-plugin-myplugin.js');
 
     const output3 = await captureOutput(async () => {
       await app.cli.start('create-plugin');
@@ -542,6 +544,13 @@ t.test('Command app', async t => {
     t.match(output5.toString(), /\[fixed\].+package\.json/);
     t.same(await dir3.child('package.json').exists(), true);
     t.match(await dir3.child('package.json').readFile('utf8'), /module/);
+    const tsPluginPkg = JSON.parse(await dir3.child('package.json').readFile('utf8'));
+    t.equal(tsPluginPkg.exports, './lib/mojo-plugin-myplugin.js');
+    t.equal(tsPluginPkg.scripts.build, 'npx tsc');
+    t.equal(tsPluginPkg.scripts.prepublishOnly, 'npm run build');
+    t.match(await dir3.child('test', 'basic.js').readFile('utf8'), /from '\.\.\/src\/mojo-plugin-myplugin\.ts'/);
+    const tsPluginConfig = JSON.parse(await dir3.child('tsconfig.json').readFile('utf8'));
+    t.equal(tsPluginConfig.compilerOptions.moduleResolution, 'nodenext');
 
     process.chdir(cwd);
   });

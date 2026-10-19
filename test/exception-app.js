@@ -1,4 +1,5 @@
-import mojo from '../lib/core.js';
+import mojo from '../src/core.ts';
+import {sleep} from '../src/util.ts';
 import Path from '@mojojs/path';
 import t from 'tap';
 
@@ -435,6 +436,8 @@ t.test('Exception app', async t => {
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1000);
+      // The server may log the close exception after the client has already seen the close
+      while (/WebSocket close test exception/.test(await file.readFile('utf8')) === false) await sleep(10);
       t.match(await file.readFile(), /Error: WebSocket close test exception/);
     });
 

@@ -1,8 +1,8 @@
-import type {App} from './app.js';
-import type {Context} from './context.js';
-import type {Route} from './router/route.js';
-import type {SafeString} from './util.js';
-import type {ValidatorResult} from './validator/result.js';
+import type {App} from './app.ts';
+import type {Context} from './context.ts';
+import type {Route} from './router/route.ts';
+import type {SafeString} from './util.ts';
+import type {ValidatorResult} from './validator/result.ts';
 import type {Agent} from 'node:http';
 import type {Readable, Stream} from 'node:stream';
 import type {URL} from 'node:url';

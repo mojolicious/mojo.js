@@ -1,6 +1,6 @@
 import http from 'node:http';
-import mojo, {Server, UserAgent} from '../lib/core.js';
-import {sleep} from '../lib/util.js';
+import mojo, {Server, UserAgent} from '../src/core.ts';
+import {sleep} from '../src/util.ts';
 import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';

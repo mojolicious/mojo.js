@@ -2,7 +2,7 @@
  * Application demonstrating the various HTTP response variants for debugging
  */
 import {Stream} from 'node:stream';
-import mojo from '../lib/core.js';
+import mojo from '../src/core.ts';
 
 const app = mojo();
 

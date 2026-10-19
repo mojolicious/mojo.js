@@ -1,4 +1,4 @@
-import mojo from '../../../../lib/core.js';
+import mojo from '../../../../src/core.ts';
 import Path from '@mojojs/path';
 
 export const app = mojo();

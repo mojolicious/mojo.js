@@ -1,4 +1,4 @@
-import type {MojoContext} from '../../../../../../lib/core.js';
+import type {MojoContext} from '../../../../../../src/core.ts';
 
 interface EchoData {
   foo: string;

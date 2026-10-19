@@ -4,13 +4,13 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: npm install
         run: npm i
-      - name: npm run build
-        run: npm run build
+      - name: npm run check
+        run: npm run check
       - name: npm run lint
         run: npm run lint

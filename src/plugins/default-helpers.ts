@@ -7,10 +7,10 @@ import type {
   TagContent,
   URLTarget,
   UserAgentRequestOptions
-} from '../types.js';
+} from '../types.ts';
 import {inspect, type InspectOptions} from 'node:util';
-import {Logger} from '../logger.js';
-import {exceptionContext, SafeString} from '../util.js';
+import {Logger} from '../logger.ts';
+import {exceptionContext, SafeString} from '../util.ts';
 import DOM from '@mojojs/dom';
 
 /**

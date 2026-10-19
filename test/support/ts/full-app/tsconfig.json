@@ -1,16 +1,8 @@
 {
   "extends": "../../../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "lib",
-    "rootDir": "src",
-    "composite": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
-  "references": [
-    {
-      "path": "../../../../tsconfig.json"
-    }
-  ],
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

@@ -1,8 +1,8 @@
 import type {Mode} from 'node:fs';
 import {setTimeout} from 'node:timers/promises';
+import {styleText} from 'node:util';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
-import chalk from 'chalk';
 export * from '@mojojs/util';
 
 interface FixOptions {
@@ -92,11 +92,11 @@ export async function cliCreateDir(path: string): Promise<void> {
   const dir = new Path(process.cwd(), ...path.split('/'));
   const {stdout} = process;
   if ((await dir.exists()) === true) {
-    stdout.write(chalk.green(' [exists]') + ` ${dir.toString()}\n`);
+    stdout.write(styleText('green', ' [exists]') + ` ${dir.toString()}\n`);
     return;
   }
 
-  stdout.write(chalk.green(' [mkdir]') + ` ${dir.toString()}\n`);
+  stdout.write(styleText('green', ' [mkdir]') + ` ${dir.toString()}\n`);
   await dir.mkdir({recursive: true});
 }
 
@@ -112,14 +112,14 @@ export async function cliCreateFile(
   const file = new Path(process.cwd(), ...path.split('/'));
   const {stdout} = process;
   if ((await file.exists()) === true) {
-    stdout.write(chalk.red(' [exists]') + ` ${file.toString()}\n`);
+    stdout.write(styleText('red', ' [exists]') + ` ${file.toString()}\n`);
     return;
   }
 
-  stdout.write(chalk.green(' [write]') + ` ${file.toString()}\n`);
+  stdout.write(styleText('green', ' [write]') + ` ${file.toString()}\n`);
   await file.writeFile(await Template.render(template, values));
   if (options.chmod !== undefined) {
-    stdout.write(chalk.green(' [chmod]') + ` ${file.toString()} (${options.chmod.toString(8)})\n`);
+    stdout.write(styleText('green', ' [chmod]') + ` ${file.toString()} (${options.chmod.toString(8)})\n`);
     await file.chmod(options.chmod);
   }
 }
@@ -159,7 +159,7 @@ export async function cliFixPackage(options: FixOptions = {}): Promise<void> {
     }
   }
 
-  stdout.write(chalk.green(' [fixed]') + ` ${file.toString()}\n`);
+  stdout.write(styleText('green', ' [fixed]') + ` ${file.toString()}\n`);
   await file.writeFile(JSON.stringify(pkg, null, 2));
 }
 
@@ -219,13 +219,13 @@ export async function loadModules(dirs: string[]): Promise<Record<string, any>> 
   for (const dir of dirs.map(path => new Path(path))) {
     if ((await dir.exists()) === false) continue;
     for await (const file of dir.list({recursive: true})) {
-      if (/\.m?js$/.test(file.toString()) === false) continue;
+      if (/(?<!\.d)\.m?[jt]s$/.test(file.toString()) === false) continue;
       const imports = await import(file.toFileURL().toString());
       const name = dir
         .relative(file)
         .toArray()
         .join('/')
-        .replace(/\.m?js$/, '');
+        .replace(/\.m?[jt]s$/, '');
       modules[name] = imports.default ?? null;
     }
   }

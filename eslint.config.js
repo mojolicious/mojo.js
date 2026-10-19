@@ -6,16 +6,7 @@ import {config, configs as tseslintConfigs} from 'typescript-eslint';
 
 export default config(
   {
-    ignores: [
-      'lib/**',
-      'node_modules/**',
-      'docs/**',
-      'vendor/**',
-      'benchmarks/**',
-      'bin/**',
-      'examples/**',
-      'test/support/ts/**/lib/**'
-    ]
+    ignores: ['lib/**', 'node_modules/**', 'docs/**', 'vendor/**', 'benchmarks/**', 'bin/**', 'examples/**']
   },
   js.configs.recommended,
   tseslintConfigs.recommended,

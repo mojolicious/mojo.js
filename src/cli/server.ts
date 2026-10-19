@@ -1,6 +1,6 @@
-import type {MojoApp} from '../types.js';
-import {Server} from '../server.js';
-import nopt from 'nopt';
+import type {MojoApp} from '../types.ts';
+import {parseArgs} from 'node:util';
+import {Server} from '../server.ts';
 
 const EVENTS = ['SIGINT', 'SIGTERM', 'SIGUSR2'];
 
@@ -8,34 +8,34 @@ const EVENTS = ['SIGINT', 'SIGTERM', 'SIGUSR2'];
  * Server command.
  */
 export default async function serverCommand(app: MojoApp, args: string[]): Promise<void> {
-  const parsed = nopt(
-    {
-      cluster: Boolean,
-      'headers-timeout': Number,
-      'keep-alive-timeout': Number,
-      level: String,
-      listen: [String, Array],
-      proxy: Boolean,
-      requests: Number,
-      'request-timeout': Number,
-      workers: Number
+  const {values} = parseArgs({
+    args: args.slice(1),
+    options: {
+      cluster: {type: 'boolean', short: 'c'},
+      'headers-timeout': {type: 'string'},
+      'keep-alive-timeout': {type: 'string'},
+      level: {type: 'string', short: 'L'},
+      listen: {type: 'string', short: 'l', multiple: true},
+      proxy: {type: 'boolean', short: 'p'},
+      requests: {type: 'string', short: 'r'},
+      'request-timeout': {type: 'string'},
+      workers: {type: 'string', short: 'w'}
     },
-    {c: '--cluster', L: '--level', l: '--listen', p: '--proxy', r: '--requests', w: '--workers'},
-    args,
-    1
-  );
+    allowPositionals: true,
+    allowNegative: true
+  });
 
-  if (parsed.level !== undefined) app.log.level = parsed.level;
+  if (values.level !== undefined) app.log.level = values.level;
 
   const server = new Server(app, {
-    cluster: parsed.cluster,
-    headersTimeout: parsed['headers-timeout'],
-    keepAliveTimeout: parsed['keep-alive-timeout'],
-    listen: parsed.listen,
-    maxRequestsPerSocket: parsed.requests,
-    requestTimeout: parsed['request-timeout'],
-    reverseProxy: parsed.proxy,
-    workers: parsed.workers
+    cluster: values.cluster,
+    headersTimeout: toNumber(values['headers-timeout']),
+    keepAliveTimeout: toNumber(values['keep-alive-timeout']),
+    listen: values.listen,
+    maxRequestsPerSocket: toNumber(values.requests),
+    requestTimeout: toNumber(values['request-timeout']),
+    reverseProxy: values.proxy,
+    workers: toNumber(values.workers)
   });
 
   const listener = (): void => {
@@ -104,3 +104,7 @@ Options:
   -w, --workers <num>             Number of workers to spawn in cluster mode,
                                   defaults to the number of available CPUs
 `;
+
+function toNumber(value: string | undefined): number | undefined {
+  return value === undefined ? undefined : Number(value);
+}

@@ -1,4 +1,4 @@
-import Pattern from '../../lib/router/pattern.js';
+import {Pattern} from '../../src/router/pattern.ts';
 
 const pattern = new Pattern('/foo/:bar/baz');
 for (let i = 0; i < 10000000; i++) {

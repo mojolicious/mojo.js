@@ -1,4 +1,4 @@
-import type {PlaceholderType} from '../types.js';
+import type {PlaceholderType} from '../types.ts';
 import {escapeRegExp} from '@mojojs/util';
 
 interface MatchOptions {

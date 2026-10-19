@@ -7,7 +7,7 @@ import mojo, {
   Session,
   TestUserAgent,
   UserAgent
-} from '../lib/core.js';
+} from '../src/core.ts';
 import t from 'tap';
 
 t.test('Public API', async t => {

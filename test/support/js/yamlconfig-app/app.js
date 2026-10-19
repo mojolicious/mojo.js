@@ -1,4 +1,4 @@
-import mojo, {yamlConfigPlugin} from '../../../../lib/core.js';
+import mojo, {yamlConfigPlugin} from '../../../../src/core.ts';
 
 export const app = mojo();
 

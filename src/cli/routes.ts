@@ -1,17 +1,21 @@
-import type {Route} from '../router/route.js';
-import type {Router} from '../router.js';
-import type {MojoApp} from '../types.js';
+import type {Route} from '../router/route.ts';
+import type {Router} from '../router.ts';
+import type {MojoApp} from '../types.ts';
+import {parseArgs, styleText} from 'node:util';
 import {tablify} from '@mojojs/util';
-import chalk from 'chalk';
-import nopt from 'nopt';
 
 /**
  * Routes command.
  */
 export default async function routesCommand(app: MojoApp, args: string[]): Promise<void> {
-  const parsed = nopt({verbose: Boolean}, {v: '--verbose'}, args, 1);
+  const {values} = parseArgs({
+    args: args.slice(1),
+    options: {verbose: {type: 'boolean', short: 'v'}},
+    allowPositionals: true,
+    allowNegative: true
+  });
   const table: string[][] = [];
-  app.router.children.map(route => walk(route, 0, table, parsed.verbose));
+  app.router.children.map(route => walk(route, 0, table, values.verbose === true));
   process.stdout.write(tablify(table));
 }
 
@@ -34,10 +38,12 @@ function walk(route: Route | Router, depth: number, rows: string[][], verbose: b
 
   // Methods
   const methods = route.methods;
-  row.push(chalk.cyan(methods.length === 0 ? '*' : methods.map(method => method.toUpperCase()).join(',')));
+  row.push(styleText('cyan', methods.length === 0 ? '*' : methods.map(method => method.toUpperCase()).join(',')));
 
   // Name
-  row.push(route.customName !== undefined ? chalk.green(route.customName) : chalk.red(route.defaultName ?? 'n/a'));
+  row.push(
+    route.customName !== undefined ? styleText('green', route.customName) : styleText('red', route.defaultName ?? 'n/a')
+  );
 
   // Regex (verbose)
   const pattern = route.pattern;

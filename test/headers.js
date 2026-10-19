@@ -1,4 +1,4 @@
-import {Headers} from '../lib/headers.js';
+import {Headers} from '../src/headers.ts';
 import t from 'tap';
 
 t.test('Headers', t => {

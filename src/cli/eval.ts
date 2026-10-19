@@ -1,13 +1,18 @@
-import type {MojoApp} from '../types.js';
-import nopt from 'nopt';
+import type {MojoApp} from '../types.ts';
+import {parseArgs} from 'node:util';
 
 /**
  * Eval command.
  */
 export default async function evalCommand(app: MojoApp, args: string[]): Promise<void> {
-  const parsed = nopt({verbose: Boolean}, {v: '--verbose'}, args, 1);
-  const output = await eval('(async () => (' + parsed.argv.remain[0] + '))()');
-  if (parsed.verbose === true) console.log(output);
+  const {values, positionals} = parseArgs({
+    args: args.slice(1),
+    options: {verbose: {type: 'boolean', short: 'v'}},
+    allowPositionals: true,
+    allowNegative: true
+  });
+  const output = await eval('(async () => (' + positionals[0] + '))()');
+  if (values.verbose === true) console.log(output);
 }
 
 evalCommand.description = 'Run code against application';

@@ -1,7 +1,7 @@
-import type {UserAgentWebSocketOptions} from '../../types.js';
+import type {UserAgentWebSocketOptions} from '../../types.ts';
 import type {Socket} from 'node:net';
-import {WebSocket} from '../../websocket.js';
-import {UserAgentResponse} from '../response.js';
+import {WebSocket} from '../../websocket.ts';
+import {UserAgentResponse} from '../response.ts';
 import WS from 'ws';
 
 /**

@@ -1,4 +1,4 @@
-import type {CookieOptions} from '../types.js';
+import type {CookieOptions} from '../types.ts';
 import {decodeURIComponentSafe} from '@mojojs/util';
 
 /**

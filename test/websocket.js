@@ -1,5 +1,5 @@
-import mojo from '../lib/core.js';
-import {sleep} from '../lib/util.js';
+import mojo from '../src/core.ts';
+import {sleep} from '../src/util.ts';
 import t from 'tap';
 
 t.test('WebSocket', async t => {

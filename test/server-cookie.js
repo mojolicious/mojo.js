@@ -1,4 +1,4 @@
-import {parseCookie, stringifyCookie} from '../lib/server/cookie.js';
+import {parseCookie, stringifyCookie} from '../src/server/cookie.ts';
 import t from 'tap';
 
 t.test('parseCookie', t => {

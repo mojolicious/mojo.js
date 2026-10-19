@@ -1,5 +1,5 @@
-import type {UserAgentResponse} from './response.js';
-import type {App} from '../app.js';
+import type {UserAgentResponse} from './response.ts';
+import type {App} from '../app.ts';
 import type {
   JSONValue,
   SSEEvent,
@@ -8,12 +8,12 @@ import type {
   TestUserAgentOptions,
   UserAgentRequestOptions,
   UserAgentWebSocketOptions
-} from '../types.js';
-import type {WebSocket} from '../websocket.js';
+} from '../types.ts';
+import type {WebSocket} from '../websocket.ts';
 import type {URL} from 'node:url';
 import assert from 'node:assert/strict';
 import {on} from 'node:events';
-import {MockUserAgent} from './mock.js';
+import {MockUserAgent} from './mock.ts';
 import DOM from '@mojojs/dom';
 import {jsonPointer} from '@mojojs/util';
 import * as yaml from 'js-yaml';

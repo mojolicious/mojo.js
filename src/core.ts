@@ -3,8 +3,8 @@
  * Copyright (C) 2021-2024 Sebastian Riedel
  * MIT Licensed
  */
-import type {AppOptions} from './types.js';
-import {App} from './app.js';
+import type {AppOptions} from './types.ts';
+import {App} from './app.ts';
 import Path from '@mojojs/path';
 
 export const version = JSON.parse(
@@ -37,19 +37,19 @@ export default function mojo(options?: AppOptions): App {
 }
 
 // "Professor: These old Doomsday devices are dangerously unstable. I'll rest easier not knowing where they are."
-export {default as jsonConfigPlugin} from './plugins/json-config.js';
-export {default as yamlConfigPlugin} from './plugins/yaml-config.js';
-export {default as mountPlugin} from './plugins/mount.js';
-export {CGI} from './cgi.js';
-export {Logger} from './logger.js';
-export {Server} from './server.js';
-export {Session} from './session.js';
-export {buildEvent, parseEvent} from './sse.js';
-export {TestUserAgent} from './user-agent/test.js';
-export {UserAgent} from './user-agent.js';
-export * as util from './util.js';
+export {default as jsonConfigPlugin} from './plugins/json-config.ts';
+export {default as yamlConfigPlugin} from './plugins/yaml-config.ts';
+export {default as mountPlugin} from './plugins/mount.ts';
+export {CGI} from './cgi.ts';
+export {Logger} from './logger.ts';
+export {Server} from './server.ts';
+export {Session} from './session.ts';
+export {buildEvent, parseEvent} from './sse.ts';
+export {TestUserAgent} from './user-agent/test.ts';
+export {UserAgent} from './user-agent.ts';
+export * as util from './util.ts';
 
-export {
+export type {
   JSONValue,
   MojoAction,
   MojoApp,
@@ -60,4 +60,4 @@ export {
   MojoTags,
   MojoURLOptions,
   SSEEvent
-} from './types.js';
+} from './types.ts';

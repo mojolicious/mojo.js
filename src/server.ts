@@ -1,4 +1,4 @@
-import type {MojoApp, ServerOptions, ServerResponseBody} from './types.js';
+import type {MojoApp, ServerOptions, ServerResponseBody} from './types.ts';
 import type {Socket} from 'node:net';
 import cluster from 'node:cluster';
 import http from 'node:http';
@@ -6,9 +6,9 @@ import https from 'node:https';
 import os from 'node:os';
 import {Stream} from 'node:stream';
 import {URL} from 'node:url';
-import {ServerRequest} from './server/request.js';
-import {ServerResponse} from './server/response.js';
-import {WebSocket} from './websocket.js';
+import {ServerRequest} from './server/request.ts';
+import {ServerResponse} from './server/response.ts';
+import {WebSocket} from './websocket.ts';
 import Path from '@mojojs/path';
 import {termEscape} from '@mojojs/util';
 import {WebSocketServer} from 'ws';

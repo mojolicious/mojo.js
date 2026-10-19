@@ -1,5 +1,5 @@
-import type {App} from '../app.js';
-import type {MojoContext} from '../types.js';
+import type {App} from '../app.ts';
+import type {MojoContext} from '../types.ts';
 
 /**
  * Default condition plugin.

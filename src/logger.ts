@@ -1,6 +1,6 @@
 import type {WriteStream} from 'node:fs';
 import assert from 'node:assert';
-import chalk from 'chalk';
+import {styleText} from 'node:util';
 
 interface LogContext {
   requestId?: string;
@@ -82,8 +82,9 @@ export class Logger {
    */
   static colorFormatter(data: LogEvent): string {
     const formatted = Logger.stringFormatter(data);
-    if (data.level === 'error' || data.level === 'fatal') return chalk.red(formatted);
-    if (data.level === 'warn') return chalk.yellow(formatted);
+    // Keep the trailing newline outside of the color codes
+    if (data.level === 'error' || data.level === 'fatal') return styleText('red', formatted.slice(0, -1)) + '\n';
+    if (data.level === 'warn') return styleText('yellow', formatted.slice(0, -1)) + '\n';
     return formatted;
   }
 

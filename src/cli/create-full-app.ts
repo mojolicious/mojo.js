@@ -1,15 +1,20 @@
-import type {App} from '../app.js';
+import type {App} from '../app.ts';
 import crypto from 'node:crypto';
-import {version} from '../core.js';
-import * as util from '../util.js';
-import nopt from 'nopt';
+import {parseArgs} from 'node:util';
+import {version} from '../core.ts';
+import * as util from '../util.ts';
 
 /**
  * Minimal application generator command.
  */
 export default async function createFullAppCommand(app: App, args: string[]): Promise<void> {
-  const parsed = nopt({ts: Boolean}, {}, args, 1);
-  const ts = parsed.ts === true;
+  const {values} = parseArgs({
+    args: args.slice(1),
+    options: {ts: {type: 'boolean'}},
+    allowPositionals: true,
+    allowNegative: true
+  });
+  const ts = values.ts === true;
 
   process.stdout.write('Generating application directory structure:\n');
   await util.cliCreateFile('config.yml', yamlConfig, {secret: crypto.randomBytes(16).toString('hex')});
@@ -33,36 +38,32 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
     await util.cliCreateDir('src/models');
 
     await util.cliCreateDir('test');
-    await util.cliCreateFile('test/example.js', jsTest, {indexPath: '../lib/index.js'});
+    await util.cliCreateFile('test/example.js', jsTest, {indexPath: '../src/index.ts'});
 
+    // Node.js runs the TypeScript sources directly, so tsc is only used for type checking
     const tsConfig = {
       compilerOptions: {
-        lib: ['ESNext', 'DOM'],
-        target: 'ES2020',
-        module: 'ES2020',
-        sourceMap: true,
-        declaration: true,
-        incremental: true,
-        moduleResolution: 'node',
-        esModuleInterop: true,
+        lib: ['ESNext'],
+        target: 'ESNext',
+        module: 'nodenext',
+        moduleResolution: 'nodenext',
+        noEmit: true,
+        allowImportingTsExtensions: true,
+        erasableSyntaxOnly: true,
+        verbatimModuleSyntax: true,
         noErrorTruncation: true,
-        strict: true,
-        outDir: 'lib',
-        rootDir: 'src',
-        composite: true
+        strict: true
       },
       include: ['src/**/*']
     };
     await util.cliCreateFile('tsconfig.json', JSON.stringify(tsConfig, null, 2));
     await util.cliFixPackage({
       dependencies: {'@mojojs/core': `^${version}`},
-      devDependencies: await util.devDependencies(/^(@types\/.+|nodemon|tap|typescript)$/),
+      devDependencies: await util.devDependencies(/^(@types\/node|nodemon|tap|typescript)$/),
       scripts: {
-        build: 'npx tsc --build ./',
-        'build:test': 'npm run build && npm test',
-        'build:watch': 'npm run build -- --watch',
-        dev: 'npx nodemon lib/index.js server',
-        start: 'NODE_ENV=production node lib/index.js server -l http://*:8080',
+        check: 'npx tsc',
+        dev: 'npx nodemon src/index.ts server',
+        start: 'NODE_ENV=production node src/index.ts server -l http://*:8080',
         test: 'node --test test/*.js'
       }
     });

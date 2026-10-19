@@ -1,4 +1,4 @@
-import mojo, {mountPlugin} from '../../../../lib/core.js';
+import mojo, {mountPlugin} from '../../../../src/core.ts';
 import {app as fullApp} from '../full-app/index.js';
 import {app as configApp} from '../jsonconfig-app/app.js';
 

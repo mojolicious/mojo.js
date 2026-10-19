@@ -1,6 +1,6 @@
-import type {Router} from '../router.js';
-import type {AnyArguments, MojoAction, RouteArguments} from '../types.js';
-import {Pattern} from './pattern.js';
+import type {Router} from '../router.ts';
+import type {AnyArguments, MojoAction, RouteArguments} from '../types.ts';
+import {Pattern} from './pattern.ts';
 
 /**
  * Route class.

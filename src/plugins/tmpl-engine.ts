@@ -1,7 +1,7 @@
-import type {App} from '../app.js';
-import type {MojoContext, MojoRenderOptions} from '../types.js';
+import type {App} from '../app.ts';
+import type {MojoContext, MojoRenderOptions} from '../types.ts';
 import {createHash} from 'node:crypto';
-import {Cache} from '../cache.js';
+import {Cache} from '../cache.ts';
 import Path from '@mojojs/path';
 import Template from '@mojojs/template';
 

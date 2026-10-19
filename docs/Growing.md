@@ -180,9 +180,9 @@ transformed into the other.
 ### TypeScript
 
 [TypeScript](https://www.typescriptlang.org) is fully supported as well, and in fact mojo.js itself is written entirely
-in TypeScript. But because it requires a build step, we recommend a slightly different directory layout for
-applications that are planning to use it. With a `src` directory for `.ts` source files, and a `lib` directory for the
-compiled `.js` output files.
+in TypeScript. Node.js runs `.ts` files directly with type stripping, so there is no build step. We only recommend a
+`src` directory for `.ts` source files, and using `tsc` for type checking. Note that type stripping only supports
+erasable syntax, so features like `enum` and parameter properties are not available.
 
 ```
 myapp                               // Application directory (created manually)
@@ -202,8 +202,6 @@ myapp                               // Application directory (created manually)
 |   |-- controllers                 // Controller directory
 |   |   `-- example.ts              // Controller class
 |   `-- models                      // Model directory
-|-- lib
-|   `-- *compiled js files*
 `-- views                           // Views directory
     |-- example                     // View directory for "example" controller
     |    `-- welcome.html.tmpl      // Template for "welcome" action
@@ -218,7 +216,8 @@ A fully functional TypeScript mojo.js application can be generated with the comm
 $ mkdir myapp && cd myapp
 $ npm create @mojojs/full-app -- --ts
 $ npm install
-$ npm run build:test
+$ npm run check
+$ npm test
 ```
 
 However, the use of TypeScript is completely optional, and for the rest if this guide we will stick with plain old

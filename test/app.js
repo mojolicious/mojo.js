@@ -1,5 +1,5 @@
 import {Stream} from 'node:stream';
-import mojo, {Session} from '../lib/core.js';
+import mojo, {Session} from '../src/core.ts';
 import {SafeString} from '@mojojs/util';
 import t from 'tap';
 
@@ -209,8 +209,8 @@ t.test('App', async t => {
   // POST /form/upload
   app.post('/form/upload', async ctx => {
     const uploads = [];
-    for await (const {fieldname, file, filename} of ctx.req.files({limits: {fileSize: 10}})) {
-      const upload = {fieldname, filename};
+    for await (const {fieldname, file, filename, encoding, mimetype} of ctx.req.files({limits: {fileSize: 10}})) {
+      const upload = {fieldname, filename, encoding, mimetype};
       uploads.push(upload);
 
       const parts = [];
@@ -821,14 +821,32 @@ t.test('App', async t => {
       await ua.postOk('/form/upload', {formData: {test: {content: 'Hello!', filename: 'test.txt'}, it: 'works'}})
     ).statusIs(200);
     const data = JSON.parse(ua.body);
-    t.same(data.uploads, [{fieldname: 'test', filename: 'test.txt', content: 'Hello!', limit: false}]);
+    t.same(data.uploads, [
+      {
+        fieldname: 'test',
+        filename: 'test.txt',
+        encoding: '7bit',
+        mimetype: 'text/plain',
+        content: 'Hello!',
+        limit: false
+      }
+    ]);
     t.same(data.params, {it: 'works'});
 
     (await ua.postOk('/form/upload', {formData: {test: {content: 'Hello World!', filename: 'test2.txt'}}})).statusIs(
       200
     );
     const data2 = JSON.parse(ua.body);
-    t.same(data2.uploads, [{fieldname: 'test', filename: 'test2.txt', content: 'Hello Worl', limit: true}]);
+    t.same(data2.uploads, [
+      {
+        fieldname: 'test',
+        filename: 'test2.txt',
+        encoding: '7bit',
+        mimetype: 'text/plain',
+        content: 'Hello Worl',
+        limit: true
+      }
+    ]);
     t.same(data2.params, {});
 
     (
@@ -844,9 +862,23 @@ t.test('App', async t => {
     ).statusIs(200);
     const data3 = JSON.parse(ua.body);
     t.same(data3.uploads, [
-      {fieldname: 'test', filename: 'test2.txt', content: 'Hello', limit: false},
-      {fieldname: 'test2', filename: 'test3.txt', content: 'World', limit: false},
-      {fieldname: 'test3', filename: 'test4.txt', content: '!', limit: false}
+      {
+        fieldname: 'test',
+        filename: 'test2.txt',
+        encoding: '7bit',
+        mimetype: 'text/plain',
+        content: 'Hello',
+        limit: false
+      },
+      {
+        fieldname: 'test2',
+        filename: 'test3.txt',
+        encoding: '7bit',
+        mimetype: 'text/plain',
+        content: 'World',
+        limit: false
+      },
+      {fieldname: 'test3', filename: 'test4.txt', encoding: '7bit', mimetype: 'text/plain', content: '!', limit: false}
     ]);
     t.same(data3.params, {test4: 'One', test5: 'Two'});
 

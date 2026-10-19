@@ -3,6 +3,31 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v2.0.0 (2026-10-20)
+
+### Breaking Changes
+
+  * Removed support for Node.js versions older than 22.18.
+  * Replaced `nopt` with `util.parseArgs` for all built-in commands, option abbreviations like `--verb` for `--verbose`
+    are no longer supported and unknown options are now an error.
+  * TypeScript applications generated with `create-full-app --ts` now run without a build step, the `build`,
+    `build:test` and `build:watch` scripts have been replaced with a `check` script.
+  * TypeScript plugins generated with `create-plugin --ts` now run their tests without a build step, the `build:test`
+    and `build:watch` scripts have been replaced with a `prepublishOnly` script.
+  * Removed `chalk`, `form-data` and `nopt` dependencies.
+
+### Features
+
+  * Added support for loading controllers and commands written in TypeScript with Node.js type stripping.
+  * Added `Content-Length` header to multipart `formData` requests made with `UserAgent`.
+
+### Bug Fixes
+
+  * Fixed a bug where `ctx.req.files()` always returned `undefined` for the `encoding` and `mimetype` of uploads.
+  * Fixed a bug where TypeScript applications needed to install `@types/ws` and `@types/stack-utils` themselves.
+  * Fixed a bug where plugins generated with `create-plugin` had an `exports` path that did not exist.
+  * Fixed a bug where TypeScript plugins generated with `create-plugin --ts` could not be built with TypeScript 6.
+
 ## v1.27.0 (2026-10-19)
 
 ### Features

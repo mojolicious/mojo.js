@@ -1,7 +1,7 @@
-import {Bar} from './models/bar.js';
-import helpersPlugin from './plugins/helpers.js';
-import mojo, {yamlConfigPlugin} from '../../../../../lib/core.js';
-declare module '../../../../../lib/core.js' {
+import {Bar} from './models/bar.ts';
+import helpersPlugin from './plugins/helpers.ts';
+import mojo, {yamlConfigPlugin} from '../../../../../src/core.ts';
+declare module '../../../../../src/core.ts' {
   interface MojoModels {
     bar: Bar;
   }

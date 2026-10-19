@@ -1,4 +1,4 @@
-import type {MojoApp, MojoRoute, ConfigOptions} from '../types.js';
+import type {MojoApp, MojoRoute, ConfigOptions} from '../types.ts';
 
 interface MountOptions extends ConfigOptions {
   app: MojoApp;

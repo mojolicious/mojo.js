@@ -1,4 +1,4 @@
-import {Mime} from '../lib/mime.js';
+import {Mime} from '../src/mime.ts';
 import t from 'tap';
 
 t.test('MIME', t => {

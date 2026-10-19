@@ -1,4 +1,4 @@
-import mojo, {Server, UserAgent} from '../lib/core.js';
+import mojo, {Server, UserAgent} from '../src/core.ts';
 import Path from '@mojojs/path';
 import t from 'tap';
 

@@ -1,4 +1,4 @@
-import {app} from './support/ts/full-app/lib/index.js';
+import {app} from './support/ts/full-app/src/index.ts';
 import t from 'tap';
 
 t.test('TypeScript app', async t => {

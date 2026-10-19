@@ -1,4 +1,4 @@
-import {util} from '../lib/core.js';
+import {util} from '../src/core.ts';
 import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';

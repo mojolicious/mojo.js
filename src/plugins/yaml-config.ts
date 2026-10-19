@@ -1,5 +1,5 @@
-import type {MojoApp, ConfigOptions} from '../types.js';
-import {loadConfig} from './json-config.js';
+import type {MojoApp, ConfigOptions} from '../types.ts';
+import {loadConfig} from './json-config.ts';
 import * as yaml from 'js-yaml';
 
 /**

@@ -1,4 +1,4 @@
-import {Cache} from '../lib/cache.js';
+import {Cache} from '../src/cache.ts';
 import t from 'tap';
 
 t.test('Cache', t => {

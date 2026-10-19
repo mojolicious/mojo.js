@@ -1,5 +1,5 @@
 import http from 'node:http';
-import mojo, {UserAgent} from '../lib/core.js';
+import mojo, {UserAgent} from '../src/core.ts';
 import t from 'tap';
 
 t.test('App', async t => {

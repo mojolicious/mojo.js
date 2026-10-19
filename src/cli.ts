@@ -1,8 +1,8 @@
-import type {App} from './app.js';
-import {loadModules} from './util.js';
+import type {App} from './app.ts';
+import {parseArgs} from 'node:util';
+import {loadModules} from './util.ts';
 import Path from '@mojojs/path';
 import {tablify} from '@mojojs/util';
-import nopt from 'nopt';
 
 interface Command {
   (app: App, args: string[]): Promise<void>;
@@ -66,21 +66,27 @@ export class CLI {
     if (this._loaded === undefined) await this._loadCommands();
     if ((await app.hooks.runHook('command:init', app, commandArgs)) === true) return;
 
-    const parsed = nopt({help: Boolean, 'show-all': Boolean}, {h: '--help'}, commandArgs);
-    const {argv} = parsed;
+    // Not strict, because the options of the command itself are unknown here
+    const original = commandArgs.slice(2);
+    const {values, positionals} = parseArgs({
+      args: original,
+      options: {help: {type: 'boolean', short: 'h'}, 'show-all': {type: 'boolean'}},
+      allowPositionals: true,
+      strict: false
+    });
 
-    if (argv.remain.length > 0) {
-      const name: string = argv.original[0];
+    if (positionals.length > 0) {
+      const name = original[0];
       const command = this.commands[name];
       if (command === undefined) {
         process.stdout.write(`Unknown command "${name}", maybe you need to install it?\n`);
-      } else if (parsed.help === true) {
+      } else if (values.help === true) {
         process.stdout.write(command.usage);
       } else {
-        await command(app, argv.original);
+        await command(app, original);
       }
     } else {
-      await this._listCommands(parsed['show-all']);
+      await this._listCommands(values['show-all'] === true);
     }
 
     await app.hooks.commandAfter(app, commandArgs);

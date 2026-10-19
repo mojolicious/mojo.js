@@ -1,4 +1,4 @@
-import {buildEvent, parseEvent} from '../lib/sse.js';
+import {buildEvent, parseEvent} from '../src/sse.ts';
 import t from 'tap';
 
 t.test('SSE', async t => {

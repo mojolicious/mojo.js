@@ -1,4 +1,4 @@
-import type {SSEEvent} from './types.js';
+import type {SSEEvent} from './types.ts';
 
 const SPLIT_RE = /\r\n|(?<!\r)\n|\r(?!\n)/;
 const EVENT_RE = /^([\s\S]*?)(?:\r\n|(?<!\r)\n|\r(?!\n)){2}/;

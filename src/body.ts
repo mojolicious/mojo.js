@@ -1,9 +1,9 @@
-import type {JSONValue, UploadOptions} from './types.js';
+import type {JSONValue, UploadOptions} from './types.ts';
 import type {Readable, Writable} from 'node:stream';
 import {on} from 'node:events';
 import zlib from 'node:zlib';
-import {Params} from './body/params.js';
-import {Headers} from './headers.js';
+import {Params} from './body/params.ts';
+import {Headers} from './headers.ts';
 import DOM from '@mojojs/dom';
 import busboy from 'busboy';
 import * as yaml from 'js-yaml';
@@ -16,7 +16,7 @@ interface FileUpload {
   mimetype: string;
 }
 
-type FormIterator = AsyncIterableIterator<[string, Readable, string, string, string]>;
+type FormIterator = AsyncIterableIterator<[string, Readable, {filename: string; encoding: string; mimeType: string}]>;
 
 /**
  * HTTP message body base class.
@@ -80,9 +80,8 @@ export class Body {
     if (this._isForm() === false) return;
 
     try {
-      for await (const [fieldname, file, name, encoding, mimetype] of this._formIterator(options)) {
-        const filename = (name as any).filename as string;
-        yield {fieldname, file, filename, encoding, mimetype};
+      for await (const [fieldname, file, {filename, encoding, mimeType}] of this._formIterator(options)) {
+        yield {fieldname, file, filename, encoding, mimetype: mimeType};
       }
     } catch (error) {
       if (!(error instanceof Error) || error.name !== 'AbortError') throw error;

@@ -1,7 +1,7 @@
-import type {ServerRequestOptions} from '../types.js';
-import {Params} from '../body/params.js';
-import {Body} from '../body.js';
-import {parseCookie} from '../server/cookie.js';
+import type {ServerRequestOptions} from '../types.ts';
+import {Params} from '../body/params.ts';
+import {Body} from '../body.ts';
+import {parseCookie} from '../server/cookie.ts';
 import {decodeURIComponentSafe} from '@mojojs/util';
 
 // Official regex from RFC 3986

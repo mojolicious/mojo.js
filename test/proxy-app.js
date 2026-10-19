@@ -1,6 +1,6 @@
 import {Stream} from 'node:stream';
-import mojo from '../lib/core.js';
-import {Server} from '../lib/server.js';
+import mojo from '../src/core.ts';
+import {Server} from '../src/server.ts';
 import t from 'tap';
 
 t.test('Proxy app', async t => {

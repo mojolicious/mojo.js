@@ -1,6 +1,6 @@
 import Stream from 'node:stream';
-import mojo from '../lib/core.js';
-import * as util from '../lib/util.js';
+import mojo from '../src/core.ts';
+import * as util from '../src/util.ts';
 import t from 'tap';
 
 t.test('Hook app', async t => {

@@ -4,17 +4,15 @@ jobs:
   coveralls:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: npm install
         run: npm i
-      - name: npm run build
-        run: npm run build
       - name: npm run coverage:ci
         run: npm run coverage:ci
       - name: coveralls
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

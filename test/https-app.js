@@ -1,5 +1,5 @@
-import mojo from '../lib/core.js';
-import {Server} from '../lib/server.js';
+import mojo from '../src/core.ts';
+import {Server} from '../src/server.ts';
 import Path from '@mojojs/path';
 import t from 'tap';
 

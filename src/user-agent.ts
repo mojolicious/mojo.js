@@ -1,19 +1,19 @@
-import type {UserAgentOptions, UserAgentRequestOptions, UserAgentWebSocketOptions} from './types.js';
-import type {UserAgentResponse} from './user-agent/response.js';
-import type {WebSocket} from './websocket.js';
+import type {UserAgentOptions, UserAgentRequestOptions, UserAgentWebSocketOptions} from './types.ts';
+import type {UserAgentResponse} from './user-agent/response.ts';
+import type {WebSocket} from './websocket.ts';
 import {URL} from 'node:url';
-import {CookieJar} from './user-agent/cookie-jar.js';
-import {HTTPTransport} from './user-agent/transport/http.js';
-import {HTTPSTransport} from './user-agent/transport/https.js';
-import {WSTransport} from './user-agent/transport/ws.js';
+import {CookieJar} from './user-agent/cookie-jar.ts';
+import {HTTPTransport} from './user-agent/transport/http.ts';
+import {HTTPSTransport} from './user-agent/transport/https.ts';
+import {WSTransport} from './user-agent/transport/ws.ts';
 import {AsyncHooks} from '@mojojs/util';
-import FormData from 'form-data';
 import * as yaml from 'js-yaml';
+import {lookup} from 'mime-types';
 
 interface Upload {
   content: string;
   filename: string;
-  type: string;
+  type?: string;
 }
 
 type UserAgentHook = (ua: UserAgent, ...args: any[]) => any;
@@ -185,9 +185,9 @@ class UserAgent {
       }
       filtered.body = new URLSearchParams(filtered.form).toString();
     } else if (filtered.formData !== undefined) {
-      const form = this._formData(filtered.formData);
-      Object.assign(filtered.headers, form.getHeaders());
-      filtered.body = form;
+      const multipart = new Response(this._formData(filtered.formData));
+      filtered.headers['Content-Type'] = multipart.headers.get('Content-Type');
+      filtered.body = Buffer.from(await multipart.arrayBuffer());
     }
 
     return filtered;
@@ -228,7 +228,11 @@ class UserAgent {
       if (typeof value === 'string') {
         form.append(name, value);
       } else if (typeof value === 'object' && value !== null) {
-        form.append(name, value.content, {filename: value.filename, contentType: value.type});
+        form.append(
+          name,
+          new Blob([value.content], {type: value.type ?? (lookup(value.filename) || 'application/octet-stream')}),
+          value.filename
+        );
       }
     }
     return form;

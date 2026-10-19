@@ -1,7 +1,7 @@
 /*
  * Minimal "Hello World" application with template for profiling
  */
-import mojo from '../lib/core.js';
+import mojo from '../src/core.ts';
 
 const app = mojo();
 

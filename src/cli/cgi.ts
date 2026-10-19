@@ -1,5 +1,5 @@
-import type {MojoApp} from '../types.js';
-import {CGI} from '../cgi.js';
+import type {MojoApp} from '../types.ts';
+import {CGI} from '../cgi.ts';
 
 /**
  * CGI command.

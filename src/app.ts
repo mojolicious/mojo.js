@@ -1,4 +1,4 @@
-import type {Route} from './router/route.js';
+import type {Route} from './router/route.ts';
 import type {
   AnyArguments,
   AppOptions,
@@ -12,26 +12,26 @@ import type {
   ScopedNestedHelpers,
   ServerOptions,
   TestUserAgentOptions
-} from './types.js';
+} from './types.ts';
 import {Readable} from 'node:stream';
-import {CLI} from './cli.js';
-import {Context} from './context.js';
-import {Hooks} from './hooks.js';
-import {Logger} from './logger.js';
-import {Mime} from './mime.js';
-import defaultConditionsPlugin from './plugins/default-conditions.js';
-import defaultHelpersPlugin from './plugins/default-helpers.js';
-import tmplEnginePlugin from './plugins/tmpl-engine.js';
-import {Renderer} from './renderer.js';
-import {Router} from './router.js';
-import {ServerRequest} from './server/request.js';
-import {ServerResponse} from './server/response.js';
-import {Session} from './session.js';
-import {Static} from './static.js';
-import {MockUserAgent} from './user-agent/mock.js';
-import {TestUserAgent} from './user-agent/test.js';
-import {UserAgent} from './user-agent.js';
-import {Validator} from './validator.js';
+import {CLI} from './cli.ts';
+import {Context} from './context.ts';
+import {Hooks} from './hooks.ts';
+import {Logger} from './logger.ts';
+import {Mime} from './mime.ts';
+import defaultConditionsPlugin from './plugins/default-conditions.ts';
+import defaultHelpersPlugin from './plugins/default-helpers.ts';
+import tmplEnginePlugin from './plugins/tmpl-engine.ts';
+import {Renderer} from './renderer.ts';
+import {Router} from './router.ts';
+import {ServerRequest} from './server/request.ts';
+import {ServerResponse} from './server/response.ts';
+import {Session} from './session.ts';
+import {Static} from './static.ts';
+import {MockUserAgent} from './user-agent/mock.ts';
+import {TestUserAgent} from './user-agent/test.ts';
+import {UserAgent} from './user-agent.ts';
+import {Validator} from './validator.ts';
 import Path from '@mojojs/path';
 
 type AppHook = (app: App, ...args: any[]) => any;
@@ -121,7 +121,8 @@ export class App {
    * // Store database connection
    * app.models.pg = new Pg('postgres://127.0.0.1:5432/db');
    */
-  models: MojoModels = {};
+  // Apps augment MojoModels with required keys they fill in later
+  models = {} as MojoModels;
   /**
    * Application renderer.
    * @example

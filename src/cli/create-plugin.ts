@@ -1,23 +1,29 @@
-import type {App} from '../app.js';
-import {version} from '../core.js';
-import * as util from '../util.js';
-import nopt from 'nopt';
+import type {App} from '../app.ts';
+import {parseArgs} from 'node:util';
+import {version} from '../core.ts';
+import * as util from '../util.ts';
 
 /**
  * Plugin generator command.
  */
 export default async function createPluginCommand(app: App, args: string[]): Promise<void> {
-  const parsed = nopt({ts: Boolean}, {}, args, 1);
-  const ts = parsed.ts === true;
+  const {values, positionals} = parseArgs({
+    args: args.slice(1),
+    options: {ts: {type: 'boolean'}},
+    allowPositionals: true,
+    allowNegative: true
+  });
+  const ts = values.ts === true;
 
   const stdout = process.stdout;
   stdout.write('Generating plugin:\n');
 
-  const name = parsed.argv.remain[0] ?? 'mojo-plugin-myplugin';
+  const name = positionals[0] ?? 'mojo-plugin-myplugin';
   const file = `lib/${name}.js`;
+  const tsFile = `src/${name}.ts`;
 
   await util.cliCreateDir('test');
-  await util.cliCreateFile('test/basic.js', test, {file});
+  await util.cliCreateFile('test/basic.js', test, {file: ts === true ? tsFile : file});
 
   await util.cliCreateFile('README.md', readme, {name});
 
@@ -25,7 +31,7 @@ export default async function createPluginCommand(app: App, args: string[]): Pro
     author: 'A Good Programmer <nospam@example.com>',
     description: 'A mojo.js plugin',
     dependencies: {'@mojojs/core': `^${version}`},
-    exports: './lib/plugin.js',
+    exports: `./${file}`,
     files: ['lib/'],
     name,
     license: 'MIT',
@@ -34,36 +40,33 @@ export default async function createPluginCommand(app: App, args: string[]): Pro
 
   // TypeScript
   if (ts === true) {
-    const tsFile = `src/${name}.ts`;
     await util.cliCreateDir('src');
     await util.cliCreateFile(tsFile, tsPlugin);
 
     const tsConfig = {
       compilerOptions: {
-        lib: ['ESNext', 'DOM'],
-        target: 'ES2020',
-        module: 'ES2020',
-        sourceMap: true,
+        lib: ['ESNext'],
+        target: 'ES2023',
+        module: 'nodenext',
+        moduleResolution: 'nodenext',
         declaration: true,
-        incremental: true,
-        moduleResolution: 'node',
-        esModuleInterop: true,
+        erasableSyntaxOnly: true,
+        verbatimModuleSyntax: true,
+        rewriteRelativeImportExtensions: true,
         noErrorTruncation: true,
         strict: true,
         outDir: 'lib',
-        rootDir: 'src',
-        composite: true
+        rootDir: 'src'
       },
       include: ['src/**/*']
     };
     await util.cliCreateFile('tsconfig.json', JSON.stringify(tsConfig, null, 2));
     await util.cliFixPackage({
       ...commonSettings,
-      devDependencies: await util.devDependencies(/^(@types\/.+|tap|typescript)$/),
+      devDependencies: await util.devDependencies(/^(@types\/node|tap|typescript)$/),
       scripts: {
-        build: 'npx tsc --build ./',
-        'build:test': 'npm run build && npm test',
-        'build:watch': 'npm run build -- --watch',
+        build: 'npx tsc',
+        prepublishOnly: 'npm run build',
         test: 'node --test test/*.js'
       }
     });

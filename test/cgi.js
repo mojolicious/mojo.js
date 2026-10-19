@@ -1,6 +1,6 @@
 import {Stream} from 'node:stream';
-import mojo, {CGI} from '../lib/core.js';
-import * as util from '../lib/util.js';
+import mojo, {CGI} from '../src/core.ts';
+import * as util from '../src/util.ts';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';
 

@@ -1,4 +1,4 @@
-import type {MojoContext, MojoRenderOptions} from './types.js';
+import type {MojoContext, MojoRenderOptions} from './types.ts';
 import {promisify} from 'node:util';
 import {gzip} from 'node:zlib';
 import Path from '@mojojs/path';

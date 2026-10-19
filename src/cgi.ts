@@ -1,8 +1,8 @@
-import type {MojoApp, ServerResponseBody} from './types.js';
+import type {MojoApp, ServerResponseBody} from './types.ts';
 import {Stream, type Readable} from 'node:stream';
-import {ServerRequest} from './server/request.js';
-import {ServerResponse} from './server/response.js';
-import {httpStatusMessages} from './util.js';
+import {ServerRequest} from './server/request.ts';
+import {ServerResponse} from './server/response.ts';
+import {httpStatusMessages} from './util.ts';
 import {decodeURIComponentSafe} from '@mojojs/util';
 
 /**

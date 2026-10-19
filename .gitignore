@@ -4,5 +4,3 @@ coverage
 .nyc_output
 .tap
 /lib
-/test/support/ts/full-app/lib
-*.tsbuildinfo

@@ -1,8 +1,7 @@
-import {Logger} from '../lib/core.js';
-import {sleep} from '../lib/util.js';
+import {Logger} from '../src/core.ts';
+import {sleep} from '../src/util.ts';
 import Path from '@mojojs/path';
 import {captureOutput} from '@mojojs/util';
-import chalk from 'chalk';
 import t from 'tap';
 
 t.test('Logger', async t => {
@@ -317,7 +316,7 @@ t.test('Logger', async t => {
   });
 
   await t.test('Color', async t => {
-    chalk.level = 1;
+    process.env.FORCE_COLOR = '1';
     const logger = new Logger({destination: process.stdout, level: 'trace'});
     const output = await captureOutput(async () => {
       logger.trace('One');
@@ -333,10 +332,10 @@ t.test('Logger', async t => {
     t.match(output, /\[33m\[.+\] \[warn\] Four.*\[39m/);
     t.match(output, /\[31m\[.+\] \[error\] Five.*\[39m/);
     t.match(output, /\[31m\[.+\] \[fatal\] Six.*\[39m/);
+    delete process.env.FORCE_COLOR;
   });
 
   await t.test('JSON', async t => {
-    chalk.level = 1;
     const logger = new Logger({destination: process.stdout, level: 'trace', formatter: Logger.jsonFormatter});
     const child = logger.child({requestId: 23, test: 'works'});
     const output = await captureOutput(async () => {

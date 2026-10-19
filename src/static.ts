@@ -1,4 +1,4 @@
-import type {MojoContext} from './types.js';
+import type {MojoContext} from './types.ts';
 import crypto from 'node:crypto';
 import Path from '@mojojs/path';
 
