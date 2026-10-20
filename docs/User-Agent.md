@@ -431,8 +431,8 @@ await ua.sseFinishedOk();
 await ua.sseFinishOk();
 ```
 
-If you're using TypeScript we also support explicit resource management with `await using` for a little less
-boilerplate.
+We also support explicit resource management with `await using` for a little less boilerplate. Note that this requires
+Node.js 24 (or newer), or a TypeScript build step that transpiles it, because type stripping does not.
 
 ```ts
 import {app} from '../index.js';
