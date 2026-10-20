@@ -167,9 +167,9 @@ export class Server {
         const stderr = process.stderr;
         socket.on('data', (chunk: string) => stderr.write(termEscape(`-- Server <<< Client\n${chunk}`)));
         const write = socket.write;
-        socket.write = (chunk: string | Uint8Array, cb: any) => {
+        socket.write = (chunk: string | Uint8Array, ...args: any[]) => {
           stderr.write(termEscape(`-- Server >>> Client\n${chunk}`));
-          return write.apply(socket, [chunk, cb]);
+          return write.apply(socket, [chunk, ...args] as any);
         };
       });
     }
@@ -267,10 +267,16 @@ function sendHeaders(res: ServerResponse, raw: http.ServerResponse): void {
   const statusMessage = res.statusMessage;
   const headers = res.headers.toArray();
 
-  if (statusMessage === null) {
-    raw.writeHead(statusCode, headers);
-  } else {
-    raw.writeHead(statusCode, statusMessage, headers);
+  try {
+    if (statusMessage === null) {
+      raw.writeHead(statusCode, headers);
+    } else {
+      raw.writeHead(statusCode, statusMessage, headers);
+    }
+  } catch (error) {
+    // The response counts as sent already, so close the connection instead of letting the client wait forever
+    raw.destroy();
+    throw error;
   }
 }
 

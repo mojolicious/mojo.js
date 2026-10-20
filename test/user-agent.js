@@ -606,6 +606,19 @@ t.test('UserAgent', async t => {
     t.match(output, /Content-Length: /);
     t.match(output, /Hello World!/);
 
+    // Keep-alive connections keep working
+    const keepAlive = new http.Agent({keepAlive: true});
+    await captureOutput(
+      async () => {
+        for (let i = 0; i < 3; i++) {
+          const res = await ua.get('/hello', {agent: keepAlive});
+          t.equal(await res.text(), 'Hello World!');
+        }
+      },
+      {stderr: true, stdout: false}
+    );
+    keepAlive.destroy();
+
     await ua.stop();
   });
 

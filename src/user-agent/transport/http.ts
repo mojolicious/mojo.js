@@ -48,9 +48,9 @@ export class HTTPTransport {
           const stderr = process.stderr;
           socket.on('data', (chunk: string) => stderr.write(termEscape(`-- Client <<< Server\n${chunk}`)));
           const write = socket.write;
-          socket.write = (chunk: string | Uint8Array, cb: any) => {
+          socket.write = (chunk: string | Uint8Array, ...args: any[]) => {
             stderr.write(termEscape(`-- Client >>> Server\n${chunk}`));
-            return write.apply(socket, [chunk, cb]);
+            return write.apply(socket, [chunk, ...args] as any);
           };
         });
       }

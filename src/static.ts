@@ -85,9 +85,10 @@ export class Static {
     // If-None-Match
     const ifNoneMatch = req.get('If-None-Match');
     if (etag !== undefined && ifNoneMatch !== null) {
-      const etags = ifNoneMatch.split(/,\s+/).map(value => value.replaceAll('"', ''));
+      // Weak comparison, because proxies like nginx turn ETags into weak ones when compressing responses
+      const etags = ifNoneMatch.split(/\s*,\s*/).map(value => value.replace(/^W\//, '').replaceAll('"', ''));
       for (const match of etags) {
-        if (match === etag) return true;
+        if (match === etag || match === '*') return true;
       }
     }
 

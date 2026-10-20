@@ -21,6 +21,8 @@ t.test('Server', async t => {
     await ctx.res.status(200).send(stream);
   });
 
+  app.get('/bad/status', ctx => ctx.res.status('invalid').send());
+
   let aborted;
   app.get('/stream/abort', async ctx => {
     aborted = new Readable({
@@ -78,6 +80,19 @@ t.test('Server', async t => {
     t.match(output, /Content-Length: /);
     t.match(output, /Hello World!/);
 
+    // Keep-alive connections keep working
+    const keepAlive = new http.Agent({keepAlive: true});
+    await captureOutput(
+      async () => {
+        for (let i = 0; i < 3; i++) {
+          const res = await ua.get('/', {agent: keepAlive});
+          t.equal(await res.text(), 'Hello World!');
+        }
+      },
+      {stderr: true, stdout: false}
+    );
+    keepAlive.destroy();
+
     await ua.stop();
   });
 
@@ -97,6 +112,16 @@ t.test('Server', async t => {
 
     // The connection gets closed early, but the server keeps running
     await ua.get('/stream/error').catch(() => {});
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
+
+    await ua.stop();
+  });
+
+  await t.test('Invalid response headers', async t => {
+    const ua = await app.newTestUserAgent({tap: t});
+
+    // The connection gets closed right away, instead of the client waiting for a response that will never come
+    await t.rejects(ua.get('/bad/status'));
     (await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
 
     await ua.stop();

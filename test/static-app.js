@@ -185,6 +185,10 @@ t.test('Static app', async t => {
       .bodyLike(/Hello World!/);
     const etag = ua.res.get('Etag');
     (await ua.getOk('/static/hello.txt', {headers: {'If-None-Match': etag}})).statusIs(304).bodyIs('');
+    (await ua.getOk('/static/hello.txt', {headers: {'If-None-Match': `W/${etag}`}})).statusIs(304).bodyIs('');
+    (await ua.getOk('/static/hello.txt', {headers: {'If-None-Match': `"whatever",${etag}`}})).statusIs(304).bodyIs('');
+    (await ua.getOk('/static/hello.txt', {headers: {'If-None-Match': '*'}})).statusIs(304).bodyIs('');
+    (await ua.getOk('/static/hello.txt', {headers: {'If-None-Match': '"whatever"'}})).statusIs(200);
     (await ua.getOk('/static/hello.txt', {headers: {'If-None-Match': `"whatever", ${etag}, "abcdef123345"`}}))
       .statusIs(304)
       .bodyIs('');

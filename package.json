@@ -26,14 +26,14 @@
     "build": "npx tsc -p tsconfig.json",
     "check": "npx tsc --noEmit -p tsconfig.json && npx tsc -p test/support/ts/full-app",
     "clean": "rm -rf lib",
-    "coverage": "c8 tap --plugin=!@tapjs/typescript --disable-coverage --allow-empty-coverage test/*.js test/*.ts",
-    "coverage:ci": "c8 --reporter lcovonly tap --plugin=!@tapjs/typescript --disable-coverage --allow-empty-coverage test/*.js test/*.ts",
+    "coverage": "tap build && c8 tap --disable-coverage --allow-empty-coverage test/*.js test/*.ts",
+    "coverage:ci": "tap build && c8 --reporter lcovonly tap --disable-coverage --allow-empty-coverage test/*.js test/*.ts",
     "lint": "eslint",
     "lint:fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run clean && npm run build",
     "publish:minor": "npm version minor && npm publish",
     "publish:patch": "npm version patch && npm publish",
-    "test": "tap --plugin=!@tapjs/typescript --disable-coverage --allow-empty-coverage test/*.js test/*.ts"
+    "test": "tap build && tap --disable-coverage --allow-empty-coverage test/*.js test/*.ts"
   },
   "exports": "./lib/core.js",
   "types": "./lib/core.d.ts",
@@ -85,5 +85,10 @@
     "stack-utils": "^2.0.3",
     "tough-cookie": "^5.1.0",
     "ws": "^8.3.0"
+  },
+  "tap": {
+    "plugin": [
+      "!@tapjs/typescript"
+    ]
   }
 }

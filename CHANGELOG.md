@@ -21,6 +21,8 @@ This package strictly follows [Semantic Versioning](https://semver.org).
     time.
   * `Range` requests for the last bytes of a file (`bytes=-500`) now follow RFC 9110 and return the last bytes,
     instead of the first.
+  * `ctx.req.form()` and `ctx.req.files()` now throw an exception if the request body has already been consumed,
+    instead of returning no values.
 
 ### Features
 
@@ -50,7 +52,12 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Fixed a bug where request headers like `constructor` and `__proto__` would result in a `500` response.
   * Fixed a bug where `If-Modified-Since` request headers would never result in a `304` response.
   * Fixed a bug where `app.warmup()` was called once for every listen location.
+  * Fixed a bug where responses with invalid headers or status codes would leave the client waiting forever.
+  * Fixed a bug where weak `ETag` values and `If-None-Match` lists without spaces would never result in a `304`
+    response.
+  * Fixed a bug where `MOJO_SERVER_DEBUG` and `MOJO_CLIENT_DEBUG` could make keep-alive connections hang.
   * Fixed test coverage reports, which were incorrect because of the TypeScript loader used by `tap`.
+  * Fixed test failures on Windows caused by line ending conversion of test files.
 
 ## v1.27.0 (2026-10-19)
 
