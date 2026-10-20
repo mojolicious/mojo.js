@@ -274,7 +274,7 @@ class UserAgent {
         if (remove.includes(name.toLowerCase())) delete headers[name];
       }
 
-      const sameConfig = {...config, headers, query: undefined, redirected: redirected + 1, url};
+      const sameConfig = {...config, auth: undefined, headers, query: undefined, redirected: redirected + 1, url};
       return this.request(sameConfig);
     }
 

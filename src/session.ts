@@ -11,7 +11,13 @@ const randomBytes = promisify(crypto.randomBytes);
 const keys = new Map<string, Promise<crypto.CipherKey>>();
 function deriveKey(secret: string): Promise<crypto.CipherKey> {
   let key = keys.get(secret);
-  if (key === undefined) keys.set(secret, (key = scrypt(secret, 'salt', 32) as Promise<crypto.CipherKey>));
+  if (key === undefined) {
+    key = scrypt(secret, 'salt', 32) as Promise<crypto.CipherKey>;
+    keys.set(secret, key);
+
+    // Do not cache failures
+    key.catch(() => keys.delete(secret));
+  }
   return key;
 }
 

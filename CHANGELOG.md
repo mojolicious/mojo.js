@@ -9,7 +9,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 
   * Removed support for Node.js versions older than 22.18.
   * Replaced `nopt` with `util.parseArgs` for all built-in commands, option abbreviations like `--verb` for `--verbose`
-    are no longer supported and unknown options are now an error.
+    are no longer supported, and unknown options as well as invalid numbers are now an error.
   * TypeScript applications generated with `create-full-app --ts` now run without a build step, the `build`,
     `build:test` and `build:watch` scripts have been replaced with a `check` script.
   * TypeScript plugins generated with `create-plugin --ts` now run their tests without a build step, the `build:test`
@@ -32,8 +32,8 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Added `maxMessageSize` property to `Body` and `ServerRequest`.
   * Added `maxWebSocketSize` option and property to `Server`.
   * Added `--max-websocket-size` option to `server` command.
-  * Added support for exceptions with a `status` property to `ctx.httpException()`, client errors are only logged at
-    `debug` level.
+  * Added `util.HTTPError` class, for exceptions that `ctx.httpException()` renders with their HTTP status, client
+    errors are only logged at `debug` level.
   * Added support for `Content-Encoding: gzip` to `ctx.req.files()` and `ctx.req.form()`.
 
 ### Bug Fixes
@@ -48,6 +48,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Fixed a bug where `Range` requests past the end of a file would get a response with the wrong `Content-Length`.
   * Fixed a bug where `UserAgent` would send `authorization` and `cookie` headers in lower case to other hosts after
     redirects.
+  * Fixed a bug where `UserAgent` would send the `auth` option to other hosts after `307` and `308` redirects.
   * Fixed a bug where `UserAgent` would modify the options passed to request methods.
   * Fixed a bug where request headers like `constructor` and `__proto__` would result in a `500` response.
   * Fixed a bug where `If-Modified-Since` request headers would never result in a `304` response.
@@ -56,6 +57,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Fixed a bug where weak `ETag` values and `If-None-Match` lists without spaces would never result in a `304`
     response.
   * Fixed a bug where `MOJO_SERVER_DEBUG` and `MOJO_CLIENT_DEBUG` could make keep-alive connections hang.
+  * Fixed a bug where the `get` command used colors on `stderr` based on `stdout`.
   * Fixed test coverage reports, which were incorrect because of the TypeScript loader used by `tap`.
   * Fixed test failures on Windows caused by line ending conversion of test files.
 

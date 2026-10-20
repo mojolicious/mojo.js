@@ -22,6 +22,9 @@ evalCommand.usage = `Usage: APPLICATION eval [OPTIONS] CODE
   node index.js eval -v 'app.home.toString()'
   node index.js eval -v 'app.renderer.viewPaths'
 
+  # Use "--" for code starting with "-"
+  node index.js eval -v -- '-1 + 2'
+
 Options:
   -h, --help      Show this summary of available options
   -v, --verbose   Print return value to stdout

@@ -459,6 +459,11 @@ t.test('UserAgent', async t => {
     t.equal(data.body, 'works');
     t.same(data.headers, {test: 'works'});
 
+    const res3 = await ua.put('/redirect/introspect/307', {auth: 'foo:bar', body: 'works'});
+    t.same((await res3.json()).headers, {});
+    const res4 = await ua.put('/redirect/introspect/308', {auth: 'foo:bar', body: 'works'});
+    t.same((await res4.json()).headers, {});
+
     // Options can be reused
     t.same(options, {headers: {authorization: 'Bearer secret', cookie: 'foo=bar', 'X-Test': 'works'}});
     ua.maxRedirects = 0;

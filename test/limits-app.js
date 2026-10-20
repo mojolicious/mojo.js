@@ -1,6 +1,7 @@
+import net from 'node:net';
 import {Readable} from 'node:stream';
 import {gzipSync} from 'node:zlib';
-import mojo from '../src/core.ts';
+import mojo, {mountPlugin, util} from '../src/core.ts';
 import t from 'tap';
 
 t.test('Limits app', async t => {
@@ -30,6 +31,18 @@ t.test('Limits app', async t => {
     ctx.exceptionFormat = 'json';
     await ctx.render({text: await ctx.req.text()});
   });
+
+  app.get('/teapot', () => {
+    throw new util.HTTPError(418);
+  });
+
+  app.get('/upstream', () => {
+    throw Object.assign(new Error('Upstream not found'), {status: 404});
+  });
+
+  const embedded = mojo();
+  embedded.post('/text', async ctx => ctx.render({text: await ctx.req.text()}));
+  app.plugin(mountPlugin, {app: embedded, path: '/embedded'});
 
   app.websocket('/echo').to(ctx => {
     ctx.on('connection', ws => {
@@ -80,6 +93,30 @@ t.test('Limits app', async t => {
     (await ua.postOk('/json-error', {body: '12345678901'}))
       .statusIs(413)
       .jsonIs({error: {message: 'Request Entity Too Large'}});
+  });
+
+  await t.test('Connection gets closed for bodies that are too large', async t => {
+    const {port} = ua.server.urls[0];
+    const response = await new Promise(resolve => {
+      let data = '';
+      const socket = net.connect(port, '127.0.0.1', () => {
+        socket.write('POST /text HTTP/1.1\r\nHost: localhost\r\nContent-Length: 10737418240\r\n\r\nHello');
+      });
+      socket.on('data', chunk => (data += chunk)).on('close', () => resolve(data));
+    });
+    t.match(response, /^HTTP\/1\.1 413 /);
+    t.match(response, /Connection: close/i);
+  });
+
+  await t.test('Mounted application uses the limit of the outer one', async () => {
+    t.equal(embedded.maxRequestSize, 16 * 1024 * 1024);
+    (await ua.postOk('/embedded/text', {body: '1234567890'})).statusIs(200).bodyIs('1234567890');
+    (await ua.postOk('/embedded/text', {body: '12345678901'})).statusIs(413);
+  });
+
+  await t.test('HTTPError', async () => {
+    (await ua.getOk('/teapot')).statusIs(418);
+    (await ua.getOk('/upstream')).statusIs(500);
   });
 
   await t.test('WebSocket message exceeds limit', async () => {

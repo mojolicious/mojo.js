@@ -111,5 +111,8 @@ Options:
 `;
 
 function toNumber(value: string | undefined): number | undefined {
-  return value === undefined ? undefined : Number(value);
+  if (value === undefined) return undefined;
+  const number = Number(value);
+  if (value.trim() === '' || Number.isNaN(number)) throw new Error(`Invalid number "${value}"`);
+  return number;
 }

@@ -3,8 +3,13 @@ import t from 'tap';
 
 t.test('Session', async t => {
   let calls = 0;
+  let fail = false;
   const scrypt = (...args) => {
     calls++;
+    if (fail === true) {
+      fail = false;
+      return args[args.length - 1](new Error('Temporary failure'));
+    }
     return crypto.scrypt(...args);
   };
   const {Session} = await t.mockImport('../src/session.ts', {'node:crypto': {...crypto, default: {...crypto, scrypt}}});
@@ -18,5 +23,13 @@ t.test('Session', async t => {
     t.equal(await Session.decrypt(['other', 's3cret'], encrypted[1]), 'value 2');
     t.equal(await Session.decrypt(['other'], encrypted[1]), null);
     t.equal(calls, 2);
+  });
+
+  await t.test('Failures are not cached', async t => {
+    fail = true;
+    await t.rejects(Session.encrypt('another', 'value'), /Temporary failure/);
+    const encrypted = await Session.encrypt('another', 'value');
+    t.equal(await Session.decrypt(['another'], encrypted), 'value');
+    t.equal(calls, 4);
   });
 });

@@ -316,6 +316,8 @@ t.test('Logger', async t => {
   });
 
   await t.test('Color', async t => {
+    const {NO_COLOR} = process.env;
+    delete process.env.NO_COLOR;
     process.env.FORCE_COLOR = '1';
     const logger = new Logger({destination: process.stdout, level: 'trace'});
     const output = await captureOutput(async () => {
@@ -333,6 +335,7 @@ t.test('Logger', async t => {
     t.match(output, /\[31m\[.+\] \[error\] Five.*\[39m/);
     t.match(output, /\[31m\[.+\] \[fatal\] Six.*\[39m/);
     delete process.env.FORCE_COLOR;
+    if (NO_COLOR !== undefined) process.env.NO_COLOR = NO_COLOR;
   });
 
   await t.test('JSON', async t => {

@@ -435,8 +435,8 @@ await ctx.httpException(new Error('Something went wrong!'));
 ```
 
 Log the exception and render an HTTP exception response in the appropriate format and set the response status to `500`
-(or the `4xx`/`5xx` status in the `status` property of the error, like `413` for request bodies that are too large) by
-delegating to more specific exception helpers for HTML, JSON and plain text rendering.
+(or the status of a `util.HTTPError` exception, like `413` for request bodies that are too large) by delegating to more
+specific exception helpers for HTML, JSON and plain text rendering.
 
 #### jsonException
 

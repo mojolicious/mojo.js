@@ -3,6 +3,12 @@ import {sleep} from '../src/util.ts';
 import Path from '@mojojs/path';
 import t from 'tap';
 
+// The server may log an exception after the client has already seen the connection close
+async function waitForLog(file, regex) {
+  while (regex.test(await file.readFile('utf8')) === false) await sleep(10);
+  return true;
+}
+
 t.test('Exception app', async t => {
   await t.test('Development', async t => {
     const app = mojo();
@@ -332,7 +338,7 @@ t.test('Exception app', async t => {
       }
 
       t.match(result, {code: 'ECONNRESET'});
-      t.match(await file.readFile(), /Error: Sync WebSocket test exception before/);
+      t.ok(await waitForLog(file, /Error: Sync WebSocket test exception before/));
     });
 
     await t.test('WebSocket exception (during handshake and async)', async t => {
@@ -348,7 +354,7 @@ t.test('Exception app', async t => {
       }
 
       t.match(result, {code: 'ECONNRESET'});
-      t.match(await file.readFile(), /Error: Async WebSocket test exception before/);
+      t.ok(await waitForLog(file, /Error: Async WebSocket test exception before/));
     });
 
     await t.test('WebSocket exception (after handshake and async)', async t => {
@@ -360,7 +366,7 @@ t.test('Exception app', async t => {
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
-      t.match(await file.readFile(), /Error: Async WebSocket test exception after/);
+      t.ok(await waitForLog(file, /Error: Async WebSocket test exception after/));
     });
 
     await t.test('WebSocket exception (after handshake and sync)', async t => {
@@ -372,7 +378,7 @@ t.test('Exception app', async t => {
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
-      t.match(await file.readFile(), /Error: Sync WebSocket test exception after/);
+      t.ok(await waitForLog(file, /Error: Sync WebSocket test exception after/));
     });
 
     await t.test('WebSocket exception (iterator)', async t => {
@@ -385,7 +391,7 @@ t.test('Exception app', async t => {
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
-      t.match(await file.readFile(), /Error: WebSocket iterator test exception/);
+      t.ok(await waitForLog(file, /Error: WebSocket iterator test exception/));
     });
 
     await t.test('WebSocket exception (events)', async t => {
@@ -398,7 +404,7 @@ t.test('Exception app', async t => {
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
-      t.match(await file.readFile(), /Error: WebSocket event test exception/);
+      t.ok(await waitForLog(file, /Error: WebSocket event test exception/));
     });
 
     await t.test('WebSocket exception (ping)', async t => {
@@ -411,7 +417,7 @@ t.test('Exception app', async t => {
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
-      t.match(await file.readFile(), /Error: WebSocket ping test exception/);
+      t.ok(await waitForLog(file, /Error: WebSocket ping test exception/));
     });
 
     await t.test('WebSocket exception (pong)', async t => {
@@ -423,7 +429,7 @@ t.test('Exception app', async t => {
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1011);
-      t.match(await file.readFile(), /Error: WebSocket pong test exception/);
+      t.ok(await waitForLog(file, /Error: WebSocket pong test exception/));
     });
 
     await t.test('WebSocket exception (close)', async t => {
@@ -436,9 +442,7 @@ t.test('Exception app', async t => {
       const code = await new Promise(resolve => ws.on('close', resolve));
 
       t.equal(code, 1000);
-      // The server may log the close exception after the client has already seen the close
-      while (/WebSocket close test exception/.test(await file.readFile('utf8')) === false) await sleep(10);
-      t.match(await file.readFile(), /Error: WebSocket close test exception/);
+      t.ok(await waitForLog(file, /Error: WebSocket close test exception/));
     });
 
     await ua.stop();

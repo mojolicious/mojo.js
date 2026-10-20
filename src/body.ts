@@ -4,6 +4,7 @@ import {type Readable, Transform, type Writable} from 'node:stream';
 import zlib from 'node:zlib';
 import {Params} from './body/params.ts';
 import {Headers} from './headers.ts';
+import {HTTPError} from './util.ts';
 import DOM from '@mojojs/dom';
 import busboy from 'busboy';
 import * as yaml from 'js-yaml';
@@ -228,6 +229,6 @@ export class Body {
   }
 }
 
-function messageTooLarge(): Error {
-  return Object.assign(new Error('Maximum message size exceeded'), {status: 413});
+function messageTooLarge(): HTTPError {
+  return new HTTPError(413, 'Maximum message size exceeded');
 }

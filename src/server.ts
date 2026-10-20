@@ -287,8 +287,17 @@ function sendResponse(res: ServerResponse, body: ServerResponseBody, raw: http.S
     raw.end(body);
   } else if (body instanceof Stream) {
     sendHeaders(res, raw);
-    // Errors and aborted connections are expected here, but both streams need to be cleaned up
-    pipeline(body as Readable, raw, () => {});
+    // Both streams need to be cleaned up, and only aborted connections are expected
+    pipeline(body as Readable, raw, error => {
+      if (
+        error === undefined ||
+        error === null ||
+        (error as NodeJS.ErrnoException).code === 'ERR_STREAM_PREMATURE_CLOSE'
+      ) {
+        return;
+      }
+      res._ctx?.deref()?.log.error(`Response stream failed: ${error.stack}`);
+    });
   } else {
     sendHeaders(res, raw);
     raw.end();

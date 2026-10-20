@@ -10,7 +10,7 @@ import type {
 } from '../types.ts';
 import {inspect, type InspectOptions} from 'node:util';
 import {Logger} from '../logger.ts';
-import {exceptionContext, httpStatusMessages, SafeString} from '../util.ts';
+import {exceptionContext, HTTPError, httpStatusMessages, SafeString} from '../util.ts';
 import DOM from '@mojojs/dom';
 
 /**
@@ -188,8 +188,12 @@ async function httpException(ctx: MojoContext, error: any): Promise<boolean> {
   error = ensureError(error);
 
   // Client errors are not worth a stack trace
-  if (errorStatus(error) < 500) ctx.log.debug(error.message);
+  const status = errorStatus(error);
+  if (status < 500) ctx.log.debug(error.message);
   else ctx.log.error(error.stack);
+
+  // Do not wait for the rest of a request body that is too large
+  if (status === 413) ctx.res.set('Connection', 'close');
 
   const exceptionFormat = ctx.exceptionFormat;
   if (exceptionFormat === 'txt') return ctx.txtException(error);
@@ -364,8 +368,9 @@ function ensureError(error: any): Error {
   return error instanceof Error ? error : new Error(error);
 }
 
-// Errors can carry an HTTP status, like 413 for request bodies that are too large
-function errorStatus(error: any): number {
+// Only our own errors, a "status" property from other libraries could hide real server errors
+function errorStatus(error: Error): number {
+  if (!(error instanceof HTTPError)) return 500;
   const {status} = error;
   return Number.isInteger(status) && status >= 400 && status <= 599 ? status : 500;
 }

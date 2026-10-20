@@ -1,6 +1,6 @@
 import http from 'node:http';
-import {Readable} from 'node:stream';
-import mojo, {Server} from '../src/core.ts';
+import {PassThrough, Readable} from 'node:stream';
+import mojo, {Logger, Server} from '../src/core.ts';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';
 
@@ -63,6 +63,7 @@ t.test('Server', async t => {
   await t.test('MOJO_SERVER_DEBUG', async t => {
     process.env.MOJO_SERVER_DEBUG = 1;
     const ua = await app.newTestUserAgent({tap: t});
+    delete process.env.MOJO_SERVER_DEBUG;
 
     let res;
     const output = await captureOutput(
@@ -110,25 +111,36 @@ t.test('Server', async t => {
   await t.test('Stream errors', async t => {
     const ua = await app.newTestUserAgent({tap: t});
 
+    const {log} = app;
+    app.log = new Logger({destination: new PassThrough(), historySize: 10, level: 'error'});
+
     // The connection gets closed early, but the server keeps running
     await ua.get('/stream/error').catch(() => {});
     (await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
+    t.match(app.log.history[0].msg, /Response stream failed: Error: Stream error/);
+    app.log = log;
 
     await ua.stop();
   });
 
   await t.test('Invalid response headers', async t => {
     const ua = await app.newTestUserAgent({tap: t});
+    const {log} = app;
+    app.log = new Logger({destination: new PassThrough(), historySize: 10, level: 'error'});
 
     // The connection gets closed right away, instead of the client waiting for a response that will never come
     await t.rejects(ua.get('/bad/status'));
     (await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
+    t.match(app.log.history[0].msg, /Invalid status code: invalid/);
+    app.log = log;
 
     await ua.stop();
   });
 
   await t.test('Aborted stream', async t => {
     const ua = await app.newTestUserAgent({tap: t});
+    const {log} = app;
+    app.log = new Logger({destination: new PassThrough(), historySize: 10, level: 'error'});
 
     await new Promise(resolve => {
       const req = http.get(new URL('/stream/abort', ua.server.urls[0]), res => {
@@ -138,6 +150,8 @@ t.test('Server', async t => {
     });
     await new Promise(resolve => (aborted.destroyed === true ? resolve() : aborted.on('close', resolve)));
     t.equal(aborted.destroyed, true);
+    t.same(app.log.history, []);
+    app.log = log;
 
     await ua.stop();
   });

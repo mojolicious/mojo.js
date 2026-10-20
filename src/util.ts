@@ -86,6 +86,25 @@ export const httpStatusMessages: Record<number, string> = {
 };
 
 /**
+ * Error with an HTTP status, that `ctx.httpException()` will use for the response instead of `500`.
+ * @example
+ * // Respond with "418 I'm a Teapot"
+ * throw new util.HTTPError(418);
+ */
+export class HTTPError extends Error {
+  /**
+   * HTTP status code.
+   */
+  status: number;
+
+  constructor(status: number, message?: string) {
+    super(message ?? httpStatusMessages[status]);
+    this.name = 'HTTPError';
+    this.status = status;
+  }
+}
+
+/**
  * Create directory for generator commands.
  */
 export async function cliCreateDir(path: string): Promise<void> {

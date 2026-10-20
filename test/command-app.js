@@ -248,6 +248,10 @@ t.test('Command app', async t => {
     t.match(app.cli.commands.server.usage, /Usage: APPLICATION server/);
 
     const app2 = mojo({mode: 'production'});
+    await t.rejects(app2.cli.start('server', '-w', 'auto'), /Invalid number "auto"/);
+    await t.rejects(app2.cli.start('server', '--headers-timeout', '10s'), /Invalid number "10s"/);
+    await t.rejects(app2.cli.start('server', '--max-websocket-size', ''), /Invalid number ""/);
+
     app2.get('/', async ctx => {
       ctx.on('finish', () => process.emit('SIGUSR2', 'SIGUSR2'));
       await ctx.render({text: 'Stopping server'});

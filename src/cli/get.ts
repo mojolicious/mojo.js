@@ -35,9 +35,11 @@ export default async function getCommand(app: MojoApp, args: string[]): Promise<
   if (values.verbose === true) {
     const stderr = process.stderr;
 
-    const resVersion = styleText('blue', 'HTTP') + '/' + styleText('blue', res.httpVersion);
+    // Colors depend on the stream the output goes to
+    const options = {stream: stderr};
+    const resVersion = styleText('blue', 'HTTP', options) + '/' + styleText('blue', res.httpVersion, options);
     const statusCode = res.statusCode;
-    const statusMessage = styleText('blue', res.statusMessage);
+    const statusMessage = styleText('blue', res.statusMessage, options);
     stderr.write(`${resVersion} ${statusCode} ${statusMessage}\n`);
     writeHeaders(res.headers.toArray());
   }
@@ -90,7 +92,7 @@ function parseHeaders(list: string[] = []): Record<string, string> {
 function writeHeaders(headers: string[]): void {
   const stderr = process.stderr;
   for (let i = 0; i < headers.length; i += 2) {
-    stderr.write(styleText('cyan', headers[i]) + `: ${headers[i + 1]}\n`);
+    stderr.write(styleText('cyan', headers[i], {stream: stderr}) + `: ${headers[i + 1]}\n`);
   }
   stderr.write('\n');
 }
