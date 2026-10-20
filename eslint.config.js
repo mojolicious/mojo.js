@@ -49,5 +49,12 @@ export default config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-use-before-define': 'off'
     }
+  },
+  {
+    // Only resolvable once the package has been built and installed
+    files: ['test/support/package/**'],
+    rules: {
+      'import-x/no-unresolved': 'off'
+    }
   }
 );

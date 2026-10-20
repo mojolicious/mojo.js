@@ -50,6 +50,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
     redirects.
   * Fixed a bug where `UserAgent` would send the `auth` option to other hosts after `307` and `308` redirects.
   * Fixed a bug where `UserAgent` would modify the options passed to request methods.
+  * Fixed a bug where the TypeScript types of `UserAgent` request methods required an `options` argument.
   * Fixed a bug where request headers like `constructor` and `__proto__` would result in a `500` response.
   * Fixed a bug where `If-Modified-Since` request headers would never result in a `304` response.
   * Fixed a bug where `app.warmup()` was called once for every listen location.
@@ -60,6 +61,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Fixed a bug where the `get` command used colors on `stderr` based on `stdout`.
   * Fixed test coverage reports, which were incorrect because of the TypeScript loader used by `tap`.
   * Fixed test failures on Windows caused by line ending conversion of test files.
+  * Added a CI job that tests the published package with JavaScript and TypeScript applications.
 
 ## v1.27.0 (2026-10-19)
 

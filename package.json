@@ -33,7 +33,8 @@
     "prepublishOnly": "npm run clean && npm run build",
     "publish:minor": "npm version minor && npm publish",
     "publish:patch": "npm version patch && npm publish",
-    "test": "tap build && tap --disable-coverage --allow-empty-coverage test/*.js test/*.ts"
+    "test": "tap build && tap --disable-coverage --allow-empty-coverage test/*.js test/*.ts",
+    "check:package": "sh test/support/package/check.sh"
   },
   "exports": "./lib/core.js",
   "types": "./lib/core.d.ts",

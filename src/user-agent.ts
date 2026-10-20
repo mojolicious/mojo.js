@@ -84,56 +84,56 @@ class UserAgent {
   /**
    * Perform `DELETE` request.
    */
-  async delete(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async delete(url: string | URL, options?: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('DELETE', url, options);
   }
 
   /**
    * Perform `GET` request.
    */
-  async get(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async get(url: string | URL, options?: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('GET', url, options);
   }
 
   /**
    * Perform `HEAD` request.
    */
-  async head(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async head(url: string | URL, options?: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('HEAD', url, options);
   }
 
   /**
    * Perform `OPTIONS` request.
    */
-  async options(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async options(url: string | URL, options?: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('OPTIONS', url, options);
   }
 
   /**
    * Perform `PATCH` request.
    */
-  async patch(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async patch(url: string | URL, options?: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('PATCH', url, options);
   }
 
   /**
    * Perform `POST` request.
    */
-  async post(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async post(url: string | URL, options?: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('POST', url, options);
   }
 
   /**
    * Perform `PUT` request.
    */
-  async put(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async put(url: string | URL, options?: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('PUT', url, options);
   }
 
   /**
    * Perform `QUERY` request.
    */
-  async query(url: string | URL, options: UserAgentRequestOptions): Promise<UserAgentResponse> {
+  async query(url: string | URL, options?: UserAgentRequestOptions): Promise<UserAgentResponse> {
     return await this._requestConfig('QUERY', url, options);
   }
 
