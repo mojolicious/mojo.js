@@ -142,17 +142,20 @@ ExecStart=node /home/sri/myapp/myapp.js server -l http://*?fd=3
 
 ### Reloading
 
-After reading the [Introduction](Introduction.md) you should already be familiar with
-[nodemon](https://www.npmjs.com/package/nodemon). It is a restarter that starts a new web server process whenever a
-file in your project changes, and should therefore only be used during development.
+After reading the [Introduction](Introduction.md) you should already be familiar with the `--watch` option of
+Node.js. It starts a new web server process whenever a module of your application changes, and should therefore only be
+used during development.
 
 ```
-$ npm install nodemon
-...
-
-$ npx nodemon myapp.js server
+$ node --watch myapp.js server
 ...
 [39248] Web application available at http://127.0.0.1:3000/
+```
+
+Templates and other files that are not modules can be watched too, with `--watch-path` options.
+
+```
+$ node --watch-path=myapp.js --watch-path=views myapp.js server
 ```
 
 ### Apache/CGI

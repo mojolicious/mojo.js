@@ -63,7 +63,6 @@
     "eslint-plugin-import-x": "^4.16.2",
     "eslint-plugin-prettier": "^5.5.5",
     "globals": "^17.6.0",
-    "nodemon": "^3.0.0",
     "prettier": "^3.8.3",
     "tap": "^21.8.0",
     "typescript": "^6.0.3",
@@ -73,7 +72,7 @@
     "node": ">= 22.18"
   },
   "dependencies": {
-    "@mojojs/dom": "^2.1.0",
+    "@mojojs/dom": "^3.0.0",
     "@mojojs/path": "^1.6.0",
     "@mojojs/template": "^2.2.0",
     "@mojojs/util": "^1.6.0",
@@ -82,10 +81,10 @@
     "ajv": "^8.5.0",
     "busboy": "^1.0.0",
     "js-yaml": "^5.2.2",
-    "mime-types": "^2.1.30",
+    "mime-types": "^3.0.2",
     "stack-utils": "^2.0.3",
-    "tough-cookie": "^5.1.0",
-    "ws": "^8.3.0"
+    "tough-cookie": "^6.0.2",
+    "ws": "^8.22.0"
   },
   "tap": {
     "plugin": [

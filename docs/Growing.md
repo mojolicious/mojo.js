@@ -255,12 +255,10 @@ $ node myapp.js server
 Web application available at http://0.0.0.0:3000/
 ```
 
-For a little more convenice, we recommend [nodemon](https://github.com/remy/nodemon), which can watch files for changes
-and automatically restart the web server for you.
+For a little more convenience, Node.js can watch files for changes and automatically restart the web server for you.
 
 ```
-$ npm install nodemon
-$ npx nodemon myapp.js server
+$ node --watch myapp.js server
 ```
 
 ### A Bird's-Eye View

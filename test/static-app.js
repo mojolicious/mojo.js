@@ -9,7 +9,7 @@ t.test('Static app', async t => {
   await t.test('Bundled files', async () => {
     (await ua.getOk('/static/mojo/bootstrap/bootstrap.bundle.min.js'))
       .statusIs(200)
-      .typeIs('application/javascript')
+      .typeIs('text/javascript')
       .headerExists('Content-Length');
     (await ua.getOk('/static/mojo/bootstrap/bootstrap.min.css'))
       .statusIs(200)
@@ -18,7 +18,7 @@ t.test('Static app', async t => {
 
     (await ua.getOk('/static/mojo/highlight.js/highlight.pack.js'))
       .statusIs(200)
-      .typeIs('application/javascript')
+      .typeIs('text/javascript')
       .headerExists('Content-Length');
     (await ua.getOk('/static/mojo/highlight.js/highlight-mojo-dark.css'))
       .statusIs(200)

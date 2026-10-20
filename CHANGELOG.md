@@ -15,6 +15,12 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * TypeScript plugins generated with `create-plugin --ts` now run their tests without a build step, the `build:test`
     and `build:watch` scripts have been replaced with a `prepublishOnly` script.
   * Removed `chalk`, `form-data` and `nopt` dependencies.
+  * Applications generated with `create-full-app` now use `node --watch` instead of `nodemon` for the `dev` script.
+  * Updated `@mojojs/dom` to version 3.0, recursive text extraction with `ctx.req.html()` now excludes `<script>` and
+    `<style>` elements, and selectors like `#id` no longer match namespaced attributes like `foo:id`.
+  * Updated `mime-types` to version 3.0, static `.js` files are now served as `text/javascript` (RFC 9239), and
+    `image/jpeg` is now detected as format `jpg`.
+  * Updated `tough-cookie` to version 6.0.
   * Request bodies are now limited to 16 MiB by default (after decompression), larger requests get a `413` response.
   * WebSocket messages are now limited to 256 KiB by default, larger messages close the connection with status `1009`.
   * Static file `ETag` values now consist of modification time and size, instead of an MD5 hash of the modification
@@ -38,6 +44,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
 
 ### Bug Fixes
 
+  * Fixed security issues with `ws` and `@mojojs/dom` by requiring newer versions.
   * Fixed a bug where `ctx.req.files()` always returned `undefined` for the `encoding` and `mimetype` of uploads.
   * Fixed a bug where TypeScript applications needed to install `@types/ws` and `@types/stack-utils` themselves.
   * Fixed a bug where plugins generated with `create-plugin` had an `exports` path that did not exist.

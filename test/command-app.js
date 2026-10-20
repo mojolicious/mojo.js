@@ -405,12 +405,12 @@ t.test('Command app', async t => {
     const pkg = JSON.parse(await dir.child('package.json').readFile('utf8'));
     t.equal(pkg.type, 'module');
     t.equal(typeof pkg.scripts.dev, 'string');
-    t.match(pkg.scripts.dev, /nodemon index\.js/);
+    t.match(pkg.scripts.dev, /node --watch index\.js/);
     t.equal(typeof pkg.scripts.start, 'string');
     t.match(pkg.scripts.start, /node index\.js/);
     t.equal(typeof pkg.scripts.test, 'string');
     t.match(pkg.scripts.test, /node --test/);
-    t.equal(typeof pkg.devDependencies['nodemon'], 'string');
+    t.equal(pkg.devDependencies['nodemon'], undefined);
     t.equal(typeof pkg.devDependencies['tap'], 'string');
 
     const output3 = await captureOutput(async () => {
@@ -459,13 +459,13 @@ t.test('Command app', async t => {
     t.equal(pkg2.scripts.build, undefined);
     t.equal(pkg2.scripts.check, 'npx tsc');
     t.equal(typeof pkg2.scripts.dev, 'string');
-    t.match(pkg2.scripts.dev, /nodemon src\/index\.ts/);
+    t.match(pkg2.scripts.dev, /node --watch src\/index\.ts/);
     t.equal(typeof pkg2.scripts.start, 'string');
     t.match(pkg2.scripts.start, /node src\/index\.ts/);
     t.equal(typeof pkg2.scripts.test, 'string');
     t.match(pkg2.scripts.test, /node --test/);
     t.equal(typeof pkg2.devDependencies['@types/node'], 'string');
-    t.equal(typeof pkg2.devDependencies['nodemon'], 'string');
+    t.equal(pkg2.devDependencies['nodemon'], undefined);
     t.equal(typeof pkg2.devDependencies['tap'], 'string');
     t.equal(typeof pkg2.devDependencies['typescript'], 'string');
     t.equal(pkg2.devDependencies['@types/busboy'], undefined);

@@ -25,8 +25,9 @@ t.test('MIME', t => {
     t.same(mime.detect('application/gzip'), ['gz']);
     t.same(mime.detect('text/html'), ['html']);
     t.same(mime.detect('image/x-icon'), ['ico']);
-    t.same(mime.detect('image/jpeg'), ['jpeg']);
+    t.same(mime.detect('image/jpeg'), ['jpg']);
     t.same(mime.detect('application/javascript'), ['js']);
+    t.same(mime.detect('text/javascript'), ['js']);
     t.same(mime.detect('application/json'), ['json']);
     t.same(mime.detect('text/yaml'), ['yaml']);
     t.same(mime.detect('audio/mpeg'), ['mpga']);
@@ -81,7 +82,7 @@ t.test('MIME', t => {
     t.same(mime.detect('TEXT/HTML;Q=0.8,text/plain;Q=0.9'), ['txt', 'html']);
     t.same(mime.detect(' TEXT/HTML , text/plain;Q=0.9'), ['html', 'txt']);
     t.same(mime.detect('text/plain;q=0.5, text/xml, application/xml;q=0.1'), ['xml', 'txt', 'xml']);
-    t.same(mime.detect('application/json, text/javascript, X/*; q=0.01'), ['json']);
+    t.same(mime.detect('application/json, text/javascript, X/*; q=0.01'), ['json', 'js']);
     t.end();
   });
 

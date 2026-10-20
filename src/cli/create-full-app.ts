@@ -59,10 +59,10 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
     await util.cliCreateFile('tsconfig.json', JSON.stringify(tsConfig, null, 2));
     await util.cliFixPackage({
       dependencies: {'@mojojs/core': `^${version}`},
-      devDependencies: await util.devDependencies(/^(@types\/node|nodemon|tap|typescript)$/),
+      devDependencies: await util.devDependencies(/^(@types\/node|tap|typescript)$/),
       scripts: {
         check: 'npx tsc',
-        dev: 'npx nodemon src/index.ts server',
+        dev: 'node --watch src/index.ts server',
         start: 'NODE_ENV=production node src/index.ts server -l http://*:8080',
         test: 'node --test test/*.js'
       }
@@ -83,9 +83,9 @@ export default async function createFullAppCommand(app: App, args: string[]): Pr
 
     await util.cliFixPackage({
       dependencies: {'@mojojs/core': `^${version}`},
-      devDependencies: await util.devDependencies(/^(nodemon|tap)$/),
+      devDependencies: await util.devDependencies(/^tap$/),
       scripts: {
-        dev: 'npx nodemon index.js server',
+        dev: 'node --watch index.js server',
         start: 'NODE_ENV=production node index.js server -l http://*:8080',
         test: 'node --test test/*.js'
       }

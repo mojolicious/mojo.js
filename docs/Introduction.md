@@ -117,14 +117,11 @@ The `app.start()` call, which is usually the last statement in your application,
 
 ### Reloading
 
-During development you don't want to restart your web server after every change, so we recommend the use of
-[nodemon](https://www.npmjs.com/package/nodemon).
+During development you don't want to restart your web server after every change, so we recommend the use of the
+`--watch` option of Node.js.
 
 ```
-$ npm install nodemon
-...
-
-$ npx nodemon myapp.js server
+$ node --watch myapp.js server
 ...
 [39248] Web application available at http://127.0.0.1:3000/
 ```
