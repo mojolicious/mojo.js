@@ -40,6 +40,15 @@ t.test('Cache', t => {
     t.end();
   });
 
+  t.test('Prototype names', t => {
+    const cache = new Cache();
+    t.same(cache.get('constructor'), undefined);
+    cache.set('__proto__', 'works');
+    t.equal(cache.get('__proto__'), 'works');
+    t.equal(cache.size, 1);
+    t.end();
+  });
+
   t.test('Cache disabled', t => {
     const cache = new Cache();
     cache.max = 0;

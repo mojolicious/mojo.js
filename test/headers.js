@@ -126,5 +126,15 @@ t.test('Headers', t => {
     t.end();
   });
 
+  t.test('Prototype names', t => {
+    const headers = new Headers(['constructor', 'works', '__proto__', 'too', 'toString', 'also']);
+    t.equal(headers.get('constructor'), 'works');
+    t.equal(headers.get('__proto__'), 'too');
+    t.equal(headers.get('toString'), 'also');
+    t.equal(headers.get('hasOwnProperty'), null);
+
+    t.end();
+  });
+
   t.end();
 });

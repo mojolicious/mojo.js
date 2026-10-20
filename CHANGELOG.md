@@ -15,11 +15,24 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * TypeScript plugins generated with `create-plugin --ts` now run their tests without a build step, the `build:test`
     and `build:watch` scripts have been replaced with a `prepublishOnly` script.
   * Removed `chalk`, `form-data` and `nopt` dependencies.
+  * Request bodies are now limited to 16 MiB by default (after decompression), larger requests get a `413` response.
+  * WebSocket messages are now limited to 256 KiB by default, larger messages close the connection with status `1009`.
+  * Static file `ETag` values now consist of modification time and size, instead of an MD5 hash of the modification
+    time.
+  * `Range` requests for the last bytes of a file (`bytes=-500`) now follow RFC 9110 and return the last bytes,
+    instead of the first.
 
 ### Features
 
   * Added support for loading controllers and commands written in TypeScript with Node.js type stripping.
   * Added `Content-Length` header to multipart `formData` requests made with `UserAgent`.
+  * Added `maxRequestSize` property to `App`.
+  * Added `maxMessageSize` property to `Body` and `ServerRequest`.
+  * Added `maxWebSocketSize` option and property to `Server`.
+  * Added `--max-websocket-size` option to `server` command.
+  * Added support for exceptions with a `status` property to `ctx.httpException()`, client errors are only logged at
+    `debug` level.
+  * Added support for `Content-Encoding: gzip` to `ctx.req.files()` and `ctx.req.form()`.
 
 ### Bug Fixes
 
@@ -27,6 +40,17 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Fixed a bug where TypeScript applications needed to install `@types/ws` and `@types/stack-utils` themselves.
   * Fixed a bug where plugins generated with `create-plugin` had an `exports` path that did not exist.
   * Fixed a bug where TypeScript plugins generated with `create-plugin --ts` could not be built with TypeScript 6.
+  * Fixed a bug where an error in a response stream could crash the whole server.
+  * Fixed a bug where aborted downloads of static files would leak file descriptors.
+  * Fixed a bug where session cookies made the server derive the encryption key with `scrypt` for every request.
+  * Fixed a bug where `Range` requests past the end of a file would get a response with the wrong `Content-Length`.
+  * Fixed a bug where `UserAgent` would send `authorization` and `cookie` headers in lower case to other hosts after
+    redirects.
+  * Fixed a bug where `UserAgent` would modify the options passed to request methods.
+  * Fixed a bug where request headers like `constructor` and `__proto__` would result in a `500` response.
+  * Fixed a bug where `If-Modified-Since` request headers would never result in a `304` response.
+  * Fixed a bug where `app.warmup()` was called once for every listen location.
+  * Fixed test coverage reports, which were incorrect because of the TypeScript loader used by `tap`.
 
 ## v1.27.0 (2026-10-19)
 

@@ -1,3 +1,5 @@
+import http from 'node:http';
+import {Readable} from 'node:stream';
 import mojo, {Server} from '../src/core.ts';
 import {captureOutput} from '@mojojs/util';
 import t from 'tap';
@@ -8,6 +10,26 @@ t.test('Server', async t => {
   app.get('/', ctx => ctx.render({text: 'Hello World!'}));
 
   app.get('/teapot', ctx => ctx.render({text: 'Teapot!', status: 418}));
+
+  app.get('/stream/error', async ctx => {
+    const stream = new Readable({
+      read() {
+        this.push('Hello');
+        this.destroy(new Error('Stream error'));
+      }
+    });
+    await ctx.res.status(200).send(stream);
+  });
+
+  let aborted;
+  app.get('/stream/abort', async ctx => {
+    aborted = new Readable({
+      read() {
+        this.push('x'.repeat(1024));
+      }
+    });
+    await ctx.res.status(200).send(aborted);
+  });
 
   t.test('listenArgsforURL', t => {
     t.same(Server.listenArgsForURL(new URL('http://*')), [null, '0.0.0.0']);
@@ -55,6 +77,42 @@ t.test('Server', async t => {
     t.match(output, /Server >>> Client/);
     t.match(output, /Content-Length: /);
     t.match(output, /Hello World!/);
+
+    await ua.stop();
+  });
+
+  await t.test('Warmup once for multiple listen locations', async t => {
+    const warmupApp = mojo({mode: 'production'});
+    let warmups = 0;
+    warmupApp.addAppHook('app:warmup', async () => warmups++);
+    const server = new Server(warmupApp, {listen: ['http://127.0.0.1', 'http://127.0.0.1'], quiet: true});
+    await server.start();
+    t.equal(server.urls.length, 2);
+    t.equal(warmups, 1);
+    await server.stop();
+  });
+
+  await t.test('Stream errors', async t => {
+    const ua = await app.newTestUserAgent({tap: t});
+
+    // The connection gets closed early, but the server keeps running
+    await ua.get('/stream/error').catch(() => {});
+    (await ua.getOk('/')).statusIs(200).bodyIs('Hello World!');
+
+    await ua.stop();
+  });
+
+  await t.test('Aborted stream', async t => {
+    const ua = await app.newTestUserAgent({tap: t});
+
+    await new Promise(resolve => {
+      const req = http.get(new URL('/stream/abort', ua.server.urls[0]), res => {
+        res.once('data', () => req.destroy());
+      });
+      req.on('error', () => {}).on('close', resolve);
+    });
+    await new Promise(resolve => (aborted.destroyed === true ? resolve() : aborted.on('close', resolve)));
+    t.equal(aborted.destroyed, true);
 
     await ua.stop();
   });

@@ -4,7 +4,7 @@ import cluster from 'node:cluster';
 import http from 'node:http';
 import https from 'node:https';
 import os from 'node:os';
-import {Stream} from 'node:stream';
+import {pipeline, Stream, type Readable} from 'node:stream';
 import {URL} from 'node:url';
 import {ServerRequest} from './server/request.ts';
 import {ServerResponse} from './server/response.ts';
@@ -47,6 +47,11 @@ export class Server {
    */
   maxRequestsPerSocket: number | undefined;
   /**
+   * Maximum WebSocket message size in bytes, defaults to `262144` (256 KiB). Connections exceeding the limit are closed
+   * with status `1009`.
+   */
+  maxWebSocketSize: number;
+  /**
    * Limit the amount of time for receiving the entire request from the client, defaults to `300000` (300 seconds).
    */
   requestTimeout: number | undefined;
@@ -70,6 +75,7 @@ export class Server {
     this.headersTimeout = options.headersTimeout;
     this.keepAliveTimeout = options.keepAliveTimeout;
     this.maxRequestsPerSocket = options.maxRequestsPerSocket;
+    this.maxWebSocketSize = options.maxWebSocketSize ?? 256 * 1024;
     this.requestTimeout = options.requestTimeout;
     this.reverseProxy = options.reverseProxy ?? false;
 
@@ -111,6 +117,7 @@ export class Server {
     if (this._cluster === true && cluster.isPrimary === true) {
       for (let i = 0; i < this._workers; i++) cluster.fork();
     } else {
+      await app.warmup();
       for (const location of this._listen) {
         await this._createServer(location);
       }
@@ -144,9 +151,7 @@ export class Server {
       isHttps = true;
     }
 
-    await this.app.warmup();
-
-    const wss = new WebSocketServer({noServer: true});
+    const wss = new WebSocketServer({maxPayload: this.maxWebSocketSize, noServer: true});
     const server = ((isHttps ? https : http) as any).createServer(options, this._handleRequest.bind(this));
     this._servers.push(server);
 
@@ -276,7 +281,8 @@ function sendResponse(res: ServerResponse, body: ServerResponseBody, raw: http.S
     raw.end(body);
   } else if (body instanceof Stream) {
     sendHeaders(res, raw);
-    body.pipe(raw);
+    // Errors and aborted connections are expected here, but both streams need to be cleaned up
+    pipeline(body as Readable, raw, () => {});
   } else {
     sendHeaders(res, raw);
     raw.end();

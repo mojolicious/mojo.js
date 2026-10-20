@@ -1,6 +1,6 @@
 import type {JSONValue, UploadOptions} from './types.ts';
-import type {Readable, Writable} from 'node:stream';
 import {on} from 'node:events';
+import {type Readable, Transform, type Writable} from 'node:stream';
 import zlib from 'node:zlib';
 import {Params} from './body/params.ts';
 import {Headers} from './headers.ts';
@@ -30,6 +30,10 @@ export class Body {
    * HTTP headers.
    */
   headers: Headers;
+  /**
+   * Maximum message body size in bytes, after decompression, unlimited by default.
+   */
+  maxMessageSize: number | undefined = undefined;
 
   _form: Params | undefined = undefined;
   _stream: Readable;
@@ -56,11 +60,28 @@ export class Body {
   createReadStream(): Readable {
     const stream = this._stream;
     if (stream.readableEnded === true) throw new Error('Request body has already been consumed');
-    if (this.autoDecompress !== true || this.get('content-encoding') !== 'gzip') return stream;
 
-    const gunzip = zlib.createGunzip();
-    stream.pipe(gunzip);
-    return gunzip;
+    const max = this.maxMessageSize;
+    if (max !== undefined && parseInt(this.get('Content-Length') ?? '0') > max) throw messageTooLarge();
+
+    let body = stream;
+    if (this.autoDecompress === true && this.get('content-encoding') === 'gzip') {
+      const gunzip = zlib.createGunzip();
+      stream.on('error', error => gunzip.destroy(error));
+      body = stream.pipe(gunzip);
+    }
+    if (max === undefined) return body;
+
+    // Count after decompression, so small gzip bodies cannot unpack to huge ones
+    let size = 0;
+    const limit = new Transform({
+      transform(chunk, encoding, cb) {
+        size += chunk.length;
+        cb(size > max ? messageTooLarge() : null, chunk);
+      }
+    });
+    body.on('error', error => limit.destroy(error));
+    return body.pipe(limit);
   }
 
   /**
@@ -188,7 +209,9 @@ export class Body {
     bb.on('field', (fieldname, val) => params.append(fieldname, val));
     bb.on('end', () => ac.abort()).on('close', () => ac.abort());
     const files = on(bb, 'file', {signal: ac.signal}) as FormIterator;
-    this._stream.pipe(bb);
+    this.createReadStream()
+      .on('error', error => bb.destroy(error))
+      .pipe(bb);
 
     return files;
   }
@@ -203,4 +226,8 @@ export class Body {
     if (this._form === undefined) this._form = new Params();
     return this._form;
   }
+}
+
+function messageTooLarge(): Error {
+  return Object.assign(new Error('Maximum message size exceeded'), {status: 413});
 }

@@ -446,6 +446,24 @@ t.test('UserAgent', async t => {
     ua.maxRedirects = 0;
   });
 
+  await t.test('Redirect (credentials in any case)', async t => {
+    ua.maxRedirects = 3;
+    const options = {headers: {authorization: 'Bearer secret', cookie: 'foo=bar', 'X-Test': 'works'}};
+
+    const res = await ua.get('/redirect/introspect/302', options);
+    t.same((await res.json()).headers, {test: 'works'});
+
+    const res2 = await ua.put('/redirect/introspect/307', {...options, body: 'works'});
+    const data = await res2.json();
+    t.equal(data.method, 'PUT');
+    t.equal(data.body, 'works');
+    t.same(data.headers, {test: 'works'});
+
+    // Options can be reused
+    t.same(options, {headers: {authorization: 'Bearer secret', cookie: 'foo=bar', 'X-Test': 'works'}});
+    ua.maxRedirects = 0;
+  });
+
   await t.test('Redirect (header removal)', async t => {
     function defaultOptions() {
       return {

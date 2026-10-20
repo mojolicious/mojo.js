@@ -16,6 +16,7 @@ export default async function serverCommand(app: MojoApp, args: string[]): Promi
       'keep-alive-timeout': {type: 'string'},
       level: {type: 'string', short: 'L'},
       listen: {type: 'string', short: 'l', multiple: true},
+      'max-websocket-size': {type: 'string'},
       proxy: {type: 'boolean', short: 'p'},
       requests: {type: 'string', short: 'r'},
       'request-timeout': {type: 'string'},
@@ -33,6 +34,7 @@ export default async function serverCommand(app: MojoApp, args: string[]): Promi
     keepAliveTimeout: toNumber(values['keep-alive-timeout']),
     listen: values.listen,
     maxRequestsPerSocket: toNumber(values.requests),
+    maxWebSocketSize: toNumber(values['max-websocket-size']),
     requestTimeout: toNumber(values['request-timeout']),
     reverseProxy: values.proxy,
     workers: toNumber(values.workers)
@@ -94,6 +96,9 @@ Options:
   -L, --level <level>             Log level for application
   -l, --listen <location>         One or more locations you want to listen on,
                                   defaults to "http://*:3000"
+      --max-websocket-size <bytes>
+                                  Maximum WebSocket message size, defaults to
+                                  262144 (256 KiB)
   -p, --proxy                     Activate reverse proxy support
   -r, --requests <num>            Maximum number of requests socket can handle
                                   before closing keep alive connection,

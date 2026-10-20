@@ -10,7 +10,7 @@ import type {
 } from '../types.ts';
 import {inspect, type InspectOptions} from 'node:util';
 import {Logger} from '../logger.ts';
-import {exceptionContext, SafeString} from '../util.ts';
+import {exceptionContext, httpStatusMessages, SafeString} from '../util.ts';
 import DOM from '@mojojs/dom';
 
 /**
@@ -165,11 +165,12 @@ async function htmlException(ctx: MojoContext, error: Error): Promise<boolean> {
   ctx.stash.exception = error;
 
   const mode = ctx.app.mode;
-  if (await ctx.render({view: `exception.${mode}`, maybe: true, status: 500})) return true;
-  if (await ctx.render({view: 'exception', maybe: true, status: 500})) return true;
+  const status = errorStatus(error);
+  if (await ctx.render({view: `exception.${mode}`, maybe: true, status})) return true;
+  if (await ctx.render({view: 'exception', maybe: true, status})) return true;
 
   const view = mode === 'development' ? 'mojo/debug' : 'mojo/exception';
-  return await ctx.render({view, status: 500, stringFormatter: Logger.stringFormatter, exceptionContext});
+  return await ctx.render({view, status, stringFormatter: Logger.stringFormatter, exceptionContext});
 }
 
 async function htmlNotFound(ctx: MojoContext): Promise<boolean> {
@@ -185,7 +186,10 @@ async function htmlNotFound(ctx: MojoContext): Promise<boolean> {
 
 async function httpException(ctx: MojoContext, error: any): Promise<boolean> {
   error = ensureError(error);
-  ctx.log.error(error.stack);
+
+  // Client errors are not worth a stack trace
+  if (errorStatus(error) < 500) ctx.log.debug(error.message);
+  else ctx.log.error(error.stack);
 
   const exceptionFormat = ctx.exceptionFormat;
   if (exceptionFormat === 'txt') return ctx.txtException(error);
@@ -230,6 +234,7 @@ async function include(
 }
 
 async function jsonException(ctx: MojoContext, error: Error): Promise<boolean> {
+  const status = errorStatus(error);
   if (ctx.app.mode === 'development') {
     return await ctx.render({
       json: {
@@ -240,11 +245,11 @@ async function jsonException(ctx: MojoContext, error: Error): Promise<boolean> {
         }
       },
       pretty: true,
-      status: 500
+      status
     });
   }
 
-  return await ctx.render({json: {error: {message: 'Internal Server Error'}}, pretty: true, status: 500});
+  return await ctx.render({json: {error: {message: httpStatusMessages[status]}}, pretty: true, status});
 }
 
 async function jsonNotFound(ctx: MojoContext): Promise<boolean> {
@@ -330,10 +335,11 @@ async function textAreaTag(
 }
 
 async function txtException(ctx: MojoContext, error: Error): Promise<boolean> {
+  const status = errorStatus(error);
   if (ctx.app.mode === 'development') {
-    return await ctx.render({text: error.stack as string, status: 500});
+    return await ctx.render({text: error.stack as string, status});
   }
-  return await ctx.render({text: 'Internal Server Error', status: 500});
+  return await ctx.render({text: httpStatusMessages[status], status});
 }
 
 async function txtNotFound(ctx: MojoContext): Promise<boolean> {
@@ -356,4 +362,10 @@ function urlTarget(target: URLTarget): [string, MojoURLOptions] {
 // If you see this then your code has thrown something that was not an Error object
 function ensureError(error: any): Error {
   return error instanceof Error ? error : new Error(error);
+}
+
+// Errors can carry an HTTP status, like 413 for request bodies that are too large
+function errorStatus(error: any): number {
+  const {status} = error;
+  return Number.isInteger(status) && status >= 400 && status <= 599 ? status : 500;
 }

@@ -175,6 +175,7 @@ export interface ServerOptions {
   keepAliveTimeout?: number;
   listen?: string[];
   maxRequestsPerSocket?: number;
+  maxWebSocketSize?: number;
   quiet?: boolean;
   requestTimeout?: number;
   reverseProxy?: boolean;

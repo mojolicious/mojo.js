@@ -1,5 +1,4 @@
 import type {MojoContext} from './types.ts';
-import crypto from 'node:crypto';
 import Path from '@mojojs/path';
 
 type AssetIndex = Record<string, string>;
@@ -97,7 +96,8 @@ export class Static {
     if (options.lastModified !== undefined && ifModifiedSince !== null) {
       const epoch = Date.parse(ifModifiedSince);
       if (isNaN(epoch)) return false;
-      if (epoch > options.lastModified.getTime()) return true;
+      // HTTP dates have no milliseconds
+      if (epoch >= Math.floor(options.lastModified.getTime() / 1000) * 1000) return true;
     }
 
     return false;
@@ -120,7 +120,8 @@ export class Static {
     const {res} = ctx;
     res.set('Accept-Ranges', 'bytes');
     const lastModified = stat.mtime;
-    const etag = crypto.createHash('md5').update(lastModified.getTime().toString()).digest('hex');
+    // Size too, because reproducible builds often give all files the same modification time
+    const etag = `${lastModified.getTime()}-${length}`;
     if (this.isFresh(ctx, {etag, lastModified})) {
       await res.status(304).send();
       return;
@@ -139,9 +140,16 @@ export class Static {
     const bytes = range.match(/^bytes=(\d+)?-(\d+)?/);
     if (bytes === null) return await this._rangeNotSatisfiable(ctx);
     let start = parseInt(bytes[1]);
-    if (isNaN(start)) start = 0;
     let end = parseInt(bytes[2]);
-    if (isNaN(end)) end = length - 1;
+
+    // Suffix range for the last bytes of the file
+    if (isNaN(start) && isNaN(end) === false) {
+      start = Math.max(length - end, 0);
+      end = length - 1;
+    }
+
+    if (isNaN(start)) start = 0;
+    if (isNaN(end) || end >= length) end = length - 1;
     if (start > end) return await this._rangeNotSatisfiable(ctx);
 
     // Range

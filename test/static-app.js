@@ -1,4 +1,6 @@
+import mojo from '../src/core.ts';
 import {app} from './support/js/static-app/index.js';
+import Path from '@mojojs/path';
 import t from 'tap';
 
 t.test('Static app', async t => {
@@ -99,8 +101,17 @@ t.test('Static app', async t => {
       .headerExists('Content-Type')
       .headerExists('Content-Length')
       .headerIs('Accept-Ranges', 'bytes')
-      .headerLike('Content-Range', /^bytes 0-5\/\d+/)
-      .bodyIs('Hello ');
+      .headerIs('Content-Range', 'bytes 8-12/13')
+      .bodyIs('rld!\n');
+    (await ua.getOk('/static/hello.txt', {headers: {Range: 'bytes=-100'}}))
+      .statusIs(206)
+      .headerIs('Content-Range', 'bytes 0-12/13')
+      .bodyIs('Hello World!\n');
+    (await ua.getOk('/static/hello.txt', {headers: {Range: 'bytes=5-999'}}))
+      .statusIs(206)
+      .headerIs('Content-Length', '8')
+      .headerIs('Content-Range', 'bytes 5-12/13')
+      .bodyIs(' World!\n');
     (await ua.getOk('/static/hello.txt', {headers: {Range: 'bytes=1-'}}))
       .statusIs(206)
       .headerExists('Content-Type')
@@ -139,6 +150,8 @@ t.test('Static app', async t => {
 
     (await ua.getOk('/static/hello.txt', {headers: {Range: 'bytes'}})).statusIs(416);
     (await ua.getOk('/static/hello.txt', {headers: {Range: 'bytes=4-1'}})).statusIs(416);
+    (await ua.getOk('/static/hello.txt', {headers: {Range: 'bytes=13-'}})).statusIs(416);
+    (await ua.getOk('/static/hello.txt', {headers: {Range: 'bytes=-0'}})).statusIs(416);
   });
 
   await t.test('Etag', async () => {
@@ -147,7 +160,7 @@ t.test('Static app', async t => {
       .headerExists('Content-Type')
       .headerExists('Content-Length')
       .headerExists('Accept-Ranges')
-      .headerLike('Etag', /"[a-f0-9]+"/)
+      .headerLike('Etag', /"\d+-\d+"/)
       .bodyLike(/Hello World!/);
   });
 
@@ -168,7 +181,7 @@ t.test('Static app', async t => {
       .headerExists('Content-Type')
       .headerExists('Content-Length')
       .headerExists('Accept-Ranges')
-      .headerLike('Etag', /"[a-f0-9]+"/)
+      .headerLike('Etag', /"\d+-\d+"/)
       .bodyLike(/Hello World!/);
     const etag = ua.res.get('Etag');
     (await ua.getOk('/static/hello.txt', {headers: {'If-None-Match': etag}})).statusIs(304).bodyIs('');
@@ -211,6 +224,9 @@ t.test('Static app', async t => {
     (await ua.getOk('/static/hello.txt', {headers: {'If-Modified-Since': future.toUTCString()}}))
       .statusIs(304)
       .bodyIs('');
+
+    const lastModified = ua.res.get('Last-Modified');
+    (await ua.getOk('/static/hello.txt', {headers: {'If-Modified-Since': lastModified}})).statusIs(304).bodyIs('');
 
     (await ua.getOk('/static/hello.txt', {headers: {'If-Modified-Since': 'whatever'}}))
       .statusIs(200)
@@ -327,6 +343,29 @@ t.test('Static app', async t => {
       .headerExists('Content-Length')
       .headerExistsNot('Cache-Control')
       .bodyLike(/\* foo\.css asset/);
+  });
+
+  await t.test('Etag for files with the same modification time', async t => {
+    const dir = await Path.tempDir();
+    const time = new Date('2000-01-01T00:00:00Z');
+    for (const [name, content] of [
+      ['one.txt', 'One'],
+      ['two.txt', 'Two!']
+    ]) {
+      const file = dir.child(name);
+      await file.writeFile(content);
+      await file.utimes(time, time);
+    }
+
+    const sameTimeApp = mojo();
+    sameTimeApp.log.level = 'fatal';
+    sameTimeApp.static.publicPaths = [dir.toString()];
+    const sameTimeUA = await sameTimeApp.newTestUserAgent({tap: t});
+    (await sameTimeUA.getOk('/static/one.txt')).statusIs(200).bodyIs('One');
+    const etag = sameTimeUA.res.get('Etag');
+    (await sameTimeUA.getOk('/static/two.txt')).statusIs(200).bodyIs('Two!');
+    t.not(sameTimeUA.res.get('Etag'), etag);
+    await sameTimeUA.stop();
   });
 
   await ua.stop();

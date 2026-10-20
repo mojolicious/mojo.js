@@ -73,6 +73,9 @@ app.session.cookieName = 'myapp';
 app.session.sameSite = 'strict';
 app.session.partitioned = true;
 
+// maxRequestSize: maximum request body size in bytes, larger requests get a 413 response
+app.maxRequestSize = 64 * 1024 * 1024;
+
 // mime: manage MIME types
 app.mime.custom['foo'] = 'text/foo; charset=utf-8';
 
@@ -257,6 +260,9 @@ const cookie = ctx.req.getCookie('foo');
 
 // query: query parameters
 const params = ctx.req.query();
+
+// maxMessageSize: maximum body size for this request, defaults to `app.maxRequestSize`
+ctx.req.maxMessageSize = 1024 * 1024 * 1024;
 ```
 
 There are multiple methods to receive the request content in various formats.
@@ -429,7 +435,8 @@ await ctx.httpException(new Error('Something went wrong!'));
 ```
 
 Log the exception and render an HTTP exception response in the appropriate format and set the response status to `500`
-by delegating to more specific exception helpers for HTML, JSON and plain text rendering.
+(or the `4xx`/`5xx` status in the `status` property of the error, like `413` for request bodies that are too large) by
+delegating to more specific exception helpers for HTML, JSON and plain text rendering.
 
 #### jsonException
 

@@ -92,7 +92,8 @@ export class CGI {
       stdout.write(body);
     } else if (body instanceof Stream) {
       stdout.write(res.headers.toString());
-      body.pipe(stdout);
+      // Not pipeline, because stdout must stay open, and the response is just cut short on errors
+      body.on('error', () => {}).pipe(stdout);
     }
   }
 }

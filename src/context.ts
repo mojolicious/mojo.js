@@ -143,6 +143,7 @@ class Context extends EventEmitter implements ContextEventEmitter {
     this.app = app;
     this.exceptionFormat = app.exceptionFormat;
     this.req = req;
+    req.maxMessageSize = app.maxRequestSize;
     this.res = res;
     this.res.bindContext(this);
     this.backend = backend;

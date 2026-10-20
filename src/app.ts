@@ -105,6 +105,14 @@ export class App {
    */
   log: Logger;
   /**
+   * Maximum request body size in bytes, defaults to `16777216` (16 MiB). Requests exceeding the limit are answered
+   * with `413` when the body is read. Can also be changed for individual requests with `ctx.req.maxMessageSize`.
+   * @example
+   * // Allow larger uploads for the whole application
+   * app.maxRequestSize = 1024 * 1024 * 1024;
+   */
+  maxRequestSize = 16 * 1024 * 1024;
+  /**
    * MIME types.
    * @example
    * // Get MIME type for extension
@@ -115,13 +123,13 @@ export class App {
    * Operating mode for application. Defaults to the value of the `NODE_ENV` environment variable or `development`.
    */
   mode: string;
+  // Apps augment MojoModels with required keys they fill in later
   /**
    * Storage for user defined models.
    * @example
    * // Store database connection
    * app.models.pg = new Pg('postgres://127.0.0.1:5432/db');
    */
-  // Apps augment MojoModels with required keys they fill in later
   models = {} as MojoModels;
   /**
    * Application renderer.

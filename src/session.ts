@@ -7,6 +7,14 @@ import {promisify} from 'node:util';
 const scrypt = promisify(crypto.scrypt);
 const randomBytes = promisify(crypto.randomBytes);
 
+// Deriving keys with scrypt is slow on purpose, so it is only done once per secret
+const keys = new Map<string, Promise<crypto.CipherKey>>();
+function deriveKey(secret: string): Promise<crypto.CipherKey> {
+  let key = keys.get(secret);
+  if (key === undefined) keys.set(secret, (key = scrypt(secret, 'salt', 32) as Promise<crypto.CipherKey>));
+  return key;
+}
+
 /**
  * Session manager class.
  */
@@ -62,9 +70,9 @@ export class Session {
 
     for (const secret of secrets) {
       try {
-        const key = await scrypt(secret, 'salt', 32);
+        const key = await deriveKey(secret);
 
-        const decipher = crypto.createDecipheriv('aes-256-gcm', key as crypto.CipherKey, iv, {authTagLength: 16});
+        const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv, {authTagLength: 16});
         decipher.setAuthTag(authTag);
         const decrypted = decipher.update(value, 'base64', 'utf8');
         return decrypted + decipher.final('utf8');
@@ -80,10 +88,10 @@ export class Session {
    * Encrypt cookie.
    */
   static async encrypt(secret: string, value: string): Promise<string> {
-    const key = await scrypt(secret, 'salt', 32);
+    const key = await deriveKey(secret);
     const iv = await randomBytes(12);
 
-    const cipher = crypto.createCipheriv('aes-256-gcm', key as crypto.CipherKey, iv);
+    const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
     const encrypted = cipher.update(value, 'utf8', 'base64') + cipher.final('base64');
     return encrypted + '--' + iv.toString('base64') + '--' + cipher.getAuthTag().toString('base64');
   }

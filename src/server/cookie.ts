@@ -5,7 +5,7 @@ import {decodeURIComponentSafe} from '@mojojs/util';
  * Parse cookie.
  */
 export function parseCookie(cookie: string): Record<string, string> {
-  const values: Record<string, string> = {};
+  const values: Record<string, string> = Object.create(null);
 
   for (const pair of cookie.split(/[,;]/)) {
     const match = pair.match(/^\s*([^=\s]+)\s*=\s*(\S+)\s*$/);

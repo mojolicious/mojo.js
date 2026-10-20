@@ -152,7 +152,7 @@ class UserAgent {
     let res = await transport.request(filtered);
 
     if (this.cookieJar !== null) await this.cookieJar.storeCookies(filtered.url, res.headers.getAll('Set-Cookie'));
-    if (this.maxRedirects > 0) res = await this._handleRedirect(config, res);
+    if (this.maxRedirects > 0) res = await this._handleRedirect(config, filtered.url, res);
     return res;
   }
 
@@ -193,11 +193,14 @@ class UserAgent {
     return filtered;
   }
 
-  async _filterSharedConfig(config: UserAgentRequestOptions | UserAgentWebSocketOptions): Promise<Record<string, any>> {
-    if (!(config.url instanceof URL)) config.url = new URL(config.url ?? '/', this.baseURL);
+  async _filterSharedConfig(
+    options: UserAgentRequestOptions | UserAgentWebSocketOptions
+  ): Promise<Record<string, any>> {
+    // Copy everything that gets modified, so options can be reused for more requests
+    const url = new URL(options.url ?? '/', this.baseURL);
+    const config = {...options, url, headers: {...options.headers}};
 
     // Auth
-    const url: URL = config.url;
     if ((url.username !== '' || url.password !== '') && config.auth === undefined) {
       config.auth = decodeURIComponent(`${url.username}:${url.password}`);
     }
@@ -211,7 +214,6 @@ class UserAgent {
     }
 
     // Headers
-    if (config.headers === undefined) config.headers = {};
     if (this.name !== undefined) config.headers['User-Agent'] = this.name;
     if (config.headers['Accept-Encoding'] === undefined) config.headers['Accept-Encoding'] = 'gzip';
     if (this.cookieJar !== null) {
@@ -238,37 +240,42 @@ class UserAgent {
     return form;
   }
 
-  async _handleRedirect(config: Record<string, any>, res: UserAgentResponse): Promise<UserAgentResponse> {
+  async _handleRedirect(config: Record<string, any>, base: URL, res: UserAgentResponse): Promise<UserAgentResponse> {
     const redirected: number = config.redirected ?? 0;
     if (redirected >= this.maxRedirects) return res;
 
     const location = res.get('Location');
     if (location === null) return res;
-    const url = new URL(location, config.url);
+    const url = new URL(location, base);
+
+    // Credentials must not leak to other hosts (header names are case-insensitive)
+    const remove = ['authorization', 'cookie', 'host', 'referer'];
+    const headers: Record<string, string> = {...config.headers};
 
     // New followup request
-    const remove = ['Authorization', 'Cookie', 'Host', 'Referer'];
     if (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 303) {
+      for (const name of Object.keys(headers)) {
+        const lowerCase = name.toLowerCase();
+        if (remove.includes(lowerCase) || lowerCase.startsWith('content-')) delete headers[name];
+      }
+
       const newConfig = {
-        headers: config.headers,
+        headers,
         insecure: config.insecure,
         method: res.statusCode === 303 || config.method === 'POST' ? 'GET' : config.method,
         redirected: redirected + 1,
         url
       };
-
-      remove.push(...Object.keys(newConfig.headers).filter(name => name.toLowerCase().startsWith('content-')));
-      remove.forEach(name => delete newConfig.headers[name]);
-
       return this.request(newConfig);
 
       // Same request again
     } else if (res.statusCode === 307 || res.statusCode === 308) {
-      config.url = url;
-      config.redirected = redirected + 1;
-      remove.forEach(name => delete config.headers[name]);
+      for (const name of Object.keys(headers)) {
+        if (remove.includes(name.toLowerCase())) delete headers[name];
+      }
 
-      return this.request(config);
+      const sameConfig = {...config, headers, query: undefined, redirected: redirected + 1, url};
+      return this.request(sameConfig);
     }
 
     return res;

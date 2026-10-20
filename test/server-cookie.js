@@ -3,6 +3,9 @@ import t from 'tap';
 
 t.test('parseCookie', t => {
   t.same(parseCookie(''), {});
+  t.equal(parseCookie('a=b').constructor, undefined);
+  t.equal(parseCookie('constructor=works').constructor, 'works');
+  t.equal(parseCookie('__proto__=works')['__proto__'], 'works');
   t.same(parseCookie(',,,'), {});
   t.same(parseCookie(',,,'), {});
   t.same(parseCookie(';,;,'), {});

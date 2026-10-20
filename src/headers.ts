@@ -171,7 +171,8 @@ export class Headers {
 
   _getHeaders(): HeaderBuffer {
     if (this._headers === undefined) {
-      const headers: HeaderBuffer = (this._headers = {});
+      // No prototype, so names like "constructor" are just regular headers
+      const headers: HeaderBuffer = (this._headers = Object.create(null) as HeaderBuffer);
       const init = this._init;
       for (let i = 0; i < init.length; i += 2) {
         const name = init[i];
