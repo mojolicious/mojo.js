@@ -41,6 +41,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Added `util.HTTPError` class, for exceptions that `ctx.httpException()` renders with their HTTP status, client
     errors are only logged at `debug` level.
   * Added support for `Content-Encoding: gzip` to `ctx.req.files()` and `ctx.req.form()`.
+  * Log formatters now receive the log destination as second argument.
 
 ### Bug Fixes
 
@@ -56,7 +57,7 @@ This package strictly follows [Semantic Versioning](https://semver.org).
   * Fixed a bug where `UserAgent` would send `authorization` and `cookie` headers in lower case to other hosts after
     redirects.
   * Fixed a bug where `UserAgent` would send the `auth` option to other hosts after `307` and `308` redirects.
-  * Fixed a bug where `UserAgent` would modify the options passed to request methods.
+  * Fixed a bug where `UserAgent` would modify the options passed to request and WebSocket methods.
   * Fixed a bug where the TypeScript types of `UserAgent` request methods required an `options` argument.
   * Fixed a bug where request headers like `constructor` and `__proto__` would result in a `500` response.
   * Fixed a bug where `If-Modified-Since` request headers would never result in a `304` response.
@@ -66,6 +67,8 @@ This package strictly follows [Semantic Versioning](https://semver.org).
     response.
   * Fixed a bug where `MOJO_SERVER_DEBUG` and `MOJO_CLIENT_DEBUG` could make keep-alive connections hang.
   * Fixed a bug where the `get` command used colors on `stderr` based on `stdout`.
+  * Fixed a bug where `Logger` used colors based on `stdout`, instead of the log destination, which could result in
+    color codes in log files.
   * Fixed test coverage reports, which were incorrect because of the TypeScript loader used by `tap`.
   * Fixed test failures on Windows caused by line ending conversion of test files.
   * Added a CI job that tests the published package with JavaScript and TypeScript applications.

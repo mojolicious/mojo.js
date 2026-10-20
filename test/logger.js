@@ -1,3 +1,4 @@
+import {PassThrough} from 'node:stream';
 import {Logger} from '../src/core.ts';
 import {sleep} from '../src/util.ts';
 import Path from '@mojojs/path';
@@ -335,6 +336,27 @@ t.test('Logger', async t => {
     t.match(output, /\[31m\[.+\] \[error\] Five.*\[39m/);
     t.match(output, /\[31m\[.+\] \[fatal\] Six.*\[39m/);
     delete process.env.FORCE_COLOR;
+    if (NO_COLOR !== undefined) process.env.NO_COLOR = NO_COLOR;
+  });
+
+  await t.test('Color depends on destination', async t => {
+    const {NO_COLOR} = process.env;
+    delete process.env.NO_COLOR;
+
+    // A terminal with colors, regardless of stdout
+    const terminal = new PassThrough();
+    terminal.isTTY = true;
+    terminal.getColorDepth = () => 8;
+    const logger = new Logger({destination: terminal, level: 'trace'});
+    logger.warn('One');
+    t.match(terminal.read().toString(), /\[33m\[.+\] \[warn\] One.*\[39m\n$/);
+
+    // A file or pipe
+    const pipe = new PassThrough();
+    const logger2 = new Logger({destination: pipe, level: 'trace'});
+    logger2.error('Two');
+    t.match(pipe.read().toString(), /^\[.+\] \[error\] Two\n$/);
+
     if (NO_COLOR !== undefined) process.env.NO_COLOR = NO_COLOR;
   });
 

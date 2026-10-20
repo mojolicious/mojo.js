@@ -93,7 +93,10 @@ t.test('WebSocket', async t => {
   });
 
   await t.test('WebSocket roundtrip (JSON)', async t => {
-    const ws = await ua.websocket('/ws/json', {json: true});
+    // Options can be reused for more connections
+    const options = {json: true};
+    const ws = await ua.websocket('/ws/json', options);
+    t.same(options, {json: true});
     ws.send({hello: 'world'});
     let result;
     for await (const message of ws) {

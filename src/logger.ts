@@ -11,7 +11,7 @@ interface LogEvent extends LogContext {
   time: string;
   msg: string;
 }
-type LogFormatter = (data: LogEvent) => string;
+type LogFormatter = (data: LogEvent, destination: NodeJS.WritableStream) => string;
 
 const LEVEL: Record<string, number> = {
   fatal: 2,
@@ -80,12 +80,14 @@ export class Logger {
   /**
    * Log formatter with color highlighting.
    */
-  static colorFormatter(data: LogEvent): string {
+  static colorFormatter(data: LogEvent, destination: NodeJS.WritableStream = process.stderr): string {
     const formatted = Logger.stringFormatter(data);
-    // Keep the trailing newline outside of the color codes
-    if (data.level === 'error' || data.level === 'fatal') return styleText('red', formatted.slice(0, -1)) + '\n';
-    if (data.level === 'warn') return styleText('yellow', formatted.slice(0, -1)) + '\n';
-    return formatted;
+    const {level} = data;
+    const color = level === 'error' || level === 'fatal' ? 'red' : level === 'warn' ? 'yellow' : null;
+    if (color === null) return formatted;
+
+    // Keep the trailing newline outside of the color codes, and only use colors if the destination supports them
+    return styleText(color, formatted.slice(0, -1), {stream: destination as NodeJS.WriteStream}) + '\n';
   }
 
   /**
@@ -176,7 +178,7 @@ export class Logger {
       if (historySize > maxHistorySize) history.splice(0, historySize - maxHistorySize);
     }
 
-    const formatted = this.formatter(data);
+    const formatted = this.formatter(data, this.destination);
     if (this._capture === undefined) {
       this.destination.write(formatted);
     } else {

@@ -160,8 +160,7 @@ class UserAgent {
    * Open WebSocket connection.
    */
   async websocket(url: string | URL, options: UserAgentWebSocketOptions = {}): Promise<WebSocket> {
-    options.url = url;
-    const filtered = await this._filterSharedConfig(options);
+    const filtered = await this._filterSharedConfig({...options, url});
 
     await this.hooks.runHook('websocket', this, filtered);
 
