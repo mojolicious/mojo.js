@@ -15,10 +15,14 @@ cd "$dir"
 npm init -y > /dev/null
 npm pkg set type=module
 npm install --no-audit --no-fund ./mojojs-core-*.tgz "@types/node@$(node -p 'process.versions.node.split(".")[0]')" \
-  "typescript@$(node -p "require('$root/node_modules/typescript/package.json').version")"
+  "typescript@$(node -p "require('$root/node_modules/@typescript/native/package.json').version")" \
+  "@typescript/typescript6@$(node -p "require('$root/node_modules/typescript/package.json').version")"
 
-npx tsc -p tsconfig.json
-npx tsc -p tsconfig.json --module preserve --moduleResolution bundler
+# TypeScript 7 and 6
+for tsc in tsc tsc6; do
+  npx $tsc -p tsconfig.json
+  npx $tsc -p tsconfig.json --module preserve --moduleResolution bundler
+done
 node app.js
 node app.ts
 npx mojo version

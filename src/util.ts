@@ -189,8 +189,11 @@ export async function devDependencies(regex: RegExp): Promise<Record<string, str
   const pkg = JSON.parse((await Path.currentFile().dirname().sibling('package.json').readFile('utf8')).toString());
 
   const deps: Record<string, string> = {};
-  for (const [name, version] of Object.entries(pkg.devDependencies)) {
-    if (regex.test(name) === true) deps[name] = version as string;
+  for (const [name, version] of Object.entries<string>(pkg.devDependencies)) {
+    // Resolve npm aliases like "npm:typescript@^7.0.2" to the real package
+    const alias = version.match(/^npm:(@?[^@]+)@(.+)$/);
+    const [realName, realVersion] = alias === null ? [name, version] : [alias[1], alias[2]];
+    if (regex.test(realName) === true) deps[realName] = realVersion;
   }
 
   return deps;

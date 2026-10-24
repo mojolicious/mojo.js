@@ -468,6 +468,9 @@ t.test('Command app', async t => {
     t.equal(pkg2.devDependencies['nodemon'], undefined);
     t.equal(typeof pkg2.devDependencies['tap'], 'string');
     t.equal(typeof pkg2.devDependencies['typescript'], 'string');
+    t.match(pkg2.devDependencies['typescript'], /^\^\d/);
+    t.equal(pkg2.devDependencies['@typescript/native'], undefined);
+    t.equal(pkg2.devDependencies['@typescript/typescript6'], undefined);
     t.equal(pkg2.devDependencies['@types/busboy'], undefined);
 
     process.chdir(cwd);

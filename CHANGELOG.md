@@ -3,6 +3,14 @@
 
 This package strictly follows [Semantic Versioning](https://semver.org).
 
+## v2.1.0 (2026-10-24)
+
+### Features
+
+  * TypeScript applications generated with `create-full-app --ts` and plugins generated with `create-plugin --ts` now
+    use TypeScript 7.
+  * Updated `@mojojs/dom` to version 4.0, `@mojojs/path` to version 2.0 and `@mojojs/template` to version 3.0.
+
 ## v2.0.0 (2026-10-20)
 
 ### Breaking Changes
